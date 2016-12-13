@@ -1,0 +1,70 @@
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'http://repo.pageturner-reader.org' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.7"
+        targetCompatibility = "1.7"
+    }
+}
+
+ext {
+    //Android
+    androidBuildToolsVersion = "23.0.2"
+    androidMinSdkVersion = 16
+    androidTargetSdkVersion = 23
+    androidCompileSdkVersion = 23
+
+    supportLibrariesVersion = '24.1.1'
+    mjandroidloggerVersion = '0.2-SNAPSHOT'
+    retrofitVersion = '1.9.0'
+    guavaVersion = '20.0'
+    optionalVersion = '0.1.0'
+    javaxAnnotationVersion = '1.2'
+
+    jUnitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    dexmakerVersion = '1.0'
+    espressoVersion = '2.2.2'
+    testingSupportLibVersion = '0.1'
+    powermockVersion = '1.6.2'
+    hamcrestVersion = '1.3'
+    androidRunnerVersion = '0.5'
+    espressoVersion = '2.2.2'
+    dexmakerVersion = '1.4'
+
+    dependencies = [
+            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
+
+            logger                   : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
+            retrofit                 : "com.squareup.retrofit:retrofit:$retrofitVersion",
+
+            guava                    : "com.google.guava:guava:$guavaVersion",
+            optional                 : "com.github.memoizr:retro-optional:$optionalVersion",
+
+            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+            javaxinject              : "javax.inject:javax.inject:1"
+    ]
+
+    testDependencies = [
+            runner         : "com.android.support.test:runner:${androidRunnerVersion}",
+            rules          : "com.android.support.test:rules:${androidRunnerVersion}",
+            espressoCore   : "com.android.support.test.espresso:espresso-core:$espressoVersion",
+            espressoContrib: "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
+            espressoIntents: "com.android.support.test.espresso:espresso-intents:$espressoVersion",
+            junit          : "junit:junit:${jUnitVersion}",
+            mockito        : "org.mockito:mockito-core:${mockitoVersion}",
+            hamcrest       : "org.hamcrest:hamcrest-library:${hamcrestVersion}",
+            powermock      : "org.powermock:powermock-module-junit4:${powermockVersion}",
+            powermockito   : "org.powermock:powermock-api-mockito:${powermockVersion}",
+            dexmaker       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
+            dexmakerDx     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
+            dexmakerMockito: "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion"
+    ]
+
+}

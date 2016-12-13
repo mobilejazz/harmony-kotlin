@@ -1,31 +1,46 @@
 apply plugin: 'com.android.library'
+apply from: 'buildsystem/dependencies.gradle'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    def globalConfiguration = project.ext;
+
+    compileSdkVersion globalConfiguration.androidCompileSdkVersion
+    buildToolsVersion globalConfiguration.androidBuildToolsVersion
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion globalConfiguration.androidMinSdkVersion
+        targetSdkVersion globalConfiguration.androidTargetSdkVersion
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        versionCode 1001
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    testCompile 'junit:junit:4.12'
+    def dependencies = project.ext.dependencies
+    def testDependencies = project.ext.testDependencies
+
+    compile dependencies.supportAnnotation
+    compile dependencies.guava
+    compile dependencies.optional
+    compile dependencies.logger
+    compile dependencies.retrofit
+    compile dependencies.javaxAnnotation
+    compile dependencies.javaxinject
+
+    testCompile testDependencies.hamcrest
+    testCompile(testDependencies.junit) {
+        exclude module: 'hamcrest-core'
+    }
+    testCompile testDependencies.mockito
+    testCompile testDependencies.powermock
+    testCompile testDependencies.powermockito
 }
