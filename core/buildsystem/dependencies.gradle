@@ -16,7 +16,6 @@ ext {
     mjandroidloggerVersion = '0.2-SNAPSHOT'
     retrofitVersion = '1.9.0'
     guavaVersion = '20.0'
-    optionalVersion = '0.1.0'
     javaxAnnotationVersion = '1.2'
 
     jUnitVersion = '4.12'
@@ -37,7 +36,6 @@ ext {
             retrofit         : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
             guava            : "com.google.guava:guava:$guavaVersion",
-            optional         : "com.github.memoizr:retro-optional:$optionalVersion",
 
             javaxAnnotation  : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
             javaxinject      : "javax.inject:javax.inject:1"

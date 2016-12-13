@@ -30,7 +30,6 @@ dependencies {
 
     compile dependencies.supportAnnotation
     compile dependencies.guava
-    compile dependencies.optional
     compile dependencies.logger
     compile dependencies.retrofit
     compile dependencies.javaxAnnotation

@@ -1,11 +1,11 @@
 package com.worldreader.core.datasource.repository;
 
-import com.memoizrlabs.retrooptional.Optional;
+import com.google.common.base.Optional;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 
-import java.util.*;
+import java.util.Collection;
 
 public interface Repository<M extends RepositoryModel, S extends RepositorySpecification> {
 
