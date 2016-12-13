@@ -1,15 +1,7 @@
-allprojects {
+rootProject.allprojects {
     repositories {
-        jcenter()
         maven { url "https://jitpack.io" }
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://repo.pageturner-reader.org' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    tasks.withType(JavaCompile) {
-        sourceCompatibility = "1.7"
-        targetCompatibility = "1.7"
     }
 }
 
@@ -39,16 +31,16 @@ ext {
     dexmakerVersion = '1.4'
 
     dependencies = [
-            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
+            supportAnnotation: "com.android.support:support-annotations:$supportLibrariesVersion",
 
-            logger                   : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
-            retrofit                 : "com.squareup.retrofit:retrofit:$retrofitVersion",
+            logger           : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
+            retrofit         : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
-            guava                    : "com.google.guava:guava:$guavaVersion",
-            optional                 : "com.github.memoizr:retro-optional:$optionalVersion",
+            guava            : "com.google.guava:guava:$guavaVersion",
+            optional         : "com.github.memoizr:retro-optional:$optionalVersion",
 
-            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
-            javaxinject              : "javax.inject:javax.inject:1"
+            javaxAnnotation  : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+            javaxinject      : "javax.inject:javax.inject:1"
     ]
 
     testDependencies = [
