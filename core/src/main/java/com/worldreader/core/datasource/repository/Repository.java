@@ -17,23 +17,21 @@ public interface Repository<M extends RepositoryModel, S extends RepositorySpeci
 
   void getAll(S specification, Callback<Optional<Collection<M>>> callback);
 
-  void put(M model, Callback<Optional<M>> callback);
+  void put(M m, Callback<Optional<M>> callback);
 
-  void putAll(Collection<M> models, Callback<Optional<Collection<M>>> callback);
+  void putAll(Collection<M> ms, Callback<Optional<Collection<M>>> callback);
 
-  void put(M model, S specification, Callback<Optional<M>> callback);
+  void put(M m, S specification, Callback<Optional<M>> callback);
 
-  void putAll(Collection<M> models, S specification, Callback<Optional<M>> callback);
+  void putAll(Collection<M> ms, S specification, Callback<Optional<Collection<M>>> callback);
 
-  void remove(M model, Callback<Optional<M>> callback);
+  void remove(M m, Callback<Optional<M>> callback);
 
-  void remove(Collection<M> models, Callback<Optional<Boolean>> callback);
+  void removeAll(Collection<M> ms, Callback<Optional<Collection<M>>> callback);
 
-  void remove(M model, S specification, Callback<Optional<M>> callback);
+  void remove(M m, S specification, Callback<Optional<M>> callback);
 
-  void remove(Collection<M> models, S specification, Callback<Optional<M>> callback);
-
-  void removeAll(Callback<Optional<M>> callback);
+  void removeAll(Collection<M> ms, S specification, Callback<Optional<Collection<M>>> callback);
 
   interface Storage<M extends RepositoryModel, S extends RepositorySpecification> extends
       Repository<M, S> {
