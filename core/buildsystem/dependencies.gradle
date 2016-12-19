@@ -29,16 +29,29 @@ ext {
     espressoVersion = '2.2.2'
     dexmakerVersion = '1.4'
 
+    //Datasource libraries
+    storioVersion = '1.8.0'
+    vastraVersion = '1.1.0-SNAPSHOT'
+    sqlcipherVersion = '3.5.1'
+
     dependencies = [
-            supportAnnotation: "com.android.support:support-annotations:$supportLibrariesVersion",
+            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
 
-            logger           : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
-            retrofit         : "com.squareup.retrofit:retrofit:$retrofitVersion",
+            logger                   : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
+            retrofit                 : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
-            guava            : "com.google.guava:guava:$guavaVersion",
+            guava                    : "com.google.guava:guava:$guavaVersion",
 
-            javaxAnnotation  : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
-            javaxinject      : "javax.inject:javax.inject:1"
+            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+            javaxinject              : "javax.inject:javax.inject:1",
+
+            storio                   : "com.pushtorefresh.storio:sqlite:$storioVersion",
+            storioAnnotation         : "com.pushtorefresh.storio:sqlite-annotations:$storioVersion",
+            storioAnnotationProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:$storioVersion",
+
+            vastra                   : "com.mobilejazz.vastra:library:$vastraVersion",
+
+            sqlcipher                : "net.zetetic:android-database-sqlcipher:$sqlcipherVersion",
     ]
 
     testDependencies = [

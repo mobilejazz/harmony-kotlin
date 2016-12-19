@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
 apply from: 'buildsystem/dependencies.gradle'
 
 android {
@@ -34,6 +35,14 @@ dependencies {
     compile dependencies.retrofit
     compile dependencies.javaxAnnotation
     compile dependencies.javaxinject
+    compile dependencies.vastra
+    compile dependencies.storio
+    compile dependencies.storioAnnotation
+    compile dependencies.storioAnnotationProcessor
+
+    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+
+    compile dependencies.sqlcipher
 
     testCompile testDependencies.hamcrest
     testCompile(testDependencies.junit) {
