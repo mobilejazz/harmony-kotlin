@@ -1,6 +1,7 @@
 package com.worldreader.core.domain.deprecated;
 
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
+import com.worldreader.core.domain.thread.MainThread;
 
 public abstract class AbstractInteractor<T, E> implements Interactor {
 

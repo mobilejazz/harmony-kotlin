@@ -1,5 +1,7 @@
 package com.worldreader.core.domain.deprecated;
 
+import com.worldreader.core.domain.thread.MainThread;
+
 public abstract class DomainCallback<T, E> implements Callback<T, E> {
 
   private MainThread mainThread;
