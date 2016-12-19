@@ -2,6 +2,7 @@ package com.worldreader.core.datasource;
 
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.helper.url.URLProvider;
 import com.worldreader.core.datasource.mapper.CollectionEntityDataMapper;
@@ -11,30 +12,30 @@ import com.worldreader.core.datasource.network.datasource.collection.CollectionN
 import com.worldreader.core.datasource.storage.datasource.collection.CollectionBdDataSource;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.Book;
+import com.worldreader.core.domain.model.BookDownloaded;
 import com.worldreader.core.domain.model.Collection;
 import com.worldreader.core.domain.repository.CollectionRepository;
 
 import javax.inject.Inject;
 import java.util.*;
 
-//import com.worldreader.domain.repository.ApplicationRepository;
-
 public class CollectionDataSource implements CollectionRepository {
 
-  private CollectionNetworkDataSource networkDataSource;
-  private CollectionBdDataSource bdDataSource;
-  private CollectionEntityDataMapper entityDataMapper;
-  private CountryCodeProvider countryCodeProvider;
-  //private ApplicationRepository applicationRepository;
+  private final CollectionNetworkDataSource networkDataSource;
+  private final CollectionBdDataSource bdDataSource;
+  private final CollectionEntityDataMapper entityDataMapper;
+  private final CountryCodeProvider countryCodeProvider;
+  private final Provider<List<BookDownloaded>> bookDownloadedProvider;
 
   @Inject public CollectionDataSource(CollectionNetworkDataSource networkDataSource,
       CollectionBdDataSource bdDataSource, CollectionEntityDataMapper entityDataMapper,
-      CountryCodeProvider countryCodeProvider/*, ApplicationRepository applicationRepository*/) {
+      CountryCodeProvider countryCodeProvider,
+      Provider<List<BookDownloaded>> bookDownloadedProvider) {
     this.networkDataSource = networkDataSource;
     this.bdDataSource = bdDataSource;
     this.entityDataMapper = entityDataMapper;
     this.countryCodeProvider = countryCodeProvider;
-    //this.applicationRepository = applicationRepository;
+    this.bookDownloadedProvider = bookDownloadedProvider;
   }
 
   @Override public void collections(final CompletionCallback<List<Collection>> callback) {
@@ -143,14 +144,14 @@ public class CollectionDataSource implements CollectionRepository {
   }
 
   private void promiseSetBookDownloaded(Book book) {
-    //for (BookDownloaded bookDownloaded : applicationRepository.getAllBooksDownloaded()) {
-    //  if (book.getId().equals(bookDownloaded.getBookId())) {
-    //    if (book.getId().equals(bookDownloaded.getBookId())) {
-    //      book.setBookDownloaded(true);
-    //      break;
-    //    }
-    //  }
-    //}
+    for (BookDownloaded bookDownloaded : bookDownloadedProvider.get()) {
+      if (book.getId().equals(bookDownloaded.getBookId())) {
+        if (book.getId().equals(bookDownloaded.getBookId())) {
+          book.setBookDownloaded(true);
+          break;
+        }
+      }
+    }
   }
   //endregion
 }

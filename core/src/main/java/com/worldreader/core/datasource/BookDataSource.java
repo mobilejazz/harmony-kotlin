@@ -3,6 +3,7 @@ package com.worldreader.core.datasource;
 import android.text.TextUtils;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.helper.url.URLProvider;
 import com.worldreader.core.datasource.mapper.BookEntityDataMapper;
@@ -12,6 +13,7 @@ import com.worldreader.core.datasource.network.datasource.book.BookNetworkDataSo
 import com.worldreader.core.datasource.storage.datasource.book.BookBdDataSource;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.Book;
+import com.worldreader.core.domain.model.BookDownloaded;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.repository.BookRepository;
 
@@ -24,17 +26,17 @@ public class BookDataSource implements BookRepository {
   private BookBdDataSource bddDataSource;
   private BookEntityDataMapper entityDataMapper;
   private CountryCodeProvider countryCodeProvider;
-  //private ApplicationRepository applicationRepository;
+  private final Provider<List<BookDownloaded>> booksDownloadedProvider;
 
   @Inject
   public BookDataSource(BookNetworkDataSource networkDataSource, BookBdDataSource bddDataSource,
-      BookEntityDataMapper entityDataMapper, CountryCodeProvider countryCodeProvider
-      /*ApplicationRepository applicationRepository*/) {
+      BookEntityDataMapper entityDataMapper, CountryCodeProvider countryCodeProvider,
+      Provider<List<BookDownloaded>> booksDownloadedProvider) {
     this.networkDataSource = networkDataSource;
     this.bddDataSource = bddDataSource;
     this.entityDataMapper = entityDataMapper;
     this.countryCodeProvider = countryCodeProvider;
-    //this.applicationRepository = applicationRepository;
+    this.booksDownloadedProvider = booksDownloadedProvider;
   }
 
   @Override public void books(List<Integer> categoriesId, String list, List<BookSort> sorters,
@@ -226,14 +228,15 @@ public class BookDataSource implements BookRepository {
   }
 
   private void promiseSetBookDownloaded(Book book) {
-    //for (BookDownloaded bookDownloaded : applicationRepository.getAllBooksDownloaded()) {
-    //  if (book != null) {
-    //    if (book.getId().equals(bookDownloaded.getBookId())) {
-    //      book.setBookDownloaded(true);
-    //      break;
-    //    }
-    //  }
-    //}
+    List<BookDownloaded> collectionBookDownloaded = booksDownloadedProvider.get();
+    for (BookDownloaded bookDownloaded : collectionBookDownloaded) {
+      if (book != null) {
+        if (book.getId().equals(bookDownloaded.getBookId())) {
+          book.setBookDownloaded(true);
+          break;
+        }
+      }
+    }
   }
 
   private void performResponse(List<Book> books, CompletionCallback callback) {
