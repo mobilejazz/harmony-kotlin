@@ -1,6 +1,6 @@
 package com.worldreader.core.common.deprecated.error;
 
-public class ErrorCore<T extends RuntimeException> {
+public class ErrorCore<T extends Throwable> {
 
   private T cause;
   private String errorMessage;
@@ -8,12 +8,12 @@ public class ErrorCore<T extends RuntimeException> {
   public static final ErrorCore EMPTY = new ErrorCore();
 
   @SuppressWarnings("unchecked")
-  public static <T extends RuntimeException> ErrorCore of(T cause, String errorMessage) {
+  public static <T extends Throwable> ErrorCore of(T cause, String errorMessage) {
     return new ErrorCore(cause, errorMessage);
   }
 
   @SuppressWarnings("unchecked")
-  public static <T extends RuntimeException> ErrorCore of(T cause) {
+  public static <T extends Throwable> ErrorCore of(T cause) {
     return new ErrorCore(cause);
   }
 
