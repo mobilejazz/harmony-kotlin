@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import java.io.*;
 import java.util.concurrent.*;
 
+@Deprecated
 public class SingleThreadExecutor implements InteractorExecutor {
   public static final String TAG = ThreadExecutor.class.getSimpleName();
 
@@ -61,5 +62,9 @@ public class SingleThreadExecutor implements InteractorExecutor {
         interactor.run();
       }
     });
+  }
+
+  public ThreadPoolExecutor getExecutor() {
+    return this.threadPoolExecutor;
   }
 }

@@ -4,6 +4,7 @@ import com.mobilejazz.logger.library.Logger;
 
 import java.util.concurrent.*;
 
+@Deprecated
 public class InteractorThreadFactory implements ThreadFactory {
 
   public static final String TAG = InteractorThreadFactory.class.getSimpleName();
