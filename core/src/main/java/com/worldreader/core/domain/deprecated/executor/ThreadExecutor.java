@@ -11,6 +11,7 @@ import java.util.concurrent.*;
  * Interactor dispatcher. Contains the initial executor setup.
  * Using {@link ThreadPoolExecutor} as the executor implementation.
  */
+@Deprecated
 public class ThreadExecutor implements InteractorExecutor {
 
   public static final String TAG = ThreadExecutor.class.getSimpleName();
