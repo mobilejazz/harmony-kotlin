@@ -33,6 +33,8 @@ ext {
     storioVersion = '1.8.0'
     vastraVersion = '1.1.0-SNAPSHOT'
     sqlcipherVersion = '3.5.1'
+    retrofit2Version = '2.1.0'
+    simplexmlVersion = '2.7.1'
 
     dependencies = [
             supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
@@ -52,6 +54,11 @@ ext {
             vastra                   : "com.mobilejazz.vastra:library:$vastraVersion",
 
             sqlcipher                : "net.zetetic:android-database-sqlcipher:$sqlcipherVersion",
+
+            retrofit2                : "com.squareup.retrofit2:retrofit:${retrofit2Version}",
+            retrofit2Gson            : "com.squareup.retrofit2:converter-gson:${retrofit2Version}",
+            retrofitSimpleXml        : "com.squareup.retrofit2:converter-simplexml:${retrofit2Version}",
+            simplexml                : "org.simpleframework:simple-xml:$simplexmlVersion",
     ]
 
     testDependencies = [

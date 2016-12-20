@@ -40,6 +40,19 @@ dependencies {
     compile dependencies.storioAnnotation
     compile dependencies.storioAnnotationProcessor
 
+    compile dependencies.retrofit2
+    compile dependencies.retrofit2Gson
+    compile(dependencies.retrofitSimpleXml) {
+        exclude module: 'stax-api'
+        exclude module: 'stax'
+        exclude module: 'xpp3'
+    }
+    compile(dependencies.simplexml) {
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }
+
     compile 'com.scottyab:secure-preferences-lib:0.1.4'
 
     compile dependencies.sqlcipher
