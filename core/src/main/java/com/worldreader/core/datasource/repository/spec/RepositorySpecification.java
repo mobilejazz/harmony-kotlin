@@ -4,6 +4,12 @@ import com.google.common.base.Preconditions;
 
 public abstract class RepositorySpecification {
 
+  public static RepositorySpecification NONE = new RepositorySpecification() {
+    @Override public String getIdentifier() {
+      return null;
+    }
+  };
+
   public abstract String getIdentifier();
 
   public static class SimpleRepositorySpecification extends RepositorySpecification {
