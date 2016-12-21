@@ -9,25 +9,13 @@ import java.util.Collection;
 
 public interface Repository<M extends RepositoryModel, S extends RepositorySpecification> {
 
-  void get(Callback<Optional<M>> callback);
-
-  void getAll(Callback<Optional<Collection<M>>> callback);
-
   void get(S specification, Callback<Optional<M>> callback);
 
   void getAll(S specification, Callback<Optional<Collection<M>>> callback);
 
-  void put(M m, Callback<Optional<M>> callback);
-
-  void putAll(Collection<M> ms, Callback<Optional<Collection<M>>> callback);
-
   void put(M m, S specification, Callback<Optional<M>> callback);
 
   void putAll(Collection<M> ms, S specification, Callback<Optional<Collection<M>>> callback);
-
-  void remove(M m, Callback<Optional<M>> callback);
-
-  void removeAll(Collection<M> ms, Callback<Optional<Collection<M>>> callback);
 
   void remove(M m, S specification, Callback<Optional<M>> callback);
 
