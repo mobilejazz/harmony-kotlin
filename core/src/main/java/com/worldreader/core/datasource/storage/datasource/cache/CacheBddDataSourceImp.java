@@ -10,8 +10,7 @@ import com.worldreader.core.datasource.storage.datasource.cache.strategy.Caching
 import com.worldreader.core.datasource.storage.datasource.cache.strategy.CachingStrategyObject;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.List;
 
 public class CacheBddDataSourceImp implements CacheBddDataSource {
 
@@ -20,7 +19,7 @@ public class CacheBddDataSourceImp implements CacheBddDataSource {
   private StorIOSQLite storIOSQLite;
   private Logger logger;
 
-  @Inject public CacheBddDataSourceImp(StorIOSQLite storIOSQLite, Logger logger) {
+  public CacheBddDataSourceImp(StorIOSQLite storIOSQLite, Logger logger) {
     this.storIOSQLite = storIOSQLite;
     this.logger = logger;
   }
@@ -28,11 +27,7 @@ public class CacheBddDataSourceImp implements CacheBddDataSource {
   @Override public CacheObject get(String key) {
     List<CacheObject> cacheObject = storIOSQLite.get()
         .listOfObjects(CacheObject.class)
-        .withQuery(Query.builder()
-            .table(CacheTableMeta.TABLE)
-            .where(CacheTableMeta.COLUMN_KEY + " = ?")
-            .whereArgs(key)
-            .build())
+        .withQuery(Query.builder().table(CacheTableMeta.TABLE).where(CacheTableMeta.COLUMN_KEY + " = ?").whereArgs(key).build())
         .prepare()
         .executeAsBlocking();
 
@@ -51,17 +46,13 @@ public class CacheBddDataSourceImp implements CacheBddDataSource {
     logger.d(TAG, "delete() - Key: " + key);
 
     storIOSQLite.delete()
-        .byQuery(DeleteQuery.builder()
-            .table(CacheTableMeta.TABLE)
-            .where(CacheTableMeta.COLUMN_KEY + " = ?")
-            .whereArgs(key)
-            .build())
+        .byQuery(DeleteQuery.builder().table(CacheTableMeta.TABLE).where(CacheTableMeta.COLUMN_KEY + " = ?").whereArgs(key).build())
         .prepare()
         .executeAsBlocking();
   }
 
-  @Override public <T extends CachingStrategyObject> void executeValidation(CacheObject cacheObject,
-      CachingStrategy<T> strategy) throws InvalidCacheException {
+  @Override public <T extends CachingStrategyObject> void executeValidation(CacheObject cacheObject, CachingStrategy<T> strategy)
+      throws InvalidCacheException {
     if (cacheObject == null) {
       throw new InvalidCacheException();
     } else {
