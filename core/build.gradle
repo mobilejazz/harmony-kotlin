@@ -38,7 +38,7 @@ dependencies {
     compile dependencies.vastra
     compile dependencies.storio
     compile dependencies.storioAnnotation
-    compile dependencies.storioAnnotationProcessor
+    apt dependencies.storioAnnotationProcessor
 
     compile dependencies.retrofit2
     compile dependencies.retrofit2Gson
