@@ -57,6 +57,10 @@ dependencies {
 
     compile dependencies.sqlcipher
 
+    compile dependencies.okHttp
+    compile dependencies.okHttp3LoggingInterceptor
+    compile dependencies.okHttp3Retrofit1Client
+
     testCompile testDependencies.hamcrest
     testCompile(testDependencies.junit) {
         exclude module: 'hamcrest-core'
