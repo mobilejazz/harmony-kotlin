@@ -3,16 +3,18 @@ package com.worldreader.core.domain.deprecated;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.thread.MainThread;
 
+import java.util.concurrent.*;
+
 @Deprecated
 public abstract class AbstractInteractor<T, E> implements Interactor {
-
-  protected InteractorExecutor executor;
-  protected MainThread mainThread;
 
   public AbstractInteractor(InteractorExecutor executor, MainThread mainThread) {
     this.executor = executor;
     this.mainThread = mainThread;
   }
+
+  protected InteractorExecutor executor;
+  protected MainThread mainThread;
 
   public void performSuccessCallback(final DomainCallback<T, E> callback, final T result) {
     checkIfParameterIsNull(callback);
@@ -34,6 +36,10 @@ public abstract class AbstractInteractor<T, E> implements Interactor {
         callback.onError(error);
       }
     });
+  }
+
+  public Executor getExecutor() {
+    return executor.getExecutor();
   }
 
   ///////////////////////////////////////////////////////////////////////////

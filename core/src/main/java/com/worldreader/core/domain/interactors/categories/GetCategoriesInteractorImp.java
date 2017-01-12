@@ -1,5 +1,7 @@
 package com.worldreader.core.domain.interactors.categories;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -28,6 +30,26 @@ public class GetCategoriesInteractorImp extends AbstractInteractor<List<Category
   @Override public void execute(DomainCallback<List<Category>, ErrorCore> callback) {
     this.callback = callback;
     this.executor.run(this);
+  }
+
+  @Override public ListenableFuture<List<Category>> execute() {
+    final SettableFuture<List<Category>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new Runnable() {
+      @Override public void run() {
+        repository.categories(new CompletionCallback<List<Category>>() {
+          @Override public void onSuccess(final List<Category> result) {
+            settableFuture.set(result);
+          }
+
+          @Override public void onError(final ErrorCore error) {
+            settableFuture.setException(error.getCause());
+          }
+        });
+      }
+    });
+
+    return settableFuture;
   }
 
   @Override public void run() {

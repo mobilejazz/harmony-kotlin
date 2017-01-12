@@ -64,7 +64,7 @@ public class SingleThreadExecutor implements InteractorExecutor {
     });
   }
 
-  public ThreadPoolExecutor getExecutor() {
+  @Override public Executor getExecutor() {
     return this.threadPoolExecutor;
   }
 }

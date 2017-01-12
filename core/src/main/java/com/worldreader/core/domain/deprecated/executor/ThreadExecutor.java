@@ -68,4 +68,8 @@ public class ThreadExecutor implements InteractorExecutor {
       }
     });
   }
+
+  @Override public Executor getExecutor() {
+    return threadPoolExecutor;
+  }
 }
