@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.*;
 
+@Deprecated
 public interface Mapper<T, K> {
 
   @NonNull T transform(@NonNull final K data);

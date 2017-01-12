@@ -4,6 +4,7 @@ import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.common.deprecated.error.exception.NetworkErrorException;
 import retrofit.RetrofitError;
 
+@Deprecated
 public final class ErrorRetrofitAdapter implements ErrorAdapter<RetrofitError> {
 
   public ErrorRetrofitAdapter() {

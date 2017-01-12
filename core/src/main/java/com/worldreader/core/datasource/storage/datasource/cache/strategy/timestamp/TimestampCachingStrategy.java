@@ -2,17 +2,12 @@ package com.worldreader.core.datasource.storage.datasource.cache.strategy.timest
 
 import com.worldreader.core.datasource.storage.datasource.cache.strategy.CachingStrategy;
 
-public class TimestampCachingStrategy<T extends TimestampCachingObject>
-    implements CachingStrategy<T> {
+public class TimestampCachingStrategy<T extends TimestampCachingObject> implements CachingStrategy<T> {
 
-  private long HOUR = 3600000; //miliseconds
+  private static long HOUR = 3600000; //miliseconds
 
   @Override public boolean isValid(T data) {
-    if (data != null) {
-      return validJustTwentyFourHours(data);
-    } else {
-      return false;
-    }
+    return data != null && validJustTwentyFourHours(data);
   }
 
   private boolean validJustTwentyFourHours(T data) {

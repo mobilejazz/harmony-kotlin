@@ -1,0 +1,30 @@
+package com.worldreader.core.datasource.storage.datasource.cache.manager;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable;
+import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton public class WorldreaderDbOpenHelper extends SQLiteOpenHelper {
+
+  private static final String DB_NAME = "worldreader";
+  private static final int DB_VERSION = 1;
+
+  @Inject public WorldreaderDbOpenHelper(final Context context) {
+    super(context, DB_NAME, null, DB_VERSION);
+  }
+
+  @Override public void onCreate(final SQLiteDatabase db) {
+    db.execSQL(UsersTable.createTableQuery());
+    db.execSQL(UserBooksTable.createTableQuery());
+  }
+
+  @Override public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+
+  }
+
+}

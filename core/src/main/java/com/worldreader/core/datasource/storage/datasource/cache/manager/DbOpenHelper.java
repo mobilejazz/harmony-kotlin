@@ -6,12 +6,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.CacheTableMeta;
 
-public class DbOpenHelper extends SQLiteOpenHelper {
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton public class DbOpenHelper extends SQLiteOpenHelper {
 
   private static final String DB_NAME = "worldreader_cache";
   private static final int DB_VERSION = 1;
 
-  public DbOpenHelper(@NonNull Context context) {
+  @Inject public DbOpenHelper(@NonNull Context context) {
     super(context, DB_NAME, null, DB_VERSION);
   }
 
@@ -37,6 +40,5 @@ public class DbOpenHelper extends SQLiteOpenHelper {
   }
 
   @Override public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-    //TODO: Implement
   }
 }
