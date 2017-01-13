@@ -19,6 +19,12 @@
     <color name="dark">#58626A</color>
     <color name="orange">#EE9502</color>
 
+    <!-- Font colors-->
+    <color name="font_gray">#4A4A4A</color>
+    <color name="font_clear_gray">#aaaaaa</color>
+    <color name="font_white">#FFFFFF</color>
+    <color name="font_black_category">#25323D</color>
+
     <!-- Book layout -->
     <color name="black_book_edit_mode">#b4000000</color>
 
