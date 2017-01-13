@@ -1,5 +1,9 @@
 package com.worldreader.core.domain.interactors.banner;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -12,6 +16,7 @@ import com.worldreader.core.domain.thread.MainThread;
 import javax.inject.Inject;
 import java.util.*;
 
+// TODO: 13/01/2017 [refactor]: Update the interactor with the new Identifier string for the banners
 public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, ErrorCore>
     implements GetBannersInteractor {
 
@@ -35,6 +40,35 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
     this.limit = limit;
     this.callback = callback;
     this.executor.run(this);
+  }
+
+  @Override
+  public ListenableFuture<Optional<List<Banner>>> execute(String identifier, final int index,
+      final int limit) {
+    final SettableFuture<Optional<List<Banner>>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new Runnable() {
+      @Override public void run() {
+        bannerRepository.getAll(Banner.READ_TO_KIDS_BANNER_IDENTIFIER, index, limit,
+            new Callback<List<Banner>>() {
+              @Override public void onSuccess(List<Banner> banners) {
+                if (banners != null) {
+
+                }
+                Optional<List<Banner>> optional =
+                    banners == null ? Optional.<List<Banner>>absent() : Optional.of(banners);
+
+                settableFuture.set(optional);
+              }
+
+              @Override public void onError(Throwable e) {
+                settableFuture.setException(e);
+              }
+            });
+      }
+    });
+
+    return settableFuture;
   }
 
   @Override public void run() {

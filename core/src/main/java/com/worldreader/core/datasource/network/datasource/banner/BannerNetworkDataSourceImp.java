@@ -17,13 +17,12 @@ public class BannerNetworkDataSourceImp implements BannerNetworkDataSource {
 
   public static final String MAIN_BANNER_ENDPOINT = "/banners/main";
   public static final String COLLECTION_BANNER_ENDPOINT = "/banners/collections";
-
+  public static final String READ_TO_KIDS_ENDPOINT = "/banners/r2kmain";
+  public static final String TAG = BannerNetworkDataSource.class.getSimpleName();
   private BannerApiService bannerApiService;
   private Logger logger;
   private CountryCodeProvider countryCodeProvider;
-
   private ErrorAdapter<RetrofitError> errorAdapter = new ErrorRetrofitAdapter();
-  public static final String TAG = BannerNetworkDataSource.class.getSimpleName();
 
   @Inject public BannerNetworkDataSourceImp(CountryCodeProvider countryCodeProvider,
       BannerApiService bannerApiService, Logger logger) {
@@ -67,6 +66,25 @@ public class BannerNetworkDataSourceImp implements BannerNetworkDataSource {
             if (callback != null) {
               logger.e(TAG, error.toString());
               callback.onError(errorAdapter.of(error));
+            }
+          }
+        });
+  }
+
+  @Override public void getAll(String identifier, int index, int limit,
+      final com.worldreader.core.common.callback.Callback<List<BannerEntity>> callback) {
+    bannerApiService.banners(identifier, index, limit, countryCodeProvider.getCountryCode(),
+        new Callback<List<BannerEntity>>() {
+          @Override public void success(List<BannerEntity> bannerEntities, Response response) {
+            if (callback != null) {
+              callback.onSuccess(bannerEntities);
+            }
+          }
+
+          @Override public void failure(RetrofitError error) {
+            if (callback != null) {
+              logger.e(TAG, error.toString());
+              callback.onError(errorAdapter.of(error).getCause());
             }
           }
         });

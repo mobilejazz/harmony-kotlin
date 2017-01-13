@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource.network.datasource.banner;
 
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.datasource.model.BannerEntity;
 
@@ -11,4 +12,6 @@ public interface BannerNetworkDataSource {
 
   void fetchCollectionBanners(int index, int limit,
       CompletionCallback<List<BannerEntity>> callback);
+
+  void getAll(String identifier, int index, int limit, Callback<List<BannerEntity>> callback);
 }
