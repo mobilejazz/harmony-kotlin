@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="CardViewStyle"
+        parent="android:Widget.TextView">
+        <item name="android:background">@drawable/card_background_states</item>
+    </style>
+
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+
+    <dimen name="global_book_layout_img_height">200dp</dimen>
+    <dimen name="global_book_layout_height">260dp</dimen>
+    <dimen name="global_banner_layout_height">110dp</dimen>
+    <dimen name="detail_book_content_layout_margin_right">32dp</dimen>
+
+</resources>

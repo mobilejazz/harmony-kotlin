@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Banner layout-->
+    <dimen name="global_banner_layout_height">80dp</dimen>
+
+    <!-- Global book layout-->
+    <dimen name="global_book_layout_img_height">150dp</dimen>
+    <dimen name="global_book_layout_height">205dp</dimen>
+
+    <!-- Detail book content -->
+    <dimen name="detail_book_content_layout_margin_right">8dp</dimen>
+
+</resources>

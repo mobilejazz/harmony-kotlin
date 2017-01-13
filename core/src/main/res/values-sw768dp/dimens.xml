@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="global_book_view_height">185dp</dimen>
+
+    <dimen name="global_book_layout_img_height">230dp</dimen>
+    <dimen name="global_book_layout_height">285dp</dimen>
+
+    <dimen name="global_banner_layout_height">145dp</dimen>
+
+    <dimen name="detail_book_content_layout_margin_right">32dp</dimen>
+</resources>

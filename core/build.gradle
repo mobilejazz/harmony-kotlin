@@ -22,6 +22,8 @@ android {
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
 
         versionCode 1001
+
+        vectorDrawables.useSupportLibrary = true
     }
 }
 
@@ -29,7 +31,12 @@ dependencies {
     def dependencies = project.ext.dependencies
     def testDependencies = project.ext.testDependencies
 
+    compile dependencies.appCompat
     compile dependencies.supportAnnotation
+    compile dependencies.recyclerView
+    compile dependencies.cardView
+    compile dependencies.design
+
     compile dependencies.guava
     compile dependencies.logger
     compile dependencies.retrofit
