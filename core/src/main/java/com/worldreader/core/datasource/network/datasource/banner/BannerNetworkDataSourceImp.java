@@ -71,13 +71,32 @@ public class BannerNetworkDataSourceImp implements BannerNetworkDataSource {
         });
   }
 
-  @Override public void getAll(String identifier, int index, int limit,
+  @Override public void getAll(String type, int index, int limit,
       final com.worldreader.core.common.callback.Callback<List<BannerEntity>> callback) {
-    bannerApiService.banners(identifier, index, limit, countryCodeProvider.getCountryCode(),
+    bannerApiService.banners(type, index, limit, countryCodeProvider.getCountryCode(),
         new Callback<List<BannerEntity>>() {
           @Override public void success(List<BannerEntity> bannerEntities, Response response) {
             if (callback != null) {
               callback.onSuccess(bannerEntities);
+            }
+          }
+
+          @Override public void failure(RetrofitError error) {
+            if (callback != null) {
+              logger.e(TAG, error.toString());
+              callback.onError(errorAdapter.of(error).getCause());
+            }
+          }
+        });
+  }
+
+  @Override public void get(int id, String type,
+      final com.worldreader.core.common.callback.Callback<BannerEntity> callback) {
+    bannerApiService.banner(id, type, countryCodeProvider.getCountryCode(),
+        new Callback<BannerEntity>() {
+          @Override public void success(BannerEntity bannerEntity, Response response) {
+            if (callback != null) {
+              callback.onSuccess(bannerEntity);
             }
           }
 

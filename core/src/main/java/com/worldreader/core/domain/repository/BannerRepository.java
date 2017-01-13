@@ -12,5 +12,7 @@ public interface BannerRepository {
 
   void collectionBanner(int index, int limit, CompletionCallback<List<Banner>> callback);
 
-  void getAll(String identifier, int index, int limit, Callback<List<Banner>> callback);
+  void getAll(String type, int index, int limit, Callback<List<Banner>> callback);
+
+  void get(int id, String type, Callback<Banner> callback);
 }

@@ -17,6 +17,7 @@ public class Banner implements Serializable {
   private Date end;
   private String image;
   private String type;
+  private List<Book> books;
 
   public Banner() {
   }
@@ -67,6 +68,14 @@ public class Banner implements Serializable {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public List<Book> getBooks() {
+    return books;
+  }
+
+  public void setBooks(List<Book> books) {
+    this.books = books;
   }
 
   @Override public String toString() {

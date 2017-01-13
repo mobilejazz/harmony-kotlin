@@ -9,10 +9,13 @@ import java.util.*;
 
 public class BannerEntityDataMapper implements Mapper<Banner, BannerEntity> {
 
-  private String worldreaderApi;
+  private final String worldreaderApi;
+  private final BookEntityDataMapper bookEntityDataMapper;
 
-  @Inject public BannerEntityDataMapper(String worldreaderApi) {
+  @Inject
+  public BannerEntityDataMapper(String worldreaderApi, BookEntityDataMapper bookEntityDataMapper) {
     this.worldreaderApi = worldreaderApi;
+    this.bookEntityDataMapper = bookEntityDataMapper;
   }
 
   @Override public Banner transform(BannerEntity bannerEntity) {
@@ -32,8 +35,9 @@ public class BannerEntityDataMapper implements Mapper<Banner, BannerEntity> {
     builder.append(bannerEntity.getImage());
 
     banner.setImage(builder.toString());
-
     banner.setType(bannerEntity.getType());
+    banner.setBooks(bookEntityDataMapper.transform(bannerEntity.getBookEntities()));
+
     return banner;
   }
 
