@@ -13,5 +13,7 @@ public interface BannerNetworkDataSource {
   void fetchCollectionBanners(int index, int limit,
       CompletionCallback<List<BannerEntity>> callback);
 
-  void getAll(String identifier, int index, int limit, Callback<List<BannerEntity>> callback);
+  void getAll(String type, int index, int limit, Callback<List<BannerEntity>> callback);
+
+  void get(int id, String type, Callback<BannerEntity> callback);
 }

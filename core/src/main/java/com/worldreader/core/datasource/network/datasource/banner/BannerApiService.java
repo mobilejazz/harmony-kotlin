@@ -17,7 +17,12 @@ public interface BannerApiService {
       @Query("limit") int limit, @Query("country") String country,
       Callback<List<BannerEntity>> callback);
 
-  @GET("/banners/{id}") void banners(@Path("id") String id, @Query("index") int index,
+  @GET("/banners/{banner_identifier}") void banners(
+      @Path("banner_identifier") String bannerIdentifier, @Query("index") int index,
       @Query("limit") int limit, @Query("country") String country,
       Callback<List<BannerEntity>> callback);
+
+  @GET("/banners/{banner_identifier}/{id}") void banner(@Path("id") int id,
+      @Path("banner_identifier") String bannerIdentifier, @Query("country") String country,
+      Callback<BannerEntity> callback);
 }

@@ -9,5 +9,9 @@ public interface BannerBdDataSource {
 
   List<BannerEntity> obtains(String key) throws InvalidCacheException;
 
+  BannerEntity obtain(String key) throws InvalidCacheException;
+
   void persist(String key, List<BannerEntity> banners);
+
+  void persist(String key, BannerEntity banner);
 }

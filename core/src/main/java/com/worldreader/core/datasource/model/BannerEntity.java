@@ -14,6 +14,8 @@ public class BannerEntity implements TimestampValidationStrategyDataSource {
   @SerializedName("end") private Date end;
   @SerializedName("image") private String image;
   @SerializedName("type") private String type;
+  @SerializedName("books") private List<BookEntity> bookEntities;
+
   private Date lastUpdate;
 
   public BannerEntity() {
@@ -69,6 +71,14 @@ public class BannerEntity implements TimestampValidationStrategyDataSource {
 
   public void setLastUpdate(Date lastUpdate) {
     this.lastUpdate = lastUpdate;
+  }
+
+  public List<BookEntity> getBookEntities() {
+    return bookEntities;
+  }
+
+  public void setBookEntities(List<BookEntity> bookEntities) {
+    this.bookEntities = bookEntities;
   }
 
   @Override public Date lastUpdate() {

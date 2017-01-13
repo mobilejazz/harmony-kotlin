@@ -42,12 +42,34 @@ public class BannerBdDataSourceImp implements BannerBdDataSource {
     return bannerEntities;
   }
 
+  @Override public BannerEntity obtain(String key) throws InvalidCacheException {
+    CacheObject cacheObject = cacheBddDataSource.get(key);
+
+    if (cacheObject == null) {
+      throw new InvalidCacheException();
+    }
+
+    BannerEntity bannerEntity = getBannerEntity(cacheObject);
+
+    if (!validationService.isValid(bannerEntity)) {
+      throw new InvalidCacheException();
+    }
+
+    return bannerEntity;
+  }
+
   @Override public void persist(String key, List<BannerEntity> banners) {
     addLastUpdateAttributeToBanners(banners);
 
     String json = gson.toJson(banners);
-    CacheObject cacheObject = CacheObject.newCacheObject(key, json, System.currentTimeMillis());
-    cacheBddDataSource.persist(cacheObject);
+    cache(key, json);
+  }
+
+  @Override public void persist(String key, BannerEntity banner) {
+    banner.setLastUpdate(new Date());
+
+    String json = gson.toJson(banner);
+    cache(key, json);
   }
 
   //region Private methods
@@ -56,10 +78,19 @@ public class BannerBdDataSourceImp implements BannerBdDataSource {
     }.getType());
   }
 
+  private BannerEntity getBannerEntity(CacheObject cacheObject) {
+    return gson.fromJson(cacheObject.getValue(), BannerEntity.class);
+  }
+
   private void addLastUpdateAttributeToBanners(List<BannerEntity> banners) {
     for (BannerEntity banner : banners) {
       banner.setLastUpdate(new Date());
     }
+  }
+
+  private void cache(String key, String json) {
+    CacheObject cacheObject = CacheObject.newCacheObject(key, json, System.currentTimeMillis());
+    cacheBddDataSource.persist(cacheObject);
   }
   //endregion
 }
