@@ -9,10 +9,10 @@ ext {
     //Android
     androidBuildToolsVersion = "23.0.2"
     androidMinSdkVersion = 16
-    androidTargetSdkVersion = 23
-    androidCompileSdkVersion = 23
+    androidTargetSdkVersion = 25
+    androidCompileSdkVersion = 25
 
-    supportLibrariesVersion = '24.1.1'
+    supportLibrariesVersion = '25.1.0'
     mjandroidloggerVersion = '0.2-SNAPSHOT'
     retrofitVersion = '1.9.0'
     guavaVersion = '20.0'
@@ -40,8 +40,6 @@ ext {
     okHttp3Retrofit1Version = '1.0.2'
 
     dependencies = [
-            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
-
             logger                   : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
             retrofit                 : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
@@ -68,6 +66,12 @@ ext {
             okHttp                   : "com.squareup.okhttp3:okhttp:$okHttpVersion",
             okHttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             okHttp3Retrofit1Client   : "com.jakewharton.retrofit:retrofit1-okhttp3-client:$okHttp3Retrofit1Version",
+
+            appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
+            recyclerView             : "com.android.support:recyclerview-v7:$supportLibrariesVersion",
+            cardView                 : "com.android.support:cardview-v7:$supportLibrariesVersion",
+            design                   : "com.android.support:design:$supportLibrariesVersion",
+            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
     ]
 
     testDependencies = [

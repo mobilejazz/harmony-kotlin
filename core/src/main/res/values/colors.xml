@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Theme colors -->
+    <color name="colorPrimary">#0055FF</color>
+    <color name="colorPrimaryDark">#103E99</color>
+    <color name="colorAccent">#103E99</color>
+    <color name="colorSecondaryDark">#103E99</color>
+    <color name="colorControlHighlight">#103E99</color>
+    <color name="background">#FAFAFA</color>
+
+    <!-- General colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FBB528</color>
+    <color name="darkYellow">#AA7B1B</color>
+    <color name="black">#000</color>
+    <color name="green">#518B0E</color>
+    <color name="red">#D0021B</color>
+    <color name="dark">#58626A</color>
+    <color name="orange">#EE9502</color>
+
+    <!-- Book layout -->
+    <color name="black_book_edit_mode">#b4000000</color>
+
+</resources>
