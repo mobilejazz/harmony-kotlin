@@ -15,7 +15,7 @@
         <RelativeLayout android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <com.worldreader.ui.widget.PercentageCropImageView android:id="@+id/global_book_layout_img_book"
+            <com.worldreader.core.application.ui.widget.PercentageCropImageView android:id="@+id/global_book_layout_img_book"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/global_book_layout_img_height"
                 android:contentDescription="@null"

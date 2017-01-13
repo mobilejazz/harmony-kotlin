@@ -37,6 +37,10 @@ dependencies {
     compile dependencies.cardView
     compile dependencies.design
 
+    compile dependencies.picasso
+    compile dependencies.picassoOkhttp3
+    compile dependencies.simpleStorage
+
     compile dependencies.guava
     compile dependencies.logger
     compile dependencies.retrofit
