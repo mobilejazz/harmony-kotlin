@@ -1,5 +1,7 @@
 package com.worldreader.core.domain.interactors.banner;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.model.Banner;
@@ -14,4 +16,6 @@ public interface GetBannersInteractor {
   }
 
   void execute(Type type, int index, int limit, DomainCallback<List<Banner>, ErrorCore> callback);
+
+  ListenableFuture<Optional<List<Banner>>> execute(String identifier, int index, int limit);
 }

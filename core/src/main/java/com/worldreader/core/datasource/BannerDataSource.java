@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource;
 
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
@@ -95,6 +96,43 @@ public class BannerDataSource implements BannerRepository {
             }
           });
     }
+  }
+
+  @Override public void getAll(String identifier, int index, int limit,
+      final Callback<List<Banner>> callback) {
+    final String key = URLProvider.withEndpoint(identifier)
+        .addIndex(index)
+        .addLimit(limit)
+        .addCountryCode(countryCodeProvider.getCountryCode())
+        .build();
+
+    try {
+      List<BannerEntity> bannerEntitiesFromCache = bdDataSource.obtains(key);
+      List<Banner> banners = transform(bannerEntitiesFromCache);
+
+      if (callback != null) {
+        callback.onSuccess(banners);
+      }
+    } catch (InvalidCacheException e) {
+      networkDataSource.getAll(identifier, index, limit, new Callback<List<BannerEntity>>() {
+        @Override public void onSuccess(final List<BannerEntity> bannerEntities) {
+          bdDataSource.persist(key, bannerEntities);
+
+          List<Banner> banners = transform(bannerEntities);
+
+          if (callback != null) {
+            callback.onSuccess(banners);
+          }
+        }
+
+        @Override public void onError(Throwable e) {
+          if (callback != null) {
+            callback.onError(e);
+          }
+        }
+      });
+    }
+
   }
 
   ///////////////////////////////////////////////////////////////////////////

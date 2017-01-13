@@ -5,6 +5,8 @@ import java.util.*;
 
 public class Banner implements Serializable {
 
+  public static final String READ_TO_KIDS_BANNER_IDENTIFIER = "r2kmain";
+
   public static final int OFFLINE_BANNER_ID = -1;
 
   public static final Banner EMPTY = new Banner();
