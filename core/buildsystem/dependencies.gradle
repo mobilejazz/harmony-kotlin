@@ -18,6 +18,10 @@ ext {
     guavaVersion = '20.0'
     javaxAnnotationVersion = '1.2'
 
+    picassoVersion = '2.5.2'
+    picassoOkhttp3 = '1.0.2'
+    simpleStorageVersion = '1.2.0'
+
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
     dexmakerVersion = '1.0'
@@ -72,6 +76,10 @@ ext {
             cardView                 : "com.android.support:cardview-v7:$supportLibrariesVersion",
             design                   : "com.android.support:design:$supportLibrariesVersion",
             supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
+
+            picasso                  : "com.squareup.picasso:picasso:$picassoVersion",
+            simpleStorage            : "com.sromku:simple-storage:$simpleStorageVersion",
+            picassoOkhttp3           : "com.jakewharton.picasso:picasso2-okhttp3-downloader:$picassoOkhttp3",
     ]
 
     testDependencies = [
