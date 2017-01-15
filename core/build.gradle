@@ -68,6 +68,8 @@ dependencies {
 
     compile dependencies.sqlcipher
 
+    compile 'org.javatuples:javatuples:1.2'
+
     compile dependencies.okHttp
     compile dependencies.okHttp3LoggingInterceptor
     compile dependencies.okHttp3Retrofit1Client
