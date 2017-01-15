@@ -11,4 +11,8 @@
     <!-- Detail book content -->
     <dimen name="detail_book_content_layout_margin_right">8dp</dimen>
 
+    <!-- Shelve View layout -->
+    <dimen name="global_shelve_books_layout_margin_left_right_bottom">5dp</dimen>
+    <dimen name="global_shelve_books_layout_btn_view_all_height">35dp</dimen>
+
 </resources>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">core</string>
+
+    <string name="ls_my_library_view_all">More</string>
 </resources>

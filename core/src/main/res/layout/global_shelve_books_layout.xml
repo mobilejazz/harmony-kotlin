@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/span_10"
+    android:paddingLeft="@dimen/span_8"
+    android:paddingRight="@dimen/span_8"
+    android:paddingTop="0dp">
+
+    <RelativeLayout android:id="@+id/global_shelve_books_layout_action_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp">
+
+        <TextView android:id="@+id/global_shelve_books_layout_txt_title"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/global_shelve_books_layout_btn_view_all"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/global_shelve_books_layout_btn_view_all"
+            android:layout_toLeftOf="@+id/global_shelve_books_layout_btn_view_all"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@null" />
+
+        <Button android:id="@+id/global_shelve_books_layout_btn_view_all"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/global_shelve_books_layout_btn_view_all_height"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/global_shelve_books_layout_margin_left_right_bottom"
+            android:layout_marginLeft="@dimen/global_shelve_books_layout_margin_left_right_bottom"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:text="@string/ls_my_library_view_all"
+            android:textAllCaps="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <include layout="@layout/shelve_books_flexible_layout" />
+
+    </LinearLayout>
+
+</LinearLayout>
