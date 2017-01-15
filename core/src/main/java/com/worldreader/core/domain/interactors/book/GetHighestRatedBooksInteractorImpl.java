@@ -1,5 +1,9 @@
 package com.worldreader.core.domain.interactors.book;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -48,8 +52,46 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
+      final int offset, final int limit) {
+    final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new Runnable() {
+      @Override public void run() {
+        execute(categories, offset, limit, new Callback<List<Book>>() {
+          @Override public void onSuccess(List<Book> books) {
+            Optional<List<Book>> booksOp =
+                books == null ? Optional.<List<Book>>absent() : Optional.of(books);
+
+            settableFuture.set(booksOp);
+          }
+
+          @Override public void onError(Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+    });
+
+    return settableFuture;
+  }
+
   @Override public void run() {
-    List<Integer> categoriesInt = categoryToIntAdapter.transform(this.categories);
+    execute(categories, offset, limit, new Callback<List<Book>>() {
+      @Override public void onSuccess(List<Book> books) {
+        performSuccessCallback(callback, books);
+      }
+
+      @Override public void onError(Throwable e) {
+        performErrorCallback(callback, ErrorCore.of(e));
+      }
+    });
+  }
+
+  //region Private methods
+  private void execute(final List<Category> categories, final int offset, final int limit,
+      final Callback<List<Book>> callback) {
+    List<Integer> categoriesInt = categoryToIntAdapter.transform(categories);
     List<BookSort> sorteredBy =
         Arrays.asList(BookSort.createBookSort(BookSort.Type.SCORE, BookSort.Value.DESC),
             BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
@@ -57,12 +99,17 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
     bookRepository.books(categoriesInt, null /*list*/, sorteredBy, false,
         DefaultValues.DEFAULT_LANGUAGE, offset, limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
-            performSuccessCallback(callback, result);
+            if (callback != null) {
+              callback.onSuccess(result);
+            }
           }
 
           @Override public void onError(final ErrorCore error) {
-            performErrorCallback(callback, error);
+            if (callback != null) {
+              callback.onError(error.getCause());
+            }
           }
         });
   }
+  //endregion
 }
