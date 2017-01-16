@@ -1,5 +1,6 @@
 package com.worldreader.core.application.ui.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,29 +17,19 @@ import java.util.*;
 
 public class BooksAdapter extends HeaderRecyclerViewAdapter {
 
-  public interface BooksAdapterClickListener {
-
-    void onClickBook(Book book);
-
-    void onClickDeleteBook(Book book);
-  }
-
-  private List<Book> mBooks;
-
-  private final ImageLoader mImageLoader;
+  private List<Book> books;
+  private final ImageLoader imageLoader;
   private final Reachability reachability;
-
   private BooksAdapterClickListener listener;
-
   private boolean useFooter;
   private boolean isEditMode;
   private final boolean useHeader;
   private ProductList productList;
 
-  public BooksAdapter(List<Book> mBooks, ImageLoader mImageLoader, Reachability reachability,
+  public BooksAdapter(List<Book> books, ImageLoader imageLoader, Reachability reachability,
       boolean useFooter, boolean isEditMode, boolean useHeader, ProductList productList) {
-    this.mBooks = mBooks;
-    this.mImageLoader = mImageLoader;
+    this.books = books;
+    this.imageLoader = imageLoader;
     this.reachability = reachability;
     this.useFooter = useFooter;
     this.isEditMode = isEditMode;
@@ -46,28 +37,15 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     this.productList = productList;
   }
 
-  public void setUseFooter(boolean useFooter) {
-    this.useFooter = useFooter;
-    notifyDataSetChanged();
+  public interface BooksAdapterClickListener {
+
+    void onClickBook(Book book);
+
+    void onClickDeleteBook(Book book);
   }
 
   @Override public int getItemViewType(int position) {
     return super.getItemViewType(position);
-  }
-
-  @Override public boolean useHeader() {
-    return useHeader;
-  }
-
-  @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
-    LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-    View rootView = inflater.inflate(R.layout.global_header_title_layout, parent, false);
-    return new HeaderViewHolder(rootView);
-  }
-
-  @Override public void onBindHeaderView(RecyclerView.ViewHolder holder, int position) {
-    // Nothing to do
   }
 
   @Override public boolean useFooter() {
@@ -95,10 +73,10 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
   }
 
   @Override public void onBindBasicItemView(final RecyclerView.ViewHolder holder, int position) {
-    final Book book = mBooks.get(position);
+    final Book book = books.get(position);
     final BookViewHolder bookViewHolder = (BookViewHolder) holder;
     bookViewHolder.bookView.setIsEditMode(isEditMode);
-    bookViewHolder.bookView.setBook(book, mImageLoader, reachability);
+    bookViewHolder.bookView.setBook(book, imageLoader, reachability);
     bookViewHolder.bookView.setOnBookClickListener(new BookView.OnBookClickListener() {
       @Override public void onClick(BookView view) {
         if (listener != null) {
@@ -113,22 +91,52 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
   }
 
   @Override public int getBasicItemCount() {
-    return mBooks.size();
+    return books.size();
   }
 
   @Override public int getBasicItemType(int position) {
     return 0;
   }
 
+  @Override public boolean useHeader() {
+    return useHeader;
+  }
+
+  @Override
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
+    LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+    View rootView = inflater.inflate(R.layout.global_header_title_layout, parent, false);
+    return new HeaderViewHolder(rootView);
+  }
+
+  @Override public void onBindHeaderView(RecyclerView.ViewHolder holder, int position) {
+    // Nothing to do
+  }
+
   @Nullable public Book getBook(final int position) {
-    if (mBooks != null) {
+    if (books != null) {
       try {
-        return mBooks.get(position);
+        return books.get(position);
       } catch (IndexOutOfBoundsException e) {
         return null;
       }
     } else {
       return null;
+    }
+  }
+
+  public void addBooks(@NonNull List<Book> books) {
+    boolean isFirstTime = this.books.size() == 0;
+
+    if (isFirstTime) {
+      this.books.addAll(books);
+      notifyDataSetChanged();
+    } else {
+      final int actualIndex = this.books.size() + 1;
+
+      this.books.addAll(books);
+
+      notifyItemRangeInserted(actualIndex, this.books.size());
     }
   }
 
@@ -153,15 +161,21 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     return isEditMode;
   }
 
-  public static class BookViewHolder extends RecyclerView.ViewHolder {
+  public void setUseFooter(boolean useFooter) {
+    this.useFooter = useFooter;
+    notifyDataSetChanged();
+  }
 
-    BookView bookView;
+  //region View holders
+  public static class BookViewHolder extends RecyclerView.ViewHolder {
 
     public BookViewHolder(View itemView) {
       super(itemView);
 
       this.bookView = (BookView) itemView.findViewById(R.id.home_books_adapter_view_book);
     }
+
+    BookView bookView;
   }
 
   public static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -181,4 +195,5 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
       //ButterKnife.bind(this, itemView);
     }
   }
+  //endregion
 }
