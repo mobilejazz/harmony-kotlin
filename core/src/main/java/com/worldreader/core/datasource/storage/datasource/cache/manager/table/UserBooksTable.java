@@ -32,12 +32,12 @@ public class UserBooksTable {
     return "CREATE TABLE "
         + TABLE
         + "("
-        + COLUMN_ID
-        + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+        + COLUMN_BOOK_ID
+        + " STRING NOT NULL PRIMARY KEY "
         + COLUMN_USER_ID
         + " STRING, "
-        + COLUMN_BOOK_ID
-        + " STRING, "
+        + COLUMN_ID
+        + " INTEGER, "
         + COLUMN_FAVORITE
         + " INTEGER, "
         + COLUMN_BOOKMARK
