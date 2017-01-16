@@ -1,5 +1,9 @@
 package com.worldreader.core.domain.interactors.book;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -15,7 +19,7 @@ import java.util.*;
 public class SearchBookByTitleInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements SearchBookByTitleInteractor {
 
-  private BookRepository bookRepository;
+  private final BookRepository bookRepository;
 
   private int index;
   private int limit;
@@ -37,15 +41,57 @@ public class SearchBookByTitleInteractorImpl extends AbstractInteractor<List<Boo
     this.executor.run(this);
   }
 
+  @Override
+  public ListenableFuture<Optional<List<Book>>> execute(final String query, final int index,
+      final int limit) {
+    final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new Runnable() {
+      @Override public void run() {
+        execute(index, limit, query, new Callback<List<Book>>() {
+          @Override public void onSuccess(List<Book> books) {
+            Optional<List<Book>> booksOp =
+                books == null ? Optional.<List<Book>>absent() : Optional.of(books);
+
+            settableFuture.set(booksOp);
+          }
+
+          @Override public void onError(Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+    });
+
+    return settableFuture;
+  }
+
   @Override public void run() {
+    execute(index, limit, query, new Callback<List<Book>>() {
+      @Override public void onSuccess(List<Book> books) {
+        performSuccessCallback(callback, books);
+      }
+
+      @Override public void onError(Throwable e) {
+        performErrorCallback(callback, ErrorCore.of(e));
+      }
+    });
+  }
+
+  private void execute(final int index, final int limit, final String query,
+      final Callback<List<Book>> callback) {
     bookRepository.searchBooks(index, limit, query, null/*author*/, null/*author*/,
         new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
-            performSuccessCallback(callback, result);
+            if (callback != null) {
+              callback.onSuccess(result);
+            }
           }
 
           @Override public void onError(final ErrorCore error) {
-            performErrorCallback(callback, error);
+            if (callback != null) {
+              callback.onError(error.getCause());
+            }
           }
         });
   }
