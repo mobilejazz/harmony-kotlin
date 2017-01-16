@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">core</string>
+
     <string name="ls_my_library_view_all">Mais</string>
+    <string name="ls_offline_books_screen_title">Livros off-line</string>
 </resources>

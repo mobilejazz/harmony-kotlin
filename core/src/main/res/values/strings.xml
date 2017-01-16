@@ -2,4 +2,5 @@
     <string name="app_name">core</string>
 
     <string name="ls_my_library_view_all">More</string>
+    <string name="ls_offline_books_screen_title">Offline Books</string>
 </resources>

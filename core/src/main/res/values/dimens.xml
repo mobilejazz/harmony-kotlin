@@ -15,4 +15,7 @@
     <dimen name="global_shelve_books_layout_margin_left_right_bottom">5dp</dimen>
     <dimen name="global_shelve_books_layout_btn_view_all_height">35dp</dimen>
 
+    <!-- View all Books -->
+    <dimen name="view_all_progress_view_book_height">180dp</dimen>
+
 </resources>
