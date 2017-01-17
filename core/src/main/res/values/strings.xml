@@ -10,5 +10,7 @@
     <string name="ls_book_detail_add_to_currently_reading">Add to My Books</string>
     <string name="ls_book_detail_added_to_currently_reading">Added to My Books</string>
     <string name="ls_book_detail_download_book">Download the book (read offline)</string>
+    <string name="ls_book_detail_number_of_likes">%1$d likes</string>
+    <string name="ls_book_detail_number_of_times_read">%1$d times read</string>
 
 </resources>

@@ -10,4 +10,6 @@
     <string name="ls_book_detail_add_to_currently_reading">Añadir a Mis libros</string>
     <string name="ls_book_detail_added_to_currently_reading">Se añadió a Mis Libros</string>
     <string name="ls_book_detail_download_book">Descargar libro (leer sin conexión)</string>
+    <string name="ls_book_detail_number_of_likes">%1$d me gusta</string>
+    <string name="ls_book_detail_number_of_times_read">%1$d veces leído</string>
 </resources>
