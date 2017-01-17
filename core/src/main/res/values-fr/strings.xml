@@ -5,6 +5,10 @@
     <string name="ls_my_library_view_all">Plus</string>
     <string name="ls_offline_books_screen_title">En mode hors connexion</string>
 
+    <!-- Generic -->
+    <string name="ls_generic_cancel">Annuler</string>
+    <string name="ls_generic_accept">OK</string>
+
     <!-- Book Detail layout -->
     <string name="ls_generic_liked">Aimé</string>
     <string name="ls_book_detail_add_to_currently_reading">Ajouter à mes livres</string>
