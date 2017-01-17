@@ -166,6 +166,13 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     notifyDataSetChanged();
   }
 
+  public void clear() {
+    if (this.books != null) {
+      this.books.clear();
+      setUseFooter(true);
+    }
+  }
+
   //region View holders
   public static class BookViewHolder extends RecyclerView.ViewHolder {
 
