@@ -88,9 +88,11 @@ public class BookDetailCategoriesAdapter extends RecyclerView.Adapter<RecyclerVi
 
     ImageView imgIcon = (ImageView) view.findViewById(R.id.home_categories_adapter_img_icon);
 
-    Drawable iconDrawable = ContextCompat.getDrawable(context, category.getIconRes());
-    iconDrawable.setColorFilter(blueFilter);
-    imgIcon.setImageDrawable(iconDrawable);
+    if (category.getIconRes() > 0) {
+      Drawable iconDrawable = ContextCompat.getDrawable(context, category.getIconRes());
+      iconDrawable.setColorFilter(blueFilter);
+      imgIcon.setImageDrawable(iconDrawable);
+    }
   }
 
   private void onBindCategoryHolder(final CategoriesViewHolder holder, final Category categoryOne,

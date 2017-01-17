@@ -1,5 +1,9 @@
 package com.worldreader.core.domain.interactors.book;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -49,21 +53,58 @@ public class GetBookDetailInteractorImpl extends AbstractInteractor<Book, ErrorC
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Optional<Book>> execute(final String bookId) {
+    final SettableFuture<Optional<Book>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new Runnable() {
+      @Override public void run() {
+        execute(bookId, false, new Callback<Book>() {
+          @Override public void onSuccess(Book book) {
+            settableFuture.set(Optional.fromNullable(book));
+          }
+
+          @Override public void onError(Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+    });
+
+    return settableFuture;
+  }
+
   @Override public void run() {
+    execute(bookId, forceUpdate, new Callback<Book>() {
+      @Override public void onSuccess(Book book) {
+        if (backgroundCallback != null) {
+          backgroundCallback.onSuccess(book);
+        } else {
+          performSuccessCallback(callback, book);
+        }
+      }
+
+      @Override public void onError(Throwable e) {
+        if (backgroundCallback != null) {
+          backgroundCallback.onError(ErrorCore.of(e));
+        } else {
+          performErrorCallback(callback, ErrorCore.of(e));
+        }
+      }
+    });
+  }
+
+  private void execute(final String bookId, final boolean forceUpdate,
+      final Callback<Book> callback) {
     bookRepository.bookDetailLatest(bookId, forceUpdate, new CompletionCallback<Book>() {
       @Override public void onSuccess(Book result) {
-        if (backgroundCallback != null) {
-          backgroundCallback.onSuccess(result);
-        } else {
-          performSuccessCallback(callback, result);
+        if (callback != null) {
+          callback.onSuccess(result);
         }
       }
 
       @Override public void onError(ErrorCore error) {
-        if (backgroundCallback != null) {
-          backgroundCallback.onError(error);
-        } else {
-          performErrorCallback(callback, error);
+        if (callback != null) {
+          callback.onError(error.getCause());
         }
       }
     });

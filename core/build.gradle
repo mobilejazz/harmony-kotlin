@@ -51,6 +51,13 @@ dependencies {
     compile dependencies.storioAnnotation
     apt dependencies.storioAnnotationProcessor
 
+    compile(dependencies.materialDialogsCore) {
+        transitive = true
+    }
+    compile(dependencies.materialDialogsCommons) {
+        transitive = true
+    }
+
     compile dependencies.retrofit2
     compile dependencies.retrofit2Gson
     compile(dependencies.retrofitSimpleXml) {
