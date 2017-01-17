@@ -12,5 +12,12 @@
     <string name="ls_book_detail_download_book">Download the book (read offline)</string>
     <string name="ls_book_detail_number_of_likes">%1$d likes</string>
     <string name="ls_book_detail_number_of_times_read">%1$d times read</string>
+    <string name="ls_delete_book_dialog_title">Delete book</string>
+    <string name="ls_delete_book_dialog_message">Are you sure that you want to delete the book?
+    </string>
+    <string name="ls_download_book_exceeded_limit_title">Download book</string>
+    <string name="ls_download_book_exceeded_limit_message">You have exceeded the book download limit
+        for today. You can download more tomorrow .
+    </string>
 
 </resources>

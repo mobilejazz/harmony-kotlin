@@ -12,4 +12,10 @@
     <string name="ls_book_detail_download_book">Descargar libro (leer sin conexión)</string>
     <string name="ls_book_detail_number_of_likes">%1$d me gusta</string>
     <string name="ls_book_detail_number_of_times_read">%1$d veces leído</string>
+    <string name="ls_delete_book_dialog_title">Eliminar libro</string>
+    <string name="ls_delete_book_dialog_message">¿Seguro que desea eliminar el libro?</string>
+    <string name="ls_download_book_exceeded_limit_title">Descargar libro</string>
+    <string name="ls_download_book_exceeded_limit_message">Se ha superado el límite de descarga de
+        libros para hoy. Puede descargar más mañana.
+    </string>
 </resources>
