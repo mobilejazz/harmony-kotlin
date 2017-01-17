@@ -5,6 +5,10 @@
     <string name="ls_my_library_view_all">Mais</string>
     <string name="ls_offline_books_screen_title">Livros off-line</string>
 
+    <!-- Generic -->
+    <string name="ls_generic_cancel">Cancelar</string>
+    <string name="ls_generic_accept">OK</string>
+
     <!-- Book Detail Layout -->
     <string name="ls_generic_liked">Curtido</string>
     <string name="ls_book_detail_add_to_currently_reading">Adicionar aos meus livros</string>
