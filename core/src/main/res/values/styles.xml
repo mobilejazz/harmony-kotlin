@@ -1,8 +1,31 @@
 <resources>
 
+    <style name="Widget.Worldreader.Core"
+        parent="android:Widget" />
+
+
     <style name="CardViewStyle"
         parent="android:Widget.TextView">
         <item name="android:background">@drawable/card_background_states</item>
     </style>
+
+    <!-- Divider -->
+    <style name="Widget.Worldreader.Core.Divider">
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <!-- TextView -->
+    <style name="Widget.Worldreader.Core.TextView" />
+
+    <style name="Widget.Worldreader.Core.TextView.Book">
+        <item name="android:drawablePadding">@dimen/span_8</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Widget.Worldreader.Core.TextView.Book.Download">
+        <item name="android:drawableLeft">@drawable/ic_download_wrapper</item>
+        <item name="android:textColor">@color/font_gray</item>
+    </style>
+
 
 </resources>

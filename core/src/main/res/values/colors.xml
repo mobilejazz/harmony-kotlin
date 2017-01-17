@@ -28,4 +28,15 @@
     <!-- Book layout -->
     <color name="black_book_edit_mode">#b4000000</color>
 
+    <!-- Book Detail Layout -->
+    <color name="ic_book_gray">#4A4A4A</color>
+    <color name="ic_like_gray">#4A4A4A</color>
+    <color name="book_detail_btn_blue">#103E99</color>
+    <color name="book_detail_btn_dark_blue">#0d3584</color>
+
+    <!-- Vector colors -->
+    <color name="ic_collection_color">#25323D</color>
+    <color name="ic_download_color">#25323D</color>
+
+
 </resources>

@@ -4,4 +4,10 @@
 
     <string name="ls_my_library_view_all">Mais</string>
     <string name="ls_offline_books_screen_title">Livros off-line</string>
+
+    <!-- Book Detail Layout -->
+    <string name="ls_generic_liked">Curtido</string>
+    <string name="ls_book_detail_add_to_currently_reading">Adicionar aos meus livros</string>
+    <string name="ls_book_detail_added_to_currently_reading">Adicionado a Meus livros</string>
+    <string name="ls_book_detail_download_book">Baixar o livro (leitura off-line)</string>
 </resources>

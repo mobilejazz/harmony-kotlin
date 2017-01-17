@@ -21,4 +21,8 @@
     <!-- GridView Decoration-->
     <dimen name="grid_insets">2dp</dimen>
 
+    <!-- Book Detail layout-->
+    <dimen name="book_detail_book_cover_height">240dp</dimen>
+    <dimen name="detail_book_title_padding_right">@dimen/span_64</dimen>
+
 </resources>

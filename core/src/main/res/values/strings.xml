@@ -3,4 +3,12 @@
 
     <string name="ls_my_library_view_all">More</string>
     <string name="ls_offline_books_screen_title">Offline Books</string>
+
+    <!-- Book Detail Layout-->
+    <string name="ls_generic_like">Like</string>
+    <string name="ls_generic_liked">Liked</string>
+    <string name="ls_book_detail_add_to_currently_reading">Add to My Books</string>
+    <string name="ls_book_detail_added_to_currently_reading">Added to My Books</string>
+    <string name="ls_book_detail_download_book">Download the book (read offline)</string>
+
 </resources>

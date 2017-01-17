@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/span_4"
+    app:cardElevation="@dimen/span_4">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        tools:context=".ui.activity.BookDetailActivity">
+
+        <!-- BookCover / Title -->
+        <android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout android:id="@+id/book_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent">
+
+                    <com.worldreader.core.application.ui.widget.PercentageCropImageView android:id="@+id/detail_book_cover"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/book_detail_book_cover_height"
+                        android:contentDescription="@null"
+                        android:scaleType="matrix" />
+
+                    <ImageView android:id="@+id/detail_book_collection_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|left"
+                        android:contentDescription="@null"
+                        android:src="@drawable/as_collectiondetail"
+                        android:visibility="gone" />
+
+                    <ImageView android:id="@+id/detail_book_offline_book_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|right"
+                        android:contentDescription="@null"
+                        android:src="@drawable/as_downloaded_book_detail"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <TextView android:id="@+id/detail_book_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/span_8"
+                    android:paddingLeft="@dimen/span_8"
+                    android:paddingRight="@dimen/detail_book_title_padding_right"
+                    android:paddingTop="@dimen/span_16"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textColor="@color/font_gray" />
+
+                <TextView android:id="@+id/detail_book_publisher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/span_16"
+                    android:paddingLeft="@dimen/span_8"
+                    android:paddingRight="@dimen/detail_book_title_padding_right"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="@color/font_gray"
+                    tools:text="Jose Luis Franconetti Olmedo" />
+
+            </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton android:id="@+id/detail_book_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/detail_book_content_layout_margin_right"
+                android:src="@drawable/ic_read_book"
+                app:backgroundTint="@color/yellow"
+                app:borderWidth="0dp"
+                app:elevation="@dimen/span_8"
+                app:layout_anchor="@id/book_cover"
+                app:layout_anchorGravity="bottom|right"
+                app:pressedTranslationZ="@dimen/span_16"
+                app:rippleColor="@color/darkYellow" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <!-- Like / Times read -->
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="@dimen/span_32"
+            android:background="@color/background_material_light"
+            android:orientation="horizontal">
+
+            <LinearLayout android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:paddingRight="@dimen/span_8"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_like_gray" />
+
+                <TextView android:id="@+id/detail_book_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    tools:text="32 likes" />
+            </LinearLayout>
+
+            <View style="@style/Widget.Worldreader.Core.Divider"
+                android:layout_width="@dimen/span_1"
+                android:layout_height="match_parent" />
+
+            <LinearLayout android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:paddingRight="@dimen/span_8"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_book_gray" />
+
+                <TextView android:id="@+id/detail_book_num_of_times_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    tools:text="82 times read" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="@dimen/span_10">
+
+            <ToggleButton android:id="@+id/detail_book_like_tbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/view"
+                android:layout_toLeftOf="@+id/view"
+                android:layout_toStartOf="@+id/view"
+                android:layout_weight="1"
+                android:background="@drawable/detail_book_btn_book_cover"
+                android:contentDescription="@null"
+                android:drawableLeft="@drawable/ic_like_wrapper"
+                android:drawablePadding="-26dp"
+                android:paddingLeft="@dimen/span_10"
+                android:paddingRight="@dimen/span_10"
+                android:textAllCaps="true"
+                android:textColor="@color/font_white"
+                android:textOff="@string/ls_generic_like"
+                android:textOn="@string/ls_generic_liked"
+                android:textSize="12sp" />
+
+            <View android:id="@+id/view"
+                android:layout_width="@dimen/span_4"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
+
+            <ToggleButton android:id="@+id/detail_book_add_to_readings_tbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/view"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/view"
+                android:layout_toRightOf="@+id/view"
+                android:layout_weight="1"
+                android:background="@drawable/detail_book_btn_book_cover"
+                android:contentDescription="@null"
+                android:drawableLeft="@drawable/ic_currently_wrapper"
+                android:paddingLeft="@dimen/span_10"
+                android:paddingRight="@dimen/span_10"
+                android:textAllCaps="true"
+                android:textColor="@color/font_white"
+                android:textOff="@string/ls_book_detail_add_to_currently_reading"
+                android:textOn="@string/ls_book_detail_added_to_currently_reading"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <!-- Book DownloadDescription -->
+        <com.worldreader.core.application.ui.widget.DownloadBookView android:id="@+id/detail_book_offline_switch"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/span_48"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingLeft="@dimen/span_8"
+            android:paddingRight="@dimen/span_8" />
+
+        <View android:id="@+id/detail_book_offline_switch_separator"
+            style="@style/Widget.Worldreader.Core.Divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/span_1" />
+
+        <TextView android:id="@+id/detail_book_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:paddingBottom="@dimen/span_16"
+            android:paddingLeft="@dimen/span_8"
+            android:paddingRight="@dimen/span_8"
+            android:paddingTop="@dimen/span_16" />
+
+        <View android:id="@+id/detail_book_collection_separator"
+            style="@style/Widget.Worldreader.Core.Divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/span_1"
+            android:visibility="gone" />
+
+        <!-- Collection -->
+        <TextView android:id="@+id/detail_book_collection_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_collection_wrapper"
+            android:gravity="center"
+            android:minHeight="@dimen/span_48"
+            android:paddingLeft="@dimen/span_8"
+            android:paddingRight="@dimen/span_8"
+            android:visibility="gone"
+            tools:text="Collection / Name of Collection" />
+
+        <!-- Categories -->
+        <android.support.v7.widget.RecyclerView android:id="@+id/detail_book_categories_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
