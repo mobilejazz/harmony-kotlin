@@ -4,6 +4,7 @@
 
     <string name="ls_my_library_view_all">Mais</string>
     <string name="ls_offline_books_screen_title">Livros off-line</string>
+    <string name="ls_generic_delete">Excluir</string>
 
     <!-- Generic -->
     <string name="ls_generic_cancel">Cancelar</string>

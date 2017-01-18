@@ -5,6 +5,7 @@
     <!-- Generics -->
     <string name="ls_generic_cancel">Cancelar</string>
     <string name="ls_generic_accept">Aceptar</string>
+    <string name="ls_generic_delete">Eliminar</string>
 
     <string name="ls_my_library_view_all">Más</string>
     <string name="ls_offline_books_screen_title">Libros sin conexión</string>

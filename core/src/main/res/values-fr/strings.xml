@@ -4,6 +4,7 @@
 
     <string name="ls_my_library_view_all">Plus</string>
     <string name="ls_offline_books_screen_title">En mode hors connexion</string>
+    <string name="ls_generic_delete">Supprimer</string>
 
     <!-- Generic -->
     <string name="ls_generic_cancel">Annuler</string>

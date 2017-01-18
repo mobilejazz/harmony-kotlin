@@ -4,6 +4,7 @@
     <!-- Generics -->
     <string name="ls_generic_cancel">Cancel</string>
     <string name="ls_generic_accept">OK</string>
+    <string name="ls_generic_delete">Delete</string>
 
     <string name="ls_my_library_view_all">More</string>
     <string name="ls_offline_books_screen_title">Offline Books</string>
