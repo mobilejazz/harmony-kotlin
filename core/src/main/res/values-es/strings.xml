@@ -22,4 +22,13 @@
     <string name="ls_download_book_exceeded_limit_message">Se ha superado el límite de descarga de
         libros para hoy. Puede descargar más mañana.
     </string>
+
+    <!-- View all layout & my book layout -->
+    <string name="ls_view_all_delete_book_title">¿Eliminar libro?</string>
+    <string name="ls_view_all_delete_book_message">¿Seguro que deseas eliminar este libro? También
+        se eliminará todo tu progreso guardado.
+    </string>
+    <string name="ls_view_all_delete_book_error">Lo sentimos, ocurrió un error al eliminar el libro.
+        Vuelve a intentarlo.
+    </string>
 </resources>

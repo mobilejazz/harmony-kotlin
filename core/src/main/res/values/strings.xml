@@ -24,4 +24,13 @@
         for today. You can download more tomorrow .
     </string>
 
+    <!-- View all layout & My books layout-->
+    <string name="ls_view_all_delete_book_title">Delete book?</string>
+    <string name="ls_view_all_delete_book_message">Are you sure that you want to delete this book?
+        All your saved progress will be removed as well.
+    </string>
+    <string name="ls_view_all_delete_book_error">Sorry, there was an error when deleting your book.
+        Please try again.
+    </string>
+
 </resources>

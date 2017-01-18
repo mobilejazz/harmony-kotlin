@@ -24,4 +24,12 @@
         téléchargement aujourd\'hui. Vous pouvez télécharger plus demain.
     </string>
 
+    <!-- View all layout & my books layout -->
+    <string name="ls_view_all_delete_book_title">Supprimer le livre ?</string>
+    <string name="ls_view_all_delete_book_message">Êtes-vous certain de vouloir supprimer ce livre ?
+        Tous vos progrès sauvegardés seront également supprimés.
+    </string>
+    <string name="ls_view_all_delete_book_error">Désolé, une erreur est survenue lors de la
+        suppression du livre. Veuillez réessayer.
+    </string>
 </resources>
