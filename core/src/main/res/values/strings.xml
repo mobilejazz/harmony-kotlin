@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">core</string>
-
     <!-- Generics -->
     <string name="ls_generic_cancel">Cancel</string>
     <string name="ls_generic_accept">OK</string>
