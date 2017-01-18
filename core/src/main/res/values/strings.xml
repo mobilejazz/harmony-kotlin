@@ -5,6 +5,21 @@
     <string name="ls_generic_cancel">Cancel</string>
     <string name="ls_generic_accept">OK</string>
     <string name="ls_generic_delete">Delete</string>
+    <string name="ls_generic_done">Done</string>
+    <string name="ls_generic_dismiss">Dismiss</string>
+    <string name="ls_generic_save">Save</string>
+    <string name="ls_generic_close">Close</string>
+    <string name="ls_generic_yes">Yes</string>
+    <string name="ls_generic_no">No</string>
+    <string name="ls_generic_quit">Quit</string>
+    <string name="ls_generic_retry">Retry</string>
+    <string name="ls_generic_back">Back</string>
+    <string name="ls_generic_next">Next</string>
+    <string name="ls_generic_search">Search</string>
+    <string name="ls_generic_share">Share</string>
+    <string name="ls_generic_settings">Settings</string>
+    <string name="ls_generic_skip">Skip</string>
+    <string name="ls_generic_edit">Edit</string>
 
     <string name="ls_my_library_view_all">More</string>
     <string name="ls_offline_books_screen_title">Offline Books</string>

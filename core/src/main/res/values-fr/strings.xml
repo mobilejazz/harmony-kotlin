@@ -5,6 +5,22 @@
     <string name="ls_my_library_view_all">Plus</string>
     <string name="ls_offline_books_screen_title">En mode hors connexion</string>
     <string name="ls_generic_delete">Supprimer</string>
+    <string name="ls_generic_done">Terminé</string>
+    <string name="ls_generic_dismiss">Ignorer</string>
+    <string name="ls_generic_save">Sauvegarder</string>
+    <string name="ls_generic_close">Fermer</string>
+    <string name="ls_generic_yes">Oui</string>
+    <string name="ls_generic_no">Non</string>
+    <string name="ls_generic_quit">Quitter</string>
+    <string name="ls_generic_retry">Réessayer</string>
+    <string name="ls_generic_back">Retour</string>
+    <string name="ls_generic_next">Suivant</string>
+    <string name="ls_generic_like">Aimer</string>
+    <string name="ls_generic_search">Rechercher</string>
+    <string name="ls_generic_share">Partager</string>
+    <string name="ls_generic_settings">Paramètres</string>
+    <string name="ls_generic_skip">Passer</string>
+    <string name="ls_generic_edit">Modifier</string>
 
     <!-- Generic -->
     <string name="ls_generic_cancel">Annuler</string>

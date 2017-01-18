@@ -9,6 +9,22 @@
     <!-- Generic -->
     <string name="ls_generic_cancel">Cancelar</string>
     <string name="ls_generic_accept">OK</string>
+    <string name="ls_generic_done">Pronto</string>
+    <string name="ls_generic_dismiss">Recusar</string>
+    <string name="ls_generic_save">Salvar</string>
+    <string name="ls_generic_close">Fechar</string>
+    <string name="ls_generic_yes">Sim</string>
+    <string name="ls_generic_no">Não</string>
+    <string name="ls_generic_quit">Fechar</string>
+    <string name="ls_generic_retry">Tentar novamente</string>
+    <string name="ls_generic_back">Voltar</string>
+    <string name="ls_generic_next">Próximo</string>
+    <string name="ls_generic_like">Curtir</string>
+    <string name="ls_generic_search">Buscar</string>
+    <string name="ls_generic_share">Compartilhar</string>
+    <string name="ls_generic_settings">Configurações</string>
+    <string name="ls_generic_skip">Pular</string>
+    <string name="ls_generic_edit">Editar</string>
 
     <!-- Book Detail Layout -->
     <string name="ls_generic_liked">Curtido</string>

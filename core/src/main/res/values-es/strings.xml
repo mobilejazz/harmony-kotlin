@@ -6,6 +6,22 @@
     <string name="ls_generic_cancel">Cancelar</string>
     <string name="ls_generic_accept">Aceptar</string>
     <string name="ls_generic_delete">Eliminar</string>
+    <string name="ls_generic_done">Listo</string>
+    <string name="ls_generic_dismiss">Descartar</string>
+    <string name="ls_generic_save">Guardar</string>
+    <string name="ls_generic_close">Cerrar</string>
+    <string name="ls_generic_yes">Sí</string>
+    <string name="ls_generic_no">No</string>
+    <string name="ls_generic_quit">Salir</string>
+    <string name="ls_generic_retry">Volver a intentar</string>
+    <string name="ls_generic_back">Atrás</string>
+    <string name="ls_generic_next">Siguiente</string>
+    <string name="ls_generic_like">Me gusta</string>
+    <string name="ls_generic_search">Buscar</string>
+    <string name="ls_generic_share">Compartir</string>
+    <string name="ls_generic_settings">Ajustes</string>
+    <string name="ls_generic_skip">Saltar</string>
+    <string name="ls_generic_edit">Editar</string>
 
     <string name="ls_my_library_view_all">Más</string>
     <string name="ls_offline_books_screen_title">Libros sin conexión</string>
