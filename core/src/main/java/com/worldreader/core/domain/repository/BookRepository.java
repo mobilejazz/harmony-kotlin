@@ -15,18 +15,11 @@ public interface BookRepository {
   void books(List<Integer> categoriesId, String list, List<BookSort> sorters, boolean openCountry,
       String language, int index, int limit, CompletionCallback<List<Book>> callback);
 
-  @Deprecated void searchBooks(int index, int limit, String title, String author, String publisher,
-      CompletionCallback<List<Book>> callback);
-
   void search(int index, int limit, List<Integer> categories, String title, String author,
       String publisher, Callback<List<Book>> callback);
 
-  void bookDetail(String bookId, String version, CompletionCallback<Book> callback);
-
   void bookDetail(String bookId, String version, boolean forceUpdate,
       CompletionCallback<Book> callback);
-
-  void bookDetailLatest(String bookId, CompletionCallback<Book> callback);
 
   void bookDetailLatest(String bookId, boolean forceUpdate, CompletionCallback<Book> callback);
 }

@@ -70,41 +70,6 @@ public class BookDataSource implements BookRepository {
     }
   }
 
-  @Override
-  public void searchBooks(int index, int limit, String title, String author, String publisher,
-      CompletionCallback<List<Book>> callback) {
-    String countryCode = countryCodeProvider.getCountryCode();
-
-    String key = null;
-    if (!TextUtils.isEmpty(title)) {
-      key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
-          .addIndex(index)
-          .addLimit(limit)
-          .addCountryCode(countryCode)
-          .addTitle(title)
-          .build();
-    } else if (!TextUtils.isEmpty(author)) {
-      key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
-          .addIndex(index)
-          .addLimit(limit)
-          .addCountryCode(countryCode)
-          .addAuthor(author)
-          .build();
-    }
-
-    try {
-      List<BookEntity> bookEntities = bddDataSource.obtains(key);
-      List<Book> books = transform(bookEntities);
-
-      //Set if the books are downloaded attribute
-      promiseSetBooksDownloaded(books);
-
-      notifyResponse(books, callback);
-    } catch (InvalidCacheException exception) {
-      fetchSearchBooks(key, index, limit, title, author, callback);
-    }
-  }
-
   @Override public void search(final int index, final int limit, final List<Integer> categories,
       final String title, final String author, final String publisher,
       final Callback<List<Book>> callback) {
@@ -157,11 +122,6 @@ public class BookDataSource implements BookRepository {
     }
   }
 
-  @Override
-  public void bookDetail(String bookId, String version, CompletionCallback<Book> callback) {
-    bookDetail(bookId, version, false, callback);
-  }
-
   @Override public void bookDetail(String bookId, String version, boolean forceUpdate,
       CompletionCallback<Book> callback) {
     String countryIsoCode = countryCodeProvider.getCountryCode();
@@ -190,9 +150,6 @@ public class BookDataSource implements BookRepository {
     }
   }
 
-  @Override public void bookDetailLatest(String bookId, CompletionCallback<Book> callback) {
-    bookDetailLatest(bookId, false, callback);
-  }
 
   @Override public void bookDetailLatest(String bookId, boolean forceUpdate,
       CompletionCallback<Book> callback) {
@@ -206,7 +163,7 @@ public class BookDataSource implements BookRepository {
   private void fetchBooks(final String key, int index, int limit, List<BookSort> sorters,
       String list, List<Integer> categories, boolean openCountryCode, String language,
       final CompletionCallback callback) {
-    networkDataSource.fetchBooks(index, limit, sorters, list, categories, openCountryCode, language,
+    networkDataSource.books(index, limit, sorters, list, categories, openCountryCode, language,
         new CompletionCallback<List<BookEntity>>() {
           @Override public void onSuccess(List<BookEntity> result) {
             bddDataSource.persist(key, result);
@@ -226,53 +183,6 @@ public class BookDataSource implements BookRepository {
         });
   }
 
-  private void fetchSearchBooks(final String key, int index, int limit, String title, String author,
-      final CompletionCallback callback) {
-
-    if (TextUtils.isEmpty(title) && TextUtils.isEmpty(author)) {
-      throw new IllegalArgumentException("Title and Author must be not null");
-    }
-
-    if (!TextUtils.isEmpty(title)) {
-      networkDataSource.fetchSearchBooksByTitle(index, limit, title,
-          new CompletionCallback<List<BookEntity>>() {
-            @Override public void onSuccess(List<BookEntity> result) {
-              bddDataSource.persist(key, result);
-              List<Book> books = transform(result);
-
-              //Set if the books are downloaded attribute
-              promiseSetBooksDownloaded(books);
-
-              performResponse(books, callback);
-            }
-
-            @Override public void onError(ErrorCore error) {
-              if (callback != null) {
-                callback.onError(error);
-              }
-            }
-          });
-    } else if (!TextUtils.isEmpty(author)) {
-      networkDataSource.fetchSearchBooksByAuthor(index, limit, author,
-          new CompletionCallback<List<BookEntity>>() {
-            @Override public void onSuccess(List<BookEntity> result) {
-              bddDataSource.persist(key, result);
-              List<Book> books = transform(result);
-
-              //Set if the books are downloaded attribute
-              promiseSetBooksDownloaded(books);
-
-              performResponse(books, callback);
-            }
-
-            @Override public void onError(ErrorCore error) {
-              if (callback != null) {
-                callback.onError(error);
-              }
-            }
-          });
-    }
-  }
 
   private void promiseSetBooksDownloaded(List<Book> books) {
     for (Book book : books) {
@@ -298,7 +208,7 @@ public class BookDataSource implements BookRepository {
 
   private void fetchBookDetail(final String key, final String bookId, final String version,
       final CompletionCallback callback) {
-    networkDataSource.fetchBookDetail(bookId, version, new CompletionCallback<BookEntity>() {
+    networkDataSource.bookDetail(bookId, version, new CompletionCallback<BookEntity>() {
       @Override public void onSuccess(BookEntity result) {
         bddDataSource.persist(key, result);
         Book transformed = transform(result);

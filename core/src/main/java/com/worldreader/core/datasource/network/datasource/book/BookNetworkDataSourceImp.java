@@ -6,7 +6,6 @@ import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorRetrofitAdapter;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.model.BookEntity;
-import com.worldreader.core.domain.helper.DefaultValues;
 import com.worldreader.core.domain.model.BookSort;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -34,7 +33,7 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
     this.logger = logger;
   }
 
-  @Override public void fetchBooks(int index, int limit, List<BookSort> sorters, String list,
+  @Override public void books(int index, int limit, List<BookSort> sorters, String list,
       List<Integer> categories, boolean countryOpen, String language,
       final CompletionCallback<List<BookEntity>> callback) {
 
@@ -44,48 +43,6 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
 
     bookApiService.books(index, limit, sorterList, list, categories, countryCode, countryOpenCode,
         language, new Callback<List<BookEntity>>() {
-          @Override public void success(List<BookEntity> bookEntities, Response response) {
-            if (callback != null) {
-              callback.onSuccess(bookEntities);
-            }
-          }
-
-          @Override public void failure(RetrofitError error) {
-            if (callback != null) {
-              logger.e(TAG, error.toString());
-              callback.onError(errorAdapter.of(error));
-            }
-          }
-        });
-  }
-
-  @Override public void fetchSearchBooksByTitle(int index, int limit, String title,
-      final CompletionCallback<List<BookEntity>> callback) {
-    String countryCode = getCountryCode();
-
-    bookApiService.searchBooksByTitle(index, limit, countryCode, title,
-        new Callback<List<BookEntity>>() {
-          @Override public void success(List<BookEntity> bookEntities, Response response) {
-            if (callback != null) {
-              callback.onSuccess(bookEntities);
-            }
-          }
-
-          @Override public void failure(RetrofitError error) {
-            if (callback != null) {
-              logger.e(TAG, error.toString());
-              callback.onError(errorAdapter.of(error));
-            }
-          }
-        });
-  }
-
-  @Override public void fetchSearchBooksByAuthor(int index, int limit, String author,
-      final CompletionCallback<List<BookEntity>> callback) {
-    String countryCode = getCountryCode();
-
-    bookApiService.searchBooksByAuthor(index, limit, countryCode, author,
-        new Callback<List<BookEntity>>() {
           @Override public void success(List<BookEntity> bookEntities, Response response) {
             if (callback != null) {
               callback.onSuccess(bookEntities);
@@ -127,7 +84,7 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
     return countryCodeProvider.getCountryCode();
   }
 
-  @Override public void fetchBookDetail(String bookId, String version,
+  @Override public void bookDetail(String bookId, String version,
       final CompletionCallback<BookEntity> callback) {
 
     String countryCode = getCountryCode();
@@ -146,12 +103,6 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
         }
       }
     });
-  }
-
-  @Override public void fetchRecommendedBooks(CompletionCallback<List<BookEntity>> callback) {
-    this.fetchBooks(0, 3,
-        Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC)),
-        "es", null, false, DefaultValues.DEFAULT_LANGUAGE, callback);
   }
 
   ///////////////////////////////////////////////////////////////////////////
