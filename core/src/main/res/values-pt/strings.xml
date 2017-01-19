@@ -47,4 +47,8 @@
     <string name="ls_view_all_delete_book_error">Desculpe, ocorreu um erro na exclusão do livro.
         Tente novamente.
     </string>
+
+    <!-- Settings layout -->
+    <string name="ls_settings_profile_settings">Configurações do perfil</string>
+    <string name="ls_settings_my_goals">Meu objetivos</string>
 </resources>
