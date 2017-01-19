@@ -28,4 +28,8 @@ public interface BookApiService {
       @Path("version") String version, @Query("country") String countryCode,
       Callback<BookEntity> callback);
 
+  @GET("/books") void search(@Query("index") int index, @Query("limit") int limit,
+      @Query("country") String country, @Query("title") String title,
+      @Query("author") String author, @Query("category") List<Integer> categories,
+      Callback<List<BookEntity>> callback);
 }

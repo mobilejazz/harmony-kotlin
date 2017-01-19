@@ -101,6 +101,28 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
         });
   }
 
+  @Override
+  public void search(int index, int limit, List<Integer> categories, String title, String author,
+      final com.worldreader.core.common.callback.Callback<List<BookEntity>> callback) {
+    String countryCode = getCountryCode();
+
+    bookApiService.search(index, limit, countryCode, title, author, categories,
+        new Callback<List<BookEntity>>() {
+          @Override public void success(List<BookEntity> bookEntities, Response response) {
+            if (callback != null) {
+              callback.onSuccess(bookEntities);
+            }
+          }
+
+          @Override public void failure(RetrofitError error) {
+            if (callback != null) {
+              logger.e(TAG, error.toString());
+              callback.onError(errorAdapter.of(error).getCause());
+            }
+          }
+        });
+  }
+
   private String getCountryCode() {
     return countryCodeProvider.getCountryCode();
   }

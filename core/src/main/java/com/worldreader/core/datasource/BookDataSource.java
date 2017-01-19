@@ -1,6 +1,7 @@
 package com.worldreader.core.datasource;
 
 import android.text.TextUtils;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.helper.Provider;
@@ -101,6 +102,58 @@ public class BookDataSource implements BookRepository {
       notifyResponse(books, callback);
     } catch (InvalidCacheException exception) {
       fetchSearchBooks(key, index, limit, title, author, callback);
+    }
+  }
+
+  @Override public void search(final int index, final int limit, final List<Integer> categories,
+      final String title, final String author, final String publisher,
+      final Callback<List<Book>> callback) {
+    String countryCode = countryCodeProvider.getCountryCode();
+
+    final String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
+        .addIndex(index)
+        .addLimit(limit)
+        .addCountryCode(countryCode)
+        .addAuthor(author)
+        .addTitle(title)
+        .addCategories(categories)
+        .build();
+
+    try {
+      List<BookEntity> bookEntitiesFromCache = bddDataSource.obtains(key);
+      List<Book> booksFromCache = transform(bookEntitiesFromCache);
+
+      //Set if the books are downloaded attribute
+      promiseSetBooksDownloaded(booksFromCache);
+
+      if (callback != null) {
+        callback.onSuccess(booksFromCache);
+      }
+    } catch (InvalidCacheException e) {
+      if (TextUtils.isEmpty(title) && TextUtils.isEmpty(author)) {
+        throw new IllegalArgumentException("Title and Author must be not null");
+      }
+
+      networkDataSource.search(index, limit, categories, title, author,
+          new Callback<List<BookEntity>>() {
+            @Override public void onSuccess(List<BookEntity> bookEntitiesFromNetwork) {
+              bddDataSource.persist(key, bookEntitiesFromNetwork);
+              List<Book> booksFromNetwork = transform(bookEntitiesFromNetwork);
+
+              //Set if the books are downloaded attribute
+              promiseSetBooksDownloaded(booksFromNetwork);
+
+              if (callback != null) {
+                callback.onSuccess(booksFromNetwork);
+              }
+            }
+
+            @Override public void onError(Throwable e) {
+              if (callback != null) {
+                callback.onError(e);
+              }
+            }
+          });
     }
   }
 

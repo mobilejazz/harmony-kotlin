@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -42,19 +41,15 @@ public class SearchBookByAuthorInteractorImpl extends AbstractInteractor<List<Bo
     this.executor.run(this);
   }
 
-  @Override
-  public ListenableFuture<Optional<List<Book>>> execute(final String query, final int index,
-      final int limit) {
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final String query,
+      final List<Integer> categories, final int index, final int limit) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
     getExecutor().execute(new Runnable() {
       @Override public void run() {
-        execute(index, limit, query, new Callback<List<Book>>() {
+        execute(index, limit, query, categories, new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
-            Optional<List<Book>> booksOp =
-                books == null ? Optional.<List<Book>>absent() : Optional.of(books);
-
-            settableFuture.set(booksOp);
+            settableFuture.set(Optional.fromNullable(books));
           }
 
           @Override public void onError(Throwable e) {
@@ -68,7 +63,7 @@ public class SearchBookByAuthorInteractorImpl extends AbstractInteractor<List<Bo
   }
 
   @Override public void run() {
-    execute(index, limit, query, new Callback<List<Book>>() {
+    execute(index, limit, query, null /*categories*/, new Callback<List<Book>>() {
       @Override public void onSuccess(List<Book> books) {
         performSuccessCallback(callback, books);
       }
@@ -80,20 +75,35 @@ public class SearchBookByAuthorInteractorImpl extends AbstractInteractor<List<Bo
   }
 
   private void execute(final int index, final int limit, final String query,
-      final Callback<List<Book>> callback) {
-    bookRepository.searchBooks(index, limit, null/*title*/, query, null/*author*/,
-        new CompletionCallback<List<Book>>() {
-          @Override public void onSuccess(final List<Book> result) {
+      final List<Integer> categories, final Callback<List<Book>> callback) {
+    bookRepository.search(index, limit, categories, null /*title*/, query, null /*publisher*/,
+        new Callback<List<Book>>() {
+          @Override public void onSuccess(List<Book> books) {
             if (callback != null) {
-              callback.onSuccess(result);
+              callback.onSuccess(books);
             }
           }
 
-          @Override public void onError(final ErrorCore error) {
+          @Override public void onError(Throwable e) {
             if (callback != null) {
-              callback.onError(error.getCause());
+              callback.onError(e);
             }
           }
         });
+
+    //bookRepository.searchBooks(index, limit, null/*title*/, query, null/*author*/,
+    //    new CompletionCallback<List<Book>>() {
+    //      @Override public void onSuccess(final List<Book> result) {
+    //        if (callback != null) {
+    //          callback.onSuccess(result);
+    //        }
+    //      }
+    //
+    //      @Override public void onError(final ErrorCore error) {
+    //        if (callback != null) {
+    //          callback.onError(error.getCause());
+    //        }
+    //      }
+    //    });
   }
 }

@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource.network.datasource.book;
 
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.datasource.model.BookEntity;
 import com.worldreader.core.domain.model.BookSort;
@@ -17,6 +18,9 @@ public interface BookNetworkDataSource {
 
   void fetchSearchBooksByAuthor(int index, int limit, String author,
       CompletionCallback<List<BookEntity>> callback);
+
+  void search(int index, int limit, List<Integer> categories, String title, String author,
+      Callback<List<BookEntity>> callback);
 
   void fetchBookDetail(String bookId, String version, CompletionCallback<BookEntity> callback);
 
