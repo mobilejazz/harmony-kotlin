@@ -14,6 +14,10 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
+    <style name="Widget.Worldreader.Core.Divider.Dark">
+        <item name="android:background">@color/dark</item>
+    </style>
+
     <!-- TextView -->
     <style name="Widget.Worldreader.Core.TextView" />
 
