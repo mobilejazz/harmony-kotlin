@@ -51,4 +51,7 @@
     <string name="ls_settings_profile_settings">Profile settings</string>
     <string name="ls_settings_my_goals">My goals</string>
 
+    <!-- User Profile Layout -->
+    <string name="ls_user_not_registered_register_now">Register now</string>
+
 </resources>

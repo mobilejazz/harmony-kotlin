@@ -23,10 +23,10 @@ import java.util.*;
 
 public class BookDataSource implements BookRepository {
 
-  private BookNetworkDataSource networkDataSource;
-  private BookBdDataSource bddDataSource;
-  private BookEntityDataMapper entityDataMapper;
-  private CountryCodeProvider countryCodeProvider;
+  private final BookNetworkDataSource networkDataSource;
+  private final BookBdDataSource bddDataSource;
+  private final BookEntityDataMapper entityDataMapper;
+  private final CountryCodeProvider countryCodeProvider;
   private final Provider<List<BookDownloaded>> booksDownloadedProvider;
 
   @Inject

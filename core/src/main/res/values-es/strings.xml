@@ -50,4 +50,7 @@
     <!-- Settings layout -->
     <string name="ls_settings_profile_settings">Ajustes de perfil</string>
     <string name="ls_settings_my_goals">Mis objetivos</string>
+
+    <!-- User Profile Layout -->
+    <string name="ls_user_not_registered_register_now">¡Regístrate ahora!</string>
 </resources>
