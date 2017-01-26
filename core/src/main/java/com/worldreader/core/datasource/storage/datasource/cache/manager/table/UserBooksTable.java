@@ -32,12 +32,12 @@ public class UserBooksTable {
     return "CREATE TABLE "
         + TABLE
         + "("
-        + COLUMN_BOOK_ID
-        + " STRING NOT NULL PRIMARY KEY "
-        + COLUMN_USER_ID
-        + " STRING, "
         + COLUMN_ID
         + " INTEGER, "
+        + COLUMN_BOOK_ID
+        + " STRING NOT NULL, "
+        + COLUMN_USER_ID
+        + " STRING NOT NULL, "
         + COLUMN_FAVORITE
         + " INTEGER, "
         + COLUMN_BOOKMARK
@@ -45,15 +45,15 @@ public class UserBooksTable {
         + COLUMN_FINISHED
         + " INTEGER, "
         + COLUMN_SAVED_OFFLINE_AT
-        + " LONG, "
+        + " STRING, "
         + COLUMN_RATING
         + " INTEGER, "
         + COLUMN_LIKED
         + " INTEGER, "
         + COLUMN_CREATED_AT
-        + " LONG, "
+        + " STRING, "
         + COLUMN_UPDATED_AT
-        + " LONG "
+        + " STRING "
         + ");";
   }
 

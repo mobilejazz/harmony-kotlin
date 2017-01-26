@@ -1,12 +1,11 @@
 package com.worldreader.core.datasource.network.general.retrofit.exception;
 
-import android.support.annotation.Nullable;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import java.io.*;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 
 // As Retrofit2 doesn't have the concept of RetrofitError like the previous version, this class handle this gap as the whole codebase depends on
@@ -17,8 +16,7 @@ public class Retrofit2Error extends RuntimeException {
 
   public static Retrofit2Error httpError(Response response) {
     String message = response.code() + " " + response.message();
-    return new Retrofit2Error(message, response.raw().request().url().toString(), response,
-        Kind.HTTP, null, null);
+    return new Retrofit2Error(message, response.raw().request().url().toString(), response, Kind.HTTP, null, null);
   }
 
   public static Retrofit2Error conversionError(String url, Response response, IOException e) {
@@ -53,8 +51,7 @@ public class Retrofit2Error extends RuntimeException {
   private final Kind kind;
   private final Retrofit retrofit;
 
-  Retrofit2Error(String message, String url, Response response, Kind kind, Throwable exception,
-      Retrofit retrofit) {
+  Retrofit2Error(String message, String url, Response response, Kind kind, Throwable exception, Retrofit retrofit) {
     super(message, exception);
     this.url = url;
     this.response = response;
@@ -70,6 +67,18 @@ public class Retrofit2Error extends RuntimeException {
   /** Response object containing status code, headers, body, etc. */
   public Response getResponse() {
     return response;
+  }
+
+  public <T> T getErrorResponseAs(Class<T> type) {
+    if (response != null && response.errorBody() != null) {
+      try {
+        return getBodyAs(type);
+      } catch (RuntimeException e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   /** The event kind which triggered this error. */
@@ -88,7 +97,7 @@ public class Retrofit2Error extends RuntimeException {
    *
    * @throws Retrofit2Error if unable to convert the body to the specified {@code type}.
    */
-  @Nullable public <T> T getBodyAs(Class<T> type) throws RuntimeException {
+  private <T> T getBodyAs(Class<T> type) throws RuntimeException {
     if (response == null || response.errorBody() == null) {
       return null;
     }
