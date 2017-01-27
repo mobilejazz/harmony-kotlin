@@ -30,9 +30,23 @@ public class UsersTable {
   public static final String COLUMN_MILESTONES = "milestones";
   public static final String COLUMN_FAVORITE_CATEGORIES = "favoriteCategories";
 
-  public static final Query QUERY_ALL = Query.builder().table(TABLE).build();
+  public static final String ANONYMOUS_USER_ID = "1";
 
-  public static final DeleteQuery QUERY_DELETE_ALL = DeleteQuery.builder().table(TABLE).build();
+  public static final Query QUERY_SELECT_ALL_USERS = Query.builder().table(TABLE).orderBy("id DESC").build();
+
+  public static final Query QUERY_SELECT_ANONYMOUS_USER =
+      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
+
+  public static final Query QUERY_SELECT_LOGGED_USER =
+      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").where(ANONYMOUS_USER_ID).limit(1).build();
+
+  public static final DeleteQuery DELETE_LOGGED_IN_USER =
+      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").where(ANONYMOUS_USER_ID).build();
+
+  public static final DeleteQuery QUERY_DELETE_ANONYMOUS_USER =
+      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").where(ANONYMOUS_USER_ID).build();
+
+  public static final DeleteQuery QUERY_DELETE_ALL_USERS = DeleteQuery.builder().table(TABLE).build();
 
   private UsersTable() {
     throw new IllegalStateException("No instances allowed!");
@@ -43,17 +57,19 @@ public class UsersTable {
         + TABLE
         + "("
         + COLUMN_ID
-        + " STRING NOT NULL PRIMARY KEY, "
+        + " TEXT NOT NULL PRIMARY KEY DEFAULT '"
+        + ANONYMOUS_USER_ID
+        + "', "
         + COLUMN_PROFILE_ID
-        + " INTEGER NULL, "
+        + " INTEGER, "
         + COLUMN_READS_TO_KIDS_ID
-        + " INTEGER NULL, "
+        + " INTEGER, "
         + COLUMN_USERNAME
-        + " STRING, "
+        + " TEXT, "
         + COLUMN_NAME
-        + " STRING, "
+        + " TEXT, "
         + COLUMN_EMAIL
-        + " STRING, "
+        + " TEXT, "
         + COLUMN_EMAIL_CONFIRMED
         + " INTEGER, "
         + COLUMN_SCORE
@@ -69,7 +85,7 @@ public class UsersTable {
         + COLUMN_AGE
         + " INTEGER, "
         + COLUMN_BIRTHDATE
-        + " STRING, "
+        + " TEXT, "
         + COLUMN_CHILDREN_COUNT
         + " INTEGER, "
         + COLUMN_MIN_CHILD_AGE
@@ -77,9 +93,9 @@ public class UsersTable {
         + COLUMN_MAX_CHILD_AGE
         + " INTEGER, "
         + COLUMN_CREATED_AT
-        + " STRING, "
+        + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
-        + " STRING, "
+        + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_MILESTONES
         + " STRING, "
         + COLUMN_FAVORITE_CATEGORIES

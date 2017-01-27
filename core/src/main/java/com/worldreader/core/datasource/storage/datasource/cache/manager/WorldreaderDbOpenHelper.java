@@ -30,7 +30,6 @@ import javax.inject.Singleton;
   }
 
   @Override public void onOpen(final SQLiteDatabase db) {
-    super.onOpen(db);
     db.execSQL(PRAGMA_FOREIGN_KEY_SUPPORT);
   }
 }
