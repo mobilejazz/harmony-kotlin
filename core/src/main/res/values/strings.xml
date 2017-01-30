@@ -66,5 +66,6 @@
     <string name="ls_signup_terms_and_conditions">Agree to terms and conditions</string>
     <string name="ls_signup_register_now_btn">Sign up now</string>
     <string name="ls_signup_accept_terms_conditions">Agree to terms and conditions</string>
+    <string name="ls_signup_email">Email</string>
 
 </resources>

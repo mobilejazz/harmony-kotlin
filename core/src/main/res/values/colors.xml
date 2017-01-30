@@ -42,4 +42,7 @@
     <!-- Register screen -->
     <color name="gray_profile_screen">#979797</color>
 
+    <color name="global_signup_btn_blue">#103E99</color>
+    <color name="global_signup_btn_dark_blue">#0d3584</color>
+
 </resources>
