@@ -53,4 +53,18 @@
 
     <!-- User Profile Layout -->
     <string name="ls_user_not_registered_register_now">¡Regístrate ahora!</string>
+
+    <!-- Register layout -->
+    <string name="ls_signup_login_btn">Iniciar sesión</string>
+    <string name="ls_signup_no_register">Registrarme más tarde</string>
+    <string name="ls_signup_message">Sácale más partido a tu lectura. Regístrate para conseguir
+        prestaciones exclusivas y recomendaciones de lectura.
+    </string>
+    <string name="ls_signup_username">Nombre de usuario</string>
+    <string name="ls_signup_password">Contraseña</string>
+    <string name="ls_signup_repeat_password">Repetir contraseña</string>
+    <string name="ls_signup_terms_and_conditions">Aceptar términos y condiciones</string>
+    <string name="ls_signup_register_now_btn">Registrarse ahora</string>
+    <string name="ls_signup_accept_terms_conditions">Aceptar términos y condiciones</string>
+    <string name="ls_signup_email">Email</string>
 </resources>

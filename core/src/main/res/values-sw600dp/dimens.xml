@@ -5,4 +5,7 @@
     <dimen name="global_banner_layout_height">110dp</dimen>
     <dimen name="detail_book_content_layout_margin_right">32dp</dimen>
 
+    <!-- Register & Login screen -->
+    <dimen name="global_register_login_activity_side_margin">60dp</dimen>
+
 </resources>
