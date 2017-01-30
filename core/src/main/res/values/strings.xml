@@ -54,4 +54,17 @@
     <!-- User Profile Layout -->
     <string name="ls_user_not_registered_register_now">Register now</string>
 
+    <!-- Register layout -->
+    <string name="ls_signup_login_btn">Sign in</string>
+    <string name="ls_signup_no_register">Sign up later</string>
+    <string name="ls_signup_message">Get more from your reading. Sign up to get exclusive features
+        and book recommendations.
+    </string>
+    <string name="ls_signup_username">Username</string>
+    <string name="ls_signup_password">Password</string>
+    <string name="ls_signup_repeat_password">Repeat password</string>
+    <string name="ls_signup_terms_and_conditions">Agree to terms and conditions</string>
+    <string name="ls_signup_register_now_btn">Sign up now</string>
+    <string name="ls_signup_accept_terms_conditions">Agree to terms and conditions</string>
+
 </resources>

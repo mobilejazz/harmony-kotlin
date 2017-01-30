@@ -39,5 +39,7 @@
     <color name="ic_download_color">#25323D</color>
     <color name="ic_setting_icons">#231F20</color>
 
+    <!-- Register screen -->
+    <color name="gray_profile_screen">#979797</color>
 
 </resources>

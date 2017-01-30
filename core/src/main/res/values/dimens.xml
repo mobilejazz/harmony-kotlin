@@ -25,4 +25,7 @@
     <dimen name="book_detail_book_cover_height">240dp</dimen>
     <dimen name="detail_book_title_padding_right">@dimen/span_64</dimen>
 
+    <!-- Register & Login -->
+    <dimen name="global_register_login_activity_side_margin">24dp</dimen>
+
 </resources>
