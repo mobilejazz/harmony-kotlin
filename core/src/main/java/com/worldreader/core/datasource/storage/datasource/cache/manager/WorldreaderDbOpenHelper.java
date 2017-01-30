@@ -14,6 +14,8 @@ import javax.inject.Singleton;
   private static final String DB_NAME = "worldreader";
   private static final int DB_VERSION = 1;
 
+  private static final String PRAGMA_FOREIGN_KEY_SUPPORT = "PRAGMA foreign_keys = ON;";
+
   @Inject public WorldreaderDbOpenHelper(final Context context) {
     super(context, DB_NAME, null, DB_VERSION);
   }
@@ -27,4 +29,7 @@ import javax.inject.Singleton;
 
   }
 
+  @Override public void onOpen(final SQLiteDatabase db) {
+    db.execSQL(PRAGMA_FOREIGN_KEY_SUPPORT);
+  }
 }

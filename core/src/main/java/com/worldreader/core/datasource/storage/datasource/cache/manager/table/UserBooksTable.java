@@ -8,6 +8,7 @@ public class UserBooksTable {
 
   public static final String TABLE = "userbooks";
 
+  public static final String COLUMN_LOCAL_ID = "localId";
   public static final String COLUMN_ID = "id";
   public static final String COLUMN_USER_ID = "userId";
   public static final String COLUMN_BOOK_ID = "bookId";
@@ -20,7 +21,7 @@ public class UserBooksTable {
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
 
-  public static final Query QUERY_ALL = Query.builder().table(TABLE).build();
+  public static final Query QUERY_SELECT_ALL = Query.builder().table(TABLE).build();
 
   public static final DeleteQuery QUERY_DELETE_ALL = DeleteQuery.builder().table(TABLE).build();
 
@@ -32,28 +33,31 @@ public class UserBooksTable {
     return "CREATE TABLE "
         + TABLE
         + "("
-        + COLUMN_BOOK_ID
-        + " STRING NOT NULL PRIMARY KEY "
-        + COLUMN_USER_ID
-        + " STRING, "
+        + COLUMN_LOCAL_ID
+        + "INTEGER PRIMARY KEY, "
         + COLUMN_ID
         + " INTEGER, "
+        + COLUMN_USER_ID
+        + " TEXT NOT NULL, "
+        + COLUMN_BOOK_ID
+        + " TEXT NOT NULL, "
         + COLUMN_FAVORITE
-        + " INTEGER, "
+        + " INTEGER DEFAULT 0, "
         + COLUMN_BOOKMARK
-        + " STRING, "
+        + " TEXT DEFAULT 0, "
         + COLUMN_FINISHED
-        + " INTEGER, "
+        + " INTEGER DEFAULT 0, "
         + COLUMN_SAVED_OFFLINE_AT
-        + " LONG, "
+        + " TEXT, "
         + COLUMN_RATING
-        + " INTEGER, "
+        + " INTEGER DEFAULT 0, "
         + COLUMN_LIKED
-        + " INTEGER, "
+        + " INTEGER DEFAULT 0, "
         + COLUMN_CREATED_AT
-        + " LONG, "
+        + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
-        + " LONG "
+        + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
+        + " FOREIGN KEY (" + COLUMN_USER_ID + ") REFERENCES " + UsersTable.TABLE + "(" + UsersTable.COLUMN_ID + ") ON DELETE CASCADE "
         + ");";
   }
 
