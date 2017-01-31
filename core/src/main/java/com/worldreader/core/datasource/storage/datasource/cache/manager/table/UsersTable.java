@@ -48,6 +48,10 @@ public class UsersTable {
 
   public static final DeleteQuery QUERY_DELETE_ALL_USERS = DeleteQuery.builder().table(TABLE).build();
 
+  // To be removed, it just a mock
+  public static final DeleteQuery QUERY_DELETE_ALL = null;
+  public static final Query QUERY_ALL = null;
+
   private UsersTable() {
     throw new IllegalStateException("No instances allowed!");
   }
