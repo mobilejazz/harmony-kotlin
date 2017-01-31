@@ -8,6 +8,7 @@
     <color name="colorSecondaryDark">#103E99</color>
     <color name="colorControlHighlight">#103E99</color>
     <color name="background">#FAFAFA</color>
+    <color name="transparent_background">#b4fafafa</color>
 
     <!-- General colors -->
     <color name="white">#FFFFFF</color>
