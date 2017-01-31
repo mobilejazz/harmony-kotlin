@@ -38,15 +38,19 @@ public class UsersTable {
       Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
 
   public static final Query QUERY_SELECT_LOGGED_USER =
-      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").where(ANONYMOUS_USER_ID).limit(1).build();
+      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").whereArgs(ANONYMOUS_USER_ID).limit(1).build();
 
   public static final DeleteQuery DELETE_LOGGED_IN_USER =
-      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").where(ANONYMOUS_USER_ID).build();
+      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").whereArgs(ANONYMOUS_USER_ID).build();
 
   public static final DeleteQuery QUERY_DELETE_ANONYMOUS_USER =
-      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").where(ANONYMOUS_USER_ID).build();
+      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
 
   public static final DeleteQuery QUERY_DELETE_ALL_USERS = DeleteQuery.builder().table(TABLE).build();
+
+  // To be removed, it just a mock
+  public static final DeleteQuery QUERY_DELETE_ALL = null;
+  public static final Query QUERY_ALL = null;
 
   private UsersTable() {
     throw new IllegalStateException("No instances allowed!");

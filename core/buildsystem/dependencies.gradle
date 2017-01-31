@@ -24,6 +24,8 @@ ext {
 
     materialDialogsVersion = '0.9.0.0'
 
+    jodatimeVersion = '2.8.2'
+
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
     dexmakerVersion = '1.0'
@@ -85,6 +87,8 @@ ext {
 
             materialDialogsCore      : "com.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
             materialDialogsCommons   : "com.afollestad.material-dialogs:commons:${materialDialogsVersion}@aar",
+
+            joda                     : "net.danlew:android.joda:$jodatimeVersion",
     ]
 
     testDependencies = [
