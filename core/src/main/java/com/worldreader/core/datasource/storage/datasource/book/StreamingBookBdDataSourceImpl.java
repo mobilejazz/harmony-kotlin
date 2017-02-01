@@ -9,7 +9,6 @@ import com.worldreader.core.datasource.storage.datasource.cache.CacheBddDataSour
 import com.worldreader.core.datasource.storage.datasource.cache.CacheBookBddDataSource;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.entity.CacheBytes;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.entity.CacheObject;
-import com.worldreader.core.datasource.storage.datasource.cache.strategy.timestamp.TimestampCachingStrategy;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.datasource.storage.general.compress.Bytes;
 import com.worldreader.core.datasource.storage.general.compress.Deflaters;
@@ -23,16 +22,13 @@ public class StreamingBookBdDataSourceImpl implements StreamingBookBdDataSource 
   private final CacheBddDataSource cacheBddDataSource;
   private final CacheBookBddDataSource cacheBookBddDataSource;
   private final Gson gson;
-  private final TimestampCachingStrategy<CacheObject> cachingStrategy;
   private final Logger logger;
 
   @Inject public StreamingBookBdDataSourceImpl(CacheBddDataSource cacheBddDataSource,
-      CacheBookBddDataSource cacheBookBddDataSource, Gson gson,
-      TimestampCachingStrategy<CacheObject> cachingStrategy, Logger logger) {
+      CacheBookBddDataSource cacheBookBddDataSource, Gson gson, Logger logger) {
     this.cacheBddDataSource = cacheBddDataSource;
     this.cacheBookBddDataSource = cacheBookBddDataSource;
     this.gson = gson;
-    this.cachingStrategy = cachingStrategy;
     this.logger = logger;
   }
 

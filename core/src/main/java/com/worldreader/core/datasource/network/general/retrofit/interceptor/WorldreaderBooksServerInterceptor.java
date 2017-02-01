@@ -8,24 +8,23 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * Implementation of the okHttp interceptor to comply with the requirements of the WorldReader
- * Server
+ * Server.
  */
-public class OAuthTokenInterceptorWorldReader implements Interceptor {
+public class WorldreaderBooksServerInterceptor implements Interceptor {
 
-  // TODO: 20/08/15 @Aldo: Change this to a build variable
   private static final String WORLDREADER_TOKEN = "oNBWqs2US2t1s0QA1PPah3cK";
   private static final String WORLDREADER_ANDROID_CLIENT = "org.worldreader.wrms.android/1.0.0.0";
 
   private Logger logger;
   public static final String TAG = "SERVER_WORLDREADER";
 
-  @Inject public OAuthTokenInterceptorWorldReader(Logger logger) {
+  @Inject public WorldreaderBooksServerInterceptor(Logger logger) {
     this.logger = logger;
   }
 
@@ -34,7 +33,6 @@ public class OAuthTokenInterceptorWorldReader implements Interceptor {
 
     //Build new request
     Request.Builder builder = request.newBuilder();
-    builder.header("Accept", "application/json"); //if necessary, say to consume JSON
 
     try {
       String timestamp = String.valueOf(System.currentTimeMillis());
@@ -59,14 +57,12 @@ public class OAuthTokenInterceptorWorldReader implements Interceptor {
     }
 
     long t1 = System.nanoTime();
-    logger.d(TAG, String.format("Sending request %s on %s%n%s", request.url(), chain.connection(),
-        request.headers()));
+    logger.d(TAG, String.format("Sending request %s on %s%n%s", request.url(), chain.connection(), request.headers()));
 
     Response response = chain.proceed(request);
 
     long t2 = System.nanoTime();
-    logger.d(TAG, String.format("Received response for %s in %.1fms%n%s", response.request().url(),
-        (t2 - t1) / 1e6d, response.headers()));
+    logger.d(TAG, String.format("Received response for %s in %.1fms%n%s", response.request().url(), (t2 - t1) / 1e6d, response.headers()));
 
     return response;
   }
@@ -127,8 +123,7 @@ public class OAuthTokenInterceptorWorldReader implements Interceptor {
    * @return Request hash
    * @throws NoSuchAlgorithmException
    */
-  private String buildRequestHash(HttpUrl httpUrl, String timestamp)
-      throws NoSuchAlgorithmException {
+  private String buildRequestHash(HttpUrl httpUrl, String timestamp) throws NoSuchAlgorithmException {
     String valueToHash = buildStringToHash(httpUrl, timestamp);
     return sha256(valueToHash);
   }
