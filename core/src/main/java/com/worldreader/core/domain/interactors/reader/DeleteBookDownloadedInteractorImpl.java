@@ -105,28 +105,6 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
         }
       }
     });
-    //getBookMetadataInteractor.execute(bookId,
-    //    new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
-    //      @Override public void onSuccess(BookMetadata bookMetadata) {
-    //        logger.d(TAG, "Deleting downloaded book with id: " + bookId);
-    //
-    //        if (bookMetadata != null && bookMetadata.getResources() != null) {
-    //          performDeleteAllResources(bookMetadata);
-    //          performDeleteBookIdFromBookDownloadedList(bookId);
-    //          imageDownloader.delete(bookId);
-    //        } else {
-    //          performErrorCallback(callback, ErrorCore.EMPTY);
-    //        }
-    //      }
-    //
-    //      @Override public void onError(ErrorCore errorCore) {
-    //        if (backgroundCallback == null) {
-    //          performErrorCallback(callback, errorCore);
-    //        } else {
-    //          backgroundCallback.onError(errorCore);
-    //        }
-    //      }
-    //    });
   }
 
   //region Private methods
