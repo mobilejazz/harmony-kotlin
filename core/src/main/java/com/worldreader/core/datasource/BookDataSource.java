@@ -150,7 +150,6 @@ public class BookDataSource implements BookRepository {
     }
   }
 
-
   @Override public void bookDetailLatest(String bookId, boolean forceUpdate,
       CompletionCallback<Book> callback) {
     bookDetail(bookId, BookRepository.KEY_LATEST, forceUpdate, callback);
@@ -183,15 +182,20 @@ public class BookDataSource implements BookRepository {
         });
   }
 
+  private void promiseSetBookDownloaded(Book book) {
+    promiseSetBooksDownloaded(Collections.singletonList(book));
+  }
 
   private void promiseSetBooksDownloaded(List<Book> books) {
+    final List<BookDownloaded> collectionBookDownloaded = booksDownloadedProvider.get();
+
     for (Book book : books) {
-      promiseSetBookDownloaded(book);
+      promiseSetBookDownloaded(book, collectionBookDownloaded);
     }
   }
 
-  private void promiseSetBookDownloaded(Book book) {
-    List<BookDownloaded> collectionBookDownloaded = booksDownloadedProvider.get();
+  private void promiseSetBookDownloaded(final Book book,
+      final List<BookDownloaded> collectionBookDownloaded) {
     for (BookDownloaded bookDownloaded : collectionBookDownloaded) {
       if (book != null) {
         if (book.getId().equals(bookDownloaded.getBookId())) {
