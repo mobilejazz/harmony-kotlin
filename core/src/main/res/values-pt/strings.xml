@@ -69,4 +69,7 @@
     <string name="ls_signup_accept_terms_conditions">Concordar com os termos e condições</string>
     <string name="ls_signup_email">E-mail</string>
 
+    <!-- Loading book layout -->
+    <string name="ls_loading_book_message">Carregando</string>
+    <string name="ls_loading_book_please_wait">Por favor, espere</string>
 </resources>
