@@ -42,6 +42,7 @@ dependencies {
     compile dependencies.simpleStorage
 
     compile dependencies.guava
+    compile dependencies.joda
     compile dependencies.logger
     compile dependencies.retrofit
     compile dependencies.javaxAnnotation
