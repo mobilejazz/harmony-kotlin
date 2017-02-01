@@ -1,9 +1,13 @@
 package com.worldreader.core.domain.interactors.reader;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.qualifiers.RemoveBookDownloaded;
 import com.worldreader.core.application.helper.image.ImageDownloader;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.helper.Action;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
@@ -59,7 +63,75 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Void> execute(final String bookId) {
+    final SettableFuture<Void> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+        execute(bookId, new Callback<Boolean>() {
+          @Override public void onSuccess(final Boolean aBoolean) {
+            settableFuture.set(null);
+          }
+
+          @Override public void onError(final Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+
+      @Override protected void onExceptionThrown(final Throwable t) {
+        settableFuture.setException(t);
+      }
+    });
+
+    return settableFuture;
+  }
+
   @Override public void run() {
+    execute(this.bookId, new Callback<Boolean>() {
+      @Override public void onSuccess(final Boolean result) {
+        if (backgroundCallback == null) {
+          performSuccessCallback(callback, result);
+        } else {
+          backgroundCallback.onSuccess(result);
+        }
+      }
+
+      @Override public void onError(final Throwable e) {
+        if (backgroundCallback == null) {
+          performErrorCallback(callback, ErrorCore.of(e));
+        } else {
+          backgroundCallback.onError(ErrorCore.of(e));
+        }
+      }
+    });
+    //getBookMetadataInteractor.execute(bookId,
+    //    new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
+    //      @Override public void onSuccess(BookMetadata bookMetadata) {
+    //        logger.d(TAG, "Deleting downloaded book with id: " + bookId);
+    //
+    //        if (bookMetadata != null && bookMetadata.getResources() != null) {
+    //          performDeleteAllResources(bookMetadata);
+    //          performDeleteBookIdFromBookDownloadedList(bookId);
+    //          imageDownloader.delete(bookId);
+    //        } else {
+    //          performErrorCallback(callback, ErrorCore.EMPTY);
+    //        }
+    //      }
+    //
+    //      @Override public void onError(ErrorCore errorCore) {
+    //        if (backgroundCallback == null) {
+    //          performErrorCallback(callback, errorCore);
+    //        } else {
+    //          backgroundCallback.onError(errorCore);
+    //        }
+    //      }
+    //    });
+  }
+
+  //region Private methods
+
+  private void execute(final String bookId, final Callback<Boolean> callback) {
     getBookMetadataInteractor.execute(bookId,
         new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
           @Override public void onSuccess(BookMetadata bookMetadata) {
@@ -67,40 +139,42 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
             if (bookMetadata != null && bookMetadata.getResources() != null) {
               performDeleteAllResources(bookMetadata);
-              performDeleteBookIdFromBookDownloadedList(bookId);
+              performDeleteBookIdFromBookDownloadedList(bookId, callback);
               imageDownloader.delete(bookId);
             } else {
-              performErrorCallback(callback, ErrorCore.EMPTY);
+              if (callback != null) {
+                callback.onError(ErrorCore.EMPTY.getCause());
+              }
             }
           }
 
           @Override public void onError(ErrorCore errorCore) {
-            if (backgroundCallback == null) {
-              performErrorCallback(callback, errorCore);
-            } else {
-              backgroundCallback.onError(errorCore);
+            if (callback != null) {
+              callback.onError(errorCore.getCause());
             }
           }
         });
+
   }
 
-  private void performDeleteBookIdFromBookDownloadedList(String bookId) {
+  private void performDeleteBookIdFromBookDownloadedList(final String bookId,
+      Callback<Boolean> callback) {
     BookDownloaded bookDownloaded = BookDownloaded.create(bookId, new Date());
 
     boolean isDeleted = deleteBookDownloadedAction.perform(bookDownloaded);
 
-    if (backgroundCallback == null) {
-      performSuccessCallback(callback, isDeleted);
-    } else {
-      backgroundCallback.onSuccess(isDeleted);
+    if (callback != null) {
+      callback.onSuccess(isDeleted);
     }
   }
 
   private void performDeleteAllResources(BookMetadata bookMetadata) {
     List<String> resources = bookMetadata.getResources();
 
-    streamingBookRepository.deleteBookResource(bookId, bookMetadata.getContentOpfName());
-    streamingBookRepository.deleteBookResource(bookId, bookMetadata.getTocResource());
+    streamingBookRepository.deleteBookResource(bookMetadata.getBookId(),
+        bookMetadata.getContentOpfName());
+    streamingBookRepository.deleteBookResource(bookMetadata.getBookId(),
+        bookMetadata.getTocResource());
 
     for (String resource : resources) {
       logger.d(TAG, "Deleting current resource: " + resource);
@@ -112,7 +186,8 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
         resourceToDownload = resource;
       }
 
-      streamingBookRepository.deleteBookResource(bookId, resourceToDownload);
+      streamingBookRepository.deleteBookResource(bookMetadata.getBookId(), resourceToDownload);
     }
   }
+  //endregion
 }
