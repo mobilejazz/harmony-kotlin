@@ -20,7 +20,7 @@ import java.util.*;
 public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, ErrorCore>
     implements GetBannersInteractor {
 
-  private BannerRepository bannerRepository;
+  private final BannerRepository bannerRepository;
 
   private Type type;
   private int index;
@@ -43,7 +43,7 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
   }
 
   @Override
-  public ListenableFuture<Optional<List<Banner>>> execute(String identifier, final int index,
+  public ListenableFuture<Optional<List<Banner>>> execute(final String identifier, final int index,
       final int limit) {
     final SettableFuture<Optional<List<Banner>>> settableFuture = SettableFuture.create();
 
@@ -52,13 +52,7 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
         bannerRepository.getAll(Banner.READ_TO_KIDS_BANNER_IDENTIFIER, index, limit,
             new Callback<List<Banner>>() {
               @Override public void onSuccess(List<Banner> banners) {
-                if (banners != null) {
-
-                }
-                Optional<List<Banner>> optional =
-                    banners == null ? Optional.<List<Banner>>absent() : Optional.of(banners);
-
-                settableFuture.set(optional);
+                settableFuture.set(Optional.fromNullable(banners));
               }
 
               @Override public void onError(Throwable e) {
