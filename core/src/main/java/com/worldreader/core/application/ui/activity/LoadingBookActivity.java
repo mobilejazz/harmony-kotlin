@@ -63,6 +63,17 @@ public abstract class LoadingBookActivity extends AppCompatActivity
         extraDataIntent);
   }
 
+  public static Intent getCallingIntent(final Context context, final Book book,
+      final boolean navigateToReader, final Class<?> clazz) {
+    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz);
+  }
+
+  public static Intent getCallingIntent(final Context context, final Book book,
+      final boolean navigateToReader, Intent extraDataIntent, final Class<?> clazz) {
+    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz).putExtras(
+        extraDataIntent);
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       overridePendingTransition(R.anim.no_animation, R.anim.no_animation);
