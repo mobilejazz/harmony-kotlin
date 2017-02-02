@@ -37,6 +37,9 @@
     <string name="ls_download_book_exceeded_limit_message">You have exceeded the book download limit
         for today. You can download more tomorrow .
     </string>
+    <string name="ls_open_book_not_internet">"You need to download a book to read offline without an
+        internet connection. "
+    </string>
 
     <!-- View all layout & My books layout-->
     <string name="ls_view_all_delete_book_title">Delete book?</string>
