@@ -75,4 +75,16 @@
     <!-- Loading book layout -->
     <string name="ls_loading_book_message">Carregando</string>
     <string name="ls_loading_book_please_wait">Por favor, espere</string>
+
+    <!-- Book finished layout -->
+    <string name="ls_congratulations_title">Parabéns!</string>
+    <string name="ls_congratulations_finished_book">Você terminou o livro!</string>
+    <string name="ls_congratulations_share_it">Compartilhar!</string>
+    <string name="ls_congratulations_back_to_book_detai">Voltar para minha biblioteca</string>
+    <string name="ls_share_finished_book_title">Compartilhar um livro lido</string>
+    <string name="ls_share_finished_book">Ei, terminei de ler \"%1$s\" de \"%2$s\" no Worldreader!
+        Baixe o aplicativo aqui: %3$s
+    </string>
+    <string name="ls_book_finished_back_to_book_detail">De volta para os Detalhes do livro</string>
+
 </resources>
