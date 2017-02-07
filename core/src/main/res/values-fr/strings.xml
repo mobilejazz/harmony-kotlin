@@ -38,6 +38,9 @@
     <string name="ls_download_book_exceeded_limit_message">Vous avez dépassé la limite livre de
         téléchargement aujourd\'hui. Vous pouvez télécharger plus demain.
     </string>
+    <string name="ls_open_book_not_internet">Nous avons besoin d\'une connexion Internet pour lire
+        un livre.
+    </string>
 
     <!-- View all layout & my books layout -->
     <string name="ls_view_all_delete_book_title">Supprimer le livre ?</string>
@@ -68,4 +71,20 @@
     <string name="ls_signup_register_now_btn">S\'inscrire maintenant</string>
     <string name="ls_signup_accept_terms_conditions">Accepter les conditions générales</string>
     <string name="ls_signup_email">E-mail</string>
+
+    <!-- Loading book layout -->
+    <string name="ls_loading_book_message">Chargement</string>
+    <string name="ls_loading_book_please_wait">S\'il vous plaît, attendez</string>
+
+    <!-- Book finished layout -->
+    <string name="ls_congratulations_title">Félicitations !</string>
+    <string name="ls_congratulations_finished_book">Vous avez terminé le livre !</string>
+    <string name="ls_congratulations_back_to_book_detai">Retour à ma bibliothèque</string>
+    <string name="ls_congratulations_share_it">Partagez-le !</string>
+    <string name="ls_share_finished_book_title">Partager livre lu</string>
+    <string name="ls_share_finished_book">Salut, j\'ai terminé la lecture de « %1$s » par « %2$s »
+        sur Worldreader ! Téléchargez l\'application ici: %3$s
+    </string>
+    <string name="ls_book_finished_back_to_book_detail">Revenir aux détails du livre</string>
+
 </resources>

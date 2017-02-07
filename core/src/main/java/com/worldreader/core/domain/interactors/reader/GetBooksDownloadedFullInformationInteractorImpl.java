@@ -1,7 +1,12 @@
 package com.worldreader.core.domain.interactors.reader;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -38,7 +43,43 @@ public class GetBooksDownloadedFullInformationInteractorImpl
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Optional<List<Book>>> execute() {
+    final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
+
+    getExecutor().execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+        execute(new Callback<List<Book>>() {
+          @Override public void onSuccess(final List<Book> books) {
+            settableFuture.set(Optional.fromNullable(books));
+          }
+
+          @Override public void onError(final Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+
+      @Override protected void onExceptionThrown(final Throwable t) {
+        settableFuture.setException(t);
+      }
+    });
+
+    return settableFuture;
+  }
+
   @Override public void run() {
+    execute(new DomainCallback<List<Book>, ErrorCore<?>>(mainThread) {
+      @Override public void onSuccessResult(final List<Book> result) {
+        performSuccessCallback(callback, result);
+      }
+
+      @Override public void onErrorResult(final ErrorCore<?> result) {
+        performErrorCallback(callback, result);
+      }
+    });
+  }
+
+  public void execute(final Callback<List<Book>> callback) {
     final List<BookDownloaded> allBooksDownloaded = bookDownloadedProvider.get();
 
     booksDownloaded = new ArrayList<>();
@@ -51,17 +92,24 @@ public class GetBooksDownloadedFullInformationInteractorImpl
                 booksDownloaded.add(book);
 
                 if (booksDownloaded.size() >= allBooksDownloaded.size()) {
-                  performSuccessCallback(callback, booksDownloaded);
+                  if (callback != null) {
+                    callback.onSuccess(booksDownloaded);
+                  }
                 }
               }
 
               @Override public void onError(ErrorCore errorCore) {
-                performErrorCallback(callback, errorCore);
+                if (callback != null) {
+                  callback.onError(errorCore.getCause());
+                }
               }
             });
       }
     } else {
-      performSuccessCallback(callback, booksDownloaded);
+      if (callback != null) {
+        callback.onSuccess(booksDownloaded);
+      }
     }
+
   }
 }

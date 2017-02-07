@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout android:id="@+id/loading_book_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/as_book_loading" />
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/span_26"
+            android:gravity="center"
+            android:text="@string/ls_loading_book_message"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@color/font_gray" />
+
+        <TextView android:id="@+id/loading_book_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/span_32"
+            android:layout_marginRight="@dimen/span_32"
+            android:layout_marginTop="@dimen/span_16"
+            android:gravity="center"
+            android:text="@null"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@color/font_gray" />
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/span_16"
+            android:gravity="center"
+            android:text="@string/ls_loading_book_please_wait"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:textColor="@color/font_clear_gray" />
+
+        <ProgressBar style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/span_48"
+            android:layout_marginRight="@dimen/span_48"
+            android:layout_marginTop="@dimen/span_48"
+            android:indeterminate="true" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

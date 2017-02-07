@@ -37,6 +37,9 @@
     <string name="ls_download_book_exceeded_limit_message">You have exceeded the book download limit
         for today. You can download more tomorrow .
     </string>
+    <string name="ls_open_book_not_internet">"You need to download a book to read offline without an
+        internet connection. "
+    </string>
 
     <!-- View all layout & My books layout-->
     <string name="ls_view_all_delete_book_title">Delete book?</string>
@@ -67,5 +70,20 @@
     <string name="ls_signup_register_now_btn">Sign up now</string>
     <string name="ls_signup_accept_terms_conditions">Agree to terms and conditions</string>
     <string name="ls_signup_email">Email</string>
+
+    <!-- Loading book layout -->
+    <string name="ls_loading_book_message">Loading</string>
+    <string name="ls_loading_book_please_wait">Please wait</string>
+
+    <!-- Book finished layout -->
+    <string name="ls_congratulations_title">Congratulations!</string>
+    <string name="ls_congratulations_finished_book">You\'ve finished the book!</string>
+    <string name="ls_congratulations_back_to_book_detai">Back to My Library</string>
+    <string name="ls_share_finished_book_title">Share read book</string>
+    <string name="ls_share_finished_book">Hey I\'ve finished reading \"%1$s\" by \"%2$s\" on
+        Worldreader! Download the application here: %3$s
+    </string>
+    <string name="ls_book_finished_back_to_book_detail">Back to Book Details</string>
+    <string name="ls_congratulations_share_it">Share it!</string>
 
 </resources>
