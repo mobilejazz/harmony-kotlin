@@ -18,6 +18,7 @@ public class UserBooksTable {
   public static final String COLUMN_SAVED_OFFLINE_AT = "saveOfflineAt";
   public static final String COLUMN_RATING = "rating";
   public static final String COLUMN_LIKED = "liked";
+  public static final String COLUMN_COLLECTION_IDS = "collectionIds";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
 
@@ -45,7 +46,7 @@ public class UserBooksTable {
         + " TEXT DEFAULT 0, "
         + COLUMN_FINISHED
         + " INTEGER DEFAULT 0, "
-        + COLUMN_SAVED_OFFLINE_AT
+        + COLUMN_SAVED_OFFLINE_AT + " TEXT, " + COLUMN_COLLECTION_IDS
         + " TEXT, "
         + COLUMN_RATING
         + " INTEGER DEFAULT 0, "
