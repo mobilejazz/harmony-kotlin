@@ -7,6 +7,8 @@ import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.model.Book;
 
+import java.util.concurrent.*;
+
 public interface GetBookDetailInteractor {
 
   void execute(String bookId, DomainCallback<Book, ErrorCore<?>> callback);
@@ -17,4 +19,6 @@ public interface GetBookDetailInteractor {
       DomainBackgroundCallback<Book, ErrorCore<?>> callback);
 
   ListenableFuture<Optional<Book>> execute(String bookId);
+
+  ListenableFuture<Optional<Book>> execute(String bookId, Executor executor);
 }

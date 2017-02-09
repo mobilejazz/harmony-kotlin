@@ -15,6 +15,7 @@ import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 public class GetBookDetailInteractorImpl extends AbstractInteractor<Book, ErrorCore<?>>
     implements GetBookDetailInteractor {
@@ -54,9 +55,14 @@ public class GetBookDetailInteractorImpl extends AbstractInteractor<Book, ErrorC
   }
 
   @Override public ListenableFuture<Optional<Book>> execute(final String bookId) {
+    return this.execute(bookId, getExecutor());
+  }
+
+  @Override
+  public ListenableFuture<Optional<Book>> execute(final String bookId, final Executor executor) {
     final SettableFuture<Optional<Book>> settableFuture = SettableFuture.create();
 
-    getExecutor().execute(new Runnable() {
+    executor.execute(new Runnable() {
       @Override public void run() {
         execute(bookId, false, new Callback<Book>() {
           @Override public void onSuccess(Book book) {

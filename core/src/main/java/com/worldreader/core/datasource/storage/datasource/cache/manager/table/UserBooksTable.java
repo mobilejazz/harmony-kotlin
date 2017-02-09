@@ -33,8 +33,6 @@ public class UserBooksTable {
     return "CREATE TABLE "
         + TABLE
         + "("
-        + COLUMN_LOCAL_ID
-        + "INTEGER PRIMARY KEY, "
         + COLUMN_ID
         + " INTEGER, "
         + COLUMN_USER_ID
@@ -57,7 +55,18 @@ public class UserBooksTable {
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
-        + " FOREIGN KEY (" + COLUMN_USER_ID + ") REFERENCES " + UsersTable.TABLE + "(" + UsersTable.COLUMN_ID + ") ON DELETE CASCADE "
+        + " PRIMARY KEY ("
+        + COLUMN_USER_ID
+        + ", "
+        + COLUMN_BOOK_ID
+        + ")"
+        + " FOREIGN KEY ("
+        + COLUMN_USER_ID
+        + ") REFERENCES "
+        + UsersTable.TABLE
+        + "("
+        + UsersTable.COLUMN_ID
+        + ") ON DELETE CASCADE "
         + ");";
   }
 
