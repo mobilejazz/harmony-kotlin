@@ -25,6 +25,7 @@ public class UsersTable {
   public static final String COLUMN_CHILDREN_COUNT = "childrenCount";
   public static final String COLUMN_MIN_CHILD_AGE = "minChildAge";
   public static final String COLUMN_MAX_CHILD_AGE = "maxChildAge";
+  public static final String COLUMN_PICTURE = "picture";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
   public static final String COLUMN_MILESTONES = "milestones";
@@ -47,10 +48,6 @@ public class UsersTable {
       DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
 
   public static final DeleteQuery QUERY_DELETE_ALL_USERS = DeleteQuery.builder().table(TABLE).build();
-
-  // To be removed, it just a mock
-  public static final DeleteQuery QUERY_DELETE_ALL = null;
-  public static final Query QUERY_ALL = null;
 
   private UsersTable() {
     throw new IllegalStateException("No instances allowed!");
@@ -96,6 +93,8 @@ public class UsersTable {
         + " INTEGER, "
         + COLUMN_MAX_CHILD_AGE
         + " INTEGER, "
+        + COLUMN_PICTURE
+        + " TEXT, "
         + COLUMN_CREATED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
