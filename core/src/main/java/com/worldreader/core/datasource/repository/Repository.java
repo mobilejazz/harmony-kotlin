@@ -5,7 +5,6 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface Repository<M extends RepositoryModel, S extends RepositorySpecification> {
@@ -16,11 +15,11 @@ public interface Repository<M extends RepositoryModel, S extends RepositorySpeci
 
   void put(M m, S specification, Callback<Optional<M>> callback);
 
-  void putAll(Collection<M> ms, S specification, Callback<Optional<List<M>>> callback);
+  void putAll(List<M> ms, S specification, Callback<Optional<List<M>>> callback);
 
   void remove(M m, S specification, Callback<Optional<M>> callback);
 
-  void removeAll(Collection<M> ms, S specification, Callback<Optional<List<M>>> callback);
+  void removeAll(List<M> ms, S specification, Callback<Optional<List<M>>> callback);
 
   interface Storage<M extends RepositoryModel, S extends RepositorySpecification> extends Repository<M, S> {
 

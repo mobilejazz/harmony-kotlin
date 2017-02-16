@@ -1,14 +1,11 @@
 package com.worldreader.core.datasource.storage.datasource.cache.manager.table;
 
 import android.support.annotation.NonNull;
-import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
-import com.pushtorefresh.storio.sqlite.queries.Query;
 
 public class UserBooksTable {
 
   public static final String TABLE = "userbooks";
 
-  public static final String COLUMN_LOCAL_ID = "localId";
   public static final String COLUMN_ID = "id";
   public static final String COLUMN_USER_ID = "userId";
   public static final String COLUMN_BOOK_ID = "bookId";
@@ -21,10 +18,6 @@ public class UserBooksTable {
   public static final String COLUMN_COLLECTION_IDS = "collectionIds";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
-
-  public static final Query QUERY_SELECT_ALL = Query.builder().table(TABLE).build();
-
-  public static final DeleteQuery QUERY_DELETE_ALL = DeleteQuery.builder().table(TABLE).build();
 
   private UserBooksTable() {
     throw new IllegalStateException("No instances allowed!");
@@ -56,6 +49,7 @@ public class UserBooksTable {
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
+        + " "
         + " PRIMARY KEY ("
         + COLUMN_USER_ID
         + ", "
