@@ -1,10 +1,8 @@
 package com.worldreader.core.datasource.storage.datasource.cache.manager.table;
 
 import android.support.annotation.NonNull;
-import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
-import com.pushtorefresh.storio.sqlite.queries.Query;
 
-public class MilestonesTable {
+public class UserMilestonesTable {
 
   public static final String TABLE = "usermilestones";
 
@@ -14,10 +12,6 @@ public class MilestonesTable {
   public static final String COLUMN_SYNCHRONIZED = "synchronized";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
-
-  public static final Query QUERY_SELECT_ALL = Query.builder().table(TABLE).build();
-
-  public static final DeleteQuery QUERY_DELETE_ALL = DeleteQuery.builder().table(TABLE).build();
 
   @NonNull public static String createTableQuery() {
     return "CREATE TABLE "
