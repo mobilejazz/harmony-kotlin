@@ -3,8 +3,9 @@ package com.worldreader.core.datasource.storage.datasource.cache.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserMilestonesTable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable;
+import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserMilestonesTable;
+import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserScoreTable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import javax.inject.Singleton;
     db.execSQL(UsersTable.createTableQuery());
     db.execSQL(UserBooksTable.createTableQuery());
     db.execSQL(UserMilestonesTable.createTableQuery());
+    db.execSQL(UserScoreTable.createTableQuery());
   }
 
   @Override public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
