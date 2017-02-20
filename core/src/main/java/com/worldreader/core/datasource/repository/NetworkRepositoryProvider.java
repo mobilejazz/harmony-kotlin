@@ -4,4 +4,7 @@ public interface NetworkRepositoryProvider<R extends Repository.Network> {
 
   R get();
 
+  R getRealNetwork();
+
+  R getFakeNetwork();
 }
