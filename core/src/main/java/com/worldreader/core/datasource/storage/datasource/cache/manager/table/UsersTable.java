@@ -15,7 +15,6 @@ public class UsersTable {
   public static final String COLUMN_NAME = "name";
   public static final String COLUMN_EMAIL = "email";
   public static final String COLUMN_EMAIL_CONFIRMED = "emailConfirmed";
-  public static final String COLUMN_SCORE = "score";
   public static final String COLUMN_PAGES_PER_DAY = "pagesPerDay";
   public static final String COLUMN_LOCALE = "locale";
   public static final String COLUMN_FONT_SIZE = "fontSize";
@@ -33,21 +32,36 @@ public class UsersTable {
 
   public static final String ANONYMOUS_USER_ID = "1";
 
-  public static final Query QUERY_SELECT_ALL_USERS = Query.builder().table(TABLE).orderBy("id DESC").build();
+  public static final Query QUERY_SELECT_ALL_USERS =
+      Query.builder().table(TABLE).orderBy("id DESC").build();
 
-  public static final Query QUERY_SELECT_ANONYMOUS_USER =
-      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
+  public static final Query QUERY_SELECT_ANONYMOUS_USER = Query.builder()
+      .table(TABLE)
+      .where(TABLE + "." + COLUMN_ID + " = ?")
+      .whereArgs(ANONYMOUS_USER_ID)
+      .build();
 
-  public static final Query QUERY_SELECT_LOGGED_USER =
-      Query.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").whereArgs(ANONYMOUS_USER_ID).limit(1).build();
+  public static final Query QUERY_SELECT_LOGGED_USER = Query.builder()
+      .table(TABLE)
+      .where(TABLE + "." + COLUMN_ID + " != ?")
+      .whereArgs(ANONYMOUS_USER_ID)
+      .limit(1)
+      .build();
 
-  public static final DeleteQuery DELETE_LOGGED_IN_USER =
-      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " != ?").whereArgs(ANONYMOUS_USER_ID).build();
+  public static final DeleteQuery DELETE_LOGGED_IN_USER = DeleteQuery.builder()
+      .table(TABLE)
+      .where(TABLE + "." + COLUMN_ID + " != ?")
+      .whereArgs(ANONYMOUS_USER_ID)
+      .build();
 
-  public static final DeleteQuery QUERY_DELETE_ANONYMOUS_USER =
-      DeleteQuery.builder().table(TABLE).where(TABLE + "." + COLUMN_ID + " = ?").whereArgs(ANONYMOUS_USER_ID).build();
+  public static final DeleteQuery QUERY_DELETE_ANONYMOUS_USER = DeleteQuery.builder()
+      .table(TABLE)
+      .where(TABLE + "." + COLUMN_ID + " = ?")
+      .whereArgs(ANONYMOUS_USER_ID)
+      .build();
 
-  public static final DeleteQuery QUERY_DELETE_ALL_USERS = DeleteQuery.builder().table(TABLE).build();
+  public static final DeleteQuery QUERY_DELETE_ALL_USERS =
+      DeleteQuery.builder().table(TABLE).build();
 
   private UsersTable() {
     throw new IllegalStateException("No instances allowed!");
@@ -72,8 +86,6 @@ public class UsersTable {
         + COLUMN_EMAIL
         + " TEXT, "
         + COLUMN_EMAIL_CONFIRMED
-        + " INTEGER, "
-        + COLUMN_SCORE
         + " INTEGER, "
         + COLUMN_PAGES_PER_DAY
         + " INTEGER, "
