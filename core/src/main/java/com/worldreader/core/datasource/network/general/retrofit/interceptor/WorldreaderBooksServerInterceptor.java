@@ -2,6 +2,7 @@ package com.worldreader.core.datasource.network.general.retrofit.interceptor;
 
 import android.support.annotation.NonNull;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.application.di.qualifiers.WorldreaderBookApiEndpointToken;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -18,13 +19,15 @@ import java.security.NoSuchAlgorithmException;
  */
 public class WorldreaderBooksServerInterceptor implements Interceptor {
 
-  private static final String WORLDREADER_TOKEN = "oNBWqs2US2t1s0QA1PPah3cK";
-  private static final String WORLDREADER_ANDROID_CLIENT = "org.worldreader.wrms.android/1.0.0.0";
-
-  private Logger logger;
   public static final String TAG = "SERVER_WORLDREADER";
 
-  @Inject public WorldreaderBooksServerInterceptor(Logger logger) {
+  private static final String WORLDREADER_ANDROID_CLIENT = "org.worldreader.wrms.android/1.0.0.0";
+
+  private final String token;
+  private final  Logger logger;
+
+  @Inject public WorldreaderBooksServerInterceptor(final @WorldreaderBookApiEndpointToken String token, Logger logger) {
+    this.token = token;
     this.logger = logger;
   }
 
@@ -110,7 +113,7 @@ public class WorldreaderBooksServerInterceptor implements Interceptor {
     StringBuilder builder = new StringBuilder();
     builder.append(path);
     builder.append(timestamp);
-    builder.append(WORLDREADER_TOKEN);
+    builder.append(token);
 
     return builder.toString();
   }
