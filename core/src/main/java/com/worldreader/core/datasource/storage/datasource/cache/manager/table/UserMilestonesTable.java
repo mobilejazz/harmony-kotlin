@@ -10,6 +10,7 @@ public class UserMilestonesTable {
   public static final String COLUMN_MILESTONE_ID = "milestoneId";
   public static final String COLUMN_SCORE = "score";
   public static final String COLUMN_SYNCHRONIZED = "synchronized";
+  public static final String COLUMN_STATUS = "status";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
 
@@ -25,6 +26,8 @@ public class UserMilestonesTable {
         + " INTEGER NOT NULL, "
         + COLUMN_SYNCHRONIZED
         + " INTEGER DEFAULT 0, "
+        + COLUMN_STATUS
+        + " INTEGER, "
         + COLUMN_CREATED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
