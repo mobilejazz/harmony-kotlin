@@ -1,5 +1,6 @@
 package com.worldreader.core.domain.interactors.user;
 
+import android.support.annotation.Nullable;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -14,11 +15,11 @@ import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
+import com.worldreader.core.domain.interactors.user.userbooks.GetCollectionIdMapOfUserBooksInteractor;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
