@@ -9,10 +9,9 @@ import com.worldreader.core.datasource.helper.Action;
 import com.worldreader.core.domain.interactors.user.GetUserRegisteredTypeInteractor;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.concurrent.*;
 
-@Singleton public class SaveUserRegisteredTypeInteractor {
+public class SaveUserRegisteredTypeInteractor {
 
   private final ListeningExecutorService executor;
   private final Action<String> addUserRegisteredTypeAction;

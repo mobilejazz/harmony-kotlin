@@ -65,8 +65,8 @@ dependencies {
         transitive = true
     }
 
-    apt appDependencies.daggerCompiler
-    compile appDependencies.dagger
+    apt dependencies.daggerCompiler
+    compile dependencies.dagger
 
     compile dependencies.retrofit2
     compile dependencies.retrofit2Gson

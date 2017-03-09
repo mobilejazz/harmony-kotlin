@@ -4,13 +4,14 @@ import com.mobilejazz.logger.library.Logger;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
+import com.worldreader.core.application.di.qualifiers.WorldreaderNetworkCacheDb;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.entity.CacheObject;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.CacheTableMeta;
 import com.worldreader.core.datasource.storage.datasource.cache.strategy.CachingStrategy;
 import com.worldreader.core.datasource.storage.datasource.cache.strategy.CachingStrategyObject;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 
-import java.util.List;
+import java.util.*;
 
 public class CacheBddDataSourceImp implements CacheBddDataSource {
 
@@ -19,7 +20,8 @@ public class CacheBddDataSourceImp implements CacheBddDataSource {
   private StorIOSQLite storIOSQLite;
   private Logger logger;
 
-  public CacheBddDataSourceImp(StorIOSQLite storIOSQLite, Logger logger) {
+  public CacheBddDataSourceImp(@WorldreaderNetworkCacheDb StorIOSQLite storIOSQLite,
+      Logger logger) {
     this.storIOSQLite = storIOSQLite;
     this.logger = logger;
   }
