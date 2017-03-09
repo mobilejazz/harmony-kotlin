@@ -36,6 +36,7 @@ ext {
     androidRunnerVersion = '0.5'
     espressoVersion = '2.2.2'
     dexmakerVersion = '1.4'
+    daggerVersion = '2.8'
 
     //Datasource libraries
     storioVersion = '1.8.0'
@@ -48,10 +49,10 @@ ext {
     okHttp3Retrofit1Version = '1.0.2'
 
     dependencies = [
-            logger                   : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
-            retrofit                 : "com.squareup.retrofit:retrofit:$retrofitVersion",
+            logger                : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
+            retrofit              : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
-            guava                    : "com.google.guava:guava:$guavaVersion",
+            guava                 : "com.google.guava:guava:$guavaVersion",
 
             javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
             javaxinject              : "javax.inject:javax.inject:1",
@@ -82,15 +83,16 @@ ext {
             supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
 
             picasso                  : "com.squareup.picasso:picasso:$picassoVersion",
-            simpleStorage            : "com.sromku:simple-storage:$simpleStorageVersion",
-            picassoOkhttp3           : "com.jakewharton.picasso:picasso2-okhttp3-downloader:$picassoOkhttp3",
+            simpleStorage         : "com.sromku:simple-storage:$simpleStorageVersion",
+            picassoOkhttp3        : "com.jakewharton.picasso:picasso2-okhttp3-downloader:$picassoOkhttp3",
 
-            materialDialogsCore      : "com.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
-            materialDialogsCommons   : "com.afollestad.material-dialogs:commons:${materialDialogsVersion}@aar",
+            materialDialogsCore   : "com.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
+            materialDialogsCommons: "com.afollestad.material-dialogs:commons:${materialDialogsVersion}@aar",
 
-            joda                     : "net.danlew:android.joda:$jodatimeVersion",
+            joda                  : "net.danlew:android.joda:$jodatimeVersion",
 
-            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            dagger                : "com.google.dagger:dagger:${daggerVersion}",
     ]
 
     testDependencies = [

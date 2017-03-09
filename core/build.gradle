@@ -25,6 +25,12 @@ android {
 
         vectorDrawables.useSupportLibrary = true
     }
+
+    buildTypes.all { buildType ->
+        // Common constants values
+        buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_ID", '"worldreader"'
+        buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_SECRET", '"MGQUm2oNtyaHCBhV2J6YvLFmRRWZF4ry"'
+    }
 }
 
 dependencies {
@@ -58,6 +64,9 @@ dependencies {
     compile(dependencies.materialDialogsCommons) {
         transitive = true
     }
+
+    apt appDependencies.daggerCompiler
+    compile appDependencies.dagger
 
     compile dependencies.retrofit2
     compile dependencies.retrofit2Gson

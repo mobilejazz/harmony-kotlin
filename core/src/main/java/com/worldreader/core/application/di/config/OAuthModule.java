@@ -1,7 +1,7 @@
 package com.worldreader.core.application.di.config;
 
 import com.mobilejazz.logger.library.Logger;
-import com.worldreader.BuildConfig;
+import com.worldreader.core.BuildConfig;
 import com.worldreader.core.application.di.qualifiers.WorldreaderOAuthClientId;
 import com.worldreader.core.application.di.qualifiers.WorldreaderOAuthClientSecret;
 import com.worldreader.core.datasource.OAuthDataSource;
