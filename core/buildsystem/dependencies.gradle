@@ -89,6 +89,8 @@ ext {
             materialDialogsCommons   : "com.afollestad.material-dialogs:commons:${materialDialogsVersion}@aar",
 
             joda                     : "net.danlew:android.joda:$jodatimeVersion",
+
+            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
     ]
 
     testDependencies = [
