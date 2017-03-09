@@ -10,12 +10,12 @@ import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.milestones.UserMilestoneEntity;
 import com.worldreader.core.datasource.model.user.user.UserEntity2;
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
+import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
+import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.network.mapper.user.UserNetworkResponseToUserEntityMapper;
 import com.worldreader.core.datasource.network.model.MilestonesNetworkBody;
 import com.worldreader.core.datasource.network.model.UserNetworkResponse;
-import com.worldreader.core.datasource.network.retrofit2.error.WorldreaderErrorAdapter2;
-import com.worldreader.core.datasource.network.retrofit2.services.UserApiService2;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import retrofit2.Response;
 

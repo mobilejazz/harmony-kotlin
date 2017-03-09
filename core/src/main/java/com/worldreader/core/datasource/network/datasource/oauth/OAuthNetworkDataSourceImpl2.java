@@ -1,12 +1,12 @@
 package com.worldreader.core.datasource.network.datasource.oauth;
 
 import com.worldreader.core.common.helper.HttpStatus;
+import com.worldreader.core.datasource.network.general.retrofit.services.AuthApiService2;
+import com.worldreader.core.datasource.network.general.retrofit.services.OAuthApiService2;
 import com.worldreader.core.datasource.network.model.OAuthFacebookBody;
 import com.worldreader.core.datasource.network.model.OAuthGoogleBody;
 import com.worldreader.core.datasource.network.model.OAuthNetworkBody;
 import com.worldreader.core.datasource.network.model.OAuthNetworkResponseEntity;
-import com.worldreader.core.datasource.network.retrofit2.services.AuthApiService2;
-import com.worldreader.core.datasource.network.retrofit2.services.OAuthApiService2;
 import com.worldreader.core.error.user.LoginException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;

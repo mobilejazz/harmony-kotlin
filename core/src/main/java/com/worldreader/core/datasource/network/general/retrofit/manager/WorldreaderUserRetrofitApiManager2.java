@@ -1,11 +1,11 @@
-package com.worldreader.core.datasource.network.retrofit2.manager;
+package com.worldreader.core.datasource.network.general.retrofit.manager;
 
 import com.google.gson.Gson;
 import com.worldreader.core.datasource.network.general.retrofit.AbstractRetrofitApiManager;
-import com.worldreader.core.datasource.network.retrofit2.services.AuthApiService2;
-import com.worldreader.core.datasource.network.retrofit2.services.OAuthApiService2;
-import com.worldreader.core.datasource.network.retrofit2.services.UserApiService2;
-import com.worldreader.core.datasource.network.retrofit2.services.UserBooksApiService;
+import com.worldreader.core.datasource.network.general.retrofit.services.AuthApiService2;
+import com.worldreader.core.datasource.network.general.retrofit.services.OAuthApiService2;
+import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
+import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

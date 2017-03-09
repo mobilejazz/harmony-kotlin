@@ -1,4 +1,4 @@
-package com.worldreader.core.datasource.network.retrofit2.services;
+package com.worldreader.core.datasource.network.general.retrofit.services;
 
 import com.worldreader.core.datasource.network.model.ReadingStatisticUpdateBody;
 import com.worldreader.core.datasource.network.model.UserBookNetworkBody;

@@ -1,4 +1,4 @@
-package com.worldreader.core.datasource.network.retrofit2.error;
+package com.worldreader.core.datasource.network.general.retrofit.error;
 
 import android.content.Context;
 import com.mobilejazz.logger.library.Logger;
