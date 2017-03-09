@@ -1,8 +1,11 @@
 package com.worldreader.core.domain.interactors.user;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
@@ -33,17 +36,32 @@ public class RemoveBookFromCurrentlyReadingImpl extends AbstractInteractor<Boole
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Boolean> execute(final String bookId) {
+    final SettableFuture<Boolean> settableFuture = SettableFuture.create();
+    getExecutor().execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+        executeLogic(bookId, new Callback<Boolean>() {
+          @Override public void onSuccess(final Boolean result) {
+            settableFuture.set(result);
+          }
+
+          @Override public void onError(final Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
+      }
+
+      @Override protected void onExceptionThrown(final Throwable t) {
+        settableFuture.setException(t);
+      }
+    });
+    return settableFuture;
+  }
+
   @Override public void run() {
-    userBooksRepository.unfavorite(bookId, new Callback<Optional<UserBook>>() {
-      @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
-        if (userBookOptional.isPresent()) {
-          final UserBook userBook = userBookOptional.get();
-
-          performSuccessCallback(callback, !userBook.isFavorite());
-
-        } else {
-          performSuccessCallback(callback, false);
-        }
+    executeLogic(bookId, new Callback<Boolean>() {
+      @Override public void onSuccess(final Boolean result) {
+        performSuccessCallback(callback, result);
       }
 
       @Override public void onError(final Throwable e) {
@@ -51,4 +69,31 @@ public class RemoveBookFromCurrentlyReadingImpl extends AbstractInteractor<Boole
       }
     });
   }
+
+  //region Private methods
+  private void executeLogic(final String bookId, final Callback<Boolean> callback) {
+    userBooksRepository.unfavorite(bookId, new Callback<Optional<UserBook>>() {
+      @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
+        if (userBookOptional.isPresent()) {
+          final UserBook userBook = userBookOptional.get();
+
+          if (callback != null) {
+            callback.onSuccess(!userBook.isFavorite());
+          }
+        } else {
+          if (callback != null) {
+            callback.onSuccess(false);
+          }
+        }
+      }
+
+      @Override public void onError(final Throwable e) {
+        if (callback != null) {
+          callback.onError(e);
+        }
+      }
+    });
+
+  }
+  //endregion
 }

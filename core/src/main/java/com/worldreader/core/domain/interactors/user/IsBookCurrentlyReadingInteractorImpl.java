@@ -1,8 +1,10 @@
 package com.worldreader.core.domain.interactors.user;
 
 import android.support.annotation.Nullable;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.worldreader.core.application.helper.InteractorHandler;
@@ -38,6 +40,20 @@ public class IsBookCurrentlyReadingInteractorImpl extends AbstractInteractor<Boo
     this.bookId = bookId;
     this.callback = callback;
     this.executor.run(this);
+  }
+
+  @Override public ListenableFuture<Boolean> execute(final String bookId) {
+    return Futures.transform(getUserBookInteractor.execute(bookId),
+        new Function<Optional<UserBook>, Boolean>() {
+          @Override public Boolean apply(final Optional<UserBook> input) {
+            if (input.isPresent()) {
+              final UserBook userBook = input.get();
+              return userBook.isFavorite();
+            } else {
+              return false;
+            }
+          }
+        });
   }
 
   @Override public void run() {
