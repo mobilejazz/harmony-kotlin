@@ -92,6 +92,10 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
     return settableFuture;
   }
 
+  @Override public ListenableFuture<List<Book>> execute() {
+    return execute(Integer.MAX_VALUE, true, getExecutor());
+  }
+
   @Override public void run() {
     execute(limit, allBooks, new Callback<List<Book>>() {
       @Override public void onSuccess(final List<Book> books) {

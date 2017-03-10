@@ -11,6 +11,8 @@ import com.worldreader.core.domain.repository.UserBooksRepository;
 
 import javax.inject.Inject;
 
+import java.util.concurrent.*;
+
 import static com.worldreader.core.datasource.repository.spec.RepositorySpecification.SimpleRepositorySpecification;
 
 @PerActivity public class GetUserBookInteractor {
@@ -25,6 +27,11 @@ import static com.worldreader.core.datasource.repository.spec.RepositorySpecific
   }
 
   public ListenableFuture<Optional<UserBook>> execute(final String bookId) {
+    return execute(bookId, executor);
+  }
+
+  public ListenableFuture<Optional<UserBook>> execute(final String bookId,
+      final Executor executor) {
     final SettableFuture<Optional<UserBook>> settableFuture = SettableFuture.create();
 
     executor.execute(new Runnable() {

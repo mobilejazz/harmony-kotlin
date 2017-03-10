@@ -13,4 +13,6 @@ public interface GetBooksCurrentlyReading {
   void execute(int limit, boolean allBooks, DomainCallback<List<Book>, ErrorCore> callback);
 
   ListenableFuture<List<Book>> execute(int limit, boolean allBooks, Executor executor);
+
+  ListenableFuture<List<Book>> execute();
 }

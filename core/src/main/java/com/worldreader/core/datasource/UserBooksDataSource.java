@@ -13,11 +13,13 @@ import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.spec.userbooks.GetAllUserBooksCollectionIdsStorageSpec;
 import com.worldreader.core.datasource.spec.userbooks.GetUserBookStorageSpec;
 import com.worldreader.core.datasource.spec.userbooks.PutUserBookStorageSpec;
+import com.worldreader.core.datasource.spec.userbooks.RemoveUserBookStorageSpec;
 import com.worldreader.core.datasource.spec.userbooks.UserBookNetworkSpecification;
 import com.worldreader.core.datasource.spec.userbooks.UserBookStorageSpecification;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.error.user.GetUserFailException;
+import com.worldreader.core.error.userbook.UserBookNotFoundException;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -503,8 +505,41 @@ public class UserBooksDataSource implements UserBooksRepository {
   }
 
   @Override public void remove(UserBook model, RepositorySpecification specification,
-      Callback<Optional<UserBook>> callback) {
-    throw new UnsupportedOperationException("remove() not supported");
+      final Callback<Optional<UserBook>> callback) {
+    final Optional<UserBookEntity> userBookEntityOp =
+        toUserBookEntityMapper.transform(Optional.fromNullable(model));
+
+    if (userBookEntityOp.isPresent()) {
+      final UserBookEntity userBookEntity = userBookEntityOp.get();
+      networkProvider.get()
+          .remove(userBookEntity, RepositorySpecification.NONE,
+              new Callback<Optional<UserBookEntity>>() {
+                @Override
+                public void onSuccess(final Optional<UserBookEntity> userBookEntityOptional) {
+                  final RemoveUserBookStorageSpec spec =
+                      new RemoveUserBookStorageSpec(userBookEntity.getBookId(),
+                          userBookEntity.getUserId());
+
+                  storage.remove(userBookEntity, spec, new Callback<Optional<UserBookEntity>>() {
+                    @Override
+                    public void onSuccess(final Optional<UserBookEntity> userBookEntityOptional) {
+                      notifySuccessCallback(callback,
+                          toUserBookMapper.transform(userBookEntityOptional));
+                    }
+
+                    @Override public void onError(final Throwable e) {
+                      notifyErrorCallback(callback, e);
+                    }
+                  });
+                }
+
+                @Override public void onError(final Throwable e) {
+                  notifyErrorCallback(callback, e);
+                }
+              });
+    } else {
+      notifyErrorCallback(callback, new UserBookNotFoundException());
+    }
   }
 
   @Override public void removeAll(List<UserBook> userBooks, RepositorySpecification specification,

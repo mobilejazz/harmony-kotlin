@@ -150,7 +150,8 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
 
   @Override public void remove(UserBookEntity model, RepositorySpecification specification,
       Callback<Optional<UserBookEntity>> callback) {
-    throw new UnsupportedOperationException("Not implemented!");
+    // TODO: 10/03/2017 Implement this case where we need to remove the userbook to the server
+    notifySuccessResponse(callback, Optional.fromNullable(model));
   }
 
   @Override public void removeAll(List<UserBookEntity> userBookEntities,

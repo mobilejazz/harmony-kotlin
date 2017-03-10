@@ -113,6 +113,17 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     // Nothing to do
   }
 
+  public void removeBook(final Book book) {
+    if (books != null) {
+      books.remove(book);
+      notifyDataSetChanged();
+    }
+  }
+
+  public List<Book> getBooks() {
+    return books;
+  }
+
   @Nullable public Book getBook(final int position) {
     if (books != null) {
       try {

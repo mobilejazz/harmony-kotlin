@@ -196,7 +196,8 @@ public class UserBooksOfflineNetworkDataSource implements UserBooksNetworkDataSo
   @Override public void remove(final UserBookEntity userBookEntity,
       final RepositorySpecification specification,
       final Callback<Optional<UserBookEntity>> callback) {
-    throw new UnsupportedOperationException("remove() not supported");
+    // TODO: 10/03/2017 Implement this case where we need to remove the userbook to the server
+    notifySuccessResponse(callback, userBookEntity);
   }
 
   @Override public void removeAll(final List<UserBookEntity> userBookEntities,
