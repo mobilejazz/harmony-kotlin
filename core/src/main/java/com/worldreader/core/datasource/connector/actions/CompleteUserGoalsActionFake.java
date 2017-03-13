@@ -4,12 +4,12 @@ import com.worldreader.core.datasource.helper.Action;
 
 import javax.inject.Inject;
 
-public class CompleteUserGoalsActionFake implements Action<Boolean> {
+public class CompleteUserGoalsActionFake implements Action<Boolean, Boolean> {
 
   @Inject public CompleteUserGoalsActionFake() {
   }
 
-  @Override public boolean perform(final Boolean value) {
+  @Override public Boolean perform(final Boolean value) {
     return true;
   }
 }

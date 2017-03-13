@@ -18,16 +18,16 @@ import java.util.concurrent.*;
 @Deprecated public class SaveOnBoardingPassedInteractorImpl
     extends AbstractInteractor<Boolean, ErrorCore> implements SaveOnBoardingPassedInteractor {
 
-  private final Action<Void> completeOnBoardingAction;
-  private final Action<Void> deleteOnBoardingAction;
+  private final Action<Void, Boolean> completeOnBoardingAction;
+  private final Action<Void, Boolean> deleteOnBoardingAction;
 
   private boolean status;
   private DomainCallback<Boolean, ErrorCore> callback;
 
   @Inject public SaveOnBoardingPassedInteractorImpl(final InteractorExecutor executor,
       final MainThread mainThread,
-      @CompleteOnboardingActionQualifier final Action<Void> completeOnBoardingAction,
-      @DeleteOnboardingActionQualifier final Action<Void> deleteOnBoardingAction) {
+      @CompleteOnboardingActionQualifier final Action<Void, Boolean> completeOnBoardingAction,
+      @DeleteOnboardingActionQualifier final Action<Void, Boolean> deleteOnBoardingAction) {
     super(executor, mainThread);
     this.completeOnBoardingAction = completeOnBoardingAction;
     this.deleteOnBoardingAction = deleteOnBoardingAction;

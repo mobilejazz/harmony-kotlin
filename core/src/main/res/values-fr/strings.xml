@@ -86,5 +86,19 @@
         sur Worldreader ! Téléchargez l\'application ici: %3$s
     </string>
     <string name="ls_book_finished_back_to_book_detail">Revenir aux détails du livre</string>
-
+  <!--#Tutorial Home Screen-->
+  <string name="ls_my_library_tutorial_title">Bienvenue sur Worldreader !</string>
+  <string name="ls_my_library_tutorial_message">"Commencez à lire en sélectionnant un livre parmi les recommandations personnalisées ci-dessous !"</string>
+  <string name="ls_collections_tutorial_message"><b>Les collections</b> sont des groupes de livres que nous avons créés rien que pour vous.\n\nSi vous cherchez un défi, essayez de lire la collection complète !</string>
+  <string name="ls_categories_tutorial_message">Les catégories sont des groupes de livres avec des sujets ou idées similaires.\n\nVous trouverez de tout, depuis les lectures faciles jusqu\'aux classiques.</string>
+  <string name="ls_categories_tutorial_button_two">Ok, compris !</string>
+  <string name="ls_my_library_tutorial_button_one">Passer le didacticiel</string>
+  <string name="ls_my_library_tutorial_button_two">Suivant</string>
+  <!--#Tutorial Reader Screen-->
+  <string name="ls_tutorial_reader_initial_title">Prêt à lire ?</string>
+  <string name="ls_tutorial_reader_initial_message">"<b>Balayez pour tourner les pages</b>, touchez l\'écran si vous voulez utiliser le menu de lecture."</string>
+  <string name="ls_tutorial_reader_options_title">Options de lecture</string>
+  <string name="ls_tutorial_reader_options_message">Changer les options de lecture telles que la luminosité, la couleur des pages et la taille de la police.</string>
+  <string name="ls_tutorial_reader_index_title">Vous voulez une page spécifique ?</string>
+  <string name="ls_tutorial_reader_index_message">"Utilisez le <b>sommaire</b> pour voir les chapitres et naviguer dans le livre."</string>
 </resources>

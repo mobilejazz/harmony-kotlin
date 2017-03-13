@@ -86,4 +86,21 @@
     <string name="ls_book_finished_back_to_book_detail">Back to Book Details</string>
     <string name="ls_congratulations_share_it">Share it!</string>
 
+    <!--#Tutorial Home Screen-->
+    <string name="ls_my_library_tutorial_title">Welcome to Worldreader!</string>
+    <string name="ls_my_library_tutorial_message">"Start reading by selecting a book from your personalised recommendations below!"</string>
+    <string name="ls_collections_tutorial_message"><b>Collections</b> are groups of books we\'ve created just for you.\n\nIf you want a challenge,
+      try reading an entire collection!</string>
+    <string name="ls_categories_tutorial_message">Categories are groups of books with similar subjects or ideas.\n\nFind everything from quick reads
+     to classic stories here.</string>
+    <string name="ls_categories_tutorial_button_two">Ok, got it!</string>
+    <string name="ls_my_library_tutorial_button_one">Skip tutorial</string>
+    <string name="ls_my_library_tutorial_button_two">Next</string>
+    <!--#Tutorial Reader Screen-->
+    <string name="ls_tutorial_reader_initial_title">Ready to read?</string>
+    <string name="ls_tutorial_reader_initial_message">"<b>Swipe to turn pages</b>, tap the screen if you want to use the Reading Menu."</string>
+    <string name="ls_tutorial_reader_options_title">Reading Options</string>
+    <string name="ls_tutorial_reader_options_message">Change reading options such as brightness, page colour and font size.</string>
+    <string name="ls_tutorial_reader_index_title">Want a specific page?</string>
+    <string name="ls_tutorial_reader_index_message">"Use the <b>table of contents</b> to see chapters and navigate through the book."</string>
 </resources>

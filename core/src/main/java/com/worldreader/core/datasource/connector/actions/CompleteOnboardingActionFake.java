@@ -4,12 +4,12 @@ import com.worldreader.core.datasource.helper.Action;
 
 import javax.inject.Inject;
 
-public class CompleteOnboardingActionFake implements Action<Void> {
+public class CompleteOnboardingActionFake implements Action<Void, Boolean> {
 
   @Inject public CompleteOnboardingActionFake() {
   }
 
-  @Override public boolean perform(final Void value) {
+  @Override public Boolean perform(final Void value) {
     return true;
   }
 }

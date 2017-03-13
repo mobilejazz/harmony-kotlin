@@ -5,12 +5,12 @@ import com.worldreader.core.datasource.helper.Action;
 import javax.inject.Inject;
 import java.util.*;
 
-public class AddSessionActionFake implements Action<Date> {
+public class AddSessionActionFake implements Action<Date, Boolean> {
 
   @Inject public AddSessionActionFake() {
   }
 
-  @Override public boolean perform(final Date value) {
+  @Override public Boolean perform(final Date value) {
     return true;
   }
 }

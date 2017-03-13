@@ -17,14 +17,14 @@ import java.util.concurrent.*;
 public class SaveSessionInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
     implements SaveSessionInteractor {
 
-  private final Action<Date> addSessionAction;
+  private final Action<Date, Boolean> addSessionAction;
 
   private Date date;
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
   @Inject
   public SaveSessionInteractorImpl(final InteractorExecutor executor, final MainThread mainThread,
-      final Action<Date> addSessionAction) {
+      final Action<Date, Boolean> addSessionAction) {
     super(executor, mainThread);
     this.addSessionAction = addSessionAction;
   }

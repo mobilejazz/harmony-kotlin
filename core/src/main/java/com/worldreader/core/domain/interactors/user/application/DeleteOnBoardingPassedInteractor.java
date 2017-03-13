@@ -13,10 +13,10 @@ import java.util.concurrent.*;
 @PerActivity public class DeleteOnBoardingPassedInteractor {
 
   private final ListeningExecutorService executor;
-  private final Action<Boolean> deleteOnboardingAction;
+  private final Action<Boolean, Boolean> deleteOnboardingAction;
 
   @Inject public DeleteOnBoardingPassedInteractor(final ListeningExecutorService executor,
-      final Action<Boolean> deleteOnboardingAction) {
+      final Action<Boolean, Boolean> deleteOnboardingAction) {
     this.executor = executor;
     this.deleteOnboardingAction = deleteOnboardingAction;
   }

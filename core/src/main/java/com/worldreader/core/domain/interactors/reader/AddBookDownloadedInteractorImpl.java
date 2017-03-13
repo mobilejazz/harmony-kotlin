@@ -19,7 +19,7 @@ import java.util.*;
 public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
     implements AddBookDownloadedInteractor {
 
-  private final Action<BookDownloaded> addBookDownloadedAction;
+  private final Action<BookDownloaded, Boolean> addBookDownloadedAction;
   private final Dates dates;
 
   private String bookId;
@@ -27,7 +27,7 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
   @Inject public AddBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      @AddBookDownloaded final Action<BookDownloaded> addBookDownloadedAction, final Dates dates) {
+      @AddBookDownloaded final Action<BookDownloaded, Boolean> addBookDownloadedAction, final Dates dates) {
     super(executor, mainThread);
     this.addBookDownloadedAction = addBookDownloadedAction;
     this.dates = dates;

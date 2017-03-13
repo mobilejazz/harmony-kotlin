@@ -1,6 +1,6 @@
 package com.worldreader.core.datasource.helper;
 
-public interface Action<T> {
+public interface Action<T, R> {
 
-  boolean perform(T value);
+  R perform(T value);
 }

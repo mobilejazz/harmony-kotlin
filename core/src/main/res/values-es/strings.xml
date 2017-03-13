@@ -85,6 +85,16 @@
         Worldreader! Descargar la aplicación aquí: %3$s
     </string>
     <string name="ls_book_finished_back_to_book_detail">Volver a la Información del libro</string>
-
-
+  <!--#Tutorial Default texts-->
+  <string name="ls_tutorial_got_it_btn">¡Vale, lo entiendo!</string>
+  <string name="ls_tutorial_skip_btn">Saltarse el tutorial</string>
+  <string name="ls_tutorial_next_btn">Siguiente</string>
+  <!--#Tutorial Home Screen-->
+  <string name="ls_my_library_tutorial_title">¡Bienvenido a Worldreader!</string>
+  <string name="ls_my_library_tutorial_message">"¡Empieza a leer seleccionando un libro de las recomendaciones personalizadas que tienes más abajo!"</string>
+  <string name="ls_collections_tutorial_message"><b>Las Colecciones</b> son grupos de libros que hemos creado para ti.\n\nSi quieres un reto, ¡intenta leer una colección completa!</string>
+  <string name="ls_categories_tutorial_message">Las Categorías son grupos de libros con temas o ideas similares.\n\nEncuentra de todo, desde lecturas rápidas a clásicos.</string>
+  <string name="ls_categories_tutorial_button_two">¡Vale, lo entiendo!</string>
+  <string name="ls_my_library_tutorial_button_one">Saltar tutorial</string>
+  <string name="ls_my_library_tutorial_button_two">Siguiente</string>
 </resources>

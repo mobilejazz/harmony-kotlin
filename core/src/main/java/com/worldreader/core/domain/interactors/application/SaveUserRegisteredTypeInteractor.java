@@ -14,10 +14,10 @@ import java.util.concurrent.*;
 public class SaveUserRegisteredTypeInteractor {
 
   private final ListeningExecutorService executor;
-  private final Action<String> addUserRegisteredTypeAction;
+  private final Action<String, Boolean> addUserRegisteredTypeAction;
 
   @Inject public SaveUserRegisteredTypeInteractor(final ListeningExecutorService executor,
-      final Action<String> addUserRegisteredTypeAction) {
+      final Action<String, Boolean> addUserRegisteredTypeAction) {
     this.executor = executor;
     this.addUserRegisteredTypeAction = addUserRegisteredTypeAction;
   }

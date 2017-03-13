@@ -18,11 +18,11 @@ import java.util.concurrent.*;
     extends AbstractInteractor<Boolean, ErrorCore<?>> implements EstablishUserGoalsInteractor {
 
   private final ListeningExecutorService executorService;
-  private final Action<Boolean> completeGoalsSettingsAction;
+  private final Action<Boolean, Boolean> completeGoalsSettingsAction;
 
   @Inject public EstablishUserGoalsInteractorImpl(InteractorExecutor interactorExecutor,
       MainThread mainThread, ListeningExecutorService executor,
-      final Action<Boolean> completeGoalsSettingsAction) {
+      final Action<Boolean, Boolean> completeGoalsSettingsAction) {
     super(interactorExecutor, mainThread);
     this.completeGoalsSettingsAction = completeGoalsSettingsAction;
     this.executorService = executor;

@@ -26,7 +26,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
   private static final String TAG = DeleteBookDownloadedInteractor.class.getSimpleName();
 
-  private final Action<BookDownloaded> deleteBookDownloadedAction;
+  private final Action<BookDownloaded, Boolean> deleteBookDownloadedAction;
   private final GetBookMetadataInteractor getBookMetadataInteractor;
   private final StreamingBookRepository streamingBookRepository;
   private final ImageDownloader imageDownloader;
@@ -38,7 +38,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
   @Inject
   public DeleteBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      @RemoveBookDownloaded final Action<BookDownloaded> deleteBookDownloadedAction,
+      @RemoveBookDownloaded final Action<BookDownloaded, Boolean> deleteBookDownloadedAction,
       GetBookMetadataInteractor getBookMetadataInteractor,
       StreamingBookRepository streamingBookRepository, ImageDownloader imageDownloader,
       Logger logger) {
