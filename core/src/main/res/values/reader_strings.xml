@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="share">Share</string>
+  <string name="definition">Definition</string>
+  <string name="out_of_memory">Sorry, could not free enough memory to load this file.</string>
+  <string name="end_of_section">End of chapter.\nClick here to continue.</string>
+  <string name="dead_link">Sorry, it looks like the link you clicked is broken.</string>
+  <string name="init_tts">Initializing Text To Speech…\nPlease wait.</string>
+  <string name="tts_failed">Text To Speech Failed.</string>
+  <string name="opening_file">Opening file…</string>
+  <string name="loading_wait">Loading, please wait</string>
+
+</resources>
