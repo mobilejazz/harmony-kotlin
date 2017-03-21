@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:width="14dp"
+    android:height="14dp"
+    android:viewportWidth="14"
+    android:viewportHeight="14"
+    >
+
+    <group
+            android:translateX="-53.000000"
+            android:translateY="-600.750000">
+        <path
+            android:name="ic_reader_rewind"
+            android:fillColor="#FFFFFF"
+            android:pathData="M53,600.75 L55.3242188,600.75 L55.3242188,614.75 L53,614.75 L53,600.75 Z
+M67,600.75 L67,614.75 L57.0742188,607.75 L67,600.75 Z" />
+    </group>
+</vector>

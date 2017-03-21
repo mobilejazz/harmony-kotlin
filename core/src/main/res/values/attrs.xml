@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="Theme">
+    <attr name="discreteSeekBarStyle" format="reference" />
+  </declare-styleable>
+  <!-- DiscreteSeekBar -->
+  <declare-styleable name="DiscreteSeekBar">
+    <attr name="dsb_min" format="integer|dimension" />
+    <attr name="dsb_max" format="integer|dimension" />
+    <attr name="dsb_value" format="integer|dimension" />
+    <attr name="dsb_mirrorForRtl" format="boolean" />
+    <attr name="dsb_allowTrackClickToDrag" format="boolean" />
+    <attr name="dsb_progressColor" format="color|reference" />
+    <attr name="dsb_trackColor" format="color|reference" />
+    <attr name="dsb_indicatorTextAppearance" format="reference" />
+    <attr name="dsb_indicatorColor" format="color|reference" />
+    <attr name="dsb_indicatorElevation" format="dimension" />
+    <attr name="dsb_indicatorFormatter" format="string|reference" />
+    <attr name="dsb_rippleColor" format="color|reference" />
+    <attr name="dsb_indicatorPopupEnabled" format="boolean" />
+    <attr name="dsb_textIndicatorSize" format="dimension" />
+    <attr name="dsb_textIndicatorColor" format="color" />
+  </declare-styleable>
+</resources>

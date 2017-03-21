@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fragment_reading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+  </FrameLayout>
+
+  <FrameLayout
+      android:id="@+id/content_book_index"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fitsSystemWindows="true"
+      android:visibility="gone">
+
+    <fragment
+        android:id="@+id/fragment_book_index"
+        class="com.worldreader.reader.wr.fragments.BookIndexFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+  </FrameLayout>
+
+</FrameLayout>
+

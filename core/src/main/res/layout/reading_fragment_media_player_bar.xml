@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reading_fragment_media_player_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_alignBottom="@id/reading_fragment_main_container"
+    android:visibility="gone"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dip"
+      android:layout_weight="1"
+      android:background="@color/translucent_black"
+      />
+
+  <TextView
+      android:id="@+id/reading_fragment_word_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textColor="@color/opaque_white"
+      android:background="@color/opaque_black"
+      android:padding="@dimen/span_16"
+      tools:text="Now hands are wanted here, and then again hands are wanted there."
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/span_96"
+      android:orientation="vertical"
+      android:background="@color/colorPrimary"
+      android:gravity="center_vertical"
+      android:paddingLeft="@dimen/span_16"
+      android:paddingRight="@dimen/span_16"
+      >
+
+    <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
+        android:id="@+id/reading_fragment_media_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dsb_min="0"
+        app:dsb_max="100"
+        app:dsb_indicatorPopupEnabled="false"
+        app:dsb_indicatorColor="@color/yellow"
+        app:dsb_progressColor="@color/yellow"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:minHeight="@dimen/span_48"
+        >
+
+      <ImageButton
+          android:id="@+id/reading_fragment_prev_button"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/span_48"
+          app:srcCompat="@drawable/ic_reader_rewind"
+          android:background="?selectableItemBackground"
+          android:onClick="onMediaButtonEvent"
+          android:contentDescription="@null"
+          android:layout_weight="1"
+          />
+
+      <ImageButton
+          android:id="@+id/reading_fragment_play_pause_button"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/span_48"
+          app:srcCompat="@drawable/ic_reader_play"
+          android:background="?selectableItemBackground"
+          android:onClick="onMediaButtonEvent"
+          android:contentDescription="@null"
+          android:minHeight="48dp"
+          android:layout_weight="1"
+          />
+
+      <ImageButton
+          android:id="@+id/reading_fragment_stop_button"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/span_48"
+          app:srcCompat="@drawable/ic_reader_stop"
+          android:background="?selectableItemBackground"
+          android:onClick="onMediaButtonEvent"
+          android:contentDescription="@null"
+          android:layout_weight="1"
+          />
+
+
+      <ImageButton
+          android:id="@+id/reading_fragment_next_button"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/span_48"
+          app:srcCompat="@drawable/ic_reader_forward"
+          android:background="?selectableItemBackground"
+          android:onClick="onMediaButtonEvent"
+          android:contentDescription="@null"
+          android:layout_weight="1"
+          />
+
+    </LinearLayout>
+  </LinearLayout>
+
+
+</LinearLayout>

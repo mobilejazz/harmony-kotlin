@@ -10,21 +10,19 @@ import com.worldreader.core.error.general.UnexpectedErrorException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.Date;
 
 @Singleton public class SendPageReadsInteractor {
 
   private final ListeningExecutorService executor;
   private final UserRepository repository;
 
-  @Inject
-  public SendPageReadsInteractor(ListeningExecutorService executor, UserRepository repository) {
+  @Inject public SendPageReadsInteractor(ListeningExecutorService executor, UserRepository repository) {
     this.executor = executor;
     this.repository = repository;
   }
 
-  public ListenableFuture<Boolean> execute(final String bookId, final int pages,
-      final Date current) {
+  public ListenableFuture<Boolean> execute(final String bookId, final int pages, final Date current) {
     final SettableFuture<Boolean> future = SettableFuture.create();
 
     executor.execute(new Runnable() {

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/span_256">
+
+  <!-- Drop shadow -->
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/span_4"
+      android:background="@drawable/definition_view_shadow_background"/>
+
+  <!-- Content -->
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:paddingTop="@dimen/span_16"
+      android:paddingBottom="@dimen/span_16"
+      android:paddingLeft="@dimen/span_24"
+      android:paddingRight="@dimen/span_24"
+      android:background="@color/white">
+
+    <include
+        android:id="@+id/definition_view_loading_container"
+        layout="@layout/global_progress_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/definition_view_definition_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/definition_view_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/span_48"
+            tools:text="Dog"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textStyle="bold"/>
+
+        <ImageButton
+            android:id="@+id/definition_view_close_button"
+            android:layout_width="@dimen/span_24"
+            android:layout_height="@dimen/span_24"
+            app:srcCompat="@drawable/ic_closedef"
+            android:layout_gravity="center_vertical"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@null"/>
+
+      </LinearLayout>
+
+      <ScrollView
+          android:id="@+id/definition_view_word_definitions_sv"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/definition_view_noun_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/span_16">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="@dimen/span_16"
+                  android:text="@string/ls_definition_view_noun"
+                  style="@style/Widget.Worldreader.Core.Definition.Category"/>
+
+              <TextView
+                  android:id="@+id/definition_view_noun_definition_tv"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/Widget.Worldreader.Core.Definition.Word"
+                  tools:text="(nou) a covering to disguise or conceal the face\n(nou) activity that tries to conceal something\n(nou) a party of guests wearing costumes and masks\n(nou) a protective covering worn over the face"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/definition_view_verb_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/span_16">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="@dimen/span_16"
+                  style="@style/Widget.Worldreader.Core.Definition.Category"
+                  android:text="@string/ls_definition_view_verb"/>
+
+              <TextView
+                  android:id="@+id/definition_view_verb_definition_tv"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/Widget.Worldreader.Core.Definition.Word"
+                  tools:text="(vrb) hide under a false appearance\n(vrb) put a mask on or cover with a mask\n(vrb) make unrecognizable\n(vrb) cover with a sauce\n(vrb) shield from light"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/definition_view_adverb_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/span_16">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="@dimen/span_16"
+                  style="@style/Widget.Worldreader.Core.Definition.Category"
+                  android:text="@string/ls_definition_view_adverb"/>
+
+              <TextView
+                  android:id="@+id/definition_view_adverb_definition_tv"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/Widget.Worldreader.Core.Definition.Word"
+                  tools:text="A domesticated carnivorous mammal (Canis familiaris) related to the foxes and wolves and raised in a wide variety of breeds."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/definition_view_adjective_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/span_16">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="@dimen/span_16"
+                  style="@style/Widget.Worldreader.Core.Definition.Category"
+                  android:text="@string/ls_definition_view_adjective"/>
+
+              <TextView
+                  android:id="@+id/definition_view_adjective_definition_tv"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/Widget.Worldreader.Core.Definition.Word"
+                  tools:text="A domesticated carnivorous mammal (Canis familiaris) related to the foxes and wolves and raised in a wide variety of breeds."/>
+
+            </LinearLayout>
+
+          </LinearLayout>
+
+        </FrameLayout>
+
+      </ScrollView>
+
+      <TextView
+          android:id="@+id/definition_view_no_results_container"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/ls_definition_view_no_definitions_found"/>
+
+    </LinearLayout>
+
+  </FrameLayout>
+
+</merge>

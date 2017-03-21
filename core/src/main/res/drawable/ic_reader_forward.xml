@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:width="14dp"
+    android:height="14dp"
+    android:viewportWidth="14"
+    android:viewportHeight="14"
+    >
+
+    <group
+            android:translateX="-289.000000"
+            android:translateY="-600.750000">
+        <path
+            android:name="ic_reader_forward"
+            android:fillColor="#FFFFFF"
+            android:pathData="M289,614.75 L298.925781,607.75 L289,600.75 L289,614.75 Z M300.675781,600.75
+L300.675781,614.75 L303,614.75 L303,600.75 L300.675781,600.75 Z" />
+    </group>
+</vector>

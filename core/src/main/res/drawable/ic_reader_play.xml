@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:width="12.8515625dp"
+    android:height="16.3515625dp"
+    android:viewportWidth="12.8515625"
+    android:viewportHeight="16.3515625"
+    >
+
+    <group
+            android:translateX="-137.324219"
+            android:translateY="-599.574219">
+        <path
+            android:name="ic_reader_play"
+            android:fillColor="#FFFFFF"
+            android:pathData="M 137.324219 599.574219 L 137.324219 615.925781 L 150.175781 607.75 Z" />
+    </group>
+</vector>

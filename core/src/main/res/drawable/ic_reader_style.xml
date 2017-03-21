@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="23dp"
+    android:height="20.125dp"
+    android:viewportHeight="20.125"
+    android:viewportWidth="23">
+
+  <group
+      android:translateX="-289.000000"
+      android:translateY="-17.312500">
+    <group
+        android:translateX="16.000000"
+        android:translateY="14.000000">
+      <path
+          android:name="ic_reader_style"
+          android:fillColor="@color/ic_reader_menu"
+          android:pathData="M273,19.5966797 L296,19.5966797 L296,23.4375 L273,23.4375 L273,19.5966797 Z
+M285.46582,3.3125 L290.72168,16.7216797 L288.56543,16.7216797
+L287.487305,13.8466797 L281.512695,13.8466797 L280.43457,16.7216797
+L278.27832,16.7216797 L283.53418,3.3125 L285.46582,3.3125 Z M286.768555,11.9375
+L284.5,5.87304688 L282.231445,11.9375 L286.768555,11.9375 Z" />
+    </group>
+  </group>
+</vector>

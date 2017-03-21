@@ -1,49 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Theme colors -->
-    <color name="colorPrimary">#0055FF</color>
-    <color name="colorPrimaryDark">#103E99</color>
-    <color name="colorAccent">#103E99</color>
-    <color name="colorSecondaryDark">#103E99</color>
-    <color name="colorControlHighlight">#103E99</color>
-    <color name="background">#FAFAFA</color>
-    <color name="transparent_background">#b4fafafa</color>
+  <!-- Theme colors -->
+  <color name="colorPrimary">#0055FF</color>
+  <color name="colorPrimaryDark">#103E99</color>
+  <color name="colorAccent">#103E99</color>
+  <color name="colorSecondaryDark">#103E99</color>
+  <color name="colorControlHighlight">#103E99</color>
+  <color name="background">#FAFAFA</color>
+  <color name="transparent_background">#b4fafafa</color>
 
-    <!-- General colors -->
-    <color name="white">#FFFFFF</color>
-    <color name="yellow">#FBB528</color>
-    <color name="darkYellow">#AA7B1B</color>
-    <color name="black">#000</color>
-    <color name="green">#518B0E</color>
-    <color name="red">#D0021B</color>
-    <color name="dark">#58626A</color>
-    <color name="orange">#EE9502</color>
+  <!-- General colors -->
+  <color name="white">#FFFFFF</color>
+  <color name="yellow">#FBB528</color>
+  <color name="darkYellow">#AA7B1B</color>
+  <color name="black">#000</color>
+  <color name="green">#518B0E</color>
+  <color name="red">#D0021B</color>
+  <color name="dark">#58626A</color>
+  <color name="orange">#EE9502</color>
 
-    <!-- Font colors-->
-    <color name="font_gray">#4A4A4A</color>
-    <color name="font_clear_gray">#aaaaaa</color>
-    <color name="font_white">#FFFFFF</color>
-    <color name="font_black_category">#25323D</color>
+  <!-- Font colors-->
+  <color name="font_gray">#4A4A4A</color>
+  <color name="font_clear_gray">#aaaaaa</color>
+  <color name="font_white">#FFFFFF</color>
+  <color name="font_black_category">#25323D</color>
 
-    <!-- Book layout -->
-    <color name="black_book_edit_mode">#b4000000</color>
+  <!-- Book layout -->
+  <color name="black_book_edit_mode">#b4000000</color>
 
-    <!-- Book Detail Layout -->
-    <color name="ic_book_gray">#4A4A4A</color>
-    <color name="ic_like_gray">#4A4A4A</color>
-    <color name="book_detail_btn_blue">#103E99</color>
-    <color name="book_detail_btn_dark_blue">#0d3584</color>
+  <!-- Book Detail Layout -->
+  <color name="ic_book_gray">#4A4A4A</color>
+  <color name="ic_like_gray">#4A4A4A</color>
+  <color name="book_detail_btn_blue">#103E99</color>
+  <color name="book_detail_btn_dark_blue">#0d3584</color>
 
-    <!-- Vector colors -->
-    <color name="ic_collection_color">#25323D</color>
-    <color name="ic_download_color">#25323D</color>
-    <color name="ic_setting_icons">#231F20</color>
+  <!-- Vector colors -->
+  <color name="ic_collection_color">#25323D</color>
+  <color name="ic_download_color">#25323D</color>
+  <color name="ic_setting_icons">#231F20</color>
 
-    <!-- Register screen -->
-    <color name="gray_profile_screen">#979797</color>
+  <!-- Register screen -->
+  <color name="gray_profile_screen">#979797</color>
 
-    <color name="global_signup_btn_blue">#103E99</color>
-    <color name="global_signup_btn_dark_blue">#0d3584</color>
+  <color name="global_signup_btn_blue">#103E99</color>
+  <color name="global_signup_btn_dark_blue">#0d3584</color>
 
+  <!-- Reader -->
+  <color name="ic_reader_a_sepia">#6F431C</color>
+  <color name="ic_reader_font">#4A4A4A</color>
+  <color name="ic_reader_menu">#9B9B9B</color>
+  <color name="reader_actionbar_color">#fff5f5f5</color>
+  <color name="reader_statusbar_color">#ff757575</color>
+  <color name="reader_actionbar_arrow_color">#ff5a595b</color>
+  <color name="reader_book_index_actionbar_color">@color/colorPrimary</color>
+  <color name="reader_book_index_statusbar_color">@color/colorSecondaryDark</color>
+  <color name="reader_book_index_actionbar_arrow_color">@color/white</color>
+  <color name="reader_settings_cream_profile">#F6F2E5</color>
+  <color name="reader_settings_light_profile">@color/white</color>
+  <color name="reader_settings_color_normal_profile">#ffd6d7d7</color>
+  <color name="reader_settings_light_profile_border">#D2D2D2</color>
+  <color name="reader_settings_night_profile">@color/black</color>
+  <color name="reader_settings_accept">#518B0E</color>
+  <color name="reader_settings_cancel">#D0021B</color>
+  <color name="reader_settings_brightness_manual">@color/font_gray</color>
+  <color name="reader_settings_brightness_automatic">@color/colorPrimary</color>
+  <color name="reader_settings_status_pressed">#664A4A4A</color>
+
+  <!--Tutorial -->
+  <color name="tutorial_button_one_blue">#103E99</color>
+  <color name="tutorial_button_one_blue_dark">#0d3584</color>
+
+  <color name="tutorial_button_two_blue">#9ebdfc</color>
+  <color name="tutorial_button_two_blue_dark">#7790b7</color>
+
+  <!-- DiscreteSeekBar -->
+  <color name="dsb_progress_color">#ff009688</color>
+  <color name="dsb_track_color">#ff939393</color>
+  <color name="dsb_disabled_color">#66939393</color>
+  <color name="dsb_ripple_color_pressed">#77939393</color>
+  <color name="dsb_ripple_color_focused">#99999999</color>
+  <color name="dsb_interval_color_number">#ffcccccc</color>
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView android:id="@+id/toc_entries_adapter_section_tv"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:background="?android:selectableItemBackground"
+    android:clickable="true"
+    android:ellipsize="end"
+    android:gravity="center_vertical"
+    android:maxLines="1"
+    android:padding="@dimen/span_16"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    tools:text="This an example of Chapter 1" />

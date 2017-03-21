@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:state_checked="true" android:state_pressed="true">
+    <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
+      <layer-list>
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@color/reader_settings_status_pressed" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/span_4" android:color="@color/reader_settings_brightness_automatic" />
+          </shape>
+        </item>
+      </layer-list>
+    </inset>
+  </item>
+
+  <item android:state_pressed="true">
+    <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
+      <layer-list>
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@color/reader_settings_status_pressed" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/span_4" android:color="@color/reader_settings_brightness_manual" />
+          </shape>
+        </item>
+      </layer-list>
+    </inset>
+  </item>
+
+  <item android:state_checked="true">
+    <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
+      <layer-list>
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/span_4" android:color="@color/reader_settings_brightness_automatic" />
+          </shape>
+        </item>
+      </layer-list>
+    </inset>
+  </item>
+
+  <item>
+    <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
+      <layer-list>
+        <item android:left="-2dp" android:right="-2dp" android:top="-2dp">
+          <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+          </shape>
+        </item>
+
+        <item android:left="-10dp" android:right="-10dp" android:top="-10dp">
+          <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/span_4" android:color="@color/reader_settings_brightness_manual" />
+          </shape>
+        </item>
+      </layer-list>
+    </inset>
+  </item>
+
+</selector>

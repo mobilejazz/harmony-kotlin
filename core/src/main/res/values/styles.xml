@@ -1,35 +1,91 @@
 <resources>
 
-    <style name="Widget.Worldreader.Core"
-        parent="android:Widget" />
+  <style name="Widget.Worldreader.Core" parent="android:Widget" />
 
+  <style name="CardViewStyle" parent="android:Widget.TextView">
+    <item name="android:background">@drawable/card_background_states</item>
+  </style>
 
-    <style name="CardViewStyle"
-        parent="android:Widget.TextView">
-        <item name="android:background">@drawable/card_background_states</item>
-    </style>
+  <!-- Divider -->
 
-    <!-- Divider -->
-    <style name="Widget.Worldreader.Core.Divider">
-        <item name="android:background">?android:attr/listDivider</item>
-    </style>
+  <style name="Widget.Worldreader.Core.Divider">
+    <item name="android:background">?android:attr/listDivider</item>
+  </style>
 
-    <style name="Widget.Worldreader.Core.Divider.Dark">
-        <item name="android:background">@color/dark</item>
-    </style>
+  <style name="Widget.Worldreader.Core.Divider.Dark">
+    <item name="android:background">@color/dark</item>
+  </style>
 
-    <!-- TextView -->
-    <style name="Widget.Worldreader.Core.TextView" />
+  <!-- TextView -->
 
-    <style name="Widget.Worldreader.Core.TextView.Book">
-        <item name="android:drawablePadding">@dimen/span_8</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
+  <style name="Widget.Worldreader.Core.TextView" />
 
-    <style name="Widget.Worldreader.Core.TextView.Book.Download">
-        <item name="android:drawableLeft">@drawable/ic_download_wrapper</item>
-        <item name="android:textColor">@color/font_gray</item>
-    </style>
+  <style name="Widget.Worldreader.Core.TextView.Book">
+    <item name="android:drawablePadding">@dimen/span_8</item>
+    <item name="android:gravity">center_vertical</item>
+  </style>
 
+  <style name="Widget.Worldreader.Core.TextView.Book.Download">
+    <item name="android:drawableLeft">@drawable/ic_download_wrapper</item>
+    <item name="android:textColor">@color/font_gray</item>
+  </style>
+
+  <!-- Definition -->
+
+  <style name="Widget.Worldreader.Core.Definition" />
+
+  <style name="Widget.Worldreader.Core.Definition.Title" />
+
+  <style name="Widget.Worldreader.Core.Definition.Category">
+    <item name="android:textColor">@color/font_gray</item>
+    <item name="android:textStyle">italic</item>
+  </style>
+
+  <style name="Widget.Worldreader.Core.Definition.Word">
+    <item name="android:lineSpacingMultiplier">1.2</item>
+  </style>
+
+  <!-- DiscreteSeekBar -->
+
+  <style name="Widget.DiscreteSeekBar" parent="android:Widget">
+    <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance
+    </item>
+    <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
+    <item name="dsb_trackColor">@color/dsb_track_color_list</item>
+    <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
+    <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
+    <item name="dsb_indicatorElevation">4dp</item>
+    <item name="dsb_mirrorForRtl">true</item>
+  </style>
+
+  <style name="Widget.DiscreteIndicatorTextAppearance" parent="android:TextAppearance.Small">
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    <item name="android:padding">6dp</item>
+  </style>
+
+  <!-- Reader -->
+
+  <style name="Widget.Worldreader.Core.Button" />
+
+  <style name="Widget.Worldreader.Core.Button.Reader" />
+
+  <style name="Widget.Worldreader.Core.Button.Reader.Profile" />
+
+  <style name="Widget.Worldreader.Core.Button.Reader.Cream">
+    <item name="android:background">@drawable/modify_reader_settings_reader_button_cream</item>
+  </style>
+
+  <style name="Widget.Worldreader.Core.Button.Reader.Night">
+    <item name="android:background">@drawable/modify_reader_settings_reader_button_night</item>
+  </style>
+
+  <style name="Widget.Worldreader.Core.Button.Reader.Day">
+    <item name="android:background">@drawable/modify_reader_settings_reader_button_light</item>
+  </style>
+
+  <style name="Widget.Worldreader.Core.Button.Reader.Brightness">
+    <item name="android:background">@drawable/modify_reader_settings_reader_brightness_button
+    </item>
+  </style>
 
 </resources>

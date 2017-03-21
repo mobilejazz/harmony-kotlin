@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/tutorial_button_two_blue">
+  <item android:drawable="@color/tutorial_button_two_blue_dark" />
+</ripple>

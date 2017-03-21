@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Generics -->
-    <string name="ls_generic_cancel">Cancelar</string>
-    <string name="ls_generic_accept">Aceptar</string>
-    <string name="ls_generic_delete">Eliminar</string>
-    <string name="ls_generic_done">Listo</string>
-    <string name="ls_generic_dismiss">Descartar</string>
-    <string name="ls_generic_save">Guardar</string>
-    <string name="ls_generic_close">Cerrar</string>
-    <string name="ls_generic_yes">Sí</string>
-    <string name="ls_generic_no">No</string>
-    <string name="ls_generic_quit">Salir</string>
-    <string name="ls_generic_retry">Volver a intentar</string>
-    <string name="ls_generic_back">Atrás</string>
-    <string name="ls_generic_next">Siguiente</string>
-    <string name="ls_generic_like">Me gusta</string>
-    <string name="ls_generic_search">Buscar</string>
-    <string name="ls_generic_share">Compartir</string>
-    <string name="ls_generic_settings">Ajustes</string>
-    <string name="ls_generic_skip">Saltar</string>
-    <string name="ls_generic_edit">Editar</string>
+  <!-- Generics -->
+  <string name="ls_generic_cancel">Cancelar</string>
+  <string name="ls_generic_accept">Aceptar</string>
+  <string name="ls_generic_delete">Eliminar</string>
+  <string name="ls_generic_done">Listo</string>
+  <string name="ls_generic_dismiss">Descartar</string>
+  <string name="ls_generic_save">Guardar</string>
+  <string name="ls_generic_close">Cerrar</string>
+  <string name="ls_generic_yes">Sí</string>
+  <string name="ls_generic_no">No</string>
+  <string name="ls_generic_quit">Salir</string>
+  <string name="ls_generic_retry">Volver a intentar</string>
+  <string name="ls_generic_back">Atrás</string>
+  <string name="ls_generic_next">Siguiente</string>
+  <string name="ls_generic_like">Me gusta</string>
+  <string name="ls_generic_search">Buscar</string>
+  <string name="ls_generic_share">Compartir</string>
+  <string name="ls_generic_settings">Ajustes</string>
+  <string name="ls_generic_skip">Saltar</string>
+  <string name="ls_generic_edit">Editar</string>
 
-    <string name="ls_my_library_view_all">Más</string>
-    <string name="ls_offline_books_screen_title">Libros sin conexión</string>
+  <string name="ls_my_library_view_all">Más</string>
+  <string name="ls_offline_books_screen_title">Libros sin conexión</string>
 
-    <!-- Book Detail Layout-->
-    <string name="ls_generic_liked">Me gustó</string>
-    <string name="ls_book_detail_add_to_currently_reading">Añadir a Mis libros</string>
-    <string name="ls_book_detail_added_to_currently_reading">Se añadió a Mis Libros</string>
-    <string name="ls_book_detail_download_book">Descargar libro (leer sin conexión)</string>
-    <string name="ls_book_detail_number_of_likes">%1$d me gusta</string>
-    <string name="ls_book_detail_number_of_times_read">%1$d veces leído</string>
-    <string name="ls_delete_book_dialog_title">Eliminar libro</string>
-    <string name="ls_delete_book_dialog_message">¿Seguro que desea eliminar el libro?</string>
-    <string name="ls_download_book_exceeded_limit_title">Descargar libro</string>
-    <string name="ls_download_book_exceeded_limit_message">Se ha superado el límite de descarga de
+  <!-- Book Detail Layout-->
+  <string name="ls_generic_liked">Me gustó</string>
+  <string name="ls_book_detail_add_to_currently_reading">Añadir a Mis libros</string>
+  <string name="ls_book_detail_added_to_currently_reading">Se añadió a Mis Libros</string>
+  <string name="ls_book_detail_download_book">Descargar libro (leer sin conexión)</string>
+  <string name="ls_book_detail_number_of_likes">%1$d me gusta</string>
+  <string name="ls_book_detail_number_of_times_read">%1$d veces leído</string>
+  <string name="ls_delete_book_dialog_title">Eliminar libro</string>
+  <string name="ls_delete_book_dialog_message">¿Seguro que desea eliminar el libro?</string>
+  <string name="ls_download_book_exceeded_limit_title">Descargar libro</string>
+  <string name="ls_download_book_exceeded_limit_message">Se ha superado el límite de descarga de
         libros para hoy. Puede descargar más mañana.
     </string>
-    <string name="ls_open_book_not_internet">"Debes descargar un libro si quieres leerlo sin
+  <string name="ls_open_book_not_internet">"Debes descargar un libro si quieres leerlo sin
         conexión a Internet. "
     </string>
 
-    <!-- View all layout & my book layout -->
-    <string name="ls_view_all_delete_book_title">¿Eliminar libro?</string>
-    <string name="ls_view_all_delete_book_message">¿Seguro que deseas eliminar este libro? También
+  <!-- View all layout & my book layout -->
+  <string name="ls_view_all_delete_book_title">¿Eliminar libro?</string>
+  <string name="ls_view_all_delete_book_message">¿Seguro que deseas eliminar este libro? También
         se eliminará todo tu progreso guardado.
     </string>
-    <string name="ls_view_all_delete_book_error">Lo sentimos, ocurrió un error al eliminar el libro.
+  <string name="ls_view_all_delete_book_error">Lo sentimos, ocurrió un error al eliminar el libro.
         Vuelve a intentarlo.
     </string>
 
-    <!-- Settings layout -->
-    <string name="ls_settings_profile_settings">Ajustes de perfil</string>
-    <string name="ls_settings_my_goals">Mis objetivos</string>
+  <!-- Settings layout -->
+  <string name="ls_settings_profile_settings">Ajustes de perfil</string>
+  <string name="ls_settings_my_goals">Mis objetivos</string>
 
-    <!-- User Profile Layout -->
-    <string name="ls_user_not_registered_register_now">¡Regístrate ahora!</string>
+  <!-- User Profile Layout -->
+  <string name="ls_user_not_registered_register_now">¡Regístrate ahora!</string>
 
-    <!-- Register layout -->
-    <string name="ls_signup_login_btn">Iniciar sesión</string>
-    <string name="ls_signup_no_register">Registrarme más tarde</string>
-    <string name="ls_signup_message">Sácale más partido a tu lectura. Regístrate para conseguir
+  <!-- Register layout -->
+  <string name="ls_signup_login_btn">Iniciar sesión</string>
+  <string name="ls_signup_no_register">Registrarme más tarde</string>
+  <string name="ls_signup_message">Sácale más partido a tu lectura. Regístrate para conseguir
         prestaciones exclusivas y recomendaciones de lectura.
     </string>
-    <string name="ls_signup_username">Nombre de usuario</string>
-    <string name="ls_signup_password">Contraseña</string>
-    <string name="ls_signup_repeat_password">Repetir contraseña</string>
-    <string name="ls_signup_terms_and_conditions">Aceptar términos y condiciones</string>
-    <string name="ls_signup_register_now_btn">Registrarse ahora</string>
-    <string name="ls_signup_accept_terms_conditions">Aceptar términos y condiciones</string>
-    <string name="ls_signup_email">Email</string>
+  <string name="ls_signup_username">Nombre de usuario</string>
+  <string name="ls_signup_password">Contraseña</string>
+  <string name="ls_signup_repeat_password">Repetir contraseña</string>
+  <string name="ls_signup_terms_and_conditions">Aceptar términos y condiciones</string>
+  <string name="ls_signup_register_now_btn">Registrarse ahora</string>
+  <string name="ls_signup_accept_terms_conditions">Aceptar términos y condiciones</string>
+  <string name="ls_signup_email">Email</string>
 
-    <!-- Loading book layout -->
-    <string name="ls_loading_book_message">Cargando</string>
-    <string name="ls_loading_book_please_wait">Por favor espera</string>
+  <!-- Loading book layout -->
+  <string name="ls_loading_book_message">Cargando</string>
+  <string name="ls_loading_book_please_wait">Por favor espera</string>
 
-    <!-- Book finished layout -->
-    <string name="ls_congratulations_title">¡Felicidades!</string>
-    <string name="ls_congratulations_finished_book">¡Has finalizado el libro!</string>
-    <string name="ls_congratulations_back_to_book_detai">Volver a Mi Biblioteca</string>
-    <string name="ls_congratulations_share_it">¡Compártelo!</string>
-    <string name="ls_share_finished_book_title">Comparte un libro terminado</string>
-    <string name="ls_share_finished_book">¡Buenas, acabo de terminar \"%1$s\" de \"%2$s\" en
+  <!-- Book finished layout -->
+  <string name="ls_congratulations_title">¡Felicidades!</string>
+  <string name="ls_congratulations_finished_book">¡Has finalizado el libro!</string>
+  <string name="ls_congratulations_back_to_book_detai">Volver a Mi Biblioteca</string>
+  <string name="ls_congratulations_share_it">¡Compártelo!</string>
+  <string name="ls_share_finished_book_title">Comparte un libro terminado</string>
+  <string name="ls_share_finished_book">¡Buenas, acabo de terminar \"%1$s\" de \"%2$s\" en
         Worldreader! Descargar la aplicación aquí: %3$s
     </string>
-    <string name="ls_book_finished_back_to_book_detail">Volver a la Información del libro</string>
+  <string name="ls_book_finished_back_to_book_detail">Volver a la Información del libro</string>
   <!--#Tutorial Default texts-->
   <string name="ls_tutorial_got_it_btn">¡Vale, lo entiendo!</string>
   <string name="ls_tutorial_skip_btn">Saltarse el tutorial</string>
@@ -97,4 +97,28 @@
   <string name="ls_categories_tutorial_button_two">¡Vale, lo entiendo!</string>
   <string name="ls_my_library_tutorial_button_one">Saltar tutorial</string>
   <string name="ls_my_library_tutorial_button_two">Siguiente</string>
+  <string name="ls_book_reading_select_one_word">Selecciona una palabra para buscarla en el diccionario.</string>
+  <string name="ls_book_reading_font_family_open_sans">Open Sans</string>
+  <string name="ls_book_reading_font_family_lora">Lora</string>
+  <string name="ls_book_reading_font_family_poppins">Poppins</string>
+  <string name="ls_loading_text">Cargando</string>
+  <string name="ls_reader_set_your_goals_title">Establece tus objetivos</string>
+  <string name="ls_reader_set_your_goals_message">Establece un objetivo de lectura y compárate con otros lectores. Hagámoslo ahora.</string>
+  <string name="ls_reader_reminder_set_your_goals_title">¿Establecemos tu objetivo de lectura?</string>
+  <string name="ls_reader_reminder_set_your_goals_message">Hagámoslo ahora para que puedas comparar tu progreso con otros lectores.</string>
+  <!--#DefintionView-->
+  <string name="ls_definition_view_no_definitions_found">No se encontró definición</string>
+  <string name="ls_definition_view_adjective">adjetivo</string>
+  <string name="ls_definition_view_adverb">adverbio</string>
+  <string name="ls_definition_view_verb">verbo</string>
+  <string name="ls_definition_view_noun">sustantivo</string>
+
+  <!--#Not registered dialog-->
+  <string name="ls_not_registered_dialog_title">¿Listo para hacer un seguimiento de tu progreso?</string>
+  <string name="ls_not_registered_dialog_message">Descubre qué tipo de lector eres y descubre lo que otros están leyendo.</string>
+
+  <string name="ls_error_signup_network_title">No hay red disponible</string>
+  <string name="ls_error_definition_not_internet">Lo sentimos, tienes que estar conectado a Internet para buscar una definición.</string>
+  <string name="ls_error_tts_not_internet">Lo sentimos, tienes que estar conectado a Internet para Leer en voz alta.</string>
+
 </resources>

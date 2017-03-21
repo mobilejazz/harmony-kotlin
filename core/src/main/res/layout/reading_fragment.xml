@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/reading_fragment_parent_container"
+    >
+
+  <ViewSwitcher
+      android:id="@+id/reading_fragment_main_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+    <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView
+        android:id="@+id/reading_fragment_bookView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+      <view
+          class="com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView$InnerView"
+          android:id="@id/bookview_inner"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:textColorHighlight="@color/gray_profile_screen"
+          />
+
+    </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
+
+    <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/reading_fragment_dummy_view"
+        />
+
+  </ViewSwitcher>
+
+  <TextView
+      android:id="@+id/reading_fragment_page_number_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignBottom="@id/reading_fragment_main_container"
+      />
+
+  <include layout="@layout/reading_fragment_media_player_bar"/>
+
+  <include
+      android:id="@+id/reading_fragment_chapter_progress_container"
+      android:layout_alignParentBottom="true"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:visibility="gone"
+      layout="@layout/reading_fragment_chapter_progress"/>
+
+  <com.worldreader.reader.wr.widget.DefinitionView
+      android:id="@+id/reading_fragment_word_definition_dv"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/span_256"
+      android:layout_alignParentBottom="true"
+      android:visibility="gone"
+      />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:id="@+id/reading_fragment_container_tutorial_view"
+      >
+
+    <com.worldreader.core.application.ui.widget.TutorialView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reading_fragment_tutorial_view"
+        android:clickable="true"
+        android:layout_centerInParent="true"
+        />
+
+  </RelativeLayout>
+
+</RelativeLayout>
