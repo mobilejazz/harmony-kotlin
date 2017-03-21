@@ -219,7 +219,8 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
         (WorldreaderProviderDataNetwork.NetworkWorldreaderRegisterData) data;
     final UserRegisterBody body =
         UserRegisterBody.create(registerData.getUsername(), registerData.getPassword(),
-            registerData.getEmail());
+            registerData.getEmail(), registerData.getActivatorCode(), registerData.getGender(),
+            registerData.getAge());
     try {
       final Response<UserNetworkResponse> response = apiService.register(body).execute();
       final boolean successful = response.isSuccessful();
