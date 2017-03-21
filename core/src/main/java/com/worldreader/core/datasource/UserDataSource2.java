@@ -23,6 +23,7 @@ import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.model.LeaderboardStat;
 import com.worldreader.core.domain.model.user.GoogleProviderData;
 import com.worldreader.core.domain.model.user.LeaderboardPeriod;
+import com.worldreader.core.domain.model.user.ReadToKidsProviderData;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
@@ -120,11 +121,24 @@ public class UserDataSource2 implements UserRepository {
   }
 
   private void registerUserWithWorldreader(Object data, final Callback<Optional<User2>> callback) {
-    final WorldreaderProviderData.DomainWorldreaderData registerData =
-        (WorldreaderProviderData.DomainWorldreaderData) data;
-    final WorldreaderProviderDataNetwork worldreaderProviderData =
-        new WorldreaderProviderDataNetwork(registerData.getUsername(), registerData.getPassword(),
-            registerData.getEmail());
+    final WorldreaderProviderDataNetwork worldreaderProviderData;
+
+    if (data instanceof WorldreaderProviderData.DomainWorldreaderData) {
+      final WorldreaderProviderData.DomainWorldreaderData registerData =
+          (WorldreaderProviderData.DomainWorldreaderData) data;
+      worldreaderProviderData =
+          new WorldreaderProviderDataNetwork(registerData.getUsername(), registerData.getPassword(),
+              registerData.getEmail());
+    } else if (data instanceof ReadToKidsProviderData.DomainReadToKidsData) {
+      final ReadToKidsProviderData.DomainReadToKidsData readToKidsData =
+          (ReadToKidsProviderData.DomainReadToKidsData) data;
+
+      worldreaderProviderData = new WorldreaderProviderDataNetwork(readToKidsData.getUsername(),
+          readToKidsData.getPassword(), readToKidsData.getEmail(),
+          readToKidsData.getActivatorCode(), readToKidsData.getGender(), readToKidsData.getAge());
+    } else {
+      throw new UnsupportedOperationException("Provider data not supported");
+    }
 
     userNetworkDataSource.register(RegisterProviderNetwork.WORLDREADER, worldreaderProviderData,
         new Callback<Optional<UserEntity2>>() {

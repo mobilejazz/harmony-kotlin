@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.FacebookRegisterProviderData;
 import com.worldreader.core.domain.model.user.GoogleProviderData;
+import com.worldreader.core.domain.model.user.ReadToKidsProviderData;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.WorldreaderProviderData;
@@ -56,11 +57,26 @@ import java.util.concurrent.*;
             future.set(isLoggedGoogle);
             break;
           case WORLDREADER:
-            final WorldreaderProviderData.DomainWorldreaderData worldreaderRegisterData =
-                ((WorldreaderProviderData) data).get();
-            final boolean isLoggedWorldreader =
-                repository.login(worldreaderRegisterData.getUsername(),
-                    worldreaderRegisterData.getPassword());
+            final String username;
+            final String password;
+
+            if (data instanceof WorldreaderProviderData) {
+              final WorldreaderProviderData.DomainWorldreaderData worldreaderRegisterData =
+                  ((WorldreaderProviderData) data).get();
+              username = worldreaderRegisterData.getUsername();
+              password = worldreaderRegisterData.getPassword();
+            } else if (data instanceof ReadToKidsProviderData) {
+
+              final ReadToKidsProviderData.DomainReadToKidsData readToKidsData =
+                  ((ReadToKidsProviderData) data).get();
+
+              username = readToKidsData.getUsername();
+              password = readToKidsData.getPassword();
+            } else {
+              throw new UnsupportedOperationException("dataprovider not supported");
+            }
+
+            final boolean isLoggedWorldreader = repository.login(username, password);
             future.set(isLoggedWorldreader);
             break;
         }
