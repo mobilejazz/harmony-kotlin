@@ -23,23 +23,23 @@ import android.view.WindowManager;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.wr.fragments.BookIndexFragment;
-import com.worldreader.reader.wr.fragments.ReadingFragment;
+import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-public abstract class ReadingActivity extends AppCompatActivity
-    implements ReadingFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {
+public abstract class AbstractReaderActivity extends AppCompatActivity
+    implements AbstractReaderFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {
 
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
 
-  private static final String TAG = ReadingActivity.class.getSimpleName();
+  private static final String TAG = AbstractReaderActivity.class.getSimpleName();
 
   private SystemUiHelper systemUiHelper;
-  private ReadingFragment readingFragment;
+  private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;
 
   private View readingContainer;
@@ -47,7 +47,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   @Override protected final void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_reading);
+    setContentView(R.layout.activity_reader);
     onPostCreate();
   }
 
@@ -63,8 +63,8 @@ public abstract class ReadingActivity extends AppCompatActivity
   private void onCreateSystemUiHelper() {
     this.systemUiHelper = new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
       @Override public void onVisibilityChange(boolean visible) {
-        if (readingFragment != null && isVisibleReadingFragment()) {
-          readingFragment.onVisibilityChange(visible);
+        if (abstractReaderFragment != null && isVisibleReadingFragment()) {
+          abstractReaderFragment.onVisibilityChange(visible);
         }
       }
     });
@@ -72,11 +72,11 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   private void onCreateReadingFragment() {
     final Intent intent = getIntent();
-    final String fragmentClass = getIntent().getStringExtra(READING_FRAGMENT_CLASS_KEY);
+    final String fragmentClass = intent.getStringExtra(READING_FRAGMENT_CLASS_KEY);
     try {
       final Class<?> clazz = Class.forName(fragmentClass);
       final Constructor<?> constructor = clazz.getConstructor();
-      final ReadingFragment fragment = ((ReadingFragment) constructor.newInstance());
+      final AbstractReaderFragment fragment = ((AbstractReaderFragment) constructor.newInstance());
       final FragmentManager fm = getSupportFragmentManager();
       fm.beginTransaction().replace(R.id.fragment_reading, fragment).commitNow();
     } catch (Exception e) {
@@ -86,7 +86,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   private void onCreateBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
-    readingFragment = (ReadingFragment) fm.findFragmentById(R.id.fragment_reading);
+    abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
     bookIndexFragment = (BookIndexFragment) fm.findFragmentById(R.id.fragment_book_index);
 
     this.readingContainer = findViewById(R.id.fragment_reading);
@@ -98,13 +98,13 @@ public abstract class ReadingActivity extends AppCompatActivity
   }
 
   @Override public boolean dispatchKeyEvent(KeyEvent event) {
-    return (isVisibleReadingFragment() && readingFragment.dispatchKeyEvent(event)) || super.dispatchKeyEvent(event);
+    return (isVisibleReadingFragment() && abstractReaderFragment.dispatchKeyEvent(event)) || super.dispatchKeyEvent(event);
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (isVisibleReadingFragment()) {
-      readingFragment.onActivityResult(requestCode, resultCode, data);
+      abstractReaderFragment.onActivityResult(requestCode, resultCode, data);
     }
   }
 
@@ -136,16 +136,16 @@ public abstract class ReadingActivity extends AppCompatActivity
   }
 
   public void onMediaButtonEvent(View view) {
-    this.readingFragment.onMediaButtonEvent(view.getId());
+    this.abstractReaderFragment.onMediaButtonEvent(view.getId());
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
-    return readingFragment.onTouchEvent(event);
+    return abstractReaderFragment.onTouchEvent(event);
   }
 
   @Override public void onWindowFocusChanged(boolean hasFocus) {
     if (isVisibleReadingFragment()) {
-      readingFragment.onWindowFocusChanged(hasFocus);
+      abstractReaderFragment.onWindowFocusChanged(hasFocus);
     }
   }
 
@@ -190,7 +190,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
     if (isVisibleReadingFragment()) {
-      readingFragment.onPrepareOptionsMenu(menu);
+      abstractReaderFragment.onPrepareOptionsMenu(menu);
     } else {
       bookIndexFragment.onPrepareOptionsMenu(menu);
     }
@@ -200,7 +200,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     if (isVisibleReadingFragment()) {
-      return readingFragment.onOptionsItemSelected(item);
+      return abstractReaderFragment.onOptionsItemSelected(item);
     } else {
       return bookIndexFragment.onOptionsItemSelected(item);
     }
@@ -208,7 +208,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   @Override public void onOptionsMenuClosed(Menu menu) {
     if (isVisibleReadingFragment()) {
-      readingFragment.onOptionsMenuClosed(menu);
+      abstractReaderFragment.onOptionsMenuClosed(menu);
     } else {
       bookIndexFragment.onOptionsMenuClosed(menu);
     }
@@ -219,7 +219,7 @@ public abstract class ReadingActivity extends AppCompatActivity
   ///////////////////////////////////////////////////////////////////////////
 
   @Override public boolean onSearchRequested() {
-    //readingFragment.onSearchRequested();
+    //abstractReaderFragment.onSearchRequested();
     return true;
   }
 
@@ -256,7 +256,7 @@ public abstract class ReadingActivity extends AppCompatActivity
 
   @Override public void onBookSectionSelected(TocEntry tocEntry) {
     showBookReadingFragment();
-    readingFragment.onNavigateToTocEntry(tocEntry);
+    abstractReaderFragment.onNavigateToTocEntry(tocEntry);
   }
 
   @Override public void onClickBackButton() {

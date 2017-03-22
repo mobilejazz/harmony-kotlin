@@ -11,6 +11,7 @@ import retrofit.client.Response;
 
 import javax.inject.Inject;
 
+@Deprecated
 public class DictionaryNetworkDataSourceImpl implements DictionaryNetworkDataSource {
 
   private DictionaryApiService dictionaryApiService;

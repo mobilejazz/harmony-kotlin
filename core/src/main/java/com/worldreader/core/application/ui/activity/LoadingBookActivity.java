@@ -204,8 +204,6 @@ public abstract class LoadingBookActivity extends AppCompatActivity
 
   private void openReader(BookMetadata bookMetadata) {
     navigateToReadingAcivity(bookMetadata);
-    //navigator.navigateToReadingAcivity(LoadingBookActivity.this, bookMetadata);
-    //finish();
   }
   //endregion
 

@@ -93,7 +93,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StreamingTextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
-import com.worldreader.reader.wr.activities.ReadingActivity;
+import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
@@ -119,13 +119,13 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-public abstract class ReadingFragment extends Fragment
+public abstract class AbstractReaderFragment extends Fragment
     implements BookViewListener, TextSelectionCallback, ActionModeListener, SystemUiHelper.OnVisibilityChangeListener {
 
   public static final String CHANGE_FONT_KEY = "change_font_key";
   public static final String CHANGE_BACKGROUND_KEY = "change.background.key";
 
-  private static final String TAG = ReadingFragment.class.getSimpleName();
+  private static final String TAG = AbstractReaderFragment.class.getSimpleName();
   private static final String POS_KEY = "offset:";
   private static final String IDX_KEY = "index:";
   private static final String DEFAULT_BOOK_LANGUAGE = "en";
@@ -283,7 +283,7 @@ public abstract class ReadingFragment extends Fragment
     // Load metadata
     Intent intent = getActivity().getIntent();
     if (intent != null) {
-      bookMetadata = (BookMetadata) intent.getSerializableExtra(ReadingActivity.BOOK_METADATA_KEY);
+      bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
       onGamificationInitialize();
 
       if (bookMetadata.getCollectionId() > 0) {
@@ -318,7 +318,7 @@ public abstract class ReadingFragment extends Fragment
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.reading_fragment, container, false);
+    return inflater.inflate(R.layout.fragment_reader, container, false);
   }
 
   @Override public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -369,7 +369,7 @@ public abstract class ReadingFragment extends Fragment
 
     this.textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
       @Override public void onInit(int status) {
-        ReadingFragment.this.onTextToSpeechInit(status);
+        AbstractReaderFragment.this.onTextToSpeechInit(status);
       }
     });
 
@@ -416,7 +416,7 @@ public abstract class ReadingFragment extends Fragment
 
     View.OnTouchListener gestureListener = new View.OnTouchListener() {
       @Override public boolean onTouch(View v, MotionEvent event) {
-        return !ReadingFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
+        return !AbstractReaderFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
       }
     };
 
@@ -435,7 +435,7 @@ public abstract class ReadingFragment extends Fragment
       this.mediaLayout.setVisibility(View.VISIBLE);
       this.ttsPlaybackItemQueue.updateSpeechCompletedCallbacks(new SpeechCompletedCallback() {
         @Override public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
-          ReadingFragment.this.speechCompleted(item, mediaPlayer);
+          AbstractReaderFragment.this.speechCompleted(item, mediaPlayer);
         }
       });
       uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
@@ -627,7 +627,7 @@ public abstract class ReadingFragment extends Fragment
 
   private SystemUiHelper getSystemUiHelper() {
     if (getActivity() != null) {
-      return ((ReadingActivity) getActivity()).getSystemUiHelper();
+      return ((AbstractReaderActivity) getActivity()).getSystemUiHelper();
     }
     return null;
   }
@@ -650,7 +650,7 @@ public abstract class ReadingFragment extends Fragment
     textLoader.closeCurrentBook();
 
     final Intent intent = getActivity().getIntent();
-    intent.putExtra(ReadingActivity.BOOK_METADATA_KEY, this.bookMetadata);
+    intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, this.bookMetadata);
     intent.putExtra(CHANGE_FONT_KEY, isChangedFont);
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
@@ -878,7 +878,7 @@ public abstract class ReadingFragment extends Fragment
   private void streamTTSToDisk() {
     new Thread(new Runnable() {
       @Override public void run() {
-        ReadingFragment.this.doStreamTTSToDisk();
+        AbstractReaderFragment.this.doStreamTTSToDisk();
       }
     }).start();
   }
@@ -985,11 +985,11 @@ public abstract class ReadingFragment extends Fragment
     uiHandler.post(new Runnable() {
       @Override public void run() {
 
-        ReadingFragment.this.stopTextToSpeech();
-        ReadingFragment.this.closeWaitDialog();
+        AbstractReaderFragment.this.stopTextToSpeech();
+        AbstractReaderFragment.this.closeWaitDialog();
 
-        if (ReadingFragment.this.isAdded()) {
-          StringBuilder textBuilder = new StringBuilder(ReadingFragment.this.getString(R.string.tts_failed));
+        if (AbstractReaderFragment.this.isAdded()) {
+          StringBuilder textBuilder = new StringBuilder(AbstractReaderFragment.this.getString(R.string.tts_failed));
           textBuilder.append("\n").append(message);
 
           Toast.makeText(context, textBuilder.toString(), Toast.LENGTH_SHORT).show();
@@ -1029,7 +1029,7 @@ public abstract class ReadingFragment extends Fragment
 
     this.uiHandler.post(new Runnable() {
       @Override public void run() {
-        ReadingFragment.this.closeWaitDialog();
+        AbstractReaderFragment.this.closeWaitDialog();
       }
     });
 
@@ -1060,7 +1060,7 @@ public abstract class ReadingFragment extends Fragment
       if (item.isLastElementOfPage()) {
         this.uiHandler.post(new Runnable() {
           @Override public void run() {
-            ReadingFragment.this.pageDown(Orientation.VERTICAL);
+            AbstractReaderFragment.this.pageDown(Orientation.VERTICAL);
           }
         });
       }
@@ -1088,7 +1088,7 @@ public abstract class ReadingFragment extends Fragment
       this.textToSpeech.setSpeechRate(0.7f);
       this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
         @Override public void onUtteranceCompleted(String wavFile) {
-          ReadingFragment.this.onStreamingCompleted(wavFile);
+          AbstractReaderFragment.this.onStreamingCompleted(wavFile);
         }
       });
     } else {
@@ -1115,7 +1115,7 @@ public abstract class ReadingFragment extends Fragment
 
     item.setOnSpeechCompletedCallback(new SpeechCompletedCallback() {
       @Override public void speechCompleted(TTSPlaybackItem item1, MediaPlayer mediaPlayer) {
-        ReadingFragment.this.speechCompleted(item1, mediaPlayer);
+        AbstractReaderFragment.this.speechCompleted(item1, mediaPlayer);
       }
     });
     uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
@@ -1792,7 +1792,7 @@ public abstract class ReadingFragment extends Fragment
 
       uiHandler.post(new Runnable() {
         @Override public void run() {
-          ReadingFragment.this.doAutoScroll();
+          AbstractReaderFragment.this.doAutoScroll();
         }
       });
     } catch (IllegalStateException is) {
@@ -1816,7 +1816,7 @@ public abstract class ReadingFragment extends Fragment
 
         uiHandler.postDelayed(new Runnable() {
           @Override public void run() {
-            ReadingFragment.this.doAutoScroll();
+            AbstractReaderFragment.this.doAutoScroll();
           }
         }, anim.getAnimationSpeed() * 2);
       }
@@ -1919,7 +1919,7 @@ public abstract class ReadingFragment extends Fragment
 
     uiHandler.post(new Runnable() {
       @Override public void run() {
-        ReadingFragment.this.doPageCurl(animator);
+        AbstractReaderFragment.this.doPageCurl(animator);
       }
     });
 
@@ -1954,7 +1954,7 @@ public abstract class ReadingFragment extends Fragment
 
       uiHandler.postDelayed(new Runnable() {
         @Override public void run() {
-          ReadingFragment.this.doPageCurl(animator);
+          AbstractReaderFragment.this.doPageCurl(animator);
         }
       }, delay);
     }
@@ -2128,7 +2128,7 @@ public abstract class ReadingFragment extends Fragment
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // ReadingActivity Callbacks
+  // AbstractReaderActivity Callbacks
   ///////////////////////////////////////////////////////////////////////////
 
   @Override public void onCreateActionMode() {
