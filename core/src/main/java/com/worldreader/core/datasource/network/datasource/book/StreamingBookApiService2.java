@@ -15,11 +15,9 @@ public interface StreamingBookApiService2 {
 
   @GET Call<ResponseBody> getBookResource(@Url String url);
 
-  @GET("/books/{id}/{version}/content/META-INF/container.xml")
-  Call<ContentOpfLocationEntity> getContentOpfLocationEntity(@Path("id") String id,
+  @GET("/books/{id}/{version}/content/META-INF/container.xml") Call<ContentOpfLocationEntity> getContentOpfLocationEntity(@Path("id") String id,
       @Path("version") String version);
 
-  @GET("/books/{id}/{version}/content/{resource}") Call<ContentOpfEntity> getContentOpfEntity(
-      @Path("id") String id, @Path("version") String version,
+  @GET("/books/{id}/{version}/content/{resource}") Call<ContentOpfEntity> getContentOpfEntity(@Path("id") String id, @Path("version") String version,
       @Path(value = "resource", encoded = true) String resource);
 }

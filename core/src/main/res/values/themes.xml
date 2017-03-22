@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="Theme.Reader" parent="Theme.AppCompat.Light">
+    <item name="colorPrimary">?android:colorBackground</item>
+
+    <item name="android:textColorPrimary">@color/font_gray</item>
+    <item name="actionMenuTextColor">@color/font_gray</item>
+    <item name="android:textColorSecondary">@color/font_gray</item>
+
+    <item name="android:dialogTheme">@style/Theme.Reader.DialogTheme</item>
+
+    <item name="md_dark_theme">false</item>
+    <item name="md_positive_color">@color/colorPrimary</item>
+    <item name="md_negative_color">@color/colorPrimary</item>
+    <item name="md_neutral_color">@color/colorPrimary</item>
+    <item name="md_widget_color">@color/colorPrimary</item>
+
+    <item name="discreteSeekBarStyle">@style/Theme.Reader.SeekBar</item>
+
+    <item name="android:textSelectHandleLeft">@drawable/ic_selector_left</item>
+    <item name="android:textSelectHandleRight">@drawable/ic_selector_right</item>
+
+    <item name="android:alertDialogTheme">@style/Theme.Reader.Dialog.Alert</item>
+  </style>
+
+  <style name="Theme.Reader.DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
+
+  <style name="Theme.Reader.SeekBar" parent="">
+    <item name="dsb_indicatorPopupEnabled">false</item>
+    <item name="dsb_indicatorColor">@color/colorPrimary</item>
+    <item name="dsb_progressColor">@color/colorPrimary</item>
+    <item name="dsb_rippleColor">@color/colorPrimary</item>
+  </style>
+
+  <style name="Theme.Reader.Dialog.Alert" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
+
+</resources>

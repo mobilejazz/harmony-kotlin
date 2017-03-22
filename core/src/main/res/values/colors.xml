@@ -66,6 +66,7 @@
   <color name="reader_settings_brightness_manual">@color/font_gray</color>
   <color name="reader_settings_brightness_automatic">@color/colorPrimary</color>
   <color name="reader_settings_status_pressed">#664A4A4A</color>
+  <color name="ic_selector">#4A90E2</color>
 
   <!--Tutorial -->
   <color name="tutorial_button_one_blue">#103E99</color>

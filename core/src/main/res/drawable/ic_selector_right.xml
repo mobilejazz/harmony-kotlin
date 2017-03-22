@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportHeight="18"
+    android:viewportWidth="18">
+
+  <group
+      android:translateX="-192.000000"
+      android:translateY="-253.000000">
+    <group
+        android:translateX="113.000000"
+        android:translateY="253.000000">
+      <path
+          android:name="ic_selector_right"
+          android:fillColor="@color/ic_selector"
+          android:pathData="M88,18 C92.9705627,18 97,13.9705627 97,9 C97,4.02943725 92.9705627,0 88,0 L79,0
+L79,9 C79,13.9705627 83.0294373,18 88,18 Z" />
+    </group>
+  </group>
+</vector>
