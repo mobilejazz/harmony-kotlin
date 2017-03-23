@@ -16,6 +16,7 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.interactors.application.SaveOnBoardingPassedInteractor;
 import com.worldreader.core.domain.interactors.application.SaveSessionInteractor;
 import com.worldreader.core.domain.interactors.application.SaveUserRegisteredTypeInteractor;
+import com.worldreader.core.domain.interactors.oauth.PutUserTokenInteractor;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
@@ -33,6 +34,7 @@ import java.util.concurrent.*;
   private final SaveSessionInteractor saveSessionInteractor;
   private final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor;
   private final SaveUserRegisteredTypeInteractor saveUserRegisteredTypeInteractor;
+  private final PutUserTokenInteractor putUserTokenInteractor;
   private final Dates dateUtils;
 
   @Inject public LogInUserProcessInteractor(final ListeningExecutorService executor,
@@ -41,7 +43,7 @@ import java.util.concurrent.*;
       final SaveSessionInteractor saveSessionInteractor,
       final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor,
       final SaveUserRegisteredTypeInteractor saveUserRegisteredTypeInteractor,
-      final Dates dateUtils) {
+      final PutUserTokenInteractor putUserTokenInteractor, final Dates dateUtils) {
     this.executor = executor;
     this.loginUserInteractor = loginUserInteractor;
     this.getUserInteractor = getUserInteractor;
@@ -49,7 +51,67 @@ import java.util.concurrent.*;
     this.saveSessionInteractor = saveSessionInteractor;
     this.saveOnBoardingPassedInteractor = saveOnBoardingPassedInteractor;
     this.saveUserRegisteredTypeInteractor = saveUserRegisteredTypeInteractor;
+    this.putUserTokenInteractor = putUserTokenInteractor;
     this.dateUtils = dateUtils;
+  }
+
+  public ListenableFuture<User2> execute(final String userToken) {
+    final SettableFuture<User2> future = SettableFuture.create();
+
+    executor.execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+        Preconditions.checkNotNull(userToken, "userToken == null");
+
+        final ListenableFuture<Void> putUserTokenFuture =
+            putUserTokenInteractor.execute(userToken, MoreExecutors.directExecutor());
+
+        final ListenableFuture<User2> getUserFuture =
+            Futures.whenAllSucceed(putUserTokenFuture).callAsync(new AsyncCallable<User2>() {
+              @Override public ListenableFuture<User2> call() throws Exception {
+                return getUserInteractor.execute();
+              }
+            });
+
+        // Combine with SaveUser
+        final ListenableFuture<User2> saveUserFuture =
+            Futures.whenAllSucceed(getUserFuture).callAsync(new AsyncCallable<User2>() {
+              @Override public ListenableFuture<User2> call() throws Exception {
+                final User2 user = getUserFuture.get();
+                final SaveUserInteractor.Type type = SaveUserInteractor.Type.LOGGED_IN;
+                return saveUserInteractor.execute(user, type);
+              }
+            });
+
+        // After saving the user kickoff the onboarding
+        final ListenableFuture<User2> loginUserProcessFuture =
+            Futures.whenAllSucceed(saveUserFuture).call(new Callable<User2>() {
+              @Override public User2 call() throws Exception {
+                saveOnBoardingPassedInteractor.execute(true);
+                saveSessionInteractor.execute(dateUtils.today());
+                saveUserRegisteredTypeInteractor.execute(
+                    GetUserRegisteredTypeInteractor.UserRegisteredType.WORLDREADER,
+                    MoreExecutors.directExecutor());
+                return saveUserFuture.get();
+              }
+            });
+
+        Futures.addCallback(loginUserProcessFuture, new FutureCallback<User2>() {
+          @Override public void onSuccess(@Nullable final User2 user) {
+            future.set(user);
+          }
+
+          @Override public void onFailure(@NonNull final Throwable t) {
+            future.setException(t);
+          }
+        });
+      }
+
+      @Override protected void onExceptionThrown(@NonNull final Throwable t) {
+        future.setException(t);
+      }
+    });
+
+    return future;
   }
 
   public ListenableFuture<User2> execute(final RegisterProvider provider,
