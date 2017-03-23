@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource;
 
+import com.google.gson.Gson;
 import com.worldreader.core.datasource.mapper.OAuthEntityDataMapper;
 import com.worldreader.core.datasource.network.datasource.oauth.OAuthNetworkDataSource;
 import com.worldreader.core.datasource.network.model.OAuthNetworkResponseEntity;
@@ -20,13 +21,15 @@ public class OAuthDataSource implements OAuthRepository {
   private final OAuthNetworkDataSource networkDataSource;
   private final OAuthBdDataSource bdDataSource;
   private final OAuthEntityDataMapper mapper;
+  private final Gson gson;
 
   @Inject
   public OAuthDataSource(OAuthNetworkDataSource networkDataSource, OAuthBdDataSource bdDataSource,
-      OAuthEntityDataMapper mapper) {
+      OAuthEntityDataMapper mapper, final Gson gson) {
     this.networkDataSource = networkDataSource;
     this.bdDataSource = bdDataSource;
     this.mapper = mapper;
+    this.gson = gson;
   }
 
   @Override public synchronized OAuthResponse applicationToken() {
@@ -77,6 +80,17 @@ public class OAuthDataSource implements OAuthRepository {
       return false;
     } else {
       bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, userToken);
+      return true;
+    }
+  }
+
+  @Override public boolean putUserToken(final String value) {
+    final OAuthNetworkResponseEntity token = gson.fromJson(value, OAuthNetworkResponseEntity.class);
+
+    if (token == null) {
+      return false;
+    } else {
+      bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, token);
       return true;
     }
   }
