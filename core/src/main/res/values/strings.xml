@@ -152,4 +152,6 @@
   <string name="ls_error_signup_network_title">Network unavailable</string>
   <string name="ls_error_definition_not_internet">Sorry, you need to be connected to the internet to search for a definition.</string>
   <string name="ls_error_tts_not_internet">Sorry, you need to be connected to the internet to Read out loud.</string>
+
+    <string name="ls_book_detail_recommended">From The Same Category</string>
 </resources>

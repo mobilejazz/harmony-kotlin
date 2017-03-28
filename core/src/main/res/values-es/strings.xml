@@ -163,4 +163,6 @@
   <string name="ls_error_definition_not_internet">Lo sentimos, tienes que estar conectado a Internet para buscar una definición.</string>
   <string name="ls_error_tts_not_internet">Lo sentimos, tienes que estar conectado a Internet para Leer en voz alta.</string>
 
+    <string name="ls_book_detail_recommended">De la misma categoría</string>
+
 </resources>

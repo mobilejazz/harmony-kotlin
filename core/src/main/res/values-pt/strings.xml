@@ -155,4 +155,6 @@
     <string name="ls_tutorial_skip_btn">Pular o tutorial</string>
     <string name="ls_tutorial_next_btn">Próximo</string>
 
+    <string name="ls_book_detail_recommended">Da mesma categoria</string>
+
 </resources>

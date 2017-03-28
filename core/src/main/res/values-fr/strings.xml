@@ -155,4 +155,6 @@
     <string name="ls_tutorial_skip_btn">Passer le didacticiel</string>
     <string name="ls_tutorial_next_btn">Suivant</string>
 
+    <string name="ls_book_detail_recommended">Vous aimerez peut-être</string>
+
 </resources>
