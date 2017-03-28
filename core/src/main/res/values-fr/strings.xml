@@ -157,4 +157,6 @@
 
     <string name="ls_book_detail_recommended">Vous aimerez peut-être</string>
 
+    <string name="ls_my_library_currently_reading">Mes livres</string>
+
 </resources>

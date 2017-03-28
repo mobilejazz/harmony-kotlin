@@ -165,4 +165,6 @@
 
     <string name="ls_book_detail_recommended">De la misma categoría</string>
 
+    <string name="ls_my_library_currently_reading">Mis libros</string>
+
 </resources>

@@ -154,4 +154,7 @@
   <string name="ls_error_tts_not_internet">Sorry, you need to be connected to the internet to Read out loud.</string>
 
     <string name="ls_book_detail_recommended">From The Same Category</string>
+    <string name="ls_my_library_currently_reading">My Books</string>
+
+
 </resources>
