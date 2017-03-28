@@ -159,4 +159,8 @@
 
     <string name="ls_my_library_currently_reading">Mes livres</string>
 
+    <string name="ls_login_forgot_password">Vous avez oublié votre mot de passe ?</string>
+
+    <string name="ls_login_btn_title">Commencer à lire</string>
+
 </resources>

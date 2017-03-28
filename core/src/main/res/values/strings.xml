@@ -156,5 +156,8 @@
     <string name="ls_book_detail_recommended">From The Same Category</string>
     <string name="ls_my_library_currently_reading">My Books</string>
 
+    <string name="ls_login_forgot_password">Forgot your password?</string>
+
+    <string name="ls_login_btn_title">Start Reading</string>
 
 </resources>

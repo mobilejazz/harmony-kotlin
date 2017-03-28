@@ -156,7 +156,8 @@
     <string name="ls_tutorial_next_btn">Próximo</string>
 
     <string name="ls_book_detail_recommended">Da mesma categoria</string>
-
     <string name="ls_my_library_currently_reading">Meus livros</string>
+    <string name="ls_login_forgot_password">Esqueceu sua senha?</string>
+    <string name="ls_login_btn_title">Começar a ler</string>
 
 </resources>
