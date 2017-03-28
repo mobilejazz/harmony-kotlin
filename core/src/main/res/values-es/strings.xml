@@ -171,4 +171,8 @@
 
     <string name="ls_login_btn_title">Empieza a leer</string>
 
+    <string name="ls_category_detail_most_popular">Más popular</string>
+    <string name="ls_category_detail_highest_rated">Mejor valorado</string>
+    <string name="ls_my_library_new_releases">Nuevos lanzamientos</string>
+
 </resources>

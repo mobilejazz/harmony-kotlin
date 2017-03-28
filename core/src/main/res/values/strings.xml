@@ -160,4 +160,8 @@
 
     <string name="ls_login_btn_title">Start Reading</string>
 
+    <string name="ls_category_detail_most_popular">Most Popular</string>
+    <string name="ls_category_detail_highest_rated">Highest Rated</string>
+    <string name="ls_my_library_new_releases">New Releases</string>
+
 </resources>

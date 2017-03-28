@@ -156,11 +156,11 @@
     <string name="ls_tutorial_next_btn">Suivant</string>
 
     <string name="ls_book_detail_recommended">Vous aimerez peut-être</string>
-
     <string name="ls_my_library_currently_reading">Mes livres</string>
-
     <string name="ls_login_forgot_password">Vous avez oublié votre mot de passe ?</string>
-
     <string name="ls_login_btn_title">Commencer à lire</string>
+    <string name="ls_category_detail_most_popular">Les plus populaires</string>
+    <string name="ls_category_detail_highest_rated">Les mieux notés</string>
+    <string name="ls_my_library_new_releases">Nouvelles sorties</string>
 
 </resources>

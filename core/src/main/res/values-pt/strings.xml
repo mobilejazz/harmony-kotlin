@@ -159,5 +159,8 @@
     <string name="ls_my_library_currently_reading">Meus livros</string>
     <string name="ls_login_forgot_password">Esqueceu sua senha?</string>
     <string name="ls_login_btn_title">Começar a ler</string>
+    <string name="ls_category_detail_most_popular">Mais populares</string>
+    <string name="ls_category_detail_highest_rated">Melhor classificados</string>
+    <string name="ls_my_library_new_releases">Novos lançamentos</string>
 
 </resources>
