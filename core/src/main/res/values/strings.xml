@@ -103,7 +103,13 @@
   <string name="ls_tutorial_reader_options_message">Change reading options such as brightness, page colour and font size.</string>
   <string name="ls_tutorial_reader_index_title">Want a specific page?</string>
   <string name="ls_tutorial_reader_index_message">"Use the <b>table of contents</b> to see chapters and navigate through the book."</string>
-  <!--#Book Reading Screen-->
+
+    <!--#Tutorial Default texts-->
+    <string name="ls_tutorial_got_it_btn">Ok, got it!</string>
+    <string name="ls_tutorial_skip_btn">Skip tutorial</string>
+    <string name="ls_tutorial_next_btn">Next</string>
+
+    <!--#Book Reading Screen-->
   <string name="ls_book_reading_font_size_smallest">Smallest (12pt)</string>
   <string name="ls_book_reading_font_size_small">Small (14pt)</string>
   <string name="ls_book_reading_font_size_normal">Normal (18pt)</string>

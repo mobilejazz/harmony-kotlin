@@ -141,4 +141,18 @@
   <string name="ls_error_definition_not_internet">Desculpe, você precisa estar conectado à internet para pesquisar uma definição.</string>
   <string name="ls_error_tts_not_internet">Desculpe, você precisa estar conectado à internet para a leitura em voz alta.</string>
 
+    <string name="ls_offline_books_catalog_outdated_title">Livros off-line</string>
+    <string name="ls_offline_books_catalog_outdated_description">Seus livros off-line estão
+        desatualizados. A fim de continuar a leitura offline, você deve atualizar agora ou quando
+        você tem uma boa ligação à Internet.\n\n<b>Nota:</b>Se você optar por atualizar mais tarde,
+        os livros desatualizados serão removidos. Os livros estarão disponíveis para baixar de novo
+        se você escolher.
+    </string>
+    <string name="ls_offline_books_catalog_outdated_update">Atualizar</string>
+
+    <!--#Tutorial Default texts-->
+    <string name="ls_tutorial_got_it_btn">OK, entendi!</string>
+    <string name="ls_tutorial_skip_btn">Pular o tutorial</string>
+    <string name="ls_tutorial_next_btn">Próximo</string>
+
 </resources>

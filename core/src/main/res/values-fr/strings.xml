@@ -141,4 +141,18 @@
   <string name="ls_error_definition_not_internet">Maheureusement, vous devez être connecté(e) à Internet pour chercher une définition.</string>
   <string name="ls_error_tts_not_internet">Malheureusement, vous devez être connecté(e) à Internet pour lire à voix haute.</string>
 
+    <string name="ls_offline_books_catalog_outdated_title">Offline Books Mise à jour</string>
+    <string name="ls_offline_books_catalog_outdated_description">Vos hors livres sont obsolètes.
+        Afin de continuer hors de lecture, vous devez mettre à jour maintenant ou lorsque vous avez
+        une bonne connexion Internet.\n\n<b>Remarque:</b>Si vous choisissez de mettre à jour plus
+        tard, les livres obsolètes seront supprimés. Les livres seront disponibles pour télécharger
+        à nouveau si vous choisissez.
+    </string>
+    <string name="ls_offline_books_catalog_outdated_update">Mettre à jour</string>
+
+    <!--#Tutorial Default texts-->
+    <string name="ls_tutorial_got_it_btn">Ok, compris !</string>
+    <string name="ls_tutorial_skip_btn">Passer le didacticiel</string>
+    <string name="ls_tutorial_next_btn">Suivant</string>
+
 </resources>
