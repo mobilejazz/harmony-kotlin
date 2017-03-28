@@ -6,10 +6,9 @@ import com.worldreader.core.datasource.model.user.userbooks.UserBookEntity;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 
-import java.util.*;
+import java.util.List;
 
-public interface UserBooksNetworkDataSource
-    extends Repository.Network<UserBookEntity, RepositorySpecification> {
+public interface UserBooksNetworkDataSource extends Repository.Network<UserBookEntity, RepositorySpecification> {
 
   void userBooks(Callback<Optional<List<UserBookEntity>>> callback);
 
@@ -21,14 +20,11 @@ public interface UserBooksNetworkDataSource
 
   void deleteUserBook(UserBookEntity userBookEntity, Callback<Optional<Void>> callback);
 
-  void updateBookReadingStats(UserBookEntity userBookEntity,
-      Callback<Optional<UserBookEntity>> callback);
+  void updateBookReadingStats(UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
-  void markBookAsFavorite(UserBookEntity userBookEntity,
-      Callback<Optional<UserBookEntity>> callback);
+  void markBookAsInMyBooks(UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
-  void removeBookAsFavorite(UserBookEntity userBookEntity,
-      Callback<Optional<UserBookEntity>> callback);
+  void removeBookAsInMyBooks(UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
   void isBookLiked(UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
@@ -40,10 +36,8 @@ public interface UserBooksNetworkDataSource
 
   void unfinishBook(UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
-  void assignCollection(String collectionId, UserBookEntity userBookEntity,
-      Callback<Optional<UserBookEntity>> callback);
+  void assignCollection(String collectionId, UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
-  void unassignCollection(String collectionId, UserBookEntity userBookEntity,
-      Callback<Optional<UserBookEntity>> callback);
+  void unassignCollection(String collectionId, UserBookEntity userBookEntity, Callback<Optional<UserBookEntity>> callback);
 
 }

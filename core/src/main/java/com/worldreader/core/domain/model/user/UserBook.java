@@ -11,7 +11,7 @@ import java.util.*;
   private String userId;
   private String bookId;
   private List<String> collectionIds;
-  private boolean favorite;
+  private boolean inMyBooks;
   private String bookmark;
   private boolean finished;
   private Date saveOfflineAt;
@@ -21,13 +21,13 @@ import java.util.*;
   private Date createdAt;
   private Date updatedAt;
 
-  private UserBook(int id, String userId, String bookId, boolean favorite, String bookmark,
+  private UserBook(int id, String userId, String bookId, boolean inMyBooks, String bookmark,
       boolean finished, Date saveOfflineAt, int rating, boolean liked, final boolean isSynchronized,
       List<String> collectionIds, Date createdAt, Date updatedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
-    this.favorite = favorite;
+    this.inMyBooks = inMyBooks;
     this.bookmark = bookmark;
     this.finished = finished;
     this.saveOfflineAt = saveOfflineAt;
@@ -51,8 +51,8 @@ import java.util.*;
     return bookId;
   }
 
-  public boolean isFavorite() {
-    return favorite;
+  public boolean isInMyBooks() {
+    return inMyBooks;
   }
 
   public String getBookmark() {
@@ -101,7 +101,7 @@ import java.util.*;
     private String userId;
     private String bookId;
     private List<String> collectionIds;
-    private boolean favorite;
+    private boolean inMyBooks;
     private String bookmark;
     private boolean finished;
     private Date saveOfflineAt;
@@ -129,8 +129,8 @@ import java.util.*;
       return this;
     }
 
-    public Builder setFavorite(boolean favorite) {
-      this.favorite = favorite;
+    public Builder setInMyBooks(boolean inMyBooks) {
+      this.inMyBooks = inMyBooks;
       return this;
     }
 
@@ -180,7 +180,7 @@ import java.util.*;
     }
 
     public UserBook build() {
-      return new UserBook(id, userId, bookId, favorite, bookmark, finished, saveOfflineAt, rating,
+      return new UserBook(id, userId, bookId, inMyBooks, bookmark, finished, saveOfflineAt, rating,
           liked, isSynchronized, collectionIds, createdAt, updatedAt);
     }
   }

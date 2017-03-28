@@ -29,7 +29,7 @@ import java.util.*;
       final UserBookEntity entity = new UserBookEntity.Builder().setId(raw.getId())
           .setUserId(raw.getUserId())
           .setBookId(raw.getBookId())
-          .setFavorite(raw.isFavorite())
+          .setInMyBooks(raw.isFavorite())
           .setBookmark(raw.getBookmark())
           .setFinished(raw.isFinished())
           .setSaveOfflineAt(toDate(raw.getSaveOfflineAt()))

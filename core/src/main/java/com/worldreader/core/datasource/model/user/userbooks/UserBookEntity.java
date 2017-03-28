@@ -10,7 +10,7 @@ import java.util.*;
   private int id;
   private String userId;
   private String bookId;
-  private boolean favorite;
+  private boolean inMyBooks;
   private String bookmark;
   private List<String> collectionIds;
   private boolean finished;
@@ -21,13 +21,13 @@ import java.util.*;
   private Date createdAt;
   private Date updatedAt;
 
-  private UserBookEntity(int id, String userId, String bookId, boolean favorite, String bookmark,
+  private UserBookEntity(int id, String userId, String bookId, boolean inMyBooks, String bookmark,
       boolean finished, Date saveOfflineAt, int rating, boolean liked, final boolean isSynchronized,
       Date createdAt, List<String> collectionIds, Date updatedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
-    this.favorite = favorite;
+    this.inMyBooks = inMyBooks;
     this.bookmark = bookmark;
     this.finished = finished;
     this.saveOfflineAt = saveOfflineAt;
@@ -51,8 +51,8 @@ import java.util.*;
     return bookId;
   }
 
-  public boolean isFavorite() {
-    return favorite;
+  public boolean isInMyBooks() {
+    return inMyBooks;
   }
 
   public String getBookmark() {
@@ -107,7 +107,7 @@ import java.util.*;
     return new Builder().setId(toCopy.getId())
         .setUserId(toCopy.getUserId())
         .setBookId(toCopy.getBookId())
-        .setFavorite(toCopy.isFavorite())
+        .setInMyBooks(toCopy.isInMyBooks())
         .setCollectionIds(toCopy.getCollectionIds())
         .setBookmark(toCopy.getBookmark())
         .setFinished(toCopy.isFinished())
@@ -126,7 +126,7 @@ import java.util.*;
     private String userId;
     private String bookId;
     private List<String> collectionIds;
-    private boolean favorite;
+    private boolean inMyBooks;
     private String bookmark;
     private boolean finished;
     private Date saveOfflineAt;
@@ -144,7 +144,7 @@ import java.util.*;
       this.userId = userBookEntity.getUserId();
       this.bookId = userBookEntity.getBookId();
       this.collectionIds = userBookEntity.getCollectionIds();
-      this.favorite = userBookEntity.isFavorite();
+      this.inMyBooks = userBookEntity.isInMyBooks();
       this.bookmark = userBookEntity.getBookmark();
       this.finished = userBookEntity.isFinished();
       this.saveOfflineAt = userBookEntity.getSaveOfflineAt();
@@ -170,8 +170,8 @@ import java.util.*;
       return this;
     }
 
-    public Builder setFavorite(boolean favorite) {
-      this.favorite = favorite;
+    public Builder setInMyBooks(boolean inMyBooks) {
+      this.inMyBooks = inMyBooks;
       return this;
     }
 
@@ -221,7 +221,7 @@ import java.util.*;
     }
 
     public UserBookEntity build() {
-      return new UserBookEntity(id, userId, bookId, favorite, bookmark, finished, saveOfflineAt,
+      return new UserBookEntity(id, userId, bookId, inMyBooks, bookmark, finished, saveOfflineAt,
           rating, liked, isSynchronized, createdAt, collectionIds, updatedAt);
     }
   }

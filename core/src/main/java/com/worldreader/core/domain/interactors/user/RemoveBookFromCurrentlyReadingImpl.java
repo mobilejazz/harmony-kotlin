@@ -72,13 +72,13 @@ public class RemoveBookFromCurrentlyReadingImpl extends AbstractInteractor<Boole
 
   //region Private methods
   private void executeLogic(final String bookId, final Callback<Boolean> callback) {
-    userBooksRepository.unfavorite(bookId, new Callback<Optional<UserBook>>() {
+    userBooksRepository.unmarkInMyBooks(bookId, new Callback<Optional<UserBook>>() {
       @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
         if (userBookOptional.isPresent()) {
           final UserBook userBook = userBookOptional.get();
 
           if (callback != null) {
-            callback.onSuccess(!userBook.isFavorite());
+            callback.onSuccess(!userBook.isInMyBooks());
           }
         } else {
           if (callback != null) {

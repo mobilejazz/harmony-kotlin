@@ -28,7 +28,7 @@ import java.util.*;
       final UserBookDb entity = new UserBookDb.Builder().withId(raw.getId())
           .withUserId(raw.getUserId())
           .withBookId(raw.getBookId())
-          .withFavorite(raw.isFavorite())
+          .withFavorite(raw.isInMyBooks())
           .withBookmark(raw.getBookmark())
           .withFinished(raw.isFinished())
           .withSaveOfflineAt(

@@ -50,23 +50,23 @@ public class UserBooksOfflineNetworkDataSource implements UserBooksNetworkDataSo
     }
   }
 
-  @Override public void markBookAsFavorite(final UserBookEntity userBookEntity,
+  @Override public void markBookAsInMyBooks(final UserBookEntity userBookEntity,
       final Callback<Optional<UserBookEntity>> callback) {
     updateAttributeUpdateAt(userBookEntity);
 
     final UserBookEntity response =
-        new UserBookEntity.Builder(userBookEntity).setFavorite(true).setSynchronized(false).build();
+        new UserBookEntity.Builder(userBookEntity).setInMyBooks(true).setSynchronized(false).build();
 
     notifySuccessResponse(callback, response);
   }
 
-  @Override public void removeBookAsFavorite(final UserBookEntity userBookEntity,
+  @Override public void removeBookAsInMyBooks(final UserBookEntity userBookEntity,
       final Callback<Optional<UserBookEntity>> callback) {
     updateAttributeUpdateAt(userBookEntity);
 
     final UserBookEntity response =
         new UserBookEntity.Builder(userBookEntity).setSynchronized(false)
-            .setFavorite(false)
+            .setInMyBooks(false)
             .build();
 
     notifySuccessResponse(callback, response);

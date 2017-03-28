@@ -22,7 +22,7 @@ import javax.inject.Singleton;
       final UserBookEntity entity = new UserBookEntity.Builder().setId(raw.getId())
           .setUserId(raw.getUserId())
           .setBookId(raw.getBookId())
-          .setFavorite(raw.isFavorite())
+          .setInMyBooks(raw.isInMyBooks())
           .setBookmark(raw.getBookmark())
           .setFinished(raw.isFinished())
           .setSaveOfflineAt(raw.getSaveOfflineAt())

@@ -48,7 +48,7 @@ public class IsBookCurrentlyReadingInteractorImpl extends AbstractInteractor<Boo
           @Override public Boolean apply(final Optional<UserBook> input) {
             if (input.isPresent()) {
               final UserBook userBook = input.get();
-              return userBook.isFavorite();
+              return userBook.isInMyBooks();
             } else {
               return false;
             }
@@ -63,7 +63,7 @@ public class IsBookCurrentlyReadingInteractorImpl extends AbstractInteractor<Boo
       @Override public void onSuccess(@Nullable final Optional<UserBook> result) {
         if (result.isPresent()) {
           final UserBook userBook = result.get();
-          performSuccessCallback(callback, userBook.isFavorite());
+          performSuccessCallback(callback, userBook.isInMyBooks());
         } else {
           performSuccessCallback(callback, false);
         }

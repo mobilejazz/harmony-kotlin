@@ -223,7 +223,7 @@ import java.util.*;
                   user.getId(), MoreExecutors.directExecutor());
           anonymousUserScoreSyncronizationFuture.get();
 
-          // 9 - Save favorite categories
+          // 9 - Save markInMyBooks categories
           final List<String> favoriteCategories = anonymousUser.getFavoriteCategories();
           if (favoriteCategories != null && !favoriteCategories.isEmpty()) {
             final List<Integer> categoriesTransformed =

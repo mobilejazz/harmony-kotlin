@@ -25,7 +25,7 @@ import javax.inject.Singleton;
           .setCreatedAt(entity.getCreatedAt())
           .setUpdatedAt(entity.getUpdatedAt())
           .setRating(entity.getRating())
-          .setFavorite(entity.isFavorite())
+          .setInMyBooks(entity.isInMyBooks())
           .setCollectionIds(entity.getCollectionIds())
           .setBookmark(entity.getBookmark())
           .setFinished(entity.isFinished())

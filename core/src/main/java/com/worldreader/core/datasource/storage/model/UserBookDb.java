@@ -10,7 +10,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   @StorIOSQLiteColumn(name = COLUMN_ID) public int id;
   @StorIOSQLiteColumn(name = COLUMN_USER_ID, key = true) public String userId;
   @StorIOSQLiteColumn(name = COLUMN_BOOK_ID, key = true) public String bookId;
-  @StorIOSQLiteColumn(name = COLUMN_FAVORITE) public Boolean favorite;
+  @StorIOSQLiteColumn(name = COLUMN_MARK_IN_MY_BOOKS) public Boolean favorite;
   @StorIOSQLiteColumn(name = COLUMN_BOOKMARK) public String bookmark;
   @StorIOSQLiteColumn(name = COLUMN_COLLECTION_IDS) public String collectionIds;
   @StorIOSQLiteColumn(name = COLUMN_FINISHED) public Boolean finished;

@@ -26,7 +26,7 @@ import javax.inject.Singleton;
           .setSaveOfflineAt(raw.getSaveOfflineAt())
           .setFinished(raw.isFinished())
           .setLiked(raw.isLiked())
-          .setFavorite(raw.isFavorite())
+          .setInMyBooks(raw.isInMyBooks())
           .setCollectionIds(UserBookNetworkResponse.mapCollectionIds(raw.getCollectionIds()))
           .setBookmark(raw.getBookmark())
           .setCreatedAt(raw.getCreatedAt())

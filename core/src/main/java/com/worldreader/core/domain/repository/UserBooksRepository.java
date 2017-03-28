@@ -14,9 +14,9 @@ public interface UserBooksRepository extends Repository<UserBook, RepositorySpec
 
   void finish(String bookId, Callback<Optional<UserBook>> callback);
 
-  void favorite(String bookId, Callback<Optional<UserBook>> callback);
+  void markInMyBooks(String bookId, Callback<Optional<UserBook>> callback);
 
-  void unfavorite(String bookId, Callback<Optional<UserBook>> callback);
+  void unmarkInMyBooks(String bookId, Callback<Optional<UserBook>> callback);
 
   void assignCollection(String bookId, String collectionId, Callback<Optional<UserBook>> callback);
 

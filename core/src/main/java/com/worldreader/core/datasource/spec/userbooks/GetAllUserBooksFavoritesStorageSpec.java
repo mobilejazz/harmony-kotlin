@@ -9,7 +9,7 @@ public class GetAllUserBooksFavoritesStorageSpec extends UserBookStorageSpecific
   @Override public Query toQuery() {
     return Query.builder()
         .table(UserBooksTable.TABLE)
-        .where(UserBooksTable.COLUMN_FAVORITE + " = ?")
+        .where(UserBooksTable.COLUMN_MARK_IN_MY_BOOKS + " = ?")
         .whereArgs(1)
         .build();
   }

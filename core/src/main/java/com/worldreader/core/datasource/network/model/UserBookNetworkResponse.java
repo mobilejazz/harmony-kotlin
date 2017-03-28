@@ -11,7 +11,7 @@ public class UserBookNetworkResponse {
   @SerializedName("id") private int id;
   @SerializedName("userId") private String userId;
   @SerializedName("bookId") private String bookId;
-  @SerializedName("favorite") private boolean favorite;
+  @SerializedName("inMyBooks") private boolean inMyBooks;
   @SerializedName("bookmark") private String bookmark;
   @SerializedName("finished") private boolean finished;
   @SerializedName("saveOfflineAt") private Date saveOfflineAt;
@@ -24,13 +24,13 @@ public class UserBookNetworkResponse {
   public UserBookNetworkResponse() {
   }
 
-  private UserBookNetworkResponse(int id, String userId, String bookId, boolean favorite,
+  private UserBookNetworkResponse(int id, String userId, String bookId, boolean inMyBooks,
       String bookmark, boolean finished, Date saveOfflineAt, int rating, boolean liked,
       String collectionIds, Date createdAt, Date updatedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
-    this.favorite = favorite;
+    this.inMyBooks = inMyBooks;
     this.bookmark = bookmark;
     this.finished = finished;
     this.saveOfflineAt = saveOfflineAt;
@@ -65,12 +65,12 @@ public class UserBookNetworkResponse {
     this.bookId = bookId;
   }
 
-  public boolean isFavorite() {
-    return favorite;
+  public boolean isInMyBooks() {
+    return inMyBooks;
   }
 
-  public void setFavorite(boolean favorite) {
-    this.favorite = favorite;
+  public void setInMyBooks(boolean inMyBooks) {
+    this.inMyBooks = inMyBooks;
   }
 
   public String getBookmark() {
