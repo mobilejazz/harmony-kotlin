@@ -352,7 +352,7 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
     final UserBookNetworkBody body = UserBookNetworkBody.unlikeBook(bookId);
     try {
       final Response<UserBookNetworkResponse> response =
-          userBooksApiService.likeBook(userBookEntity.getBookId(), body).execute();
+          userBooksApiService.unlikeBook(userBookEntity.getBookId(), body).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         final UserBookNetworkResponse responseBody = response.body();

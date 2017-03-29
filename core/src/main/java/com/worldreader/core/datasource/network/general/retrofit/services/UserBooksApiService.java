@@ -35,8 +35,13 @@ public interface UserBooksApiService {
 
   @GET("userbooks/{bookId}/likebook") Call<UserBookNetworkResponse> isBookLiked(@Path("bookId") String bookId);
 
-  @POST("userbooks/{bookId}/likebook") Call<UserBookNetworkResponse> likeBook(@Path("bookId") String bookId,
-      @Body UserBookNetworkBody userBookNetworkBody);
+  @POST("userbooks/{bookId}/likebook") Call<UserBookNetworkResponse> likeBook(@Path("bookId") String bookId, @Body UserBookNetworkBody userBookNetworkBody);
+
+  @PUT("userbooks/{bookId}/likebook") Call<UserBookNetworkResponse> unlikeBook(@Path("bookId") String bookId, @Body UserBookNetworkBody userBookNetworkBody);
+
+  @POST("userbooks/{bookId}/like") Call<Void> oldLikeBook(@Path("bookId") String bookId);
+
+  @DELETE("userbooks/{bookId}/like") Call<Void> oldUnlikeBook(@Path("bookId") String bookId);
 
   @GET("userbooks/liked") Call<List<UserBookNetworkResponse>> liked();
 
