@@ -9,7 +9,7 @@ public class UserBooksTable {
   public static final String COLUMN_ID = "id";
   public static final String COLUMN_USER_ID = "userId";
   public static final String COLUMN_BOOK_ID = "bookId";
-  public static final String COLUMN_FAVORITE = "favorite";
+  public static final String COLUMN_MARK_IN_MY_BOOKS = "inMyBooks";
   public static final String COLUMN_BOOKMARK = "bookmark";
   public static final String COLUMN_FINISHED = "finished";
   public static final String COLUMN_SAVED_OFFLINE_AT = "saveOfflineAt";
@@ -34,7 +34,7 @@ public class UserBooksTable {
         + " TEXT NOT NULL, "
         + COLUMN_BOOK_ID
         + " TEXT NOT NULL, "
-        + COLUMN_FAVORITE
+        + COLUMN_MARK_IN_MY_BOOKS
         + " INTEGER DEFAULT 0, "
         + COLUMN_BOOKMARK
         + " TEXT DEFAULT 0, "

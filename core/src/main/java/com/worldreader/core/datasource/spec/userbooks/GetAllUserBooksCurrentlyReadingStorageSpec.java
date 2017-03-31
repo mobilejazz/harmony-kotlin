@@ -10,7 +10,7 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
     return Query.builder()
         .table(UserBooksTable.TABLE)
         .where(
-            UserBooksTable.COLUMN_FAVORITE + " = ? AND " + UserBooksTable.COLUMN_FINISHED + " = ?")
+            UserBooksTable.COLUMN_MARK_IN_MY_BOOKS + " = ? AND " + UserBooksTable.COLUMN_FINISHED + " = ?")
         .whereArgs(1, 0)
         .orderBy("datetime(" + UserBooksTable.COLUMN_UPDATED_AT + ") DESC")
         .build();

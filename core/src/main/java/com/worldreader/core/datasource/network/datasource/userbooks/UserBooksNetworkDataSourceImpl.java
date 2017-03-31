@@ -29,14 +29,10 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
 
   private final UserBooksApiService userBooksApiService;
 
-  private final Mapper<Optional<UserBookNetworkResponse>, Optional<UserBookEntity>>
-      toUserBookEntityMapper;
-  private final Mapper<Optional<List<UserBookNetworkResponse>>, Optional<List<UserBookEntity>>>
-      toUserBookEntityListMapper;
-  private final Mapper<Optional<UserBookEntity>, Optional<UserBookNetworkBody>>
-      toUserBookNetworkBodyMapper;
-  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBookNetworkBody>>>
-      toListUserBookNetworkBodyMapper;
+  private final Mapper<Optional<UserBookNetworkResponse>, Optional<UserBookEntity>> toUserBookEntityMapper;
+  private final Mapper<Optional<List<UserBookNetworkResponse>>, Optional<List<UserBookEntity>>> toUserBookEntityListMapper;
+  private final Mapper<Optional<UserBookEntity>, Optional<UserBookNetworkBody>> toUserBookNetworkBodyMapper;
+  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBookNetworkBody>>> toListUserBookNetworkBodyMapper;
 
   private final ErrorAdapter<Throwable> errorAdapter;
 
@@ -256,17 +252,28 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
       Callback<Optional<UserBookEntity>> callback) {
   }
 
-  @Override public void markBookAsFavorite(final UserBookEntity userBookEntity,
-      final Callback<Optional<UserBookEntity>> callback) {
+  @Override public void markBookAsInMyBooks(final UserBookEntity userBookEntity, final Callback<Optional<UserBookEntity>> callback) {
     try {
-      final Response<UserBookNetworkResponse> response =
-          userBooksApiService.markBookAsFavorite(userBookEntity.getBookId()).execute();
+      final UserBookNetworkBody networkBody = toUserBookNetworkBodyMapper.transform(Optional.fromNullable(userBookEntity)).get();
+      final Response<UserBookNetworkResponse> response = userBooksApiService.markBookAsInMyBooks(userBookEntity.getBookId(), networkBody).execute();
       final boolean successful = response.isSuccessful();
+      final int code = response.code();
       if (successful) {
         final UserBookNetworkResponse body = response.body();
-        final Optional<UserBookEntity> toReturn =
-            toUserBookEntityMapper.transform(Optional.fromNullable(body));
+        final Optional<UserBookEntity> toReturn = toUserBookEntityMapper.transform(Optional.fromNullable(body));
         notifySuccessResponse(callback, toReturn);
+      } else if (code == HttpStatus.NOT_FOUND) { // Put failed because userbook doesn't exist, so we have to create a new userbook
+        final Response<UserBookNetworkResponse> createUserBookResponse = userBooksApiService.updateUserBook(networkBody).execute();
+        final boolean createUserBookResponseSuccessful = createUserBookResponse.isSuccessful();
+        if (createUserBookResponseSuccessful) {
+          final UserBookNetworkResponse createUserBookBody = createUserBookResponse.body();
+          final Optional<UserBookEntity> toReturn = toUserBookEntityMapper.transform(Optional.fromNullable(createUserBookBody));
+          notifySuccessResponse(callback, toReturn);
+        } else {
+          final Retrofit2Error httpError = Retrofit2Error.httpError(response);
+          final ErrorCore<?> errorCore = mapToErrorCore(httpError);
+          notifyErrorResponse(callback, errorCore.getCause());
+        }
       } else {
         final Retrofit2Error httpError = Retrofit2Error.httpError(response);
         final ErrorCore<?> errorCore = mapToErrorCore(httpError);
@@ -278,26 +285,8 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
     }
   }
 
-  @Override public void removeBookAsFavorite(final UserBookEntity userBookEntity,
-      final Callback<Optional<UserBookEntity>> callback) {
-    try {
-      final Response<UserBookNetworkResponse> response =
-          userBooksApiService.removeBookAsFavorite(userBookEntity.getBookId()).execute();
-      final boolean successful = response.isSuccessful();
-      if (successful) {
-        final UserBookNetworkResponse body = response.body();
-        final Optional<UserBookEntity> toReturn =
-            toUserBookEntityMapper.transform(Optional.fromNullable(body));
-        notifySuccessResponse(callback, toReturn);
-      } else {
-        final Retrofit2Error httpError = Retrofit2Error.httpError(response);
-        final ErrorCore<?> errorCore = mapToErrorCore(httpError);
-        notifyErrorResponse(callback, errorCore.getCause());
-      }
-    } catch (IOException e) {
-      final ErrorCore<?> errorCore = mapToErrorCore(e);
-      notifyErrorResponse(callback, errorCore.getCause());
-    }
+  @Override public void removeBookAsInMyBooks(final UserBookEntity userBookEntity, final Callback<Optional<UserBookEntity>> callback) {
+    markBookAsInMyBooks(userBookEntity, callback); // We reuse the same endpoint
   }
 
   @Override public void isBookLiked(final UserBookEntity userBookEntity,
@@ -363,7 +352,7 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
     final UserBookNetworkBody body = UserBookNetworkBody.unlikeBook(bookId);
     try {
       final Response<UserBookNetworkResponse> response =
-          userBooksApiService.likeBook(userBookEntity.getBookId(), body).execute();
+          userBooksApiService.unlikeBook(userBookEntity.getBookId(), body).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         final UserBookNetworkResponse responseBody = response.body();

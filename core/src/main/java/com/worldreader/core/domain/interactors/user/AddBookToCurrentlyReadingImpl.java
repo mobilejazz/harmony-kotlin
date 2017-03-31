@@ -72,12 +72,12 @@ public class AddBookToCurrentlyReadingImpl extends AbstractInteractor<Boolean, E
 
   //region Private methods
   private void executeLogic(final String bookId, final Callback<Boolean> callback) {
-    userBooksRepository.favorite(bookId, new Callback<Optional<UserBook>>() {
+    userBooksRepository.markInMyBooks(bookId, new Callback<Optional<UserBook>>() {
       @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
         if (userBookOptional.isPresent()) {
           final UserBook userBook = userBookOptional.get();
           if (callback != null) {
-            callback.onSuccess(userBook.isFavorite());
+            callback.onSuccess(userBook.isInMyBooks());
           }
         } else {
           if (callback != null) {

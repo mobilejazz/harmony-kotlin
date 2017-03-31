@@ -27,10 +27,8 @@ public class StorIOUserBooksDbDataSourceImpl
 
   private final Mapper<Optional<UserBookEntity>, Optional<UserBookDb>> toUserBookDbMapper;
   private final Mapper<Optional<UserBookDb>, Optional<UserBookEntity>> toUserBookEntityMapper;
-  private final Mapper<Optional<List<UserBookDb>>, Optional<List<UserBookEntity>>>
-      toUserBookEntityListMapper;
-  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBookDb>>>
-      toUserBookDbListMapper;
+  private final Mapper<Optional<List<UserBookDb>>, Optional<List<UserBookEntity>>> toUserBookEntityListMapper;
+  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBookDb>>> toUserBookDbListMapper;
 
   public StorIOUserBooksDbDataSourceImpl(final StorIOSQLite storIOSQLite,
       final Mapper<Optional<UserBookEntity>, Optional<UserBookDb>> toUserBookDbMapper,

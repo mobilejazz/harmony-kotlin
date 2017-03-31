@@ -11,7 +11,7 @@ public class UserBookNetworkBody {
   @SerializedName("userId") private String userId;
   @SerializedName("bookId") private String bookId;
   @SerializedName("collectionIds") private String collectionIds;
-  @SerializedName("favorite") private boolean favorite;
+  @SerializedName("inMyBooks") private boolean inMyBooks;
   @SerializedName("bookmark") private String bookmark;
   @SerializedName("finished") private boolean finished;
   @SerializedName("savedOfflineAt") private Date savedOfflineAt;
@@ -65,13 +65,13 @@ public class UserBookNetworkBody {
   public UserBookNetworkBody() {
   }
 
-  private UserBookNetworkBody(int id, String userId, String bookId, boolean favorite,
+  private UserBookNetworkBody(int id, String userId, String bookId, boolean inMyBooks,
       String bookmark, boolean finished, Date savedOfflineAt, int rating, boolean liked,
       String collectionIds, Date createdAt, Date updatedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
-    this.favorite = favorite;
+    this.inMyBooks = inMyBooks;
     this.bookmark = bookmark;
     this.finished = finished;
     this.savedOfflineAt = savedOfflineAt;
@@ -94,8 +94,8 @@ public class UserBookNetworkBody {
     return bookId;
   }
 
-  public boolean isFavorite() {
-    return favorite;
+  public boolean isInMyBooks() {
+    return inMyBooks;
   }
 
   public String getBookmark() {
@@ -136,7 +136,7 @@ public class UserBookNetworkBody {
     private String userId;
     private String bookId;
     private String collectionIds;
-    private boolean favorite;
+    private boolean inMyBooks;
     private String bookmark;
     private boolean finished;
     private Date savedOfflineAt;
@@ -148,8 +148,19 @@ public class UserBookNetworkBody {
     public Builder() {
     }
 
-    public static Builder anUserBooksBody() {
-      return new Builder();
+    public Builder(UserBookNetworkBody body) {
+      this.id = body.getId();
+      this.userId = body.getUserId();
+      this.bookId = body.getBookId();
+      this.collectionIds = body.getCollectionIds();
+      this.inMyBooks = body.isInMyBooks();
+      this.bookmark = body.getBookmark();
+      this.finished = body.isFinished();
+      this.savedOfflineAt = body.getSavedOfflineAt();
+      this.rating = body.getRating();
+      this.liked = body.isLiked();
+      this.createdAt = body.getCreatedAt();
+      this.updatedAt = body.getUpdatedAt();
     }
 
     public Builder setId(int id) {
@@ -167,8 +178,8 @@ public class UserBookNetworkBody {
       return this;
     }
 
-    public Builder setFavorite(boolean favorite) {
-      this.favorite = favorite;
+    public Builder setInMyBooks(boolean inMyBooks) {
+      this.inMyBooks = inMyBooks;
       return this;
     }
 
@@ -213,7 +224,7 @@ public class UserBookNetworkBody {
     }
 
     public UserBookNetworkBody build() {
-      return new UserBookNetworkBody(id, userId, bookId, favorite, bookmark, finished,
+      return new UserBookNetworkBody(id, userId, bookId, inMyBooks, bookmark, finished,
           savedOfflineAt, rating, liked, collectionIds, createdAt, updatedAt);
     }
   }

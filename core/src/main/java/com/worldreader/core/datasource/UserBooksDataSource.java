@@ -33,11 +33,9 @@ public class UserBooksDataSource implements UserBooksRepository {
   private final Repository.Storage<UserEntity2, RepositorySpecification> userStorage;
 
   private final Mapper<Optional<UserBookEntity>, Optional<UserBook>> toUserBookMapper;
-  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBook>>>
-      toUserBookListMapper;
+  private final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBook>>> toUserBookListMapper;
   private final Mapper<Optional<UserBook>, Optional<UserBookEntity>> toUserBookEntityMapper;
-  private final Mapper<Optional<List<UserBook>>, Optional<List<UserBookEntity>>>
-      toListUserBookEntityMapper;
+  private final Mapper<Optional<List<UserBook>>, Optional<List<UserBookEntity>>> toListUserBookEntityMapper;
 
   @Inject public UserBooksDataSource(
       final NetworkRepositoryProvider<UserBooksNetworkDataSource> networkProvider,
@@ -166,16 +164,15 @@ public class UserBooksDataSource implements UserBooksRepository {
     });
   }
 
-  @Override public void favorite(String bookId, final Callback<Optional<UserBook>> callback) {
+  @Override public void markInMyBooks(String bookId, final Callback<Optional<UserBook>> callback) {
     getUserBookByBookIdFromStorage(bookId, new Callback<UserBookEntity>() {
       @Override public void onSuccess(final UserBookEntity userBookEntity) {
+        final UserBookEntity updatedUserBookEntity = new UserBookEntity.Builder(userBookEntity).setInMyBooks(true).build();
         networkProvider.get()
-            .markBookAsFavorite(userBookEntity, new Callback<Optional<UserBookEntity>>() {
+            .markBookAsInMyBooks(updatedUserBookEntity, new Callback<Optional<UserBookEntity>>() {
               @Override
               public void onSuccess(final Optional<UserBookEntity> userBookEntityOptional) {
-                final PutUserBookStorageSpec spec =
-                    new PutUserBookStorageSpec(userBookEntity.getBookId(),
-                        userBookEntity.getUserId());
+                final PutUserBookStorageSpec spec = new PutUserBookStorageSpec(userBookEntity.getBookId(), userBookEntity.getUserId());
 
                 storage.put(userBookEntityOptional.get(), spec,
                     new Callback<Optional<UserBookEntity>>() {
@@ -203,11 +200,12 @@ public class UserBooksDataSource implements UserBooksRepository {
     });
   }
 
-  @Override public void unfavorite(String bookId, final Callback<Optional<UserBook>> callback) {
+  @Override public void unmarkInMyBooks(String bookId, final Callback<Optional<UserBook>> callback) {
     getUserBookByBookIdFromStorage(bookId, new Callback<UserBookEntity>() {
       @Override public void onSuccess(final UserBookEntity userBookEntity) {
+        final UserBookEntity updatedUserBookEntity = new UserBookEntity.Builder(userBookEntity).setInMyBooks(false).build();
         networkProvider.get()
-            .removeBookAsFavorite(userBookEntity, new Callback<Optional<UserBookEntity>>() {
+            .removeBookAsInMyBooks(updatedUserBookEntity, new Callback<Optional<UserBookEntity>>() {
               @Override
               public void onSuccess(final Optional<UserBookEntity> userBookEntityOptional) {
                 final PutUserBookStorageSpec spec =
