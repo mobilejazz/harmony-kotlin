@@ -1,6 +1,7 @@
 package com.worldreader.core.application.ui.widget;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ public class BookView extends FrameLayout {
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
-      final Reachability reachability) {
+      final Reachability reachability, @DrawableRes final int placeholder) {
     this.book = book;
 
     txtTitle.setText(book.getTitle());
@@ -73,7 +74,7 @@ public class BookView extends FrameLayout {
           imgBook.setCropYCenterOffsetPct(0f);
 
           if (reachability.isReachable()) {
-            imageLoader.load(book.getId(), cover, R.drawable.as_book_placeholder, imgBook);
+            imageLoader.load(book.getId(), cover, placeholder, imgBook);
           } else {
             if (book.isBookDownloaded()) {
               imageLoader.load(book.getId(), cover, R.drawable.as_offline_book_cover, imgBook);
@@ -97,6 +98,11 @@ public class BookView extends FrameLayout {
     imgOfflineBookIcon.setVisibility(book.isBookDownloaded() ? View.VISIBLE : View.GONE);
 
     editModeContainer.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+  }
+
+  public void setBook(final Book book, final ImageLoader imageLoader,
+      final Reachability reachability) {
+    setBook(book, imageLoader, reachability, R.drawable.as_book_placeholder);
   }
 
   public void setIsEditMode(boolean isEditMode) {

@@ -1,5 +1,6 @@
 package com.worldreader.core.application.ui.adapter;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
   private boolean isEditMode;
   private final boolean useHeader;
   private ProductList productList;
+  private @DrawableRes int bookViewPlaceholder;
 
   public BooksAdapter(List<Book> books, ImageLoader imageLoader, Reachability reachability,
       boolean useFooter, boolean isEditMode, boolean useHeader, ProductList productList) {
@@ -35,6 +37,8 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     this.isEditMode = isEditMode;
     this.useHeader = useHeader;
     this.productList = productList;
+
+    bookViewPlaceholder = R.drawable.as_book_placeholder;
   }
 
   public interface BooksAdapterClickListener {
@@ -76,7 +80,7 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
     final Book book = books.get(position);
     final BookViewHolder bookViewHolder = (BookViewHolder) holder;
     bookViewHolder.bookView.setIsEditMode(isEditMode);
-    bookViewHolder.bookView.setBook(book, imageLoader, reachability);
+    bookViewHolder.bookView.setBook(book, imageLoader, reachability, bookViewPlaceholder);
     bookViewHolder.bookView.setOnBookClickListener(new BookView.OnBookClickListener() {
       @Override public void onClick(BookView view) {
         if (listener != null) {
@@ -175,6 +179,10 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
   public void setUseFooter(boolean useFooter) {
     this.useFooter = useFooter;
     notifyDataSetChanged();
+  }
+
+  public void setBookViewPlaceholder(@DrawableRes int placeholder) {
+    this.bookViewPlaceholder = placeholder;
   }
 
   public void clear() {
