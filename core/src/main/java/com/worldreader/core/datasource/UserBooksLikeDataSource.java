@@ -158,8 +158,9 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
         getConcreteUserEntityId(userStorageSpecification, new Callback<String>() {
           @Override public void onSuccess(final String userId) {
             final PutUserBookLikeStorageSpec spec = new PutUserBookLikeStorageSpec(bookId, userId);
-
-            storage.put(userBookLikeEntityOptional.get(), spec, new Callback<Optional<UserBookLikeEntity>>() {
+            final UserBookLikeEntity userBookLikeEntity = userBookLikeEntityOptional.get();
+            final UserBookLikeEntity userBookLikeEntityToUpdate = new UserBookLikeEntity.Builder(userBookLikeEntity).withUserId(userId).build();
+            storage.put(userBookLikeEntityToUpdate, spec, new Callback<Optional<UserBookLikeEntity>>() {
               @Override public void onSuccess(final Optional<UserBookLikeEntity> userBookLikeEntityOptional) {
                 final Optional<UserBookLike> response = toUserBookLikeMapper.transform(userBookLikeEntityOptional);
                 notifySuccessCallback(callback, response);
@@ -197,7 +198,10 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
           @Override public void onSuccess(final String userId) {
             final PutUserBookLikeStorageSpec spec = new PutUserBookLikeStorageSpec(bookId, userId);
 
-            storage.put(userBookLikeEntityOptional.get(), spec, new Callback<Optional<UserBookLikeEntity>>() {
+            final UserBookLikeEntity userBookLikeEntity = userBookLikeEntityOptional.get();
+            final UserBookLikeEntity userBookLikeEntityToUpdate = new UserBookLikeEntity.Builder(userBookLikeEntity).withUserId(userId).build();
+
+            storage.put(userBookLikeEntityToUpdate, spec, new Callback<Optional<UserBookLikeEntity>>() {
               @Override public void onSuccess(final Optional<UserBookLikeEntity> userBookLikeEntityOptional) {
                 final Optional<UserBookLike> response = toUserBookLikeMapper.transform(userBookLikeEntityOptional);
                 notifySuccessCallback(callback, response);

@@ -46,6 +46,7 @@ public class UserBooksLikeOfflineNetworkDataSource implements UserBooksLikeNetwo
         .withLiked(true)
         .withSync(false)
         .withLikedAt(new Date())
+        .withBookId(bookId)
         .build();
     notifySuccessResponse(callback, fakeEntity);
   }
@@ -55,6 +56,7 @@ public class UserBooksLikeOfflineNetworkDataSource implements UserBooksLikeNetwo
         .withLiked(false)
         .withSync(false)
         .withLikedAt(new Date())
+        .withBookId(bookId)
         .build();
     notifySuccessResponse(callback, fakeEntity);
   }

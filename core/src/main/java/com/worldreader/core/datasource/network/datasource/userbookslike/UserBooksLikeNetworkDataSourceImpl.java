@@ -68,7 +68,7 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
       final boolean successful = response.isSuccessful();
       if (successful) {
         final UserBookLikeEntity userBookLikeEntity =
-            new UserBookLikeEntity.Builder().withLiked(true).withSync(true).withLikedAt(new Date()).build();
+            new UserBookLikeEntity.Builder().withLiked(true).withSync(true).withLikedAt(new Date()).withBookId(bookId).build();
         final Optional<UserBookLikeEntity> toReturn = Optional.of(userBookLikeEntity);
         notifySuccessResponse(callback, toReturn);
       } else {
@@ -93,7 +93,7 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
       final boolean successful = response.isSuccessful();
       if (successful) {
         final UserBookLikeEntity userBookLikeEntity =
-            new UserBookLikeEntity.Builder().withLiked(false).withSync(true).withLikedAt(new Date()).build();
+            new UserBookLikeEntity.Builder().withLiked(false).withSync(true).withLikedAt(new Date()).withBookId(bookId).build();
         final Optional<UserBookLikeEntity> toReturn = Optional.of(userBookLikeEntity);
         notifySuccessResponse(callback, toReturn);
       } else {
