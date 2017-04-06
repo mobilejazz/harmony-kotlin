@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
-import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.spec.userbookslike.GetUserBookLikeStorageSpec;
 import com.worldreader.core.domain.model.user.UserBookLike;

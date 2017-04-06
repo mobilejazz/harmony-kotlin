@@ -55,7 +55,7 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
           UserStorageSpecification.target(((UserBookLikeStorageSpec) specification).getTarget());
       getConcreteUserEntityId(userStorageSpecification, new Callback<String>() {
         @Override public void onSuccess(final String userId) {
-          final UserBookLikeStorageSpec getUserBookLikeStorageSpec = new GetUserBookLikeStorageSpec(userStorageSpecification.getIdentifier(), userId);
+          final UserBookLikeStorageSpec getUserBookLikeStorageSpec = new GetUserBookLikeStorageSpec(((UserBookLikeStorageSpec) specification).getBookId(), userId);
           storage.get(getUserBookLikeStorageSpec, new Callback<Optional<UserBookLikeEntity>>() {
             @Override public void onSuccess(final Optional<UserBookLikeEntity> optional) {
               final Optional<UserBookLike> response = toUserBookLikeMapper.transform(optional);
