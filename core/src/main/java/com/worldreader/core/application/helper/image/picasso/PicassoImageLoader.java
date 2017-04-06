@@ -38,11 +38,11 @@ public class PicassoImageLoader implements ImageLoader {
 
       } else {
         if (resPlaceholderIcon > 0) {
-          if (url != null) {
+          if (url != null && imageView != null) {
             picasso.load(url).placeholder(resPlaceholderIcon).into(imageView);
           }
         } else {
-          if (url != null) {
+          if (url != null && imageView != null) {
             picasso.load(url).into(imageView);
           }
         }
