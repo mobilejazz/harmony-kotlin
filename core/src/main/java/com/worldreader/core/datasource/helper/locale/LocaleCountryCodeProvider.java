@@ -28,15 +28,19 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
   }
 
   @Override public String getCountryIso3Code() {
-    return context.getResources().getConfiguration().locale.getISO3Country();
+    return getLocale().getISO3Country();
   }
 
   @Override public String getLanguageIso3Code() {
-    return Locale.getDefault().getISO3Language();
+    return getLocale().getISO3Language();
+  }
+
+  private Locale getLocale() {
+    return context.getResources().getConfiguration().locale;
   }
 
   @Override public String getDisplayLanguage() {
-    return Locale.getDefault().getDisplayLanguage();
+    return getLocale().getDisplayLanguage();
   }
 
   @Override public String getDisplayLanguage(String languageIsoCode3) {
