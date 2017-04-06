@@ -7,16 +7,20 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
+import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.userbooklikes.UserBookLikeEntity;
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
 import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
+import com.worldreader.core.datasource.network.mapper.userbooks.ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper;
+import com.worldreader.core.datasource.network.model.UserBookLikeNetworkResponse;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import retrofit2.Response;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +28,16 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
 
   private final UserBooksApiService userBooksApiService;
 
+  private final Mapper<Optional<List<UserBookLikeNetworkResponse>>, Optional<List<UserBookLikeEntity>>> toListUserBookLikeEntityMapper;
+
   private final ErrorAdapter<Throwable> errorAdapter;
 
   private final Logger logger;
 
-  @Inject public UserBooksLikeNetworkDataSourceImpl(Context context, UserBooksApiService userBooksApiService, Logger logger) {
+  @Inject public UserBooksLikeNetworkDataSourceImpl(Context context, UserBooksApiService userBooksApiService,
+      ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper toListUserBookLikeEntityMapper, Logger logger) {
     this.userBooksApiService = userBooksApiService;
+    this.toListUserBookLikeEntityMapper = toListUserBookLikeEntityMapper;
     this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
     this.logger = logger;
   }
@@ -39,7 +47,22 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
   }
 
   @Override public void getAll(final RepositorySpecification specification, final Callback<Optional<List<UserBookLikeEntity>>> callback) {
-    throw new IllegalStateException("Not implemented!");
+    try {
+      final Response<List<UserBookLikeNetworkResponse>> response = userBooksApiService.likes().execute();
+      final boolean successful = response.isSuccessful();
+      if (successful) {
+        final List<UserBookLikeNetworkResponse> userBooksLikeResponse = response.body();
+        final Optional<List<UserBookLikeEntity>> toReturn = toListUserBookLikeEntityMapper.transform(Optional.fromNullable(userBooksLikeResponse));
+        notifySuccessResponse(callback, toReturn);
+      } else {
+        final Retrofit2Error httpError = Retrofit2Error.httpError(response);
+        final ErrorCore<?> errorCore = mapToErrorCore(httpError);
+        notifyErrorResponse(callback, errorCore.getCause());
+      }
+    } catch (IOException e) {
+      final ErrorCore<?> errorCore = mapToErrorCore(e);
+      notifyErrorResponse(callback, errorCore.getCause());
+    }
   }
 
   @Override public void put(final UserBookLikeEntity userBookLikeEntity, final RepositorySpecification specification,
@@ -49,7 +72,31 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
 
   @Override public void putAll(final List<UserBookLikeEntity> userBookLikeEntities, final RepositorySpecification specification,
       final Callback<Optional<List<UserBookLikeEntity>>> callback) {
-    throw new IllegalStateException("Not implemented!");
+    final List<UserBookLikeEntity> responses = new ArrayList<>(userBookLikeEntities.size());
+
+    for (final UserBookLikeEntity entity : userBookLikeEntities) {
+      final String bookId = entity.getBookId();
+      final boolean liked = entity.isLiked();
+
+      final Callback<Optional<UserBookLikeEntity>> responseCallback = new Callback<Optional<UserBookLikeEntity>>() {
+        @Override public void onSuccess(final Optional<UserBookLikeEntity> optional) {
+          final UserBookLikeEntity userBookLikeEntity = optional.get();
+          responses.add(userBookLikeEntity);
+        }
+
+        @Override public void onError(final Throwable e) {
+          throw new RuntimeException(e);
+        }
+      };
+
+      if (liked) {
+        likeBook(bookId, responseCallback);
+      } else {
+        unlikeBook(bookId, responseCallback);
+      }
+    }
+
+    notifySuccessResponse(callback, Optional.of(responses));
   }
 
   @Override public void remove(final UserBookLikeEntity userBookLikeEntity, final RepositorySpecification specification,

@@ -2,12 +2,17 @@ package com.worldreader.core.datasource.spec.userbookslike;
 
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
+import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBookLikesTable;
 
 public class GetUserBookLikeStorageSpec extends UserBookLikeStorageSpec {
 
   public GetUserBookLikeStorageSpec(final String bookId, final String userId) {
     super(bookId, userId);
+  }
+
+  public GetUserBookLikeStorageSpec(UserStorageSpecification.UserTarget target) {
+    super(target);
   }
 
   @Override public Query toQuery() {

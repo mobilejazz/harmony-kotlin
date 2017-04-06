@@ -1,6 +1,7 @@
 package com.worldreader.core.datasource.network.general.retrofit.services;
 
 import com.worldreader.core.datasource.network.model.ReadingStatisticUpdateBody;
+import com.worldreader.core.datasource.network.model.UserBookLikeNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserBookNetworkBody;
 import com.worldreader.core.datasource.network.model.UserBookNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserBookStatsNetworkResponse;
@@ -28,8 +29,7 @@ public interface UserBooksApiService {
 
   @DELETE("userbooks/delete/{bookId}") Call<Void> deleteUserBook(@Path("bookId") String bookId);
 
-  @POST("userbooks/{bookId}/read") Call<UserBookStatsNetworkResponse> updateBookReadingStats(@Path("bookId") String bookId,
-      @Body ReadingStatisticUpdateBody body);
+  @POST("userbooks/{bookId}/read") Call<UserBookStatsNetworkResponse> updateBookReadingStats(@Path("bookId") String bookId, @Body ReadingStatisticUpdateBody body);
 
   @PUT("userbooks/{bookId}/inMyBooks") Call<UserBookNetworkResponse> markBookAsInMyBooks(@Path("bookId") String bookId, @Body UserBookNetworkBody body);
 
@@ -45,8 +45,9 @@ public interface UserBooksApiService {
 
   @GET("userbooks/liked") Call<List<UserBookNetworkResponse>> liked();
 
+  @GET("userbooks/likes") Call<List<UserBookLikeNetworkResponse>> likes();
+
   @POST("userbooks/{bookId}/finish") Call<UserBookNetworkResponse> finishReadBook(@Path("bookId") String bookId, @Body UserBookNetworkBody body);
 
-  @POST("userbooks/{bookId}/collectionids") Call<UserBookNetworkResponse> updateCollectionIds(@Path("bookId") String bookId,
-      @Body UserBookNetworkBody body);
+  @POST("userbooks/{bookId}/collectionids") Call<UserBookNetworkResponse> updateCollectionIds(@Path("bookId") String bookId, @Body UserBookNetworkBody body);
 }

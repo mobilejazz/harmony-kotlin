@@ -13,8 +13,7 @@ public class GetAllUserBooksLikedStorageSpec extends UserBookStorageSpecificatio
   @Override public Query toQuery() {
     return Query.builder()
         .table(UserBooksTable.TABLE)
-        .where(
-            UserBooksTable.COLUMN_LIKED + " = ? AND " + UserBooksTable.COLUMN_USER_ID + " LIKE ?")
+        .where(UserBooksTable.COLUMN_LIKED + " = ? AND " + UserBooksTable.COLUMN_USER_ID + " LIKE ?")
         .whereArgs(1, getUserId())
         .build();
   }

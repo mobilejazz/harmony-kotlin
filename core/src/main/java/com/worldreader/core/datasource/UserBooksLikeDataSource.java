@@ -4,12 +4,14 @@ import com.google.common.base.Optional;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.mapper.user.userbooklike.ListUserBookLikeEntityToListUserBookLikeMapper;
+import com.worldreader.core.datasource.mapper.user.userbooklike.ListUserBookLikeToListUserBookLikeEntityMapper;
 import com.worldreader.core.datasource.mapper.user.userbooklike.UserBookLikeEntityToUserBookLikeMapper;
 import com.worldreader.core.datasource.model.user.user.UserEntity2;
 import com.worldreader.core.datasource.model.user.userbooklikes.UserBookLikeEntity;
 import com.worldreader.core.datasource.network.datasource.userbookslike.UserBooksLikeNetworkDataSource;
 import com.worldreader.core.datasource.repository.NetworkRepositoryProvider;
 import com.worldreader.core.datasource.repository.Repository;
+import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.spec.userbookslike.GetUserBookLikeStorageSpec;
@@ -33,15 +35,18 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
 
   private final Mapper<Optional<UserBookLikeEntity>, Optional<UserBookLike>> toUserBookLikeMapper;
   private final Mapper<Optional<List<UserBookLikeEntity>>, Optional<List<UserBookLike>>> toUserBookLikeListMapper;
+  private final Mapper<Optional<List<UserBookLike>>, Optional<List<UserBookLikeEntity>>> toListUserBookLikeMapper;
 
   @Inject public UserBooksLikeDataSource(final NetworkRepositoryProvider<UserBooksLikeNetworkDataSource> networkProvider,
       final Storage<UserBookLikeEntity, UserBookLikeStorageSpec> storage, final Storage<UserEntity2, RepositorySpecification> userStorage,
-      UserBookLikeEntityToUserBookLikeMapper toUserBookLikeMapper, ListUserBookLikeEntityToListUserBookLikeMapper toUserBookLikeListMapper) {
+      UserBookLikeEntityToUserBookLikeMapper toUserBookLikeMapper, ListUserBookLikeEntityToListUserBookLikeMapper toUserBookLikeListMapper,
+      ListUserBookLikeToListUserBookLikeEntityMapper toListUserBookLikeMapper) {
     this.networkProvider = networkProvider;
     this.storage = storage;
     this.userStorage = userStorage;
     this.toUserBookLikeMapper = toUserBookLikeMapper;
     this.toUserBookLikeListMapper = toUserBookLikeListMapper;
+    this.toListUserBookLikeMapper = toListUserBookLikeMapper;
   }
 
   @Override public void get(final RepositorySpecification specification, final Callback<Optional<UserBookLike>> callback) {
@@ -96,6 +101,17 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
 
         }
       });
+    } else if (specification instanceof NetworkSpecification) {
+      networkProvider.getRealNetwork().getAll(specification, new Callback<Optional<List<UserBookLikeEntity>>>() {
+        @Override public void onSuccess(final Optional<List<UserBookLikeEntity>> listOptional) {
+          final Optional<List<UserBookLike>> response = toUserBookLikeListMapper.transform(listOptional);
+          notifySuccessCallback(callback, response);
+        }
+
+        @Override public void onError(final Throwable e) {
+          notifyErrorCallback(callback, e);
+        }
+      });
     } else {
       throw new IllegalArgumentException("Not implemented!");
     }
@@ -108,7 +124,44 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
 
   @Override public void putAll(final List<UserBookLike> userBookLikes, final RepositorySpecification specification,
       final Callback<Optional<List<UserBookLike>>> callback) {
+    if (specification instanceof UserBookLikeStorageSpec) {
+      final UserStorageSpecification userSpec = UserStorageSpecification.target(((UserBookLikeStorageSpec) specification).getTarget());
+      getConcreteUserEntityId(userSpec, new Callback<String>() {
+        @Override public void onSuccess(final String userId) {
+          final UserBookLikeStorageSpec userBookStorageSpecification = (UserBookLikeStorageSpec) specification;
+          userBookStorageSpecification.setUserId(userId);
+          final List<UserBookLikeEntity> entities = toListUserBookLikeMapper.transform(Optional.fromNullable(userBookLikes)).get();
+          storage.putAll(entities, userBookStorageSpecification, new Callback<Optional<List<UserBookLikeEntity>>>() {
+            @Override public void onSuccess(final Optional<List<UserBookLikeEntity>> listOptional) {
+              final Optional<List<UserBookLike>> response = toUserBookLikeListMapper.transform(listOptional);
+              notifySuccessCallback(callback, response);
+            }
 
+            @Override public void onError(final Throwable e) {
+              notifyErrorCallback(callback, e);
+            }
+          });
+        }
+
+        @Override public void onError(final Throwable e) {
+          notifyErrorCallback(callback, e);
+        }
+      });
+    } else if (specification instanceof NetworkSpecification) {
+      final List<UserBookLikeEntity> entities = toListUserBookLikeMapper.transform(Optional.fromNullable(userBookLikes)).get();
+      networkProvider.getRealNetwork().putAll(entities, specification, new Callback<Optional<List<UserBookLikeEntity>>>() {
+        @Override public void onSuccess(final Optional<List<UserBookLikeEntity>> optional) {
+          final Optional<List<UserBookLike>> response = toUserBookLikeListMapper.transform(optional);
+          notifySuccessCallback(callback, response);
+        }
+
+        @Override public void onError(final Throwable e) {
+          notifyErrorCallback(callback, e);
+        }
+      });
+    } else {
+      throw new IllegalArgumentException("Not implemented!");
+    }
   }
 
   @Override

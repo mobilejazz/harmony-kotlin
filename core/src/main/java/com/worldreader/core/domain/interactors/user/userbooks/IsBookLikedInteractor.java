@@ -7,8 +7,10 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import com.worldreader.core.domain.model.user.UserBook;
-import com.worldreader.core.domain.repository.UserBooksRepository;
+import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
+import com.worldreader.core.datasource.spec.userbookslike.GetUserBookLikeStorageSpec;
+import com.worldreader.core.domain.model.user.UserBookLike;
+import com.worldreader.core.domain.repository.UserBooksLikeRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,10 +18,10 @@ import javax.inject.Singleton;
 @Singleton public class IsBookLikedInteractor {
 
   private final ListeningExecutorService executor;
-  private final UserBooksRepository repository;
+  private final UserBooksLikeRepository repository;
 
   @Inject
-  public IsBookLikedInteractor(ListeningExecutorService executor, UserBooksRepository repository) {
+  public IsBookLikedInteractor(ListeningExecutorService executor, UserBooksLikeRepository repository) {
     this.executor = executor;
     this.repository = repository;
   }
@@ -31,10 +33,10 @@ import javax.inject.Singleton;
       @Override public void run() {
         Preconditions.checkNotNull(bookId, "bookId == null");
 
-        final RepositorySpecification.SimpleRepositorySpecification spec =
-            new RepositorySpecification.SimpleRepositorySpecification(bookId);
-        repository.get(spec, new Callback<Optional<UserBook>>() {
-          @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
+        final GetUserBookLikeStorageSpec spec = new GetUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
+        spec.setBookId(bookId);
+        repository.get(spec, new Callback<Optional<UserBookLike>>() {
+          @Override public void onSuccess(final Optional<UserBookLike> userBookOptional) {
             if (userBookOptional.isPresent()) {
               future.set(userBookOptional.get().isLiked());
             } else {

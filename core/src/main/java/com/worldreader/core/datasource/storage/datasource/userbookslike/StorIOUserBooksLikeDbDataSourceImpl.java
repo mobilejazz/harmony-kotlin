@@ -1,12 +1,16 @@
 package com.worldreader.core.datasource.storage.datasource.userbookslike;
 
+import android.content.ContentValues;
+import android.support.annotation.NonNull;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResults;
 import com.pushtorefresh.storio.sqlite.operations.put.PutResults;
+import com.pushtorefresh.storio.sqlite.queries.InsertQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
+import com.pushtorefresh.storio.sqlite.queries.UpdateQuery;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.userbooklikes.UserBookLikeEntity;
@@ -14,6 +18,7 @@ import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.spec.userbookslike.UserBookLikeStorageSpec;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBookLikesTable;
 import com.worldreader.core.datasource.storage.model.UserBookLikeDb;
+import com.worldreader.core.datasource.storage.model.UserBookLikeDbStorIOSQLitePutResolver;
 import com.worldreader.core.error.userbooklike.DeleteUserBookLikeFailException;
 import com.worldreader.core.error.userbooklike.PutAllUserBookLikeStorageFailException;
 import com.worldreader.core.error.userbooklike.UpdateUserBookLikeFailException;
@@ -92,7 +97,12 @@ public class StorIOUserBooksLikeDbDataSourceImpl implements Repository.Storage<U
     final Optional<List<UserBookLikeDb>> userBooksDbOptional = toUserBookLikeDbListMapper.transform(Optional.fromNullable(userBookLikeEntities));
     if (userBooksDbOptional.isPresent()) {
       final List<UserBookLikeDb> userBookDbs = userBooksDbOptional.get();
-      final PutResults<UserBookLikeDb> transactionResult = storIOSQLite.put().objects(userBookDbs).useTransaction(true).prepare().executeAsBlocking();
+      final PutResults<UserBookLikeDb> transactionResult = storIOSQLite.put()
+          .objects(userBookDbs)
+          .withPutResolver(new ExtendedUserBookLikeDbStorIOSQLitePutResolver(specification.getUserId()))
+          .useTransaction(true)
+          .prepare()
+          .executeAsBlocking();
       final int resultCount = transactionResult.numberOfInserts() + transactionResult.numberOfUpdates();
       if (resultCount == userBookLikeEntities.size()) {
         final List<UserBookLikeDb> results = Lists.newArrayList(transactionResult.results().keySet());
@@ -168,6 +178,30 @@ public class StorIOUserBooksLikeDbDataSourceImpl implements Repository.Storage<U
   private <T> void notifySuccessCallback(Callback<T> callback, T result) {
     if (callback != null) {
       callback.onSuccess(result);
+    }
+  }
+
+  private static class ExtendedUserBookLikeDbStorIOSQLitePutResolver extends UserBookLikeDbStorIOSQLitePutResolver {
+
+    private final String userId;
+
+    public ExtendedUserBookLikeDbStorIOSQLitePutResolver(final String userId) {
+      this.userId = userId;
+    }
+
+    @NonNull @Override protected InsertQuery mapToInsertQuery(@NonNull final UserBookLikeDb object) {
+      object.userId = userId;
+      return super.mapToInsertQuery(object);
+    }
+
+    @NonNull @Override protected UpdateQuery mapToUpdateQuery(@NonNull final UserBookLikeDb object) {
+      object.userId = userId;
+      return super.mapToUpdateQuery(object);
+    }
+
+    @NonNull @Override public ContentValues mapToContentValues(@NonNull final UserBookLikeDb object) {
+      object.userId = userId;
+      return super.mapToContentValues(object);
     }
   }
 }
