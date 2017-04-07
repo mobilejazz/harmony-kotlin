@@ -2217,10 +2217,10 @@ public abstract class AbstractReaderFragment extends Fragment
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
 
 
-      final CharSequence chartDisplayed = bookView.getStrategy().getChartDisplayed();
+      /*final CharSequence chartDisplayed = bookView.getStrategy().getChartDisplayed();
       final Pattern sPattern = Pattern.compile("(?:<img>)", Pattern.CASE_INSENSITIVE);
       int count = sPattern.matcher(chartDisplayed).groupCount();
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_AMOUNT_OF_IMAGES, String.valueOf(count));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_AMOUNT_OF_IMAGES, String.valueOf(count));*/
 
       amaAttributes.put("Controller", AnalyticsEventConstants.BOOK_READ_CONTROLLER);
       amaAttributes.put("Action", AnalyticsEventConstants.BOOK_READ_ACTION);
