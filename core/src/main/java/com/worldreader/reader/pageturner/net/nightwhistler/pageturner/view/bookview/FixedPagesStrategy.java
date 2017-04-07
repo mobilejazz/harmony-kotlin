@@ -60,6 +60,14 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     this.childView = bookView.getInnerView();
   }
 
+  @Override public int getSizeChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText().length();
+    } else {
+      return 0;
+    }
+  }
+
   public void setLayoutFactory(StaticLayoutFactory layoutFactory) {
     this.layoutFactory = layoutFactory;
   }

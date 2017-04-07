@@ -58,6 +58,14 @@ public class ScrollingStrategy implements PageChangeStrategy {
     this.childView = bookView.getInnerView();
   }
 
+  @Override public int getSizeChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText().length();
+    } else {
+      return 0;
+    }
+  }
+
   @Override public Option<CharSequence> getNextPageText() {
     return none();
   }

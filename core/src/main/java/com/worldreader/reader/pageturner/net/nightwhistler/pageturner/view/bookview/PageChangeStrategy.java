@@ -121,4 +121,6 @@ public interface PageChangeStrategy {
   Option<CharSequence> getPreviousPageText();
 
   void setBookView(BookView bookView);
+
+  int getSizeChartDisplayed();
 }
