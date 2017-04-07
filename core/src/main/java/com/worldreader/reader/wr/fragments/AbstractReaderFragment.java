@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
@@ -44,6 +45,10 @@ import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
+import com.worldreader.core.analytics.Analytics;
+import com.worldreader.core.analytics.event.AnalyticsEvent;
+import com.worldreader.core.analytics.event.AnalyticsEventConstants;
+import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.application.helper.ui.Dimens;
 import com.worldreader.core.application.ui.dialog.DialogFactory;
@@ -106,13 +111,9 @@ import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.UUID;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.regex.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
@@ -239,6 +240,7 @@ public abstract class AbstractReaderFragment extends Fragment
   protected Reachability reachability;
   protected int currentScrolledPages = 0;
   protected BookMetadata bookMetadata;
+  protected Analytics analytics;
 
   @Override public void onVisibilityChange(boolean visible) {
     progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -607,6 +609,7 @@ public abstract class AbstractReaderFragment extends Fragment
         || config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
 
       textLoader.invalidateCachedText();
+
       restartActivity(isFontChanged, isBackgroundChanged);
     }
 
@@ -2183,7 +2186,53 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void formatPageChapterProgress() {
+
+    /*I want to be able to track:
+
+      Book toc size if existent (example: 12 entries in toc)
+      Currently reading toc entry number (example, when reading third chapter in toc: 3)
+      Chapter size in chars
+      Amount of "pages" that entry is going to be divided in
+
+      Size in chars of currently presented text (screen text size in chars)
+
+     */
     chapterProgressPagesTv.setText(String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
+
+    Option<Spanned> text = bookView.getStrategy().getText();
+    Spanned spanned = text.getOrElse(new SpannableString(""));
+    if(text != null) {
+      final Map<String, String> amaAttributes = new HashMap<String, String>();
+      //Book toc size
+      amaAttributes.put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES,
+          String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
+      //Book spine size
+      amaAttributes.put(AnalyticsEventConstants.BOOK_SPINE_SIZE, String.valueOf(bookView.getSpineSize()));
+
+      //Currently reading toc entry number
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CHAPTER_IN_BOOK, String.valueOf(bookView.getIndex()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CHAPTER_SIZE_IN_CHARS, String.valueOf(spanned.length()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_TOC_ENTRY, String.valueOf(bookView.getCurrentPage()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_TOC_ENTRY, String.valueOf(bookView.getPagesForResource()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
+
+
+      final CharSequence chartDisplayed = bookView.getStrategy().getChartDisplayed();
+      final Pattern sPattern = Pattern.compile("(?:<img>)", Pattern.CASE_INSENSITIVE);
+      int count = sPattern.matcher(chartDisplayed).groupCount();
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_AMOUNT_OF_IMAGES, String.valueOf(count));
+
+      amaAttributes.put("Controller", AnalyticsEventConstants.BOOK_READ_CONTROLLER);
+      amaAttributes.put("Action", AnalyticsEventConstants.BOOK_READ_ACTION);
+      amaAttributes.put(AnalyticsEventConstants.BOOK_ATTRIBUTE, bookMetadata.getBookId());
+      amaAttributes.put(AnalyticsEventConstants.BOOK_VERSION_ATTRIBUTE, "Latest");
+
+      analytics.sendEvent(new BasicAnalyticsEvent("BOOK_READ", amaAttributes));
+
+    }
+    text = null;
+    spanned = null;
+
   }
 
   private enum Orientation {

@@ -66,6 +66,15 @@ public class ScrollingStrategy implements PageChangeStrategy {
     }
   }
 
+  @Override public CharSequence getChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText();
+    } else {
+      return "";
+    }
+
+  }
+
   @Override public Option<CharSequence> getNextPageText() {
     return none();
   }

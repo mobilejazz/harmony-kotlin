@@ -68,6 +68,14 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     }
   }
 
+  @Override public CharSequence getChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText();
+    } else {
+      return "";
+    }
+  }
+
   public void setLayoutFactory(StaticLayoutFactory layoutFactory) {
     this.layoutFactory = layoutFactory;
   }

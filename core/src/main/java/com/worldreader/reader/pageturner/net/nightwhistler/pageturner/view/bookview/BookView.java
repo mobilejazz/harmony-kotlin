@@ -190,6 +190,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     return fileName;
   }
 
+  public int getSpineSize(){ return spine != null ? spine.size() : 0;}
+
   public void setFileName(String fileName) {
     this.fileName = fileName;
     //this.loader = new ResourceLoader(fileName);

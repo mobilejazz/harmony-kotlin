@@ -123,4 +123,6 @@ public interface PageChangeStrategy {
   void setBookView(BookView bookView);
 
   int getSizeChartDisplayed();
+
+  CharSequence getChartDisplayed();
 }
