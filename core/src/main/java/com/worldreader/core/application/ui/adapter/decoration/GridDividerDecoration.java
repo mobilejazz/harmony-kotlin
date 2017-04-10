@@ -2,6 +2,7 @@ package com.worldreader.core.application.ui.adapter.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,7 +16,11 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
   private int mInsets;
 
   public GridDividerDecoration(Context context) {
-    mDivider = new ColorDrawable(context.getResources().getColor(android.R.color.transparent));
+    if (context != null) {
+      mDivider = new ColorDrawable(context.getResources().getColor(android.R.color.transparent));
+    } else {
+      mDivider = new ColorDrawable(Color.TRANSPARENT);
+    }
 
     mInsets = context.getResources().getDimensionPixelSize(R.dimen.grid_insets);
   }

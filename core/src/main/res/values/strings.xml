@@ -174,9 +174,9 @@
   <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose another one!</string>
   <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string>
   <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string>
-  <string name="ls_error_network_first_part_title">Sorry</string>
+    <string name="ls_error_network_first_part_title">Sorry,</string>
   <string name="ls_error_network_second_part_title">is not available offline, please connect to the internet to see this screen.</string>
   <string name="ls_error_network_title">Network error</string>
-  <string name="ls_error_network_generic_screen_title">screen</string>
+    <string name="ls_error_network_generic_screen_title">This Screen</string>
 
 </resources>
