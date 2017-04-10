@@ -7,6 +7,7 @@ import com.mobilejazz.logger.library.Logger;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.worldreader.core.application.di.qualifiers.WorldreaderOfflineDb;
 import com.worldreader.core.application.helper.reachability.Reachability;
+import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.UserBooksDataSource;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.mapper.user.userbook.ListUserBookEntityToListUserBookMapper;
@@ -53,14 +54,14 @@ import javax.inject.Singleton;
   }
 
   @Provides @Singleton @Named("user.books.network.datasource")
-  UserBooksNetworkDataSource provideUserBooksNetworkDataSource(Context context,
+  UserBooksNetworkDataSource provideUserBooksNetworkDataSource(ErrorAdapter<Throwable> errorAdapter,
       UserBooksApiService apiService,
       UserBookNetworkResponseToUserBookEntityMapper toUserBookEntityMapper,
       ListUserBookNetworkResponseToListUserBookEntityMapper toListUserBookEntityMapper,
       UserBookEntityToUserBookNetworkBodyMapper toUserBookNetworkBodyMapper,
       ListUserBookEntityToListUserBookNetworkBodyMapper toListUserBookNetworkBodyMapper,
       Logger logger) {
-    return new UserBooksNetworkDataSourceImpl(context, apiService, toUserBookEntityMapper,
+    return new UserBooksNetworkDataSourceImpl(errorAdapter, apiService, toUserBookEntityMapper,
         toListUserBookEntityMapper, toUserBookNetworkBodyMapper, toListUserBookNetworkBodyMapper,
         logger);
   }

@@ -1,6 +1,5 @@
 package com.worldreader.core.datasource.network.datasource.userbooks;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.mobilejazz.logger.library.Logger;
@@ -10,8 +9,6 @@ import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.userbooks.UserBookEntity;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
 import com.worldreader.core.datasource.network.model.UserBookNetworkBody;
@@ -22,8 +19,9 @@ import com.worldreader.core.datasource.spec.userbooks.GetAllUserBooksNetworkSpec
 import retrofit2.Response;
 
 import javax.inject.Inject;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSource {
 
@@ -39,18 +37,18 @@ public class UserBooksNetworkDataSourceImpl implements UserBooksNetworkDataSourc
   private final Logger logger;
 
   @Inject
-  public UserBooksNetworkDataSourceImpl(Context context, UserBooksApiService userBooksApiService,
+  public UserBooksNetworkDataSourceImpl(ErrorAdapter<Throwable> errorAdapter, UserBooksApiService userBooksApiService,
       Mapper<Optional<UserBookNetworkResponse>, Optional<UserBookEntity>> toUserBookEntity,
       Mapper<Optional<List<UserBookNetworkResponse>>, Optional<List<UserBookEntity>>> toUserBookEntityListMapper,
       Mapper<Optional<UserBookEntity>, Optional<UserBookNetworkBody>> toUserBookNetworkBody,
       final Mapper<Optional<List<UserBookEntity>>, Optional<List<UserBookNetworkBody>>> toListUserBookNetworkBodyMapper,
       Logger logger) {
+    this.errorAdapter = errorAdapter;
     this.userBooksApiService = userBooksApiService;
     this.toUserBookEntityMapper = toUserBookEntity;
     this.toUserBookEntityListMapper = toUserBookEntityListMapper;
     this.toUserBookNetworkBodyMapper = toUserBookNetworkBody;
     this.toListUserBookNetworkBodyMapper = toListUserBookNetworkBodyMapper;
-    this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
     this.logger = logger;
   }
 

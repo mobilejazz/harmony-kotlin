@@ -1,20 +1,15 @@
 package com.worldreader.core.application.di.config;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
-import com.mobilejazz.logger.library.Logger;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.worldreader.core.application.di.qualifiers.WorldreaderOfflineDb;
-import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.UserScoreDataSource;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.mapper.user.score.UserScoreEntityToUserScoreMapper;
 import com.worldreader.core.datasource.mapper.user.score.UserScoreToUserScoreEntityMapper;
 import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
 import com.worldreader.core.datasource.network.datasource.score.UserScoreNetworkDataSource;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.datasource.spec.score.UserScoreNetworkSpecification;
@@ -31,7 +26,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.List;
 
 @Module public class UserScoreModule {
 
@@ -39,10 +34,6 @@ import java.util.*;
   public Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> providerUserScoreNetwork(
       UserScoreNetworkDataSource networkDataSource) {
     return networkDataSource;
-  }
-
-  @Provides @Singleton ErrorAdapter<Throwable> provideErrorAdapter(Context context, Logger logger) {
-    return new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
   }
 
   @Provides @Singleton

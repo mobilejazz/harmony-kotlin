@@ -64,7 +64,7 @@ import java.util.concurrent.*;
               final User2 user = optional.get();
               settableFuture.set(user);
             } else {
-              settableFuture.setException(new UserNotFoundException("User is not defined!"));
+              settableFuture.setException(new UserNotFoundException());
             }
           }
 

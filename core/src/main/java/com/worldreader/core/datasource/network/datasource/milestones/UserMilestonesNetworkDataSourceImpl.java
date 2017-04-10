@@ -1,6 +1,5 @@
 package com.worldreader.core.datasource.network.datasource.milestones;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
@@ -9,8 +8,6 @@ import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.milestones.UserMilestoneEntity;
 import com.worldreader.core.datasource.model.user.user.UserEntity2;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.network.mapper.user.UserNetworkResponseToUserEntityMapper;
@@ -20,8 +17,9 @@ import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import retrofit2.Response;
 
 import javax.inject.Inject;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class UserMilestonesNetworkDataSourceImpl implements UserMilestonesNetworkDataSource {
 
@@ -31,12 +29,10 @@ public class UserMilestonesNetworkDataSourceImpl implements UserMilestonesNetwor
 
   private final ErrorAdapter<Throwable> errorAdapter;
 
-  @Inject public UserMilestonesNetworkDataSourceImpl(final Context context,
-      final UserApiService2 apiService,
-      final UserNetworkResponseToUserEntityMapper toUserEntityMapper, final Logger logger) {
+  @Inject public UserMilestonesNetworkDataSourceImpl(ErrorAdapter<Throwable> errorAdapter, final UserApiService2 apiService, final UserNetworkResponseToUserEntityMapper toUserEntityMapper, final Logger logger) {
     this.apiService = apiService;
     this.toUserEntityMapper = toUserEntityMapper;
-    this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
+    this.errorAdapter = errorAdapter;
   }
 
   @Override public void get(final RepositorySpecification specification,

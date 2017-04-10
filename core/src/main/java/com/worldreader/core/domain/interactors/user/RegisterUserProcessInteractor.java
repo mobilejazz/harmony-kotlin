@@ -54,7 +54,8 @@ import javax.inject.Inject;
           }
 
           @Override public void onFailure(final Throwable t) {
-            loginProcessAfterRegister(provider, registerProviderData, future);
+            //loginProcessAfterRegister(provider, registerProviderData, future);
+            future.setException(t);
           }
         });
 

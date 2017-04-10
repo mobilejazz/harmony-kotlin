@@ -1,6 +1,5 @@
 package com.worldreader.core.datasource.network.datasource.user;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
@@ -12,8 +11,6 @@ import com.worldreader.core.datasource.model.LeaderboardPeriodEntity;
 import com.worldreader.core.datasource.model.LeaderboardStatEntity;
 import com.worldreader.core.datasource.model.user.UserReadingStatsEntity;
 import com.worldreader.core.datasource.model.user.user.UserEntity2;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.AuthApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
@@ -42,8 +39,9 @@ import com.worldreader.core.datasource.spec.user.UpdateUserCategoriesSpecificati
 import com.worldreader.core.error.user.RegisterException;
 import retrofit2.Response;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
@@ -62,20 +60,20 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
   private final Logger logger;
 
-  public UserNetworkDataSource2Impl(Context context, UserApiService2 apiService,
+  public UserNetworkDataSource2Impl(ErrorAdapter<Throwable> errorAdapter, UserApiService2 apiService,
       AuthApiService2 authApiService,
       Mapper<Optional<UserNetworkResponse>, Optional<UserEntity2>> toUserEntityMapper,
       Mapper<Optional<LeaderboardPeriodEntity>, Optional<String>> toLeaderBoardStringMapper,
       Mapper<Optional<LeaderboardStatNetwork>, Optional<LeaderboardStatEntity>> toLeaderboardStatEntityMapper,
       final Mapper<Optional<UserReadingStatsNetworkResponse>, Optional<UserReadingStatsEntity>> toUserReadingStatsEntityMapper,
       Logger logger) {
+    this.errorAdapter = errorAdapter;
     this.apiService = apiService;
     this.authApiService = authApiService;
     this.toUserEntityMapper = toUserEntityMapper;
     this.toLeaderBoardStringMapper = toLeaderBoardStringMapper;
     this.toLeaderboardStatEntityMapper = toLeaderboardStatEntityMapper;
     this.toUserReadingStatsEntityMapper = toUserReadingStatsEntityMapper;
-    this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
     this.logger = logger;
   }
 

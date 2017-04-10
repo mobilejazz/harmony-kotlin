@@ -1,6 +1,5 @@
 package com.worldreader.core.datasource.network.datasource.userbookslike;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
@@ -9,8 +8,6 @@ import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.userbooklikes.UserBookLikeEntity;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
 import com.worldreader.core.datasource.network.mapper.userbooks.ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper;
@@ -34,11 +31,11 @@ public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkD
 
   private final Logger logger;
 
-  @Inject public UserBooksLikeNetworkDataSourceImpl(Context context, UserBooksApiService userBooksApiService,
+  @Inject public UserBooksLikeNetworkDataSourceImpl(ErrorAdapter<Throwable> errorAdapter, UserBooksApiService userBooksApiService,
       ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper toListUserBookLikeEntityMapper, Logger logger) {
     this.userBooksApiService = userBooksApiService;
     this.toListUserBookLikeEntityMapper = toListUserBookLikeEntityMapper;
-    this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
+    this.errorAdapter = errorAdapter;
     this.logger = logger;
   }
 

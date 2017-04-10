@@ -14,8 +14,6 @@ public interface UserBooksLikeRepository extends Repository<UserBookLike, Reposi
 
   void like(List<String> bookIds, Callback<Optional<List<UserBookLike>>> callback);
 
-  // TODO: 29/03/2017 Si el network provider es real, no borramos
-  // TODO: 29/03/2017 SI no es el real, sync a false y no se borra (se borrara por el user sync process)
   void unlike(String bookId, Callback<Optional<UserBookLike>> callback);
 
   void unlike(List<String> bookIds, Callback<Optional<List<UserBookLike>>> callback);

@@ -1,13 +1,10 @@
 package com.worldreader.core.datasource.network.datasource.dictionary;
 
-import android.content.Context;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.model.WordDefinitionEntity;
-import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
-import com.worldreader.core.datasource.network.general.retrofit.error.WorldreaderErrorAdapter2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import retrofit2.Response;
 
@@ -19,9 +16,10 @@ public class DictionaryNetworkDataSource2Impl implements DictionaryNetworkDataSo
   private final DictionaryApiService2 dictionaryApiService;
   private final ErrorAdapter<Throwable> errorAdapter;
 
-  @Inject public DictionaryNetworkDataSource2Impl(final Context context, final DictionaryApiService2 dictionaryApiService, final Logger logger) {
+  @Inject public DictionaryNetworkDataSource2Impl(final ErrorAdapter<Throwable> errorAdapter, final DictionaryApiService2 dictionaryApiService,
+      final Logger logger) {
     this.dictionaryApiService = dictionaryApiService;
-    this.errorAdapter = new WorldreaderErrorAdapter2(context, new Retrofit2ErrorAdapter(), logger);
+    this.errorAdapter = errorAdapter;
   }
 
   @Override public void searchWordDefinition(final String word, final Callback<WordDefinitionEntity> callback) {

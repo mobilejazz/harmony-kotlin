@@ -1,10 +1,10 @@
 package com.worldreader.core.application.di.config;
 
-import android.content.Context;
 import com.mobilejazz.logger.library.Logger;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.worldreader.core.application.di.qualifiers.WorldreaderOfflineDb;
 import com.worldreader.core.application.helper.reachability.Reachability;
+import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.UserBooksLikeDataSource;
 import com.worldreader.core.datasource.mapper.user.userbooklike.ListUserBookLikeEntityToListUserBookLikeMapper;
 import com.worldreader.core.datasource.mapper.user.userbooklike.ListUserBookLikeToListUserBookLikeEntityMapper;
@@ -37,9 +37,9 @@ import javax.inject.Singleton;
 @Module public class UserBooksLikeModule {
 
   @Provides @Singleton @Named("user.books.like.network.datasource")
-  static UserBooksLikeNetworkDataSource provideUserBooksLikeNetworkDataSource(Context context, UserBooksApiService apiService,
+  static UserBooksLikeNetworkDataSource provideUserBooksLikeNetworkDataSource(ErrorAdapter<Throwable> errorAdapter, UserBooksApiService apiService,
       ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper mapper, Logger logger) {
-    return new UserBooksLikeNetworkDataSourceImpl(context, apiService, mapper, logger);
+    return new UserBooksLikeNetworkDataSourceImpl(errorAdapter, apiService, mapper, logger);
   }
 
   @Provides @Singleton @Named("user.books.like.network.offline") static UserBooksLikeNetworkDataSource provideOfflineUserBooksNetworkDataSource() {
