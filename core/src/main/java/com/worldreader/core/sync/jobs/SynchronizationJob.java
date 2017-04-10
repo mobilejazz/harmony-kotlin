@@ -9,6 +9,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
@@ -58,6 +59,7 @@ public class SynchronizationJob extends Job {
   private PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
   private GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
   private PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  private Reachability reachability;
 
   public SynchronizationJob(Context context, WorldreaderJobCreator.InjectableCompanion companion) {
     this.logger = companion.logger;
@@ -65,12 +67,13 @@ public class SynchronizationJob extends Job {
     this.saveUserInteractor = companion.saveUserInteractor;
     this.getAllUserBookInteractor = companion.getAllUserBookInteractor;
     this.putAllUserBooksInteractor = companion.putAllUserBooksInteractor;
-    this.userScoreSynchronizationProcessInteractor = userScoreSynchronizationProcessInteractor;
-    this.getUnsyncUserMilestonesInteractor = getUnsyncUserMilestonesInteractor;
-    this.putAllUserMilestonesNetworkInteractor = putAllUserMilestonesNetworkInteractor;
-    this.putAllUserMilestonesInteractor = putAllUserMilestonesInteractor;
-    this.getAllUserBookLikesInteractor = getAllUserBookLikesInteractor;
-    this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
+    this.userScoreSynchronizationProcessInteractor = companion.userScoreSynchronizationProcessInteractor;
+    this.getUnsyncUserMilestonesInteractor = companion.getUnsyncUserMilestonesInteractor;
+    this.putAllUserMilestonesNetworkInteractor = companion.putAllUserMilestonesNetworkInteractor;
+    this.putAllUserMilestonesInteractor = companion.putAllUserMilestonesInteractor;
+    this.getAllUserBookLikesInteractor = companion.getAllUserBookLikesInteractor;
+    this.putAllUserBooksLikesInteractor = companion.putAllUserBooksLikesInteractor;
+    this.reachability = companion.reachability;
   }
 
   // Only for testing purposes
@@ -84,6 +87,11 @@ public class SynchronizationJob extends Job {
 
   @NonNull @Override protected Result onRunJob(final Params params) {
     logger.d(TAG, "Starting synchronization process.");
+
+    if (!reachability.isReachable()) {
+      logger.d(TAG, "Ignoring sync process as there are not internet!");
+      return Result.SUCCESS;
+    }
 
     try {
       logger.d(TAG, "Getting all the userbooks not synchronized.");

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.SaveUserInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.GetUnsyncUserMilestonesInteractor;
@@ -58,6 +59,7 @@ public class WorldreaderJobCreator implements JobCreator {
     public @Inject PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
     public @Inject GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
     public @Inject PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+    public @Inject Reachability reachability;
   }
 
 }
