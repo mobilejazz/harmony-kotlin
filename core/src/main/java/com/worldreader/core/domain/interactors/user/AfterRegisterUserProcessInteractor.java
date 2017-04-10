@@ -41,6 +41,7 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.error.user.UserNotFoundException;
+import com.worldreader.core.sync.WorldreaderJobCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -298,6 +299,7 @@ import java.util.List;
         // 3.- After that just set user to finally complete the process
         Futures.addCallback(saveSessionFuture, new FutureCallback<Boolean>() {
           @Override public void onSuccess(@Nullable final Boolean result) {
+            WorldreaderJobCreator.scheduleAllJobs();
             future.set(user);
           }
 

@@ -29,6 +29,7 @@ import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
+import com.worldreader.core.sync.WorldreaderJobCreator;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -134,6 +135,7 @@ import java.util.List;
 
         Futures.addCallback(storeUserBookLikesFuture, new FutureCallback<List<UserBookLike>>() {
           @Override public void onSuccess(final List<UserBookLike> result) {
+            WorldreaderJobCreator.scheduleAllJobs();
             future.set(user);
           }
 
