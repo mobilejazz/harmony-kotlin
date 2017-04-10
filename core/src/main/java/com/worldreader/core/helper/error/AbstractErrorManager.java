@@ -25,7 +25,7 @@ public abstract class AbstractErrorManager implements ErrorManager {
     String message = "";
     final Throwable errorCause = error.getCause();
     if (errorCause instanceof NetworkErrorException) {
-      if (activity.hasWindowFocus()) {
+      if (!activity.isFinishing()) {
         onWarnUserExplicitly(activity, screen);
       }
       return;
