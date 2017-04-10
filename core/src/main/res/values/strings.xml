@@ -104,12 +104,12 @@
   <string name="ls_tutorial_reader_index_title">Want a specific page?</string>
   <string name="ls_tutorial_reader_index_message">"Use the <b>table of contents</b> to see chapters and navigate through the book."</string>
 
-    <!--#Tutorial Default texts-->
-    <string name="ls_tutorial_got_it_btn">Ok, got it!</string>
-    <string name="ls_tutorial_skip_btn">Skip tutorial</string>
-    <string name="ls_tutorial_next_btn">Next</string>
+  <!--#Tutorial Default texts-->
+  <string name="ls_tutorial_got_it_btn">Ok, got it!</string>
+  <string name="ls_tutorial_skip_btn">Skip tutorial</string>
+  <string name="ls_tutorial_next_btn">Next</string>
 
-    <!--#Book Reading Screen-->
+  <!--#Book Reading Screen-->
   <string name="ls_book_reading_font_size_smallest">Smallest (12pt)</string>
   <string name="ls_book_reading_font_size_small">Small (14pt)</string>
   <string name="ls_book_reading_font_size_normal">Normal (18pt)</string>
@@ -153,15 +153,29 @@
   <string name="ls_error_definition_not_internet">Sorry, you need to be connected to the internet to search for a definition.</string>
   <string name="ls_error_tts_not_internet">Sorry, you need to be connected to the internet to Read out loud.</string>
 
-    <string name="ls_book_detail_recommended">From The Same Category</string>
-    <string name="ls_my_library_currently_reading">My Books</string>
+  <string name="ls_book_detail_recommended">From The Same Category</string>
+  <string name="ls_my_library_currently_reading">My Books</string>
 
-    <string name="ls_login_forgot_password">Forgot your password?</string>
+  <string name="ls_login_forgot_password">Forgot your password?</string>
 
-    <string name="ls_login_btn_title">Start Reading</string>
+  <string name="ls_login_btn_title">Start Reading</string>
 
-    <string name="ls_category_detail_most_popular">Most Popular</string>
-    <string name="ls_category_detail_highest_rated">Highest Rated</string>
-    <string name="ls_my_library_new_releases">New Releases</string>
+  <string name="ls_category_detail_most_popular">Most Popular</string>
+  <string name="ls_category_detail_highest_rated">Highest Rated</string>
+  <string name="ls_my_library_new_releases">New Releases</string>
+
+  <!--# ErrorManager -->
+  <string name="ls_error_invalid_username_password_combination">Invalid username and password combination</string>
+  <string name="ls_error_common_network_message">Network error, please check your internet connection.</string>
+  <string name="ls_error_username_taken_message">This username has already been taken</string>
+  <string name="ls_error_register_google_message">This email address is already registered with Google.</string>
+  <string name="ls_error_register_facebook_message">This email address is already registered with Facebook.</string>
+  <string name="ls_user_profile_invalid_duplicated_email">This email address has been used before. Please choose another.</string>
+  <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose another one!</string>
+  <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string>
+  <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string>
+  <string name="ls_error_network_first_part_title">Sorry</string>
+  <string name="ls_error_network_second_part_title">is not available offline, please connect to the internet to see this screen.</string>
+  <string name="ls_error_network_title">Network error</string>
 
 </resources>
