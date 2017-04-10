@@ -17,8 +17,6 @@ import com.worldreader.core.error.general.UnexpectedErrorException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-// TODO: 29/03/2017 Hacer GetAll en AfterLogin y coger los likes y meterlos en la BBDD
-// TODO: 29/03/2017 Hacer AfterRegister coger todos los likes y enviarlos
 @Singleton public class LikeBookInteractor {
 
   private final ListeningExecutorService executor;

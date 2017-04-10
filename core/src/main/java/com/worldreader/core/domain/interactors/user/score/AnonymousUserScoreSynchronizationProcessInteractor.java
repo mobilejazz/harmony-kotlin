@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.score.AddUserScoreNetworkSpecification;
@@ -13,10 +12,11 @@ import com.worldreader.core.domain.model.user.UserScore;
 import com.worldreader.core.domain.repository.UserScoreRepository;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
+import javax.inject.Singleton;
+import java.util.Date;
+import java.util.concurrent.Executor;
 
-@PerActivity public class AnonymousUserScoreSynchronizationProcessInteractor {
+@Singleton public class AnonymousUserScoreSynchronizationProcessInteractor {
 
   private final ListeningExecutorService executorService;
   private final UserScoreRepository userScoreRepository;

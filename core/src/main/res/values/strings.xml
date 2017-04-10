@@ -177,5 +177,6 @@
   <string name="ls_error_network_first_part_title">Sorry</string>
   <string name="ls_error_network_second_part_title">is not available offline, please connect to the internet to see this screen.</string>
   <string name="ls_error_network_title">Network error</string>
+  <string name="ls_error_network_generic_screen_title">screen</string>
 
 </resources>

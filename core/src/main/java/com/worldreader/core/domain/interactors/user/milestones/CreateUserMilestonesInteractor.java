@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.Milestone;
@@ -13,10 +12,13 @@ import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.domain.repository.UserMilestonesRepository;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
+import javax.inject.Singleton;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
-@PerActivity public class CreateUserMilestonesInteractor {
+@Singleton public class CreateUserMilestonesInteractor {
 
   private final ListeningExecutorService executor;
   private final UserMilestonesRepository repository;

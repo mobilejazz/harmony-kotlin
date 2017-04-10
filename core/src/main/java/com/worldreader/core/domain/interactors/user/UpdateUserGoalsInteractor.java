@@ -5,7 +5,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.User2;
@@ -13,9 +12,10 @@ import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
 
 import javax.inject.Inject;
-import java.util.concurrent.*;
+import javax.inject.Singleton;
+import java.util.concurrent.Executor;
 
-@PerActivity public class UpdateUserGoalsInteractor {
+@Singleton public class UpdateUserGoalsInteractor {
 
   private final ListeningExecutorService executor;
   private final UserRepository repository;

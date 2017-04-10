@@ -188,5 +188,6 @@
   <string name="ls_error_network_first_part_title">Lo sentimos</string>
   <string name="ls_error_network_second_part_title">no está disponible sin conexión a Internet, conéctate a la red para ver esta pantalla.</string>
   <string name="ls_error_network_title">Error de red</string>
+  <string name="ls_error_network_generic_screen_title">pantalla</string>
 
 </resources>

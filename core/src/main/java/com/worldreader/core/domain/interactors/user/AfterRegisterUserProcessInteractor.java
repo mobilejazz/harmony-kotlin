@@ -43,10 +43,11 @@ import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.error.user.UserNotFoundException;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 
-@PerActivity public class AfterRegisterUserProcessInteractor {
+@Singleton public class AfterRegisterUserProcessInteractor {
 
   private final ListeningExecutorService executor;
   private final SaveUserInteractor saveUserInteractor;

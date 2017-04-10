@@ -8,16 +8,17 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
 import com.worldreader.core.domain.model.user.User2;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
+import javax.inject.Singleton;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
 
-@PerActivity public class CreateAnonymousUserInteractor {
+@Singleton public class CreateAnonymousUserInteractor {
 
   private final ListeningExecutorService executor;
 

@@ -175,6 +175,7 @@
   <string name="ls_error_register_facebook_message">Cette adresse e-mail est déjà enregistrée auprès de Facebook.</string>
   <string name="ls_user_profile_invalid_duplicated_email">Cette adresse e-mail a déjà été utilisée. Merci d\'en choisir une autre.</string>
   <string name="ls_forgot_password_account_not_exits">n\'existe pas compte.</string>
-  <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose another one!</string>
+  <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose another one!</string> <!-- Needs translation -->
+  <string name="ls_error_network_generic_screen_title">screen</string> <!-- Needs translation -->
 
 </resources>

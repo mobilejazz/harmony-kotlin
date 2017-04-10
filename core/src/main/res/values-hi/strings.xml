@@ -1,177 +1,193 @@
 <?xml version="1.0"?>
 <resources>
-    <!-- Generics -->
-    <string name="ls_generic_cancel">रद्द</string>
-    <string name="ls_generic_accept">ठीक है</string>
-    <string name="ls_generic_delete">हटाएं</string>
-    <string name="ls_generic_done">पूरा हुआ</string>
-    <string name="ls_generic_dismiss">रद्द करें</string>
-    <string name="ls_generic_save">सहेजें</string>
-    <string name="ls_generic_close">बंद करें</string>
-    <string name="ls_generic_yes">हां</string>
-    <string name="ls_generic_no">नहीं</string>
-    <string name="ls_generic_quit">छोड़ें</string>
-    <string name="ls_generic_retry">दुबारा प्रयास करें</string>
-    <string name="ls_generic_back">वापस</string>
-    <string name="ls_generic_next">अगला</string>
-    <string name="ls_generic_search">खोजें</string>
-    <string name="ls_generic_share">साझा करें</string>
-    <string name="ls_generic_settings">सेटिंग्‍स</string>
-    <string name="ls_generic_skip">छोड़ें</string>
-    <string name="ls_generic_edit">संपादन</string>
-    <string name="ls_my_library_view_all">अधिक</string>
-    <string name="ls_offline_books_screen_title">ऑफलाइन पुस्तकें</string>
-    <!-- Book Detail Layout-->
-    <string name="ls_generic_like">लाइक</string>
-    <string name="ls_generic_liked">लाइक किया</string>
-    <string name="ls_book_detail_add_to_currently_reading">मेरी पुस्तकों में जोड़ें</string>
-    <string name="ls_book_detail_added_to_currently_reading">मेरी पुस्तकों में जोड़ें</string>
-    <string name="ls_book_detail_download_book">डाउनलोड की हुई पुस्तक (ऑफलाइन पढ़ें)</string>
-    <string name="ls_book_detail_number_of_likes">%1$d लाइक</string>
-    <string name="ls_book_detail_number_of_times_read">%1$d बार पढ़ा गया</string>
-    <string name="ls_delete_book_dialog_title">पुस्तक हटाएं</string>
-    <string name="ls_delete_book_dialog_message">क्या आप वास्तव में इस पुस्तक को हटाना चाहते हैं?
+  <!-- Generics -->
+  <string name="ls_generic_cancel">रद्द</string>
+  <string name="ls_generic_accept">ठीक है</string>
+  <string name="ls_generic_delete">हटाएं</string>
+  <string name="ls_generic_done">पूरा हुआ</string>
+  <string name="ls_generic_dismiss">रद्द करें</string>
+  <string name="ls_generic_save">सहेजें</string>
+  <string name="ls_generic_close">बंद करें</string>
+  <string name="ls_generic_yes">हां</string>
+  <string name="ls_generic_no">नहीं</string>
+  <string name="ls_generic_quit">छोड़ें</string>
+  <string name="ls_generic_retry">दुबारा प्रयास करें</string>
+  <string name="ls_generic_back">वापस</string>
+  <string name="ls_generic_next">अगला</string>
+  <string name="ls_generic_search">खोजें</string>
+  <string name="ls_generic_share">साझा करें</string>
+  <string name="ls_generic_settings">सेटिंग्‍स</string>
+  <string name="ls_generic_skip">छोड़ें</string>
+  <string name="ls_generic_edit">संपादन</string>
+  <string name="ls_my_library_view_all">अधिक</string>
+  <string name="ls_offline_books_screen_title">ऑफलाइन पुस्तकें</string>
+  <!-- Book Detail Layout-->
+  <string name="ls_generic_like">लाइक</string>
+  <string name="ls_generic_liked">लाइक किया</string>
+  <string name="ls_book_detail_add_to_currently_reading">मेरी पुस्तकों में जोड़ें</string>
+  <string name="ls_book_detail_added_to_currently_reading">मेरी पुस्तकों में जोड़ें</string>
+  <string name="ls_book_detail_download_book">डाउनलोड की हुई पुस्तक (ऑफलाइन पढ़ें)</string>
+  <string name="ls_book_detail_number_of_likes">%1$d लाइक</string>
+  <string name="ls_book_detail_number_of_times_read">%1$d बार पढ़ा गया</string>
+  <string name="ls_delete_book_dialog_title">पुस्तक हटाएं</string>
+  <string name="ls_delete_book_dialog_message">क्या आप वास्तव में इस पुस्तक को हटाना चाहते हैं?
     </string>
-    <string name="ls_download_book_exceeded_limit_title">डाउनलोड की हुई पुस्तक</string>
-    <string name="ls_download_book_exceeded_limit_message">आप पुस्तक डाउनलोड करने की सीमा को पार कर
+  <string name="ls_download_book_exceeded_limit_title">डाउनलोड की हुई पुस्तक</string>
+  <string name="ls_download_book_exceeded_limit_message">आप पुस्तक डाउनलोड करने की सीमा को पार कर
         चुके हैं। आप कल और डाउनलोड कर सकते हैं।
     </string>
-    <string name="ls_open_book_not_internet">"बिना इंटरनेट कनेक्शन के ऑफलाइन पढ़ने के लिए आपको एक
+  <string name="ls_open_book_not_internet">"बिना इंटरनेट कनेक्शन के ऑफलाइन पढ़ने के लिए आपको एक
         पुस्तक डाउनलोड करने की जरूरत है। "
     </string>
-    <!-- View all layout & My books layout-->
-    <string name="ls_view_all_delete_book_title">पुस्तक हटाएं?</string>
-    <string name="ls_view_all_delete_book_message">क्या आप वास्तव में इस पुस्तक को हटाना चाहते हैं?
+  <!-- View all layout & My books layout-->
+  <string name="ls_view_all_delete_book_title">पुस्तक हटाएं?</string>
+  <string name="ls_view_all_delete_book_message">क्या आप वास्तव में इस पुस्तक को हटाना चाहते हैं?
         आपकी सहेजी हुई सभी प्रगति भी हट जाएगी।
     </string>
-    <string name="ls_view_all_delete_book_error">क्षमा करें, आपकी पुस्तक हटाते समय यहां एक त्रुटि
+  <string name="ls_view_all_delete_book_error">क्षमा करें, आपकी पुस्तक हटाते समय यहां एक त्रुटि
         हुई। कृपया दुबारा प्रयास करें।
     </string>
-    <!-- Settings -->
-    <string name="ls_settings_profile_settings">प्रोफाइल सेटिंग्स</string>
-    <string name="ls_settings_my_goals">मेरे लक्ष्य</string>
-    <!-- User Profile Layout -->
-    <string name="ls_user_not_registered_register_now">अभी पंजीकरण करें</string>
-    <!-- Register layout -->
-    <string name="ls_signup_login_btn">साइन इन</string>
-    <string name="ls_signup_no_register">बाद में साइन अप करें</string>
-    <string name="ls_signup_message">अपने पाठन से और ज्यादा पाएं। खास फीचर और पुस्तक अनुशंसा प्राप्त
+  <!-- Settings -->
+  <string name="ls_settings_profile_settings">प्रोफाइल सेटिंग्स</string>
+  <string name="ls_settings_my_goals">मेरे लक्ष्य</string>
+  <!-- User Profile Layout -->
+  <string name="ls_user_not_registered_register_now">अभी पंजीकरण करें</string>
+  <!-- Register layout -->
+  <string name="ls_signup_login_btn">साइन इन</string>
+  <string name="ls_signup_no_register">बाद में साइन अप करें</string>
+  <string name="ls_signup_message">अपने पाठन से और ज्यादा पाएं। खास फीचर और पुस्तक अनुशंसा प्राप्त
         करने के लिए साइन अप करें।
     </string>
-    <string name="ls_signup_username">यूजरनेम</string>
-    <string name="ls_signup_password">पासवर्ड</string>
-    <string name="ls_signup_repeat_password">पासवर्ड रीसेट करें</string>
-    <string name="ls_signup_terms_and_conditions">नियम एवं शर्तों से सहमत</string>
-    <string name="ls_signup_register_now_btn">अभी साइन अप करें</string>
-    <string name="ls_signup_accept_terms_conditions">नियम एवं शर्तों से सहमत</string>
-    <string name="ls_signup_email">ईमेल</string>
-    <!-- Loading book layout -->
-    <string name="ls_loading_book_message">लोड हो रहा है...</string>
-    <string name="ls_loading_book_please_wait">कृपया इंतजार करें</string>
-    <!-- Book finished layout -->
-    <string name="ls_congratulations_title">मुबारक हो!</string>
-    <string name="ls_congratulations_finished_book">आपने पुस्तक पूरी कर ली है!</string>
-    <string name="ls_congratulations_back_to_book_detai">मेरी लाइब्ररी में वापस जाएं</string>
-    <string name="ls_share_finished_book_title">पढ़ी हुई पुस्तक साझा करें</string>
-    <string name="ls_share_finished_book">अरे मैंने वर्ल्डरीडर पर \"%1$s\" में से \"%2$s\" पढ़ ली
+  <string name="ls_signup_username">यूजरनेम</string>
+  <string name="ls_signup_password">पासवर्ड</string>
+  <string name="ls_signup_repeat_password">पासवर्ड रीसेट करें</string>
+  <string name="ls_signup_terms_and_conditions">नियम एवं शर्तों से सहमत</string>
+  <string name="ls_signup_register_now_btn">अभी साइन अप करें</string>
+  <string name="ls_signup_accept_terms_conditions">नियम एवं शर्तों से सहमत</string>
+  <string name="ls_signup_email">ईमेल</string>
+  <!-- Loading book layout -->
+  <string name="ls_loading_book_message">लोड हो रहा है...</string>
+  <string name="ls_loading_book_please_wait">कृपया इंतजार करें</string>
+  <!-- Book finished layout -->
+  <string name="ls_congratulations_title">मुबारक हो!</string>
+  <string name="ls_congratulations_finished_book">आपने पुस्तक पूरी कर ली है!</string>
+  <string name="ls_congratulations_back_to_book_detai">मेरी लाइब्ररी में वापस जाएं</string>
+  <string name="ls_share_finished_book_title">पढ़ी हुई पुस्तक साझा करें</string>
+  <string name="ls_share_finished_book">अरे मैंने वर्ल्डरीडर पर \"%1$s\" में से \"%2$s\" पढ़ ली
         है! एप्लीकेशन को यहां डाउनलोड करें: %3$s
     </string>
-    <string name="ls_book_finished_back_to_book_detail">पुस्तक विवरण पर वापस</string>
-    <string name="ls_congratulations_share_it">इसे साझा करें!</string>
-    <!--#Tutorial Home Screen-->
-    <string name="ls_my_library_tutorial_title">Worldreader में स्वागत है!</string>
-    <string name="ls_my_library_tutorial_message">"आपकी व्यक्तिगत अनुशंसित की गई पुस्तक में से एक को
+  <string name="ls_book_finished_back_to_book_detail">पुस्तक विवरण पर वापस</string>
+  <string name="ls_congratulations_share_it">इसे साझा करें!</string>
+  <!--#Tutorial Home Screen-->
+  <string name="ls_my_library_tutorial_title">Worldreader में स्वागत है!</string>
+  <string name="ls_my_library_tutorial_message">"आपकी व्यक्तिगत अनुशंसित की गई पुस्तक में से एक को
         चुनते हुए पढ़ना शुरु करें!"
     </string>
-    <string name="ls_collections_tutorial_message">
+  <string name="ls_collections_tutorial_message">
         <b>संग्रह</b>
         पुस्तकों का समूह है जिसको हमने सिर्फ आपके लिए बनाया है।\n\nयदि आप चुनौति चाहते हैं, तो एक
         पूरा संग्रह पढ़ने का प्रयास करें!
     </string>
-    <string name="ls_categories_tutorial_message">वर्ग एक जैसे विषयों या विचारों वाले पुस्तकों का
+  <string name="ls_categories_tutorial_message">वर्ग एक जैसे विषयों या विचारों वाले पुस्तकों का
         समूह है।\n\nश्रेष्ठ कहानियों को जल्दी पढ़कर यहां सब कुछ ढूंढें।
     </string>
-    <string name="ls_categories_tutorial_button_two">ठीक है, मिल गया!</string>
-    <string name="ls_my_library_tutorial_button_one">ट्यूटोरियल छोड़ें</string>
-    <string name="ls_my_library_tutorial_button_two">अगला</string>
-    <!--#Tutorial Reader Screen-->
-    <string name="ls_tutorial_reader_initial_title">पढ़ने के लिए तैयार?</string>
-    <string name="ls_tutorial_reader_initial_message">"<b>पृष्ठ पलटने के लिए स्वाइप करें</b>, यदि आप
+  <string name="ls_categories_tutorial_button_two">ठीक है, मिल गया!</string>
+  <string name="ls_my_library_tutorial_button_one">ट्यूटोरियल छोड़ें</string>
+  <string name="ls_my_library_tutorial_button_two">अगला</string>
+  <!--#Tutorial Reader Screen-->
+  <string name="ls_tutorial_reader_initial_title">पढ़ने के लिए तैयार?</string>
+  <string name="ls_tutorial_reader_initial_message">"<b>पृष्ठ पलटने के लिए स्वाइप करें</b>, यदि आप
         रीडिंग मीनू प्रयोग करना चाहते हैं तो स्क्रीन को टैप करें।"
     </string>
-    <string name="ls_tutorial_reader_options_title">पढ़ने के विकल्प</string>
-    <string name="ls_tutorial_reader_options_message">पढ़ने के विकल्प बदलें जैसे चमक, पृष्ठ का रंग
+  <string name="ls_tutorial_reader_options_title">पढ़ने के विकल्प</string>
+  <string name="ls_tutorial_reader_options_message">पढ़ने के विकल्प बदलें जैसे चमक, पृष्ठ का रंग
         और फोंट का आकार।
     </string>
-    <string name="ls_tutorial_reader_index_title">किसी खास पृष्ठ पर जाना है?</string>
-    <string name="ls_tutorial_reader_index_message">"अध्यायों को देखने और पुस्तक में आगे पीछे जाने
+  <string name="ls_tutorial_reader_index_title">किसी खास पृष्ठ पर जाना है?</string>
+  <string name="ls_tutorial_reader_index_message">"अध्यायों को देखने और पुस्तक में आगे पीछे जाने
         के लिए <b>विषय सूची</b> का प्रयोग करें।"
     </string>
-    <!--#Tutorial Default texts-->
-    <string name="ls_tutorial_got_it_btn">ठीक है, समझ गए!</string>
-    <string name="ls_tutorial_skip_btn">ट्यूटोरियल छोड़ें</string>
-    <string name="ls_tutorial_next_btn">अगला</string>
-    <!--#Book Reading Screen-->
-    <string name="ls_book_reading_font_size_smallest">सबसे छोटा (12 फोंट साइज)</string>
-    <string name="ls_book_reading_font_size_small">छोटा (14 फोंट साइज)</string>
-    <string name="ls_book_reading_font_size_normal">सामान्य (18 फोंट साइज)</string>
-    <string name="ls_book_reading_font_size_big">बड़ा (20 फोंट साइज)</string>
-    <string name="ls_book_reading_font_size_biggest">सबसे बड़ा (24 फोंट साइज)</string>
-    <string name="ls_book_reading_font_family_original">ओरिजिनल</string>
-    <string name="ls_book_reading_font_family_gentium_book_basic">जेंटियम पुस्तक प्राथमिक</string>
-    <string name="ls_book_reading_font_family_gentium_basic">जेंटियम प्राथमिक</string>
-    <string name="ls_book_reading_font_family_frank_ruehl">फ्रैंक रुल</string>
-    <string name="ls_book_reading_book_index">विषय-सूची</string>
-    <string name="ls_book_reading_no_table_of_contents">इस पुस्तक में विषय-सूची नहीं है।</string>
-    <string name="ls_book_reading_unknown_author">अज्ञात लेखक</string>
-    <string name="ls_text_to_speech">जोर से पढ़ें</string>
-    <string name="ls_display_options">डिस्प्ले विकल्प</string>
-    <string name="ls_contents">विषय वस्तु</string>
-    <string name="ls_book_reading_select_one_word">कृपया शब्दकोष में ढूंढने के लिए एक शब्द चुनें।
+  <!--#Tutorial Default texts-->
+  <string name="ls_tutorial_got_it_btn">ठीक है, समझ गए!</string>
+  <string name="ls_tutorial_skip_btn">ट्यूटोरियल छोड़ें</string>
+  <string name="ls_tutorial_next_btn">अगला</string>
+  <!--#Book Reading Screen-->
+  <string name="ls_book_reading_font_size_smallest">सबसे छोटा (12 फोंट साइज)</string>
+  <string name="ls_book_reading_font_size_small">छोटा (14 फोंट साइज)</string>
+  <string name="ls_book_reading_font_size_normal">सामान्य (18 फोंट साइज)</string>
+  <string name="ls_book_reading_font_size_big">बड़ा (20 फोंट साइज)</string>
+  <string name="ls_book_reading_font_size_biggest">सबसे बड़ा (24 फोंट साइज)</string>
+  <string name="ls_book_reading_font_family_original">ओरिजिनल</string>
+  <string name="ls_book_reading_font_family_gentium_book_basic">जेंटियम पुस्तक प्राथमिक</string>
+  <string name="ls_book_reading_font_family_gentium_basic">जेंटियम प्राथमिक</string>
+  <string name="ls_book_reading_font_family_frank_ruehl">फ्रैंक रुल</string>
+  <string name="ls_book_reading_book_index">विषय-सूची</string>
+  <string name="ls_book_reading_no_table_of_contents">इस पुस्तक में विषय-सूची नहीं है।</string>
+  <string name="ls_book_reading_unknown_author">अज्ञात लेखक</string>
+  <string name="ls_text_to_speech">जोर से पढ़ें</string>
+  <string name="ls_display_options">डिस्प्ले विकल्प</string>
+  <string name="ls_contents">विषय वस्तु</string>
+  <string name="ls_book_reading_select_one_word">कृपया शब्दकोष में ढूंढने के लिए एक शब्द चुनें।
     </string>
-    <string name="ls_book_reading_font_family_open_sans">के बिना खोलें</string>
-    <string name="ls_book_reading_font_family_lora">लोरा</string>
-    <string name="ls_book_reading_font_family_poppins">पॉपिन्स</string>
-    <string name="ls_loading_text">टेक्स्‍ट लोड हो रहा है...</string>
-    <string name="ls_reader_set_your_goals_title">अपने लक्ष्य निर्धारित करें</string>
-    <string name="ls_reader_set_your_goals_message">पढ़ने का एक लक्ष्य निर्धारित करें और देखें कि आप
+  <string name="ls_book_reading_font_family_open_sans">के बिना खोलें</string>
+  <string name="ls_book_reading_font_family_lora">लोरा</string>
+  <string name="ls_book_reading_font_family_poppins">पॉपिन्स</string>
+  <string name="ls_loading_text">टेक्स्‍ट लोड हो रहा है...</string>
+  <string name="ls_reader_set_your_goals_title">अपने लक्ष्य निर्धारित करें</string>
+  <string name="ls_reader_set_your_goals_message">पढ़ने का एक लक्ष्य निर्धारित करें और देखें कि आप
         अन्य पाठकों की तुलना में कैसे हैं। आइये इसे अभी करें।
     </string>
-    <string name="ls_reader_reminder_set_your_goals_title">अपने पढ़ने का लक्ष्य निर्धारित करें?
+  <string name="ls_reader_reminder_set_your_goals_title">अपने पढ़ने का लक्ष्य निर्धारित करें?
     </string>
-    <string name="ls_reader_reminder_set_your_goals_message">आइये इसे अभी करें ताकि आप अपनी प्रगति
+  <string name="ls_reader_reminder_set_your_goals_message">आइये इसे अभी करें ताकि आप अपनी प्रगति
         की अन्य पाठकों के साथ तुलना कर सकें।
     </string>
-    <!--#DefintionView-->
-    <string name="ls_definition_view_no_definitions_found">कोई परिभाषा नहीं मिली</string>
-    <string name="ls_definition_view_adjective">विशेषण</string>
-    <string name="ls_definition_view_adverb">क्रिया विशेषण</string>
-    <string name="ls_definition_view_verb">क्रिया</string>
-    <string name="ls_definition_view_noun">संज्ञा</string>
-    <string name="ls_offline_books_catalog_outdated_title">ऑफलाइन पुस्तक अपडेट</string>
-    <string name="ls_offline_books_catalog_outdated_description">आपकी ऑफलाइन पुस्तकें पुरानी हैं।
+  <!--#DefintionView-->
+  <string name="ls_definition_view_no_definitions_found">कोई परिभाषा नहीं मिली</string>
+  <string name="ls_definition_view_adjective">विशेषण</string>
+  <string name="ls_definition_view_adverb">क्रिया विशेषण</string>
+  <string name="ls_definition_view_verb">क्रिया</string>
+  <string name="ls_definition_view_noun">संज्ञा</string>
+  <string name="ls_offline_books_catalog_outdated_title">ऑफलाइन पुस्तक अपडेट</string>
+  <string name="ls_offline_books_catalog_outdated_description">आपकी ऑफलाइन पुस्तकें पुरानी हैं।
         ऑफलाइन पढ़ना जारी रखने के लिए, आपको अभी अपडेट करना चाहिए या जब आपके पास इंटरनेट का अच्छा
         कनेक्शन हो।\n\n<b>ध्यातव्य:</b> यदि आप बाद में अपडेट को चुनते हैं, पुरानी पुस्तकें हट
         जाएंगी। यदि चुनते हो तो पुस्तकें डाउनलोड के लिए दुबारा उपलब्ध हो जाएगी।
     </string>
-    <string name="ls_offline_books_catalog_outdated_update">अपडेट</string>
-    <!--#Not registered dialog-->
-    <string name="ls_not_registered_dialog_title">अपने प्रगति को देखने के लिए तैयार हैं?</string>
-    <string name="ls_not_registered_dialog_message">पता लगाएं कि आप किस प्रकार के पाठक हैं और देखें
+  <string name="ls_offline_books_catalog_outdated_update">अपडेट</string>
+  <!--#Not registered dialog-->
+  <string name="ls_not_registered_dialog_title">अपने प्रगति को देखने के लिए तैयार हैं?</string>
+  <string name="ls_not_registered_dialog_message">पता लगाएं कि आप किस प्रकार के पाठक हैं और देखें
         कि अन्य‍ लोग क्या पढ़ते हैं।
     </string>
-    <string name="ls_error_signup_network_title">नेटवर्क उपलब्ध नहीं है</string>
-    <string name="ls_error_definition_not_internet">क्षमा करें, परिभाषा को ढूंढ़ने के लिए आपको
+  <string name="ls_error_signup_network_title">नेटवर्क उपलब्ध नहीं है</string>
+  <string name="ls_error_definition_not_internet">क्षमा करें, परिभाषा को ढूंढ़ने के लिए आपको
         इंटरनेट से जुड़ने की जरूरत है।
     </string>
-    <string name="ls_error_tts_not_internet">क्षमा करें, जोर से पढ़ने के लिए आपको इंटरनेट से जुड़ने
+  <string name="ls_error_tts_not_internet">क्षमा करें, जोर से पढ़ने के लिए आपको इंटरनेट से जुड़ने
         की जरूरत है।
     </string>
-    <string name="ls_book_detail_recommended">एक ही वर्ग से</string>
-    <string name="ls_my_library_currently_reading">मेरी पुस्तकें</string>
-    <string name="ls_login_forgot_password">क्‍या अपना पासवर्ड भूल गए?</string>
-    <string name="ls_login_btn_title">पढ़ना प्रारंभ करें</string>
-    <string name="ls_category_detail_most_popular">सबसे अधिक लोकप्रिय</string>
-    <string name="ls_category_detail_highest_rated">उच्चतम मूल्‍यांकन</string>
-    <string name="ls_my_library_new_releases">नए प्रकाशन</string>
+  <string name="ls_book_detail_recommended">एक ही वर्ग से</string>
+  <string name="ls_my_library_currently_reading">मेरी पुस्तकें</string>
+  <string name="ls_login_forgot_password">क्‍या अपना पासवर्ड भूल गए?</string>
+  <string name="ls_login_btn_title">पढ़ना प्रारंभ करें</string>
+  <string name="ls_category_detail_most_popular">सबसे अधिक लोकप्रिय</string>
+  <string name="ls_category_detail_highest_rated">उच्चतम मूल्‍यांकन</string>
+  <string name="ls_my_library_new_releases">नए प्रकाशन</string>
+
+  <!--#ErrorManager-->
+  <string name="ls_error_invalid_username_password_combination">Invalid username and password combination</string> <!-- Needs translation -->
+  <string name="ls_error_common_network_message">Network error, please check your internet connection.</string> <!-- Needs translation -->
+  <string name="ls_error_username_taken_message">This username has already been taken</string> <!-- Needs translation -->
+  <string name="ls_error_register_google_message">This email address is already registered with Google.</string> <!-- Needs translation -->
+  <string name="ls_error_register_facebook_message">This email address is already registered with Facebook.</string> <!-- Needs translation -->
+  <string name="ls_user_profile_invalid_duplicated_email">This email address has been used before. Please choose another.</string> <!-- Needs translation -->
+  <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose another one!</string> <!-- Needs translation -->
+  <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string> <!-- Needs translation -->
+  <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string> <!-- Needs translation -->
+  <string name="ls_error_network_first_part_title">Sorry</string> <!-- Needs translation -->
+  <string name="ls_error_network_second_part_title">is not available offline, please connect to the internet to see this screen.</string> <!-- Needs translation -->
+  <string name="ls_error_network_title">Network error</string> <!-- Needs translation -->
+  <string name="ls_error_network_generic_screen_title">screen</string> <!-- Needs translation -->
+
 </resources>

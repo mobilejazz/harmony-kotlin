@@ -176,5 +176,6 @@
   <string name="ls_error_network_first_part_title">Desculpe</string>
   <string name="ls_error_network_second_part_title">não está disponível offline, conecte-se à internet para ver essa tela.</string>
   <string name="ls_error_network_title">Erro de rede</string>
+  <string name="ls_error_network_generic_screen_title">screen</string> <!-- Needs translation -->
 
 </resources>
