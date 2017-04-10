@@ -98,6 +98,8 @@ dependencies {
     compile 'org.codehaus.jedi:jedi-core:3.0.5'
     compile 'org.slf4j:slf4j-api:1.6.1'
 
+    compile project.ext.dependencies.androidjob
+
     testCompile testDependencies.hamcrest
     testCompile(testDependencies.junit) {
         exclude module: 'hamcrest-core'
