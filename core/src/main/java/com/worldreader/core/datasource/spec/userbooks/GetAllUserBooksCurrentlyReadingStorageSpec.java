@@ -9,9 +9,8 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
   @Override public Query toQuery() {
     return Query.builder()
         .table(UserBooksTable.TABLE)
-        .where(
-            UserBooksTable.COLUMN_MARK_IN_MY_BOOKS + " = ? AND " + UserBooksTable.COLUMN_FINISHED + " = ?")
-        .whereArgs(1, 0)
+        .where(UserBooksTable.COLUMN_MARK_IN_MY_BOOKS + " = ? ")
+        .whereArgs(1)
         .orderBy("datetime(" + UserBooksTable.COLUMN_UPDATED_AT + ") DESC")
         .build();
   }
