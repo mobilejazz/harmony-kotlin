@@ -36,10 +36,12 @@ public class FinishBookInteractorImpl extends AbstractInteractor<Boolean, ErrorC
     userBooksRepository.finish(bookId, new Callback<Optional<UserBook>>() {
       @Override public void onSuccess(final Optional<UserBook> userBookOptional) {
         performSuccessCallback(callback, userBookOptional.isPresent());
+        callback = null;
       }
 
       @Override public void onError(final Throwable e) {
         performErrorCallback(callback, ErrorCore.of(e));
+        callback = null;
       }
     });
   }
