@@ -9,11 +9,13 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
   private Integer limit;
   private boolean strictFinished = true;
   private boolean finishedIncluded;
+  private boolean orderByLastOpened;
 
   private GetAllUserBooksCurrentlyReadingStorageSpec(final Builder builder) {
     setLimit(builder.limit);
     this.finishedIncluded = builder.finishedIncluded;
     this.strictFinished = builder.strictFinished;
+    this.orderByLastOpened = builder.orderByLastOpened;
   }
 
   public GetAllUserBooksCurrentlyReadingStorageSpec() {
@@ -32,7 +34,7 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
         .table(UserBooksTable.TABLE)
         .where(UserBooksTable.COLUMN_MARK_IN_MY_BOOKS + " = ? " + (strictFinished ? " AND " : " OR ") + UserBooksTable.COLUMN_FINISHED + " = ?")
         .whereArgs(1, finishedIncluded ? 1 : 0)
-        .orderBy("datetime(" + UserBooksTable.COLUMN_UPDATED_AT + ") DESC");
+        .orderBy("datetime(" + (orderByLastOpened ? UserBooksTable.COLUMN_OPENED_AT : UserBooksTable.COLUMN_UPDATED_AT) + ") DESC");
 
     if (limit != null) {
       builder.limit(limit);
@@ -50,6 +52,7 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
     private Integer limit;
     private boolean finishedIncluded;
     private boolean strictFinished;
+    private boolean orderByLastOpened;
 
     private Builder() {
     }
@@ -66,6 +69,11 @@ public class GetAllUserBooksCurrentlyReadingStorageSpec extends UserBookStorageS
 
     public Builder withStrictFinished(final boolean strictFinished) {
       this.strictFinished = strictFinished;
+      return this;
+    }
+
+    public Builder withOrderByLastOpened(final boolean orderByLastOpened) {
+      this.orderByLastOpened = orderByLastOpened;
       return this;
     }
 

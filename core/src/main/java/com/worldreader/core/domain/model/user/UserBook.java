@@ -20,10 +20,11 @@ import java.util.*;
   private boolean isSynchronized;
   private Date createdAt;
   private Date updatedAt;
+  private Date openedAt;
 
   private UserBook(int id, String userId, String bookId, boolean inMyBooks, String bookmark,
       boolean finished, Date saveOfflineAt, int rating, boolean liked, final boolean isSynchronized,
-      List<String> collectionIds, Date createdAt, Date updatedAt) {
+      List<String> collectionIds, Date createdAt, Date updatedAt, Date openedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
@@ -36,6 +37,7 @@ import java.util.*;
     this.isSynchronized = isSynchronized;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.openedAt = openedAt;
     this.collectionIds = collectionIds;
   }
 
@@ -83,6 +85,10 @@ import java.util.*;
     return updatedAt;
   }
 
+  public Date getOpenedAt() {
+    return openedAt;
+  }
+
   public List<String> getCollectionIds() {
     return collectionIds;
   }
@@ -110,8 +116,26 @@ import java.util.*;
     private boolean isSynchronized;
     private Date createdAt;
     private Date updatedAt;
+    private Date openedAt;
 
     public Builder() {
+    }
+
+    public Builder(UserBook userBook) {
+      this.id = userBook.getId();
+      this.userId = userBook.getUserId();
+      this.bookId = userBook.getBookId();
+      this.collectionIds = userBook.getCollectionIds();
+      this.inMyBooks = userBook.isInMyBooks();
+      this.bookmark = userBook.getBookmark();
+      this.finished = userBook.isFinished();
+      this.saveOfflineAt = userBook.getSaveOfflineAt();
+      this.rating = userBook.getRating();
+      this.liked = userBook.isLiked();
+      this.isSynchronized = userBook.isSynchronized();
+      this.createdAt = userBook.getCreatedAt();
+      this.updatedAt = userBook.getUpdatedAt();
+      this.openedAt = userBook.getOpenedAt();
     }
 
     public Builder setId(int id) {
@@ -174,6 +198,11 @@ import java.util.*;
       return this;
     }
 
+    public Builder setOpenedAt(Date openedAt) {
+      this.openedAt = openedAt;
+      return this;
+    }
+
     public Builder setSynchronized(boolean isSynchronized) {
       this.isSynchronized = isSynchronized;
       return this;
@@ -181,7 +210,7 @@ import java.util.*;
 
     public UserBook build() {
       return new UserBook(id, userId, bookId, inMyBooks, bookmark, finished, saveOfflineAt, rating,
-          liked, isSynchronized, collectionIds, createdAt, updatedAt);
+          liked, isSynchronized, collectionIds, createdAt, updatedAt, openedAt);
     }
   }
 

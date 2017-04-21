@@ -20,10 +20,11 @@ import java.util.*;
   private boolean isSynchronized;
   private Date createdAt;
   private Date updatedAt;
+  private Date openedAt;
 
   private UserBookEntity(int id, String userId, String bookId, boolean inMyBooks, String bookmark,
       boolean finished, Date saveOfflineAt, int rating, boolean liked, final boolean isSynchronized,
-      Date createdAt, List<String> collectionIds, Date updatedAt) {
+      Date createdAt, List<String> collectionIds, Date updatedAt, Date openedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
@@ -35,6 +36,7 @@ import java.util.*;
     this.liked = liked;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.openedAt = openedAt;
     this.collectionIds = collectionIds;
     this.isSynchronized = isSynchronized;
   }
@@ -83,6 +85,10 @@ import java.util.*;
     return updatedAt;
   }
 
+  public Date getOpenedAt() {
+    return openedAt;
+  }
+
   public List<String> getCollectionIds() {
     if (collectionIds == null) {
       return new ArrayList<>();
@@ -116,6 +122,7 @@ import java.util.*;
         .setLiked(isLikedBook)
         .setCreatedAt(toCopy.getCreatedAt() == null ? null : toCopy.getCreatedAt())
         .setUpdatedAt(toCopy.getUpdatedAt() == null ? null : toCopy.getUpdatedAt())
+        .setOpenedAt(toCopy.getOpenedAt() == null ? null : toCopy.getOpenedAt())
         .setSynchronized(toCopy.isSynchronized())
         .build();
   }
@@ -135,6 +142,7 @@ import java.util.*;
     private boolean isSynchronized;
     private Date createdAt;
     private Date updatedAt;
+    private Date openedAt;
 
     public Builder() {
     }
@@ -152,6 +160,7 @@ import java.util.*;
       this.liked = userBookEntity.isLiked();
       this.createdAt = userBookEntity.getCreatedAt();
       this.updatedAt = userBookEntity.getUpdatedAt();
+      this.openedAt = userBookEntity.getOpenedAt();
       this.isSynchronized = userBookEntity.isSynchronized();
     }
 
@@ -210,6 +219,11 @@ import java.util.*;
       return this;
     }
 
+    public Builder setOpenedAt(Date openedAt) {
+      this.openedAt = openedAt;
+      return this;
+    }
+
     public Builder setCollectionIds(List<String> collectionIds) {
       this.collectionIds = collectionIds;
       return this;
@@ -222,7 +236,7 @@ import java.util.*;
 
     public UserBookEntity build() {
       return new UserBookEntity(id, userId, bookId, inMyBooks, bookmark, finished, saveOfflineAt,
-          rating, liked, isSynchronized, createdAt, collectionIds, updatedAt);
+          rating, liked, isSynchronized, createdAt, collectionIds, updatedAt, openedAt);
     }
   }
 

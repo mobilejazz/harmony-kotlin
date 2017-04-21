@@ -20,10 +20,11 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   @StorIOSQLiteColumn(name = COLUMN_SYNC) public Boolean syncronized;
   @StorIOSQLiteColumn(name = COLUMN_CREATED_AT) public String createdAt;
   @StorIOSQLiteColumn(name = COLUMN_UPDATED_AT) public String updatedAt;
+  @StorIOSQLiteColumn(name = COLUMN_OPENED_AT) public String openedAt;
 
   public UserBookDb(final int id, final String userId, final String bookId, final boolean favorite,
       final String bookmark, final boolean finished, final String saveOfflineAt, final int rating,
-      final boolean liked, final String createdAt, final String updatedAt) {
+      final boolean liked, final String createdAt, final String updatedAt, final String openedAt) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;
@@ -35,6 +36,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.liked = liked;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.openedAt = openedAt;
   }
 
   public UserBookDb() {
@@ -128,6 +130,14 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.updatedAt = updatedAt;
   }
 
+  public String getOpenedAt() {
+    return openedAt;
+  }
+
+  public void setOpenedAt(final String openedAt) {
+    this.openedAt = openedAt;
+  }
+
   public String getCollectionIds() {
     return collectionIds;
   }
@@ -159,6 +169,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     public boolean isSynchronized;
     public String createdAt;
     public String updatedAt;
+    public String openedAt;
 
     public Builder() {
     }
@@ -218,6 +229,11 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       return this;
     }
 
+    public Builder withOpenedAt(String openedAt) {
+      this.openedAt = openedAt;
+      return this;
+    }
+
     public Builder withSynchronized(Boolean isSynchronized) {
       this.isSynchronized = isSynchronized;
       return this;
@@ -243,6 +259,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       userBookDb.setSyncronized(isSynchronized);
       userBookDb.setCreatedAt(createdAt);
       userBookDb.setUpdatedAt(updatedAt);
+      userBookDb.setOpenedAt(openedAt);
       return userBookDb;
     }
   }

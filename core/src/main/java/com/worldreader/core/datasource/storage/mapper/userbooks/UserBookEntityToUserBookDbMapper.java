@@ -39,6 +39,7 @@ import java.util.*;
           .withSynchronized(raw.isSynchronized())
           .withCreatedAt(getIsoDate(raw.getCreatedAt()))
           .withUpdatedAt(getIsoDate(raw.getUpdatedAt()))
+          .withOpenedAt(getIsoDate(raw.getOpenedAt()))
           .build();
       return Optional.of(entity);
     }

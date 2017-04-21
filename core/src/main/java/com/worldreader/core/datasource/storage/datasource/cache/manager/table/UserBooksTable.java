@@ -15,10 +15,11 @@ public class UserBooksTable {
   public static final String COLUMN_SAVED_OFFLINE_AT = "saveOfflineAt";
   public static final String COLUMN_RATING = "rating";
   public static final String COLUMN_LIKED = "liked";
-  public static final String COLUMN_SYNC = "syncronization";
+  public static final String COLUMN_SYNC = "synchronization";
   public static final String COLUMN_COLLECTION_IDS = "collectionIds";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
+  public static final String COLUMN_OPENED_AT = "openedAt";
 
   private UserBooksTable() {
     throw new IllegalStateException("No instances allowed!");
@@ -49,6 +50,8 @@ public class UserBooksTable {
         + COLUMN_CREATED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + COLUMN_UPDATED_AT
+        + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
+        + COLUMN_OPENED_AT
         + " TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%SZ', 'now')), "
         + " "
         + " PRIMARY KEY ("

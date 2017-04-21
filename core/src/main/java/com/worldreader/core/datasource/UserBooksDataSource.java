@@ -451,9 +451,23 @@ public class UserBooksDataSource implements UserBooksRepository {
     });
   }
 
-  @Override public void put(UserBook model, RepositorySpecification specification,
-      Callback<Optional<UserBook>> callback) {
-    throw new UnsupportedOperationException("put() not supported");
+  @Override public void put(final UserBook model, final RepositorySpecification specification, final Callback<Optional<UserBook>> callback) {
+    if (specification instanceof UserBookStorageSpecification) {
+      final UserBookEntity entity = toUserBookEntityMapper.transform(Optional.of(model)).get();
+      storage.put(entity, ((UserBookStorageSpecification) specification), new Callback<Optional<UserBookEntity>>() {
+        @Override public void onSuccess(final Optional<UserBookEntity> userBookEntityOptional) {
+          final Optional<UserBook> toReturn = toUserBookMapper.transform(userBookEntityOptional);
+          notifySuccessCallback(callback, toReturn);
+        }
+
+        @Override public void onError(final Throwable e) {
+          notifyErrorCallback(callback, e);
+        }
+      });
+    } else {
+      throw new UnsupportedOperationException("put() operation with this spec not supported");
+    }
+
   }
 
   @Override public void putAll(List<UserBook> userBooks, RepositorySpecification specification,

@@ -10,6 +10,7 @@ import com.worldreader.core.domain.interactors.user.userbooks.GetUserLikedBooksC
 import com.worldreader.core.domain.interactors.user.userbooks.IsBookLikedInteractor;
 import com.worldreader.core.domain.interactors.user.userbooks.LikeBookInteractor;
 import com.worldreader.core.domain.interactors.user.userbooks.PutAllUserBooksInteractor;
+import com.worldreader.core.domain.interactors.user.userbooks.PutUserBookInteractor;
 import com.worldreader.core.domain.interactors.user.userbooks.UnlikeBookInteractor;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 
@@ -28,6 +29,8 @@ public interface UserBooksComponent {
   GetFinishedBooksCountInteractor getFinishedBooksCountInteractor();
 
   GetAllUserBookInteractor getAllUserBookInteractor();
+
+  PutUserBookInteractor putUserBookInteractor();
 
   PutAllUserBooksInteractor putAllUserBooksInteractor();
 

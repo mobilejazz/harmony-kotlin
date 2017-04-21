@@ -24,6 +24,7 @@ import javax.inject.Singleton;
           .setUserId(entity.getUserId())
           .setCreatedAt(entity.getCreatedAt())
           .setUpdatedAt(entity.getUpdatedAt())
+          .setOpenedAt(entity.getOpenedAt())
           .setRating(entity.getRating())
           .setInMyBooks(entity.isInMyBooks())
           .setCollectionIds(entity.getCollectionIds())
