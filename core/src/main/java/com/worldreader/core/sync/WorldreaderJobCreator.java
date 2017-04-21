@@ -8,6 +8,7 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.SaveUserInteractor;
+import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.GetUnsyncUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesNetworkInteractor;
@@ -17,7 +18,6 @@ import com.worldreader.core.domain.interactors.user.userbooks.PutAllUserBooksInt
 import com.worldreader.core.domain.interactors.user.userbookslike.GetAllUserBookLikesInteractor;
 import com.worldreader.core.domain.interactors.user.userbookslike.PutAllUserBooksLikesInteractor;
 import com.worldreader.core.sync.jobs.SynchronizationJob;
-
 import javax.inject.Inject;
 
 public class WorldreaderJobCreator implements JobCreator {
@@ -59,6 +59,7 @@ public class WorldreaderJobCreator implements JobCreator {
     public @Inject PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
     public @Inject GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
     public @Inject PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+    public @Inject IsAnonymousUserInteractor isAnonymousUserInteractor;
     public @Inject Reachability reachability;
   }
 

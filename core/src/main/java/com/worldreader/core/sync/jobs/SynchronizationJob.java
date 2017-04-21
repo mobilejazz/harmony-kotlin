@@ -9,6 +9,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.BuildConfig;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
@@ -22,6 +23,7 @@ import com.worldreader.core.datasource.spec.userbookslike.GetAllUserBooksLikesNo
 import com.worldreader.core.datasource.spec.userbookslike.PutAllUserBookLikeStorageSpec;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.SaveUserInteractor;
+import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.GetUnsyncUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesNetworkInteractor;
@@ -35,10 +37,8 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +59,7 @@ public class SynchronizationJob extends Job {
   private PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
   private GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
   private PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  private IsAnonymousUserInteractor isAnonymousUserInteractor;
   private Reachability reachability;
 
   public SynchronizationJob(Context context, WorldreaderJobCreator.InjectableCompanion companion) {
@@ -73,6 +74,7 @@ public class SynchronizationJob extends Job {
     this.putAllUserMilestonesInteractor = companion.putAllUserMilestonesInteractor;
     this.getAllUserBookLikesInteractor = companion.getAllUserBookLikesInteractor;
     this.putAllUserBooksLikesInteractor = companion.putAllUserBooksLikesInteractor;
+    this.isAnonymousUserInteractor = companion.isAnonymousUserInteractor;
     this.reachability = companion.reachability;
   }
 
@@ -94,24 +96,32 @@ public class SynchronizationJob extends Job {
     }
 
     try {
+      final IsAnonymousUserInteractor.Type type = isAnonymousUserInteractor.execute().get();
+      logger.d(TAG, "Current user type: " + type.toString());
+
+      if (type == IsAnonymousUserInteractor.Type.ANONYMOUS) {
+        logger.d(TAG, "User is anonymous, ignoring this sync job!");
+        return Result.SUCCESS;
+      }
+
       logger.d(TAG, "Getting all the userbooks not synchronized.");
       // 1. Get all the userbooks not synchronized
       GetAllUserBooksNotSychronizedStorageSpec spec = new GetAllUserBooksNotSychronizedStorageSpec();
       final ListenableFuture<Optional<List<UserBook>>> getAllUnsychedUserBooksFuture =
           getAllUserBookInteractor.execute(spec, MoreExecutors.directExecutor());
 
-      final List<UserBook> userBooksNotSycnhed = getAllUnsychedUserBooksFuture.get().or(Collections.<UserBook>emptyList());
+      final List<UserBook> userBooksNotSynched = getAllUnsychedUserBooksFuture.get().or(Collections.<UserBook>emptyList());
 
-      logger.d(TAG, "Userbooks not synchronized count: " + userBooksNotSycnhed.size());
+      logger.d(TAG, "Userbooks not synchronized count: " + userBooksNotSynched.size());
 
       // 1.1 Check if there is userbooks to synchronize
-      if (!userBooksNotSycnhed.isEmpty()) {
+      if (!userBooksNotSynched.isEmpty()) {
         logger.d(TAG, "Sending all the userbooks not synchronized.");
 
         // 1.1 Send all the userbooks not synchronized to the server.
         UserBookNetworkSpecification userBookNetworkSpecification = new UserBookNetworkSpecification();
         final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksFuture =
-            putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSycnhed, MoreExecutors.directExecutor());
+            putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSynched, MoreExecutors.directExecutor());
         final List<UserBook> updatedUserBooks = putAllUserBooksFuture.get().or(Collections.<UserBook>emptyList());
 
         logger.d(TAG, "Userbooks responded by the network count:  " + updatedUserBooks.size());
@@ -207,17 +217,17 @@ public class SynchronizationJob extends Job {
 
       return Result.SUCCESS;
 
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (Exception e) {
       logger.e(TAG, e.toString());
       return Result.FAILURE;
     }
   }
 
   public static void scheduleJob() {
-    jobId = new JobRequest.Builder(TAG).setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-        .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
+    jobId = new JobRequest.Builder(TAG)
+        .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+        .setPeriodic(TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL), TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL_FLEX))
         .setUpdateCurrent(true)
-        //.setPersisted(true)
         .build()
         .schedule();
   }

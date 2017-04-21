@@ -26,6 +26,20 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    buildTypes {
+      debug {
+        buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
+        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "1" // minutes
+        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "1" // minutes
+      }
+
+      release {
+        buildConfigField "boolean", "DEBUG_JOB_MANAGER", "false"
+        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
+        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "15" // minutes
+      }
+    }
+
     buildTypes.all { buildType ->
         // Common constants values
         buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_ID", '"worldreader"'
