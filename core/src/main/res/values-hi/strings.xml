@@ -58,22 +58,23 @@
     <string name="ls_signup_message">अपने पाठन से और ज्यादा पाएं। खास फीचर और पुस्तक अनुशंसा प्राप्त
         करने के लिए साइन अप करें।
     </string>
-    <string name="ls_signup_username">यूजरनेम</string>
-    <string name="ls_signup_password">पासवर्ड</string>
-    <string name="ls_signup_repeat_password">पासवर्ड रीसेट करें</string>
-    <string name="ls_signup_terms_and_conditions">नियम एवं शर्तों से सहमत</string>
-    <string name="ls_signup_register_now_btn">अभी साइन अप करें</string>
-    <string name="ls_signup_accept_terms_conditions">नियम एवं शर्तों से सहमत</string>
-    <string name="ls_signup_email">ईमेल</string>
-    <!-- Loading book layout -->
-    <string name="ls_loading_book_message">लोड हो रहा है...</string>
-    <string name="ls_loading_book_please_wait">कृपया इंतजार करें</string>
-    <!-- Book finished layout -->
-    <string name="ls_congratulations_title">मुबारक हो!</string>
-    <string name="ls_congratulations_finished_book">आपने पुस्तक पूरी कर ली है!</string>
-    <string name="ls_congratulations_back_to_book_detai">मेरी लाइब्ररी में वापस जाएं</string>
-    <string name="ls_share_finished_book_title">पढ़ी हुई पुस्तक साझा करें</string>
-    <string name="ls_share_finished_book">अरे मैंने वर्ल्डरीडर पर \"%1$s\" में से \"%2$s\" पढ़ ली
+  <string name="ls_signup_username">यूजरनेम</string>
+  <string name="ls_signup_password">पासवर्ड</string>
+  <string name="ls_signup_repeat_password">पासवर्ड रीसेट करें</string>
+  <string name="ls_signup_terms_and_conditions">नियम एवं शर्तों से सहमत</string>
+  <string name="ls_signup_register_now_btn">अभी साइन अप करें</string>
+  <string name="ls_signup_accept_terms_conditions">नियम एवं शर्तों से सहमत</string>
+  <string name="ls_terms_and_conditions_title">नियम एवं शर्तों से सहमत</string>
+  <string name="ls_signup_email">ईमेल</string>
+  <!-- Loading book layout -->
+  <string name="ls_loading_book_message">लोड हो रहा है...</string>
+  <string name="ls_loading_book_please_wait">कृपया इंतजार करें</string>
+  <!-- Book finished layout -->
+  <string name="ls_congratulations_title">मुबारक हो!</string>
+  <string name="ls_congratulations_finished_book">आपने पुस्तक पूरी कर ली है!</string>
+  <string name="ls_congratulations_back_to_book_detai">मेरी लाइब्ररी में वापस जाएं</string>
+  <string name="ls_share_finished_book_title">पढ़ी हुई पुस्तक साझा करें</string>
+  <string name="ls_share_finished_book">अरे मैंने वर्ल्डरीडर पर \"%1$s\" में से \"%2$s\" पढ़ ली
         है! एप्लीकेशन को यहां डाउनलोड करें: %3$s
     </string>
     <string name="ls_book_finished_back_to_book_detail">पुस्तक विवरण पर वापस</string>

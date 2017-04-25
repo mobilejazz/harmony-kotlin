@@ -7,28 +7,31 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
-import com.worldreader.core.domain.helper.DefaultValues;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.helper.adapter.CategoryToIntAdapter;
 import com.worldreader.core.domain.helper.adapter.ListAdapter;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
+import javax.inject.Named;
 
 @PerActivity public class GetBooksNewReleasesFromCategoriesInteractor {
 
   private final ListeningExecutorService listeningExecutorService;
   private final BookRepository bookRepository;
+  private final Provider<String> localeProvider;
 
   private ListAdapter<Integer, Category> categoryToIntAdapter;
 
-  @Inject public GetBooksNewReleasesFromCategoriesInteractor(
-      ListeningExecutorService listeningExecutorService, BookRepository bookRepository) {
+  @Inject public GetBooksNewReleasesFromCategoriesInteractor(ListeningExecutorService listeningExecutorService, BookRepository bookRepository,
+      @Named("locale.provider") final Provider<String> localeProvider) {
     this.listeningExecutorService = listeningExecutorService;
     this.bookRepository = bookRepository;
+    this.localeProvider = localeProvider;
 
     categoryToIntAdapter = new CategoryToIntAdapter();
   }
@@ -45,7 +48,7 @@ import java.util.*;
         List<Integer> categoriesList = categoryToIntAdapter.transform(categories);
 
         bookRepository.books(categoriesList, null /*list*/, bookSorts, false /*openCountries*/,
-            DefaultValues.DEFAULT_LANGUAGE, offset, limit, new CompletionCallback<List<Book>>() {
+            localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
               @Override public void onSuccess(final List<Book> result) {
                 Optional<List<Book>> booksOp =
                     result == null ? Optional.<List<Book>>absent() : Optional.of(result);
