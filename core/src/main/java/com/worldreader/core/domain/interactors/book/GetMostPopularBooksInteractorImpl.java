@@ -17,10 +17,10 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.Arrays;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
 
 public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetMostPopularBooksInteractor {
@@ -37,7 +37,9 @@ public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetMostPopularBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
+  public GetMostPopularBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
@@ -96,8 +98,8 @@ public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<B
         Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC),
             BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-    bookRepository.books(categoriesInt, null /*list*/, sortedBy, true,
-        localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
+    bookRepository.books(categoriesInt, null /*list*/, sortedBy, true, localeProvider.get(), offset,
+        limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
             if (callback != null) {
               callback.onSuccess(result);

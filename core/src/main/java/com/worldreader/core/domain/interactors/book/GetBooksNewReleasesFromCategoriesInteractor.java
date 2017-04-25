@@ -14,10 +14,10 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
 
 @PerActivity public class GetBooksNewReleasesFromCategoriesInteractor {
 
@@ -27,7 +27,8 @@ import javax.inject.Named;
 
   private ListAdapter<Integer, Category> categoryToIntAdapter;
 
-  @Inject public GetBooksNewReleasesFromCategoriesInteractor(ListeningExecutorService listeningExecutorService, BookRepository bookRepository,
+  @Inject public GetBooksNewReleasesFromCategoriesInteractor(
+      ListeningExecutorService listeningExecutorService, BookRepository bookRepository,
       @Named("locale.provider") final Provider<String> localeProvider) {
     this.listeningExecutorService = listeningExecutorService;
     this.bookRepository = bookRepository;

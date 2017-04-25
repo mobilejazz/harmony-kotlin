@@ -11,35 +11,47 @@ import android.support.v4.app.FragmentManager;
  */
 @SuppressWarnings("unused") public class Fragments {
 
-  public static void replaceNowAllowingStateLoss(final FragmentActivity activity, final Fragment f, @IdRes final int container) {
+  public static void replaceNowAllowingStateLoss(final FragmentActivity activity, final Fragment f,
+      @IdRes final int container) {
     try {
       replaceNow(activity, f, container);
     } catch (IllegalStateException e) {
-      activity.getSupportFragmentManager().beginTransaction().replace(container, f).commitNowAllowingStateLoss();
+      activity.getSupportFragmentManager()
+          .beginTransaction()
+          .replace(container, f)
+          .commitNowAllowingStateLoss();
     }
   }
 
-  public static void replaceNow(final FragmentActivity activity, final Fragment f, @IdRes final int container) {
+  public static void replaceNow(final FragmentActivity activity, final Fragment f,
+      @IdRes final int container) {
     replaceNow(activity.getSupportFragmentManager(), f, container);
   }
 
-  public static void replaceNowAllowingStateLoss(final FragmentActivity activity, final Fragment f, @IdRes final int container, final String tag) {
+  public static void replaceNowAllowingStateLoss(final FragmentActivity activity, final Fragment f,
+      @IdRes final int container, final String tag) {
     try {
       replaceNow(activity, f, container, tag);
     } catch (IllegalStateException e) {
-      activity.getSupportFragmentManager().beginTransaction().replace(container, f, tag).commitNowAllowingStateLoss();
+      activity.getSupportFragmentManager()
+          .beginTransaction()
+          .replace(container, f, tag)
+          .commitNowAllowingStateLoss();
     }
   }
 
-  public static void replaceNow(final FragmentActivity activity, final Fragment f, @IdRes final int container, final String tag) {
+  public static void replaceNow(final FragmentActivity activity, final Fragment f,
+      @IdRes final int container, final String tag) {
     replaceNow(activity.getSupportFragmentManager(), f, container, tag);
   }
 
-  public static void replaceNow(final FragmentManager manager, final Fragment f, @IdRes final int container) {
+  public static void replaceNow(final FragmentManager manager, final Fragment f,
+      @IdRes final int container) {
     manager.beginTransaction().replace(container, f).commitNow();
   }
 
-  public static void replaceNow(final FragmentManager manager, final Fragment f, @IdRes final int container, final String tag) {
+  public static void replaceNow(final FragmentManager manager, final Fragment f,
+      @IdRes final int container, final String tag) {
     manager.beginTransaction().replace(container, f, tag).commitNow();
   }
 

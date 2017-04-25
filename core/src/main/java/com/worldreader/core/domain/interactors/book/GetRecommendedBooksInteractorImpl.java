@@ -15,11 +15,10 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
 
 public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetRecommendedBooksInteractor {
@@ -33,7 +32,9 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
+  public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;

@@ -10,10 +10,10 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
 
 public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetLatestBooksInteractor {
@@ -26,7 +26,9 @@ public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, 
 
   private DomainCallback<List<Book>, ErrorCore> callback;
 
-  @Inject public GetLatestBooksInteractorImp(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
+  @Inject public GetLatestBooksInteractorImp(InteractorExecutor executor, MainThread mainThread,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;

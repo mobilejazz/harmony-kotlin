@@ -71,7 +71,8 @@ public abstract class LoadingBookActivity extends AppCompatActivity
 
   public static Intent getCallingIntent(final Context context, final Book book,
       final boolean navigateToReader, Intent extraDataIntent, final Class<?> clazz) {
-    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz).putExtras(extraDataIntent);
+    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz).putExtras(
+        extraDataIntent);
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {

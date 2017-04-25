@@ -17,12 +17,13 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.Arrays;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
 
-public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore> implements GetHighestRatedBooksInteractor {
+public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
+    implements GetHighestRatedBooksInteractor {
 
   private final BookRepository bookRepository;
   private final Provider<String> localeProvider;
@@ -36,7 +37,9 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetHighestRatedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
+  public GetHighestRatedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
@@ -97,8 +100,8 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
         Arrays.asList(BookSort.createBookSort(BookSort.Type.SCORE, BookSort.Value.DESC),
             BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-    bookRepository.books(categoriesInt, null /*list*/, sorteredBy, false,
-        localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
+    bookRepository.books(categoriesInt, null /*list*/, sorteredBy, false, localeProvider.get(),
+        offset, limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
             if (callback != null) {
               callback.onSuccess(result);
