@@ -38,6 +38,7 @@ public abstract class LoadingBookActivity extends AppCompatActivity
   private static final String KEY_BOOK = "book.key";
   private static final String KEY_COLLECTION = "collection.key";
   private static final String HOCK_READER_KEY = "hock.reader.key";
+  public static final String EXTRA_COLOR_ANIM = "extra.color.anim";
   private static final int TWO_SECONDS = 2000;
 
   private LinearLayout loadingBookContainer;
@@ -70,8 +71,7 @@ public abstract class LoadingBookActivity extends AppCompatActivity
 
   public static Intent getCallingIntent(final Context context, final Book book,
       final boolean navigateToReader, Intent extraDataIntent, final Class<?> clazz) {
-    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz).putExtras(
-        extraDataIntent);
+    return getCallingIntent(context, book, null /*collection*/, navigateToReader, clazz).putExtras(extraDataIntent);
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +112,7 @@ public abstract class LoadingBookActivity extends AppCompatActivity
     Book book = (Book) getIntent().getExtras().get(KEY_BOOK);
     Collection collection = (Collection) getIntent().getExtras().get(KEY_COLLECTION);
     boolean navigateDirectlyToReader = getIntent().getBooleanExtra(HOCK_READER_KEY, false);
+    final int animationColor = getIntent().getExtras().getInt(EXTRA_COLOR_ANIM, R.color.yellow);
 
     startTime = System.nanoTime();
 
@@ -130,7 +131,7 @@ public abstract class LoadingBookActivity extends AppCompatActivity
               final int cx = intent.getIntExtra(Anims.CX, 0);
               final int cy = intent.getIntExtra(Anims.CY, 0);
               final int radius = intent.getIntExtra(Anims.RADIUS, 0);
-              Anims.circularRevealShow(LoadingBookActivity.this, viewGroup, R.color.yellow,
+              Anims.circularRevealShow(LoadingBookActivity.this, viewGroup, animationColor,
                   R.color.background, cx, cy, radius, new Anims.OnRevealAnimationListener() {
                     @Override public void onRevealHide() {
                     }
