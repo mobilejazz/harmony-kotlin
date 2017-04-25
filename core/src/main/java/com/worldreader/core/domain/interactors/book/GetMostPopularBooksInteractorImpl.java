@@ -6,10 +6,10 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
-import com.worldreader.core.domain.helper.DefaultValues;
 import com.worldreader.core.domain.helper.adapter.CategoryToIntAdapter;
 import com.worldreader.core.domain.helper.adapter.ListAdapter;
 import com.worldreader.core.domain.model.Book;
@@ -17,14 +17,16 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
+import javax.inject.Named;
 
 public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetMostPopularBooksInteractor {
 
   private final BookRepository bookRepository;
+  private final Provider<String> localeProvider;
 
   private ListAdapter<Integer, Category> categoryToIntAdapter;
 
@@ -35,10 +37,10 @@ public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetMostPopularBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      BookRepository bookRepository) {
+  public GetMostPopularBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
+    this.localeProvider = localeProvider;
     this.categoryToIntAdapter = new CategoryToIntAdapter();
   }
 
@@ -95,7 +97,7 @@ public class GetMostPopularBooksInteractorImpl extends AbstractInteractor<List<B
             BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
     bookRepository.books(categoriesInt, null /*list*/, sortedBy, true,
-        DefaultValues.DEFAULT_LANGUAGE, offset, limit, new CompletionCallback<List<Book>>() {
+        localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
             if (callback != null) {
               callback.onSuccess(result);

@@ -6,23 +6,26 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
-import com.worldreader.core.domain.helper.DefaultValues;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
+import javax.inject.Named;
 
 public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetRecommendedBooksInteractor {
 
   private BookRepository bookRepository;
+  private final Provider<String> localeProvider;
 
   private int offset;
   private int limit;
@@ -30,10 +33,10 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      BookRepository bookRepository) {
+  public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
+    this.localeProvider = localeProvider;
   }
 
   @Override public void execute(int offset, int limit, Book book,
@@ -83,7 +86,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
         Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC),
             BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-    final String language = DefaultValues.DEFAULT_LANGUAGE;
+    final String language = localeProvider.get();
 
     final List<Integer> categoriesIds = new ArrayList<>(book.getCategories().size());
     for (Category category : book.getCategories()) {

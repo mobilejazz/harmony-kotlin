@@ -2,32 +2,34 @@ package com.worldreader.core.domain.interactors.book;
 
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
-import com.worldreader.core.domain.helper.DefaultValues;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
+import javax.inject.Named;
 
 public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetLatestBooksInteractor {
 
   private final BookRepository bookRepository;
+  private final Provider<String> localeProvider;
 
   private int index = -1;
   private int limit = -1;
 
   private DomainCallback<List<Book>, ErrorCore> callback;
 
-  @Inject public GetLatestBooksInteractorImp(InteractorExecutor executor, MainThread mainThread,
-      BookRepository bookRepository) {
+  @Inject public GetLatestBooksInteractorImp(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
+    this.localeProvider = localeProvider;
   }
 
   @Override public void execute(DomainCallback<List<Book>, ErrorCore> callback) {
@@ -54,7 +56,7 @@ public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, 
     }
 
     bookRepository.books(null/*Categories*/, null/*List*/, sorter, false/*openCountry*/,
-        DefaultValues.DEFAULT_LANGUAGE, index, limit, new CompletionCallback<List<Book>>() {
+        localeProvider.get(), index, limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(List<Book> result) {
             performSuccessCallback(callback, result);
           }
