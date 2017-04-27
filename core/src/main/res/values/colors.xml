@@ -15,6 +15,7 @@
   <color name="yellow">#FBB528</color>
   <color name="darkYellow">#AA7B1B</color>
   <color name="black">#000</color>
+    <color name="black_transparent">#64000000</color>
   <color name="green">#518B0E</color>
   <color name="red">#D0021B</color>
   <color name="dark">#58626A</color>
