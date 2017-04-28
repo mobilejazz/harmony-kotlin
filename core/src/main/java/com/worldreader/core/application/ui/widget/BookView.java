@@ -61,43 +61,45 @@ public class BookView extends FrameLayout {
       final Reachability reachability, @DrawableRes final int placeholder) {
     this.book = book;
 
-    txtTitle.setText(book.getTitle());
-    imgBook.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-      @Override public boolean onPreDraw() {
-        imgBook.getViewTreeObserver().removeOnPreDrawListener(this);
+    if (book != null) {
+      txtTitle.setText(book.getTitle());
+      imgBook.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        @Override public boolean onPreDraw() {
+          imgBook.getViewTreeObserver().removeOnPreDrawListener(this);
 
-        int measuredHeight = imgBook.getMeasuredHeight();
-        int measuredWidth = imgBook.getMeasuredWidth();
+          int measuredHeight = imgBook.getMeasuredHeight();
+          int measuredWidth = imgBook.getMeasuredWidth();
 
-        String cover = book.getCoverUrlWithSize(measuredWidth, measuredHeight);
-        if (cover != null) {
-          imgBook.setCropYCenterOffsetPct(0f);
+          String cover = book.getCoverUrlWithSize(measuredWidth, measuredHeight);
+          if (cover != null) {
+            imgBook.setCropYCenterOffsetPct(0f);
 
-          if (reachability.isReachable()) {
-            imageLoader.load(book.getId(), cover, placeholder, imgBook);
-          } else {
-            if (book.isBookDownloaded()) {
-              imageLoader.load(book.getId(), cover, R.drawable.as_offline_book_cover, imgBook);
+            if (reachability.isReachable()) {
+              imageLoader.load(book.getId(), cover, placeholder, imgBook);
             } else {
-              imageLoader.load(R.drawable.as_offline_book_cover_inactive, imgBook);
+              if (book.isBookDownloaded()) {
+                imageLoader.load(book.getId(), cover, R.drawable.as_offline_book_cover, imgBook);
+              } else {
+                imageLoader.load(R.drawable.as_offline_book_cover_inactive, imgBook);
+              }
             }
           }
+          return false;
         }
-        return false;
-      }
-    });
-    container.setOnClickListener(new OnClickListener() {
-      @Override public void onClick(View v) {
-        if (listener != null) {
-          listener.onClick(BookView.this);
+      });
+      container.setOnClickListener(new OnClickListener() {
+        @Override public void onClick(View v) {
+          if (listener != null) {
+            listener.onClick(BookView.this);
+          }
         }
-      }
-    });
+      });
 
-    imgOfflineBookIcon.setVisibility(View.GONE);
-    imgOfflineBookIcon.setVisibility(book.isBookDownloaded() ? View.VISIBLE : View.GONE);
+      imgOfflineBookIcon.setVisibility(View.GONE);
+      imgOfflineBookIcon.setVisibility(book.isBookDownloaded() ? View.VISIBLE : View.GONE);
 
-    editModeContainer.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+      editModeContainer.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+    }
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
