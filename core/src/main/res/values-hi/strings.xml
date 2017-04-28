@@ -64,7 +64,7 @@
     <string name="ls_signup_terms_and_conditions">नियम एवं शर्तों से सहमत</string>
     <string name="ls_signup_register_now_btn">अभी साइन अप करें</string>
     <string name="ls_signup_accept_terms_conditions">नियम एवं शर्तों से सहमत</string>
-    <string name="ls_terms_and_conditions_title">नियम और शर्तें</string>
+    <string name="ls_terms_and_conditions_title">नियम एवं शर्तों से सहमत</string>
     <string name="ls_signup_email">ईमेल</string>
     <!-- Loading book layout -->
     <string name="ls_loading_book_message">लोड हो रहा है...</string>
