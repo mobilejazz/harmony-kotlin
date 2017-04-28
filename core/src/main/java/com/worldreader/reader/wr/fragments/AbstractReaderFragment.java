@@ -2201,7 +2201,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
-    if(text != null) {
+    if(bookView.getPagesForResource() > 0) {
       final Map<String, String> amaAttributes = new HashMap<String, String>();
       //Book toc size
       amaAttributes.put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES,
@@ -2225,7 +2225,8 @@ public abstract class AbstractReaderFragment extends Fragment
       amaAttributes.put("Controller", AnalyticsEventConstants.BOOK_READ_CONTROLLER);
       amaAttributes.put("Action", AnalyticsEventConstants.BOOK_READ_ACTION);
       amaAttributes.put(AnalyticsEventConstants.BOOK_ATTRIBUTE, bookMetadata.getBookId());
-      amaAttributes.put(AnalyticsEventConstants.BOOK_VERSION_ATTRIBUTE, "Latest");
+      amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE, bookMetadata.getTitle());
+
 
       analytics.sendEvent(new BasicAnalyticsEvent("BOOK_READ", amaAttributes));
 

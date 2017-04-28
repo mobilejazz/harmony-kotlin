@@ -3,7 +3,7 @@ package com.worldreader.core.analytics.event;
 public class AnalyticsEventConstants {
 
   public static final String BOOK_ATTRIBUTE = "BookId";
-  public static final String BOOK_VERSION_ATTRIBUTE = "BookVersion";
+  public static final String BOOK_TITLE = "BookTitle";
   public static final String BOOK_READ_CONTROLLER = "Book";
   public static final String BOOK_READ_ACTION = "Read";
 
