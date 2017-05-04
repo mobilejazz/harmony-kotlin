@@ -475,6 +475,11 @@ public class Configuration {
     return settings.getInt(KEY_SCROLL_SPEED, 20);
   }
 
+  public void setAnimationStyle(AnimationStyle animation) {
+    settings.edit().putString(KEY_V_ANIMATION, animation.name().toLowerCase()).commit();
+    settings.edit().putString(KEY_H_ANIMATION, animation.name().toLowerCase()).commit();
+  }
+
   public AnimationStyle getHorizontalAnim() {
     String animH =
         settings.getString(KEY_H_ANIMATION, AnimationStyle.CURL.name().toLowerCase(Locale.US));
