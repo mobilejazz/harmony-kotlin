@@ -107,8 +107,7 @@ public class SynchronizationJob extends Job {
       logger.d(TAG, "Getting all the userbooks not synchronized.");
       // 1. Get all the userbooks not synchronized
       GetAllUserBooksNotSychronizedStorageSpec spec = new GetAllUserBooksNotSychronizedStorageSpec();
-      final ListenableFuture<Optional<List<UserBook>>> getAllUnsychedUserBooksFuture =
-          getAllUserBookInteractor.execute(spec, MoreExecutors.directExecutor());
+      final ListenableFuture<Optional<List<UserBook>>> getAllUnsychedUserBooksFuture = getAllUserBookInteractor.execute(spec, MoreExecutors.directExecutor());
 
       final List<UserBook> userBooksNotSynched = getAllUnsychedUserBooksFuture.get().or(Collections.<UserBook>emptyList());
 
@@ -120,15 +119,13 @@ public class SynchronizationJob extends Job {
 
         // 1.1 Send all the userbooks not synchronized to the server.
         UserBookNetworkSpecification userBookNetworkSpecification = new UserBookNetworkSpecification();
-        final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksFuture =
-            putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSynched, MoreExecutors.directExecutor());
+        final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksFuture = putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSynched, MoreExecutors.directExecutor());
         final List<UserBook> updatedUserBooks = putAllUserBooksFuture.get().or(Collections.<UserBook>emptyList());
 
         logger.d(TAG, "Userbooks responded by the network count:  " + updatedUserBooks.size());
 
         // 1.2 Check if there is userbooks updated from the network
         if (!updatedUserBooks.isEmpty()) {
-
           logger.d(TAG, "Updating userbooks to the storage, count:  " + updatedUserBooks.size());
 
           // 1.2.1 Update the userbooks in the storage.
@@ -139,44 +136,34 @@ public class SynchronizationJob extends Job {
       logger.d(TAG, "Finished user books synchronization process.");
 
       // 2 Synchronizing all the user score.
-      logger.d(TAG, "Synchronizing the user scores");
-      final ListenableFuture<Boolean> userScoreSynchronizationProcessInteractorFuture =
-          userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
-      userScoreSynchronizationProcessInteractorFuture.get();
-      logger.d(TAG, "Finished the user scores synchronization.");
+      // TODO: 11/05/2017 Review this with when Worldreader is finished to use this use case
+      //logger.d(TAG, "Synchronizing the user scores");
+      //userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
+      //logger.d(TAG, "Finished the user scores synchronization.");
 
       // 3 Synchronizing all the user milestones
-      final ListenableFuture<List<UserMilestone>> getUnsyncUserMilestonesInteractorFuture =
-          getUnsyncUserMilestonesInteractor.execute(MoreExecutors.directExecutor());
+      final ListenableFuture<List<UserMilestone>> getUnsyncUserMilestonesInteractorFuture = getUnsyncUserMilestonesInteractor.execute(MoreExecutors.directExecutor());
       final List<UserMilestone> userMilestonesNotSynched = getUnsyncUserMilestonesInteractorFuture.get();
 
       if (!userMilestonesNotSynched.isEmpty()) {
         // 3.1 Send all the not synchronized to the server throw the network.
-        final ListenableFuture<List<UserMilestone>> putAlluserMilestoneNetworkFuture =
-            putAllUserMilestonesNetworkInteractor.execute(userMilestonesNotSynched, MoreExecutors.directExecutor());
+        final ListenableFuture<List<UserMilestone>> putAlluserMilestoneNetworkFuture = putAllUserMilestonesNetworkInteractor.execute(userMilestonesNotSynched, MoreExecutors.directExecutor());
         final List<UserMilestone> userMilestonesUpdatedFromNetwork = putAlluserMilestoneNetworkFuture.get();
 
         // 3.2 Update the user milestone synchronized to the storage.
-        final PutUserMilestonesStorageSpec putUserMilestonesStorageSpec =
-            new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
-        final ListenableFuture<Optional<List<UserMilestone>>> putAllUserMilestoneInteractorFuture =
-            putAllUserMilestonesInteractor.execute(putUserMilestonesStorageSpec, userMilestonesUpdatedFromNetwork, MoreExecutors.directExecutor());
-        putAllUserMilestoneInteractorFuture.get();
+        final PutUserMilestonesStorageSpec putUserMilestonesStorageSpec = new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+        putAllUserMilestonesInteractor.execute(putUserMilestonesStorageSpec, userMilestonesUpdatedFromNetwork, MoreExecutors.directExecutor());
       }
 
       // 4 Synchronizing all userbooklikes
-      final List<UserBookLike> userBookLikes =
-          getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikesNotSyncStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN),
-              MoreExecutors.directExecutor()).get();
+      final List<UserBookLike> userBookLikes = getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikesNotSyncStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor()).get();
 
       if (userBookLikes != null && !userBookLikes.isEmpty()) {
         // We have to sync all userbooks like to server
-        final List<UserBookLike> updatedUserBooksLikes =
-            putAllUserBooksLikesInteractor.execute(userBookLikes, new NetworkSpecification(), MoreExecutors.directExecutor()).get();
+        final List<UserBookLike> updatedUserBooksLikes = putAllUserBooksLikesInteractor.execute(userBookLikes, new NetworkSpecification(), MoreExecutors.directExecutor()).get();
 
         // Store updated userbooks like to database
-        putAllUserBooksLikesInteractor.execute(updatedUserBooksLikes,
-            new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor());
+        putAllUserBooksLikesInteractor.execute(updatedUserBooksLikes, new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor());
       }
 
       //----------------------------//
@@ -185,21 +172,17 @@ public class SynchronizationJob extends Job {
 
       // 3 Get the user from the network
       logger.d(TAG, "Getting the user from the network.");
-      final ListenableFuture<User2> getUserInteractorFuture =
-          this.getUserInteractor.execute(new NetworkSpecification(), MoreExecutors.directExecutor());
+      final ListenableFuture<User2> getUserInteractorFuture = this.getUserInteractor.execute(new NetworkSpecification(), MoreExecutors.directExecutor());
       final User2 user2 = getUserInteractorFuture.get();
 
       logger.d(TAG, "Saving the user from the network into the storage.");
       // 3.1 Saving the user from the network
-      final ListenableFuture<User2> saveUserInteractorFuture =
-          saveUserInteractor.execute(user2, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor());
-      saveUserInteractorFuture.get();
+      saveUserInteractor.execute(user2, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor());
 
       // 4 Getting the user books from the server.
       logger.d(TAG, "Getting all the userbooks from the server.");
 
-      final ListenableFuture<Optional<List<UserBook>>> getUserBooksFuture =
-          getAllUserBookInteractor.execute(new GetAllUserBooksNetworkSpec(), MoreExecutors.directExecutor());
+      final ListenableFuture<Optional<List<UserBook>>> getUserBooksFuture = getAllUserBookInteractor.execute(new GetAllUserBooksNetworkSpec(), MoreExecutors.directExecutor());
       final Optional<List<UserBook>> userBooksFromNetworkOp = getUserBooksFuture.get();
       if (userBooksFromNetworkOp.isPresent()) {
         final List<UserBook> userBooksFromNetwork = userBooksFromNetworkOp.get();
@@ -208,9 +191,7 @@ public class SynchronizationJob extends Job {
 
         // 4.1 Updating all the user books from the server to the storage.
         final PutAllUserBooksStorageSpec updateUserBooksFromNetworkSpec = new PutAllUserBooksStorageSpec();
-        final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksInteractorFuture =
-            putAllUserBooksInteractor.execute(updateUserBooksFromNetworkSpec, userBooksFromNetwork, MoreExecutors.directExecutor());
-        putAllUserBooksInteractorFuture.get();
+        putAllUserBooksInteractor.execute(updateUserBooksFromNetworkSpec, userBooksFromNetwork, MoreExecutors.directExecutor());
       }
 
       logger.d(TAG, "Completely finish the whole process. ");
