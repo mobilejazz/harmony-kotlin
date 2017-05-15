@@ -30,6 +30,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -45,6 +46,12 @@ import android.view.MotionEvent;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.worldreader.core.R;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
@@ -53,6 +60,15 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.Resou
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -64,25 +80,12 @@ import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.handlers.TableHandler;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import org.htmlcleaner.TagNode;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
 import static java.util.Arrays.asList;
+
 import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.*;
@@ -687,7 +690,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
     }
   }
-  
+
   // This percentage value is assuming that is ranging from 0 to 100
   public void navigateToPercentageInChapter(int percentage) {
     if (spine == null) {
@@ -868,10 +871,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       options.inJustDecodeBounds = true;
       BitmapFactory.decodeStream(input, null, options);
 
-      Tuple2<Integer, Integer> sizes = calculateSize(options.outWidth, options.outHeight);
+      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(options.outWidth, options.outHeight);
 
       ShapeDrawable draw = new ShapeDrawable(new RectShape());
-      draw.setBounds(0, 0, sizes.a(), sizes.b());
+      draw.setBounds(0, 0, sizes.getValue0(), sizes.getValue1());
 
       setImageSpan(builder, draw, start, end);
     }
@@ -914,15 +917,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       //  }
       // }
 
-      Bitmap originalBitmap = BitmapFactory.decodeStream(input);
+      final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
 
       if (originalBitmap != null) {
         int originalWidth = originalBitmap.getWidth();
         int originalHeight = originalBitmap.getHeight();
 
-        Tuple2<Integer, Integer> targetSizes = calculateSize(originalWidth, originalHeight);
-        int targetWidth = targetSizes.a();
-        int targetHeight = targetSizes.b();
+        Triplet<Integer, Integer, Boolean> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
+        int targetWidth = targetSizes.getValue0();
+        int targetHeight = targetSizes.getValue1();
 
         if (targetHeight != originalHeight || targetWidth != originalWidth) {
           return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
@@ -955,20 +958,20 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     private void setBitmapDrawable(InputStream input) {
       Bitmap bitmap = null;
       try {
-        bitmap = getBitmap(input);
+        bitmap = getBitmapOptimized(input);
 
         if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
           return;
         }
-      } catch (OutOfMemoryError outofmem) {
-        Log.e(TAG, "Could not load image", outofmem);
+      } catch (OutOfMemoryError | IOException e) {
+        Log.e(TAG, "Could not load image", e);
       }
 
       if (bitmap != null) {
 
-        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
-
+        final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
         drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+
         setImageSpan(builder, drawable, start, end);
 
         Log.d(TAG, "Storing image in cache: " + storedHref);
@@ -977,48 +980,82 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
     }
 
-    private Bitmap getBitmap(InputStream input) {
-      //if (Configuration.IS_NOOK_TOUCH) {
-      // Workaround for skia failing to load larger (>8k?) JPEGs on Nook Touch and maybe other older Eclair devices (unknown!)
-      // seems the underlying problem is the ZipInputStream returning data in chunks,
-      // may be as per http://code.google.com/p/android/issues/detail?id=6066
-      // workaround is to stream the whole image out of the Zip to a ByteArray, then pass that on to the bitmap decoder
-      //  try {
-      //    input = new ByteArrayInputStream(IOUtil.toByteArray(input));
-      //  } catch (IOException ex) {
-      //    Log.e(TAG, "Failed to extract full image from epub stream: " + ex.toString());
-      //  }
-      //}
+    @Nullable private Bitmap getBitmapOptimized(InputStream input) throws IOException {
+      // First, let's decode image size (to avoid having the image loaded in memory
+      final BitmapFactory.Options options = new BitmapFactory.Options();
+      options.inJustDecodeBounds = true;
 
-      Bitmap originalBitmap = BitmapFactory.decodeStream(input);
+      // Let's obtain the size of the bitmap image
+      BitmapFactory.decodeStream(input, null, options);
 
-      if (originalBitmap != null) {
-        int originalWidth = originalBitmap.getWidth();
-        int originalHeight = originalBitmap.getHeight();
+      // Reset InputStream to beginning for decoding properly later the image
+      input.reset();
 
-        Tuple2<Integer, Integer> targetSizes = calculateSize(originalWidth, originalHeight);
-        int targetWidth = targetSizes.a();
-        int targetHeight = targetSizes.b();
+      if (options.outHeight != -1 && options.outWidth != -1) {
+        final int originalWidth = options.outWidth;
+        final int originalHeight = options.outHeight;
 
-        if (targetHeight != originalHeight || targetWidth != originalWidth) {
+        final Triplet<Integer, Integer, Boolean> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
+        final int targetWidth = targetSizes.getValue0();
+        final int targetHeight = targetSizes.getValue1();
+        final boolean isResized = targetSizes.getValue2();
+
+        if (targetHeight == 0 || targetWidth == 0) {
+          return null;
+        }
+
+        // Set properly the new sizes to be decoded
+        options.outWidth = targetWidth;
+        options.outHeight = targetHeight;
+
+        // Allow to decode the whole InputStream
+        options.inJustDecodeBounds = false;
+
+        if (!isResized) {
+          // Let's calculate insamplesize to resize the bitmap accordingly
+          calculateInSampleSize(options, targetWidth, targetHeight);
+
+          // Let's try to return the most optimized version for the bitmap
+          return BitmapFactory.decodeStream(input, null, options);
+        } else {
+          // Unluckily, we have to resize the Bitmap and for that we need to load Bitmap into memory :( (there's no other option
+          final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
           return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
         }
       }
 
-      return originalBitmap;
+      return null;
+    }
+
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+      // Raw height and width of image
+      final int height = options.outHeight;
+      final int width = options.outWidth;
+      int inSampleSize = 1;
+
+      if (height > reqHeight || width > reqWidth) {
+        final int halfHeight = height / 2;
+        final int halfWidth = width / 2;
+
+        // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+        // height and width larger than the requested height and width.
+        while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+          inSampleSize *= 2;
+        }
+      }
+
+      return inSampleSize;
     }
   }
 
-  private Tuple2<Integer, Integer> calculateSize(int originalWidth, int originalHeight) {
+  private Triplet<Integer, Integer, Boolean> calculateProperImageSize(int originalWidth, int originalHeight) {
+    final int screenHeight = getHeight() - (verticalMargin * 2);
+    final int screenWidth = getWidth() - (horizontalMargin * 2);
 
-    int screenHeight = getHeight() - (verticalMargin * 2);
-    int screenWidth = getWidth() - (horizontalMargin * 2);
-
-    // We scale to screen width for the cover or if the image is too
-    // wide.
+    // We scale to screen width for the cover or if the image is too wide.
     if (originalWidth > screenWidth || originalHeight > screenHeight) {
 
-      float ratio = (float) originalWidth / (float) originalHeight;
+      final float ratio = (float) originalWidth / (float) originalHeight;
 
       int targetHeight = screenHeight - 1;
       int targetWidth = (int) (targetHeight * ratio);
@@ -1037,13 +1074,41 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           + "x"
           + targetHeight);
 
-      if (targetWidth > 0 || targetHeight > 0) {
-        return new Tuple2<>(targetWidth, targetHeight);
-      }
+      return Triplet.with(targetWidth, targetHeight, true);
     }
 
-    return new Tuple2<>(originalWidth, originalHeight);
+    // Let's try to upscale the image
+    final int scaledWidth = (int) (originalWidth * 1.5);
+    final int scaledHeight = (int) (originalHeight * 1.5);
+
+    // If the new upscaled dimensions are not higher than screen device
+    if (scaledWidth < screenWidth || scaledHeight < screenHeight) {
+      return Triplet.with(scaledWidth, scaledHeight, true);
+    }
+
+    // Otherwise let's return the original size
+    return Triplet.with(originalWidth, originalHeight, false);
   }
+
+  //  private Bitmap getBitmap(InputStream input) {
+  //    final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
+  //
+  //    if (originalBitmap != null) {
+  //      int originalWidth = originalBitmap.getWidth();
+  //      int originalHeight = originalBitmap.getHeight();
+  //
+  //      Tuple2<Integer, Integer> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
+  //      int targetWidth = targetSizes.a();
+  //      int targetHeight = targetSizes.b();
+  //
+  //      if (targetHeight != originalHeight || targetWidth != originalWidth) {
+  //        return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
+  //      }
+  //    }
+  //
+  //    return originalBitmap;
+  //  }
+  //}
 
   private class ImageTagHandler extends TagNodeHandler {
 
