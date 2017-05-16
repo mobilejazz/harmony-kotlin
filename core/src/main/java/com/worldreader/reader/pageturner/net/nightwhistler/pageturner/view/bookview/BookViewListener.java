@@ -19,6 +19,7 @@
 
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
+import android.graphics.drawable.Drawable;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 
@@ -191,4 +192,6 @@ public interface BookViewListener {
    * next page.
    */
   void onLastScreenPageDown();
+
+  void onBookImageClicked(final Drawable drawable);
 }

@@ -28,5 +28,20 @@
 
   </FrameLayout>
 
+  <FrameLayout
+    android:id="@+id/photo_viewer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#AA000000"
+    android:visibility="gone"
+    android:clickable="true">
+
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+      android:id="@+id/photo_viewer_iv"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+  </FrameLayout>
+
 </FrameLayout>
 

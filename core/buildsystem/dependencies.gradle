@@ -48,7 +48,10 @@ ext {
     okHttpVersion = '3.4.1'
     okHttp3Retrofit1Version = '1.0.2'
 
-    dependencies = [
+    scaleImageViewVersion = '3.6.0'
+
+
+  dependencies = [
             logger                : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
             retrofit              : "com.squareup.retrofit:retrofit:$retrofitVersion",
 
@@ -93,7 +96,9 @@ ext {
 
             daggerCompiler        : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                : "com.google.dagger:dagger:${daggerVersion}",
-    ]
+
+            scaleImageView      : "com.davemorrissey.labs:subsampling-scale-image-view:$scaleImageViewVersion"
+  ]
 
     testDependencies = [
             runner         : "com.android.support.test:runner:${androidRunnerVersion}",

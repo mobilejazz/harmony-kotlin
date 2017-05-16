@@ -114,6 +114,8 @@ dependencies {
 
     compile project.ext.dependencies.androidjob
 
+    compile dependencies.scaleImageView
+
     testCompile testDependencies.hamcrest
     testCompile(testDependencies.junit) {
         exclude module: 'hamcrest-core'

@@ -43,6 +43,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.worldreader.core.R;
@@ -60,6 +61,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.Resou
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -158,6 +160,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setLinksClickable(true);
     if (Build.VERSION.SDK_INT >= Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
       this.childView.setTextIsSelectable(true);
+      this.childView.setMovementMethod(BookViewMovementMethod.getInstance());
     }
 
     this.setVerticalFadingEdgeEnabled(false);
@@ -828,12 +831,17 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.strategy.updatePosition();
   }
 
-  private void setImageSpan(SpannableStringBuilder builder, Drawable drawable, int start, int end) {
-    builder.setSpan(new ImageSpan(drawable), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    //if (spine != null && spine.isCover()) {
+  private void setImageSpan(final SpannableStringBuilder builder, final Drawable drawable, final int start, final int end) {
+    final ClickableImageSpan imageSpan = new ClickableImageSpan(drawable);
+    imageSpan.setOnClickListener(new ClickableImageSpan.ClickableImageSpanListener() {
+      @Override public void onImageClick(final View v, final Drawable drawable) {
+        for (BookViewListener listener : BookView.this.listeners) {
+          listener.onBookImageClicked(drawable);
+        }
+      }
+    });
+    builder.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(new CenterSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    //}
   }
 
   private class ImageCallback implements ResourceCallback {
@@ -861,7 +869,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         setFakeImage(input);
       } else {
         Log.d(TAG, "Loading real image for href: " + href);
-        setBitmapDrawable(input);
+        setBitmapDrawable(href, input);
       }
     }
 
@@ -878,7 +886,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       setImageSpan(builder, draw, start, end);
     }
 
-    private void setBitmapDrawable(InputStream input) {
+    private void setBitmapDrawable(final String key ,final InputStream input) {
       Bitmap bitmap = null;
       try {
         bitmap = getBitmap(input);
@@ -886,13 +894,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
           return;
         }
-      } catch (OutOfMemoryError outofmem) {
-        Log.e(TAG, "Could not load image", outofmem);
+      } catch (OutOfMemoryError e) {
+        Log.e(TAG, "Could not load image", e);
       }
 
       if (bitmap != null) {
-
-        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
+        final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
 
         drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
         setImageSpan(builder, drawable, start, end);
@@ -942,8 +949,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     private int end;
     private String storedHref;
 
-    public StreamingResourceCallback(String href, SpannableStringBuilder builder, int start,
-        int end) {
+    public StreamingResourceCallback(String href, SpannableStringBuilder builder, int start, int end) {
       this.builder = builder;
       this.start = start;
       this.end = end;
@@ -951,10 +957,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     @Override public void onLoadImageResource(String href, InputStream stream) {
-      setBitmapDrawable(stream);
+      setBitmapDrawable(href, stream);
     }
 
-    private void setBitmapDrawable(InputStream input) {
+    private void setBitmapDrawable(final String key, final InputStream input) {
       Bitmap bitmap = null;
       try {
         bitmap = getBitmapOptimized(input);
@@ -1144,9 +1150,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
             byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
 
-            setImageSpan(builder, new BitmapDrawable(getContext().getResources(),
-                    BitmapFactory.decodeByteArray(binData, 0, binData.length)), start,
-                builder.length());
+            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
           } catch (OutOfMemoryError | IllegalArgumentException ia) {
             //Out of memory or invalid Base64, ignore
           }
@@ -1161,8 +1165,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           Log.d(TAG, "Got cached href: " + resolvedHref);
         } else {
           Log.d(TAG, "Loading href: " + resolvedHref);
-          this.registerCallback(resolvedHref,
-              new ImageCallback(resolvedHref, builder, start, builder.length(), fakeImages));
+          this.registerCallback(resolvedHref, new ImageCallback(resolvedHref, builder, start, builder.length(), fakeImages));
         }
       }
     }
@@ -1180,9 +1183,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     @TargetApi(Build.VERSION_CODES.FROYO) @Override
-    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-        SpanStack span) {
-
+    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack span) {
       String src = node.getAttributeByName("src");
 
       if (src == null) {
@@ -1200,21 +1201,16 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       builder.append("\uFFFC");
 
       if (src.startsWith("data:image")) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-
-          try {
-            String dataString = src.substring(src.indexOf(',') + 1);
-
-            byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
-
-            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
-          } catch (OutOfMemoryError | IllegalArgumentException ia) {
-            //Out of memory or invalid Base64, ignore
-          }
+        try {
+          final String dataString = src.substring(src.indexOf(',') + 1);
+          final byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
+          setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)),
+              start, builder.length());
+        } catch (OutOfMemoryError | IllegalArgumentException ia) {
+          //Out of memory or invalid Base64, ignore
         }
       } else if (spine != null) {
-
-        String resolvedHref = spine.resolveHref(src);
+        final String resolvedHref = spine.resolveHref(src);
 
         if (textLoader.hasCachedImage(resolvedHref)) {
           final Drawable drawable = textLoader.getCachedImage(resolvedHref);

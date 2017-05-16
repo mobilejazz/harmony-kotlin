@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -43,10 +45,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
 import com.worldreader.core.analytics.Analytics;
-import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
 import com.worldreader.core.application.helper.reachability.Reachability;
@@ -90,6 +93,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSFai
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackItem;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.NavGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
@@ -103,17 +107,21 @@ import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.UUID;
 import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.regex.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
@@ -347,8 +355,7 @@ public abstract class AbstractReaderFragment extends Fragment
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
-    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(),
-        new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
+    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(), new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
 
     this.bookView.addListener(this);
     this.bookView.setTextSelectionCallback(this, this);
@@ -489,6 +496,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
   @Override public void onDestroy() {
     super.onDestroy();
+    if (this.textToSpeech != null)
     this.textToSpeech.shutdown();
     this.closeWaitDialog();
   }
@@ -505,6 +513,7 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
+    hidePhotoViewer();
     int itemId = item.getItemId();
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
@@ -1500,6 +1509,11 @@ public abstract class AbstractReaderFragment extends Fragment
       hideDefinitionView();
       return true;
     }
+
+    if (isPhotoViewerDisplayed()) {
+      return true;
+    }
+
     return false;
   }
 
@@ -1536,6 +1550,40 @@ public abstract class AbstractReaderFragment extends Fragment
     bookMetadata.setTitle(bookTitle);
     bookMetadata.setAuthor(author);
     onEventNavigateToBookFinishedScreen();
+  }
+
+  @Override public void onBookImageClicked(final Drawable drawable) {
+    displayPhotoViewer((FastBitmapDrawable) drawable);
+  }
+
+  private void displayPhotoViewer(final FastBitmapDrawable drawable) {
+    final FragmentActivity activity = getActivity();
+    if (activity != null) {
+      final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
+      final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
+      imageScaleView.setImage(ImageSource.cachedBitmap(drawable.getBitmap()));
+      imageViewContainer.setVisibility(View.VISIBLE);
+    }
+  }
+
+  private void hidePhotoViewer() {
+    final FragmentActivity activity = getActivity();
+    if (activity != null) {
+      final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
+      imageViewContainer.setVisibility(View.GONE);
+      final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
+      imageScaleView.recycle();
+    }
+  }
+
+  private boolean isPhotoViewerDisplayed() {
+    final FragmentActivity activity = getActivity();
+    if (activity != null) {
+      final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
+      return imageViewContainer.getVisibility() == View.VISIBLE;
+    } else {
+      return false;
+    }
   }
 
   protected abstract void onEventNavigateToBookFinishedScreen();
@@ -1758,6 +1806,11 @@ public abstract class AbstractReaderFragment extends Fragment
 
           if (ttsIsRunning()) {
             stopTextToSpeech();
+            return true;
+          }
+
+          if (isPhotoViewerDisplayed()) {
+            hidePhotoViewer();
             return true;
           }
 
