@@ -2253,7 +2253,11 @@ public abstract class AbstractReaderFragment extends Fragment
       Size in chars of currently presented text (screen text size in chars)
 
      */
-    chapterProgressPagesTv.setText(String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
+    if (bookView.getPagesForResource() < bookView.getCurrentPage()) {
+      chapterProgressPagesTv.setText("");
+    } else {
+      chapterProgressPagesTv.setText(String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
+    }
 
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
