@@ -74,14 +74,13 @@ import jedi.functional.Command0;
 import jedi.functional.Filter;
 import jedi.option.None;
 import jedi.option.Option;
-import jedi.tuple.Tuple2;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.handlers.TableHandler;
+import net.nightwhistler.htmlspanner.spans.CenterSpan;
 import org.htmlcleaner.TagNode;
-import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 import static java.util.Arrays.asList;
@@ -833,7 +832,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     builder.setSpan(new ImageSpan(drawable), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     //if (spine != null && spine.isCover()) {
-    //  builder.setSpan(new CenterSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(new CenterSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     //}
   }
 
@@ -968,7 +967,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
 
       if (bitmap != null) {
-
         final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
         drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
 
@@ -1053,7 +1051,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     final int screenWidth = getWidth() - (horizontalMargin * 2);
 
     // We scale to screen width for the cover or if the image is too wide.
-    if (originalWidth > screenWidth || originalHeight > screenHeight) {
+    //if (originalWidth > screenWidth || originalHeight > screenHeight) {
 
       final float ratio = (float) originalWidth / (float) originalHeight;
 
@@ -1075,19 +1073,19 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           + targetHeight);
 
       return Triplet.with(targetWidth, targetHeight, true);
-    }
+    //}
 
-    // Let's try to upscale the image
-    final int scaledWidth = (int) (originalWidth * 1.5);
-    final int scaledHeight = (int) (originalHeight * 1.5);
-
-    // If the new upscaled dimensions are not higher than screen device
-    if (scaledWidth < screenWidth || scaledHeight < screenHeight) {
-      return Triplet.with(scaledWidth, scaledHeight, true);
-    }
-
-    // Otherwise let's return the original size
-    return Triplet.with(originalWidth, originalHeight, false);
+    //// Let's try to upscale the image
+    //final int scaledWidth = (int) (originalWidth * 1.5);
+    //final int scaledHeight = (int) (originalHeight * 1.5);
+    //
+    //// If the new upscaled dimensions are not higher than screen device
+    //if (scaledWidth < screenWidth || scaledHeight < screenHeight) {
+    //  return Triplet.with(scaledWidth, scaledHeight, true);
+    //}
+    //
+    //// Otherwise let's return the original size
+    //return Triplet.with(originalWidth, originalHeight, false);
   }
 
   //  private Bitmap getBitmap(InputStream input) {
@@ -1209,9 +1207,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
             byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
 
-            setImageSpan(builder, new BitmapDrawable(getContext().getResources(),
-                    BitmapFactory.decodeByteArray(binData, 0, binData.length)), start,
-                builder.length());
+            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
           } catch (OutOfMemoryError | IllegalArgumentException ia) {
             //Out of memory or invalid Base64, ignore
           }
@@ -1221,13 +1217,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         String resolvedHref = spine.resolveHref(src);
 
         if (textLoader.hasCachedImage(resolvedHref)) {
-          Drawable drawable = textLoader.getCachedImage(resolvedHref);
+          final Drawable drawable = textLoader.getCachedImage(resolvedHref);
           setImageSpan(builder, drawable, start, builder.length());
           Log.d(TAG, "Got cached href: " + resolvedHref);
         } else {
           Log.d(TAG, "Loading href: " + resolvedHref);
-          this.registerCallback(resolvedHref,
-              new StreamingResourceCallback(resolvedHref, builder, start, builder.length()));
+          this.registerCallback(resolvedHref, new StreamingResourceCallback(resolvedHref, builder, start, builder.length()));
         }
       }
     }
