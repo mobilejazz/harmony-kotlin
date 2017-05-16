@@ -513,7 +513,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
-    hidePhotoViewer();
     int itemId = item.getItemId();
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
@@ -539,6 +538,10 @@ public abstract class AbstractReaderFragment extends Fragment
       onGamificationEventTextToSpeechActivated();
       return true;
     } else if (itemId == android.R.id.home) {
+      if (isPhotoViewerDisplayed()) {
+        hidePhotoViewer();
+        return false;
+      }
       getActivity().finish();
       return true;
     } else {
