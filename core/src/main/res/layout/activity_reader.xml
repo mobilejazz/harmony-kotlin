@@ -32,9 +32,10 @@
     android:id="@+id/photo_viewer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#AA000000"
+    android:background="#CC000000"
     android:visibility="gone"
-    android:clickable="true">
+    android:clickable="true"
+    android:padding="@dimen/span_8">
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
       android:id="@+id/photo_viewer_iv"
