@@ -1013,7 +1013,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         if (!isResized) {
           // Let's calculate insamplesize to resize the bitmap accordingly
-          calculateInSampleSize(options, targetWidth, targetHeight);
+          options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
 
           // Let's try to return the most optimized version for the bitmap
           return BitmapFactory.decodeStream(input, null, options);
