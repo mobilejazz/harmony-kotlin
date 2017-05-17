@@ -3,46 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fragment_reading"
+        <FrameLayout android:id="@+id/fragment_reading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/content_book_index"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-  </FrameLayout>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
 
-  <FrameLayout
-      android:id="@+id/content_book_index"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:fitsSystemWindows="true"
-      android:visibility="gone">
+        <fragment android:id="@+id/fragment_book_index"
+            class="com.worldreader.reader.wr.fragments.BookIndexFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <fragment
-        android:id="@+id/fragment_book_index"
-        class="com.worldreader.reader.wr.fragments.BookIndexFragment"
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/photo_viewer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:clickable="true"
+        android:visibility="gone">
 
-  </FrameLayout>
+        <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView android:id="@+id/photo_viewer_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="@dimen/span_8" />
 
-  <FrameLayout
-    android:id="@+id/photo_viewer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#CC000000"
-    android:visibility="gone"
-    android:clickable="true"
-    android:padding="@dimen/span_8">
+        <FrameLayout android:id="@+id/photo_viewer_close_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/span_52"
+            android:layout_gravity="bottom"
+            android:background="#96000000">
 
-    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-      android:id="@+id/photo_viewer_iv"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+            <ImageView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
-  </FrameLayout>
+        </FrameLayout>
+
+    </FrameLayout>
 
 </FrameLayout>
 
