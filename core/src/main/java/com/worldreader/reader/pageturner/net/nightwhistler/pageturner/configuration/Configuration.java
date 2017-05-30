@@ -24,25 +24,24 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import jedi.functional.Filter;
-import jedi.functional.Functor;
-import jedi.option.Option;
-import net.nightwhistler.htmlspanner.FontFamily;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
-import org.json.JSONException;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import jedi.functional.Filter;
+import jedi.functional.Functor;
+import jedi.option.Option;
+import net.nightwhistler.htmlspanner.FontFamily;
+import org.json.JSONException;
 
 import static java.util.Arrays.asList;
+
 import static jedi.functional.FunctionalPrimitives.*;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
@@ -122,15 +121,7 @@ public class Configuration {
       heap memory.
    */
   public static double getBitmapMemoryUsage() {
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-      return getMemoryUsage();
-    }
-
-    long max = Runtime.getRuntime().maxMemory();
-    long used = Debug.getNativeHeapAllocatedSize();
-
-    return (double) used / (double) max;
+    return getMemoryUsage();
   }
 
   public boolean isVerticalTappingEnabled() {

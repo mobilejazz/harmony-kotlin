@@ -24,16 +24,12 @@ public class AnchorHandler extends TagNodeHandler {
     this.wrappedHandler = wrappedHandler;
   }
 
-  @Override
-  public void beforeChildren(TagNode node, SpannableStringBuilder builder, SpanStack spanStack) {
+  @Override public void beforeChildren(TagNode node, SpannableStringBuilder builder, SpanStack spanStack) {
     this.wrappedHandler.beforeChildren(node, builder, spanStack);
   }
 
-  @Override
-  public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-      SpanStack spanStack) {
-
-    String id = node.getAttributeByName("id");
+  @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
+    final String id = node.getAttributeByName("id");
     if (id != null) {
       callback.registerAnchor(id, start);
     }
@@ -46,6 +42,7 @@ public class AnchorHandler extends TagNodeHandler {
   }
 
   public interface AnchorCallback {
+
     void registerAnchor(String anchor, int position);
   }
 }

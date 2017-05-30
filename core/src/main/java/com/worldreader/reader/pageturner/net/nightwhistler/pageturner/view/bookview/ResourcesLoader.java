@@ -1,5 +1,7 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
+import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 
 import java.io.InputStream;
@@ -7,7 +9,7 @@ import java.io.InputStream;
 public interface ResourcesLoader {
 
   interface ImageResourceCallback {
-    void onLoadImageResource(String href, InputStream stream);
+    void onLoadImageResource(String href, InputStream stream, StreamingBookRepository datasource, BookMetadata bookMetadata);
   }
 
   InputStream loadResource(String path);

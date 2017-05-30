@@ -39,7 +39,6 @@ public class QueuedTask<A, B, C> {
   }
 
   public void execute() {
-
     if (executing) {
       throw new IllegalStateException("Already executed, cannot execute twice.");
     }

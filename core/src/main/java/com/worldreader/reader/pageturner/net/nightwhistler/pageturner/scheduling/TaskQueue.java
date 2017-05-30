@@ -1,10 +1,9 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
 
 import android.util.Log;
+import java.util.LinkedList;
 import jedi.functional.Command;
 import jedi.option.Option;
-
-import java.util.LinkedList;
 
 import static jedi.option.Options.none;
 import static jedi.option.Options.some;
@@ -19,9 +18,7 @@ import static jedi.option.Options.some;
  */
 public class TaskQueue {
 
-  public interface TaskQueueListener {
-    void queueEmpty();
-  }
+  private static final String TAG = TaskQueue.class.getSimpleName();
 
   private LinkedList<QueuedTask<?, ?, ?>> taskQueue = new LinkedList<QueuedTask<?, ?, ?>>();
   private TaskQueueListener listener;
@@ -30,8 +27,7 @@ public class TaskQueue {
     return taskQueue.isEmpty();
   }
 
-  public <A, B, C> void executeTask(QueueableAsyncTask<A, B, C> task, A... parameters) {
-
+  @SafeVarargs public final <A, B, C> void executeTask(QueueableAsyncTask<A, B, C> task, A... parameters) {
     task.setCallback(new QueueableAsyncTask.QueueCallback() {
       @Override public void taskCompleted(QueueableAsyncTask<?, ?, ?> task1, boolean wasCancelled) {
         TaskQueue.this.taskCompleted(task1, wasCancelled);
@@ -40,59 +36,25 @@ public class TaskQueue {
 
     this.taskQueue.add(new QueuedTask<>(task, parameters));
 
-    Log.d("TaskQueue",
-        "Scheduled task of type " + task + " total tasks scheduled now: " + this.taskQueue.size());
+    Log.d(TAG, "Scheduled task of type " + task + " total tasks scheduled now: " + this.taskQueue.size());
 
     if (this.taskQueue.size() == 1) {
-      Log.d("TaskQueue", "Starting task " + taskQueue.peek() + " since task queue is 1.");
+      Log.d(TAG, "Starting task " + taskQueue.peek() + " since task queue is 1.");
       this.taskQueue.peek().execute();
     }
   }
 
-  /**
-   * Cancels the currently running task and queues this task ahead of all others.
-   */
-  public <A, B, C> void jumpQueueExecuteTask(QueueableAsyncTask<A, B, C> task, A... parameters) {
-
-    Log.d("TaskQueue", "Queue-jump requested for " + task.getClass().getSimpleName());
-
-    if (this.taskQueue.isEmpty()) {
-      Log.d("TaskQueue", "Delegating to simple schedule since the queue is empty.");
-      executeTask(task, parameters);
-    } else {
-
-      QueuedTask top = taskQueue.remove();
-      Log.d("TaskQueue", "Cancelling task of type " + top);
-      top.cancel();
-
-      task.setCallback(new QueueableAsyncTask.QueueCallback() {
-        @Override
-        public void taskCompleted(QueueableAsyncTask<?, ?, ?> task1, boolean wasCancelled) {
-          TaskQueue.this.taskCompleted(task1, wasCancelled);
-        }
-      });
-
-      taskQueue.add(0, new QueuedTask<A, B, C>(task, parameters));
-
-      Log.d("TaskQueue",
-          "Starting task of type " + taskQueue.peek() + " with queue " + getQueueAsString());
-
-      taskQueue.peek().execute();
-    }
-  }
-
   public void clear() {
-
-    Log.d("TaskQueue", "Clearing task queue.");
+    Log.d(TAG, "Clearing task queue.");
 
     if (!this.taskQueue.isEmpty()) {
       QueuedTask front = taskQueue.peek();
-      Log.d("TaskQueue", "Canceling task of type: " + front);
+      Log.d(TAG, "Canceling task of type: " + front);
 
       front.cancel();
       this.taskQueue.clear();
     } else {
-      Log.d("TaskQueue", "Nothing to do, since queue was already empty.");
+      Log.d(TAG, "Nothing to do, since queue was already empty.");
     }
   }
 
@@ -104,7 +66,6 @@ public class TaskQueue {
     StringBuilder builder = new StringBuilder("[");
 
     for (int i = 0; i < this.taskQueue.size(); i++) {
-
       builder.append(this.taskQueue.get(i));
 
       if (i < this.taskQueue.size() - 1) {
@@ -130,21 +91,19 @@ public class TaskQueue {
   public void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled) {
 
     if (!wasCancelled) {
-      Log.d("TaskQueue", "Completion of task of type " + task);
+      Log.d(TAG, "Completion of task of type " + task);
 
       QueuedTask queuedTask = this.taskQueue.remove();
 
       if (queuedTask.getTask() != task) {
 
-        String errorMsg = "Tasks out of sync! Expected " +
-            queuedTask.getTask() + " but got " + task +
-            " with queue: " + getQueueAsString();
-        Log.e("TaskQueue", errorMsg);
+        String errorMsg = "Tasks out of sync! Expected " + queuedTask.getTask() + " but got " + task + " with queue: " + getQueueAsString();
+        Log.e(TAG, errorMsg);
 
         throw new RuntimeException(errorMsg);
       }
     } else {
-      Log.d("TaskQueue", "Got taskCompleted for task " + task + " which was cancelled.");
+      Log.d(TAG, "Got taskCompleted for task " + task + " which was cancelled.");
 
       findQueuedTaskFor(task).forEach(new Command<QueuedTask<?, ?, ?>>() {
         @Override public void execute(QueuedTask<?, ?, ?> object) {
@@ -153,20 +112,24 @@ public class TaskQueue {
       });
     }
 
-    Log.d("TaskQueue", "Total tasks scheduled now: " + this.taskQueue.size() + " with queue: "
-        + getQueueAsString());
+    Log.d(TAG, "Total tasks scheduled now: " + this.taskQueue.size() + " with queue: " + getQueueAsString());
 
     if (!this.taskQueue.isEmpty()) {
 
       if (!this.taskQueue.peek().isExecuting()) {
-        Log.d("TaskQueue", "Executing task " + this.taskQueue.peek());
+        Log.d(TAG, "Executing task " + this.taskQueue.peek());
         this.taskQueue.peek().execute();
       } else {
-        Log.d("TaskQueue", "Task at the head of queue is already running.");
+        Log.d(TAG, "Task at the head of queue is already running.");
       }
     } else if (this.listener != null) {
-      Log.d("TaskQueue", "Notifying that the queue is empty.");
+      Log.d(TAG, "Notifying that the queue is empty.");
       this.listener.queueEmpty();
     }
+  }
+
+  public interface TaskQueueListener {
+
+    void queueEmpty();
   }
 }

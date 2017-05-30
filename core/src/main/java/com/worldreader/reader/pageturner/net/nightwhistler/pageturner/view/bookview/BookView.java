@@ -24,12 +24,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.Spannable;
@@ -37,7 +39,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
@@ -47,6 +48,9 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.worldreader.core.R;
+import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.core.domain.model.StreamingResource;
+import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
@@ -56,7 +60,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.ResourceLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.ResourceLoader.ResourceCallback;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
@@ -115,7 +118,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private int prevPos = -1;
 
   private PageChangeStrategy strategy;
-  private ResourceLoader loader;
 
   private int horizontalMargin = 0;
   private int verticalMargin = 0;
@@ -126,12 +128,26 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private Configuration configuration;
 
   private TextLoader textLoader;
+  private ResourcesLoader resourcesLoader;
 
   private EpubFontResolver fontResolver;
 
   private TaskQueue taskQueue;
 
-  private ResourcesLoader resourcesLoader;
+  private final Drawable.Callback callback = new Drawable.Callback() {
+    @Override public void invalidateDrawable(@NonNull final Drawable who) {
+      getInnerView().setVisibility(View.GONE);
+      getInnerView().setVisibility(View.VISIBLE);
+    }
+
+    @Override public void scheduleDrawable(@NonNull final Drawable who, @NonNull final Runnable what, final long when) {
+
+    }
+
+    @Override public void unscheduleDrawable(@NonNull final Drawable who, @NonNull final Runnable what) {
+
+    }
+  };
 
   public BookView(Context context, AttributeSet attributes) {
     super(context, attributes);
@@ -149,6 +165,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void init(String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader) {
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
+    this.resourcesLoader = resourcesLoader;
 
     this.listeners = new HashSet<>();
 
@@ -158,28 +175,25 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setLongClickable(true);
     this.childView.setFocusable(true);
     this.childView.setLinksClickable(true);
-    if (Build.VERSION.SDK_INT >= Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
-      this.childView.setTextIsSelectable(true);
-      this.childView.setMovementMethod(BookViewMovementMethod.getInstance());
-    }
+    this.childView.setTextIsSelectable(true);
+    this.childView.setMovementMethod(BookViewMovementMethod.getInstance());
 
     this.setVerticalFadingEdgeEnabled(false);
-
     this.setSmoothScrollingEnabled(false);
+
     this.tableHandler = new TableHandler();
     this.textLoader.registerTagNodeHandler("table", tableHandler);
 
-    StreamingImageTagHandler imgHandler = new StreamingImageTagHandler();
+    final StreamingImageTagHandler imgHandler = new StreamingImageTagHandler();
     this.textLoader.registerTagNodeHandler("img", imgHandler);
     this.textLoader.registerTagNodeHandler("image", imgHandler);
 
+    this.textLoader.setResourcesLoader(resourcesLoader);
     this.textLoader.setLinkCallBack(new LinkTagHandler.LinkCallBack() {
       @Override public void linkClicked(String href) {
         BookView.this.onLinkClicked(href);
       }
     });
-    this.resourcesLoader = resourcesLoader;
-    this.textLoader.setResourcesLoader(resourcesLoader);
   }
 
   private void onInnerViewResize() {
@@ -199,7 +213,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
-    //this.loader = new ResourceLoader(fileName);
   }
 
   public void onLinkClicked(String href) {
@@ -308,11 +321,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void setHorizontalMargin(int horizontalMargin) {
-
     if (horizontalMargin != this.horizontalMargin) {
       this.horizontalMargin = horizontalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin,
-          this.verticalMargin);
+      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -345,13 +356,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public Option<String> getSelectedText() {
-
     int start = getSelectionStart();
     int end = getSelectionEnd();
 
     if (start > 0 && end > 0 && end > start) {
-      return some(
-          childView.getText().subSequence(getSelectionStart(), getSelectionEnd()).toString());
+      return some(childView.getText().subSequence(getSelectionStart(), getSelectionEnd()).toString());
     } else {
       return none();
     }
@@ -371,7 +380,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.storedIndex = -1;
     this.book = null;
     this.fileName = null;
-
     this.strategy.reset();
   }
 
@@ -384,7 +392,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   void loadText() {
-
     if (spine == null && !textLoader.hasCachedBook(this.fileName)) {
       taskQueue.executeTask(new OpenStreamingBookTask());
       taskQueue.executeTask(new LoadStreamingTextTask(true /* initialLoad*/));
@@ -813,7 +820,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
    * Call this after setPosition() to actually go there.
    */
   private void restorePosition() {
-
     if (this.storedAnchor != null) {
 
       spine.getCurrentHref().forEach(new Command<String>() {
@@ -844,104 +850,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     builder.setSpan(new CenterSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
   }
 
-  private class ImageCallback implements ResourceCallback {
-
-    private SpannableStringBuilder builder;
-    private int start;
-    private int end;
-
-    private String storedHref;
-
-    private boolean fakeImages;
-
-    public ImageCallback(String href, SpannableStringBuilder builder, int start, int end,
-        boolean fakeImages) {
-      this.builder = builder;
-      this.start = start;
-      this.end = end;
-      this.storedHref = href;
-      this.fakeImages = fakeImages;
-    }
-
-    @Override public void onLoadResource(String href, InputStream input) {
-      if (fakeImages) {
-        Log.d(TAG, "Faking image for href: " + href);
-        setFakeImage(input);
-      } else {
-        Log.d(TAG, "Loading real image for href: " + href);
-        setBitmapDrawable(href, input);
-      }
-    }
-
-    private void setFakeImage(InputStream input) {
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-      BitmapFactory.decodeStream(input, null, options);
-
-      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(options.outWidth, options.outHeight);
-
-      ShapeDrawable draw = new ShapeDrawable(new RectShape());
-      draw.setBounds(0, 0, sizes.getValue0(), sizes.getValue1());
-
-      setImageSpan(builder, draw, start, end);
-    }
-
-    private void setBitmapDrawable(final String key ,final InputStream input) {
-      Bitmap bitmap = null;
-      try {
-        bitmap = getBitmap(input);
-
-        if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
-          return;
-        }
-      } catch (OutOfMemoryError e) {
-        Log.e(TAG, "Could not load image", e);
-      }
-
-      if (bitmap != null) {
-        final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
-
-        drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-        setImageSpan(builder, drawable, start, end);
-
-        Log.d(TAG, "Storing image in cache: " + storedHref);
-
-        textLoader.storeImageInChache(storedHref, drawable);
-      }
-    }
-
-    private Bitmap getBitmap(InputStream input) {
-      //if (Configuration.IS_NOOK_TOUCH) {
-      // Workaround for skia failing to load larger (>8k?) JPEGs on Nook Touch and maybe other older Eclair devices (unknown!)
-      // seems the underlying problem is the ZipInputStream returning data in chunks,
-      // may be as per http://code.google.com/p/android/issues/detail?id=6066
-      // workaround is to stream the whole image out of the Zip to a ByteArray, then pass that on to the bitmap decoder
-      //  try {
-      //    input = new ByteArrayInputStream(IOUtil.toByteArray(input));
-      //  } catch (IOException ex) {
-      //    Log.e(TAG, "Failed to extract full image from epub stream: " + ex.toString());
-      //  }
-      // }
-
-      final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
-
-      if (originalBitmap != null) {
-        int originalWidth = originalBitmap.getWidth();
-        int originalHeight = originalBitmap.getHeight();
-
-        Triplet<Integer, Integer, Boolean> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
-        int targetWidth = targetSizes.getValue0();
-        int targetHeight = targetSizes.getValue1();
-
-        if (targetHeight != originalHeight || targetWidth != originalWidth) {
-          return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
-        }
-      }
-
-      return originalBitmap;
-    }
-  }
-
   private class StreamingResourceCallback implements ResourcesLoader.ImageResourceCallback {
 
     private SpannableStringBuilder builder;
@@ -956,32 +864,55 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       this.storedHref = href;
     }
 
-    @Override public void onLoadImageResource(String href, InputStream stream) {
-      setBitmapDrawable(href, stream);
+    @Override public void onLoadImageResource(String href, InputStream stream, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
+      setBitmapDrawable(href, stream, dataSource, bookMetadata);
     }
 
-    private void setBitmapDrawable(final String key, final InputStream input) {
-      Bitmap bitmap = null;
-      try {
-        bitmap = getBitmapOptimized(input);
+    private void setBitmapDrawable(final String key, final InputStream input, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
+      BitmapFactory.Options options = new BitmapFactory.Options();
+      options.inJustDecodeBounds = true;
+      BitmapFactory.decodeStream(input, null, options);
 
-        if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
-          return;
-        }
-      } catch (OutOfMemoryError | IOException e) {
-        Log.e(TAG, "Could not load image", e);
-      }
+      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(options.outWidth, options.outHeight);
 
-      if (bitmap != null) {
-        final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
-        drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+      ShapeDrawable draw = new ShapeDrawable(new RectShape());
+      draw.getPaint().setColor(Color.RED);
+      draw.setBounds(0, 0, sizes.getValue0(), sizes.getValue1());
+      draw.setIntrinsicWidth(sizes.getValue0());
+      draw.setIntrinsicHeight(sizes.getValue1());
 
-        setImageSpan(builder, drawable, start, end);
+      Canvas canvas = new Canvas();
+      Bitmap bitmap = Bitmap.createBitmap(draw.getIntrinsicWidth(), draw.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+      canvas.setBitmap(bitmap);
+      draw.draw(canvas);
 
-        Log.d(TAG, "Storing image in cache: " + storedHref);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap, key, dataSource, bookMetadata);
+      drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+      drawable.setCallback(callback);
 
-        textLoader.storeImageInChache(storedHref, drawable);
-      }
+      setImageSpan(builder, drawable, start, end);
+
+      //Bitmap bitmap = null;
+      //try {
+      //  bitmap = getBitmapOptimized(input);
+      //
+      //  if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
+      //    return;
+      //  }
+      //} catch (OutOfMemoryError | IOException e) {
+      //  Log.e(TAG, "Could not load image", e);
+      //}
+      //
+      //if (bitmap != null) {
+      //  final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap, key);
+      //  drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+      //
+      //  setImageSpan(builder, drawable, start, end);
+      //
+      //  Log.d(TAG, "Storing image in cache: " + storedHref);
+      //
+      //  textLoader.storeImageInCache(storedHref, drawable);
+      //}
     }
 
     @Nullable private Bitmap getBitmapOptimized(InputStream input) throws IOException {
@@ -1056,129 +987,31 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     final int screenHeight = getHeight() - (verticalMargin * 2);
     final int screenWidth = getWidth() - (horizontalMargin * 2);
 
-    // We scale to screen width for the cover or if the image is too wide.
-    //if (originalWidth > screenWidth || originalHeight > screenHeight) {
+    final float ratio = (float) originalWidth / (float) originalHeight;
 
-      final float ratio = (float) originalWidth / (float) originalHeight;
+    int targetHeight = screenHeight - 1;
+    int targetWidth = (int) (targetHeight * ratio);
 
-      int targetHeight = screenHeight - 1;
-      int targetWidth = (int) (targetHeight * ratio);
-
-      if (targetWidth > screenWidth - 1) {
-        targetWidth = screenWidth - 1;
-        targetHeight = (int) (targetWidth * (1 / ratio));
-      }
-
-      Log.d(TAG, "Rescaling from "
-          + originalWidth
-          + "x"
-          + originalHeight
-          + " to "
-          + targetWidth
-          + "x"
-          + targetHeight);
-
-      return Triplet.with(targetWidth, targetHeight, true);
-    //}
-
-    //// Let's try to upscale the image
-    //final int scaledWidth = (int) (originalWidth * 1.5);
-    //final int scaledHeight = (int) (originalHeight * 1.5);
-    //
-    //// If the new upscaled dimensions are not higher than screen device
-    //if (scaledWidth < screenWidth || scaledHeight < screenHeight) {
-    //  return Triplet.with(scaledWidth, scaledHeight, true);
-    //}
-    //
-    //// Otherwise let's return the original size
-    //return Triplet.with(originalWidth, originalHeight, false);
-  }
-
-  //  private Bitmap getBitmap(InputStream input) {
-  //    final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
-  //
-  //    if (originalBitmap != null) {
-  //      int originalWidth = originalBitmap.getWidth();
-  //      int originalHeight = originalBitmap.getHeight();
-  //
-  //      Tuple2<Integer, Integer> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
-  //      int targetWidth = targetSizes.a();
-  //      int targetHeight = targetSizes.b();
-  //
-  //      if (targetHeight != originalHeight || targetWidth != originalWidth) {
-  //        return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
-  //      }
-  //    }
-  //
-  //    return originalBitmap;
-  //  }
-  //}
-
-  private class ImageTagHandler extends TagNodeHandler {
-
-    private boolean fakeImages;
-
-    public ImageTagHandler(boolean fakeImages) {
-      this.fakeImages = fakeImages;
+    if (targetWidth > screenWidth - 1) {
+      targetWidth = screenWidth - 1;
+      targetHeight = (int) (targetWidth * (1 / ratio));
     }
 
-    @TargetApi(Build.VERSION_CODES.FROYO) @Override
-    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-        SpanStack span) {
+    Log.d(TAG, "Rescaling from "
+        + originalWidth
+        + "x"
+        + originalHeight
+        + " to "
+        + targetWidth
+        + "x"
+        + targetHeight);
 
-      String src = node.getAttributeByName("src");
-
-      if (src == null) {
-        src = node.getAttributeByName("href");
-      }
-
-      if (src == null) {
-        src = node.getAttributeByName("xlink:href");
-      }
-
-      if (src == null) {
-        return;
-      }
-
-      builder.append("\uFFFC");
-
-      if (src.startsWith("data:image")) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-
-          try {
-            String dataString = src.substring(src.indexOf(',') + 1);
-
-            byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
-
-            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
-          } catch (OutOfMemoryError | IllegalArgumentException ia) {
-            //Out of memory or invalid Base64, ignore
-          }
-        }
-      } else if (spine != null) {
-
-        String resolvedHref = spine.resolveHref(src);
-
-        if (textLoader.hasCachedImage(resolvedHref) && !fakeImages) {
-          Drawable drawable = textLoader.getCachedImage(resolvedHref);
-          setImageSpan(builder, drawable, start, builder.length());
-          Log.d(TAG, "Got cached href: " + resolvedHref);
-        } else {
-          Log.d(TAG, "Loading href: " + resolvedHref);
-          this.registerCallback(resolvedHref, new ImageCallback(resolvedHref, builder, start, builder.length(), fakeImages));
-        }
-      }
-    }
-
-    protected void registerCallback(String resolvedHref, ImageCallback callback) {
-      BookView.this.loader.registerCallback(resolvedHref, callback);
-    }
+    return Triplet.with(targetWidth, targetHeight, true);
   }
 
   private class StreamingImageTagHandler extends TagNodeHandler {
 
-    protected void registerCallback(String resolvedHref,
-        ResourcesLoader.ImageResourceCallback callback) {
+    protected void registerCallback(String resolvedHref, ResourcesLoader.ImageResourceCallback callback) {
       BookView.this.resourcesLoader.registerImageCallback(resolvedHref, callback);
     }
 
@@ -1451,7 +1284,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  public static class InnerView extends TextView {
+  public static class InnerView extends android.support.v7.widget.AppCompatTextView {
 
     private BookView bookView;
 
@@ -1546,22 +1379,21 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     private String name;
     private boolean initialLoad;
 
-    public LoadStreamingTextTask(boolean initialLoad) {
-      this.initialLoad = initialLoad;
+    public LoadStreamingTextTask() {
     }
 
-    public LoadStreamingTextTask() {
+    public LoadStreamingTextTask(boolean initialLoad) {
+      this.initialLoad = initialLoad;
     }
 
     public Option<Spanned> doInBackground(Resource... resources) {
       publishProgress(BookReadPhase.START);
 
-      if (loader != null) {
-        loader.clear();
-      }
+      //if (loader != null) {
+      //  loader.clear();
+      //}
 
       try {
-
         this.name = spine.getCurrentTitle().getOrElse("");
 
         Resource resource;
@@ -1583,6 +1415,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
             return LoadStreamingTextTask.this.isCancelled();
           }
         });
+
         // Load all image resources.
         resourcesLoader.loadImageResources();
 
@@ -1650,8 +1483,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  private class CalculatePageNumbersTask
-      extends QueueableAsyncTask<Object, Void, List<List<Integer>>> {
+  private class CalculatePageNumbersTask extends QueueableAsyncTask<Object, Void, List<List<Integer>>> {
 
     private void checkForCancellation() {
       if (isCancelRequested()) {
@@ -1668,17 +1500,17 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     private Option<List<List<Integer>>> getOffsets() throws IOException {
       List<List<Integer>> result = new ArrayList<>();
 
-      ImageTagHandler tagHandler = new ImageTagHandler(true) {
-        protected void registerCallback(String resolvedHref, ImageCallback callback) {
-          //imageLoader.registerCallback(resolvedHref, callback);
-        }
-      };
+      //ImageTagHandler tagHandler = new ImageTagHandler(true) {
+      //  protected void registerCallback(String resolvedHref, ImageCallback callback) {
+      //    //imageLoader.registerCallback(resolvedHref, callback);
+      //  }
+      //};
       final HtmlSpanner mySpanner = new HtmlSpanner();
       mySpanner.setAllowStyling(configuration.isAllowStyling());
       mySpanner.setFontResolver(fontResolver);
       mySpanner.registerHandler("table", tableHandler);
-      mySpanner.registerHandler("img", tagHandler);
-      mySpanner.registerHandler("image", tagHandler);
+      //mySpanner.registerHandler("img", tagHandler);
+      //mySpanner.registerHandler("image", tagHandler);
       mySpanner.registerHandler("link", new CSSLinkHandler(textLoader));
 
       FixedPagesStrategy fixedPagesStrategy = CalculatePageNumbersTask.this.getFixedPagesStrategy();
@@ -1692,109 +1524,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           result.add(fixedPagesStrategy.getPageOffsets(cachedText, true));
         }
       }
-
-      // ------------------------------------------------
-
-      //List<List<Integer>> result = new ArrayList<>();
-      //final ResourceLoader imageLoader = new ResourceLoader(fileName);
-      //final ResourceLoader textResourceLoader = new ResourceLoader(fileName);
-      ////Image loader which only loads image dimensions
-      //ImageTagHandler tagHandler = new ImageTagHandler(true) {
-      //  protected void registerCallback(String resolvedHref, ImageCallback callback) {
-      //    imageLoader.registerCallback(resolvedHref, callback);
-      //  }
-      //};
-      //
-      ////Private spanner
-      //final HtmlSpanner mySpanner = new HtmlSpanner();
-      //mySpanner.setAllowStyling(configuration.isAllowStyling());
-      //mySpanner.setFontResolver(fontResolver);
-      //mySpanner.registerHandler("table", tableHandler);
-      //mySpanner.registerHandler("img", tagHandler);
-      //mySpanner.registerHandler("image", tagHandler);
-      //mySpanner.registerHandler("link", new CSSLinkHandler(textLoader));
-      //
-      //final Map<String, List<Integer>> offsetsPerSection = new HashMap<>();
-      //
-      ////We use the ResourceLoader here to load all the text in the book in 1 pass,
-      ////but we only keep a single section in memory at each moment
-      //ResourceCallback callback = new ResourceCallback() {
-      //  @Override public void onLoadResource(String href, InputStream stream) {
-      //    try {
-      //      CalculatePageNumbersTask.this.checkForCancellation();
-      //      Log.d(TAG, "CalculatePageNumbersTask: loading text for: " + href);
-      //      InputStream input = new ByteArrayInputStream(IOUtil.toByteArray(stream));
-      //
-      //      CalculatePageNumbersTask.this.checkForCancellation();
-      //      Spannable text = mySpanner.fromHtml(input, new HtmlSpanner.CancellationCallback() {
-      //        @Override public boolean isCancelled() {
-      //          return CalculatePageNumbersTask.this.isCancelled();
-      //        }
-      //      });
-      //
-      //      CalculatePageNumbersTask.this.checkForCancellation();
-      //      imageLoader.load();
-      //
-      //      CalculatePageNumbersTask.this.checkForCancellation();
-      //      FixedPagesStrategy fixedPagesStrategy =
-      //          CalculatePageNumbersTask.this.getFixedPagesStrategy();
-      //      fixedPagesStrategy.setBookView(BookView.this);
-      //
-      //      offsetsPerSection.put(href, fixedPagesStrategy.getPageOffsets(text, true));
-      //    } catch (IOException io) {
-      //      Log.e(TAG, "CalculatePageNumbersTask: failed to load text for " + href, io);
-      //    }
-      //  }
-      //};
-      //
-      //
-      ////Do first pass: grab either cached text, or schedule a callback
-      //for (PageTurnerSpine.SpineEntry spineEntry : spine) {
-      //  checkForCancellation();
-      //  Resource res = spineEntry.getResource();
-      //
-      //  Option<Spannable> cachedText = textLoader.getCachedTextForResource(res);
-      //
-      //  if (!isEmpty(cachedText)) {
-      //    Log.d(TAG, "CalculatePageNumbersTask: Got cached text for href: " + res.getHref());
-      //
-      //    FixedPagesStrategy fixedPagesStrategy = getFixedPagesStrategy();
-      //    fixedPagesStrategy.setBookView(BookView.this);
-      //
-      //    offsetsPerSection.put(res.getHref(),
-      //        fixedPagesStrategy.getPageOffsets(cachedText.unsafeGet(), true));
-      //  } else {
-      //    Log.d(TAG, "CalculatePageNumbersTask: Registering callback for href: " + res.getHref());
-      //    textResourceLoader.registerCallback(res.getHref(), callback);
-      //  }
-      //}
-      //
-      ////Load callbacks, this will fill renderedText
-      //textResourceLoader.load();
-      //imageLoader.load();
-      //
-      ////Do a second pass and order the offsets correctly
-      //for (PageTurnerSpine.SpineEntry spineEntry : spine) {
-      //  checkForCancellation();
-      //
-      //  Resource res = spineEntry.getResource();
-      //  Option<List<Integer>> offsets = none();
-      //
-      //  //Scan for the full href
-      //  for (String href : offsetsPerSection.keySet()) {
-      //    if (href.endsWith(res.getHref())) {
-      //      offsets = some(offsetsPerSection.get(href));
-      //      break;
-      //    }
-      //  }
-      //
-      //  if (isEmpty(offsets)) {
-      //    Log.e(TAG, "CalculatePageNumbersTask: Missing text for href " + res.getHref());
-      //    return none();
-      //  }
-      //
-      //  result.add(offsets.getOrElse(new ArrayList<Integer>()));
-      //}
 
       return some(result);
     }

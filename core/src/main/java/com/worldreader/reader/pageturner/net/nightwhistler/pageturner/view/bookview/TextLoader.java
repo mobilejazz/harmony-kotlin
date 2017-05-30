@@ -42,7 +42,7 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
   boolean hasCachedImage(String href);
 
-  void storeImageInChache(String href, FastBitmapDrawable drawable);
+  void storeImageInCache(String href, FastBitmapDrawable drawable);
 
   Option<Spannable> getCachedTextForResource(Resource resource);
 

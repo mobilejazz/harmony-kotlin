@@ -90,14 +90,11 @@ public class StreamingTextLoader implements TextLoader {
   }
 
   public void registerCustomFont(String name, String href) {
-
     Log.d(TAG, "Registering custom font " + name + " with href " + href);
-
     this.fontResolver.loadEmbeddedFont(name, href);
   }
 
   public List<CompiledRule> getCSSRules(String href) {
-
     if (this.cssRules.containsKey(href)) {
       return Collections.unmodifiableList(cssRules.get(href));
     }
@@ -166,7 +163,6 @@ public class StreamingTextLoader implements TextLoader {
   }
 
   private void handleFontLoadingRule(Rule rule) {
-
     String href = null;
     String fontName = null;
 
@@ -196,7 +192,7 @@ public class StreamingTextLoader implements TextLoader {
   }
 
   private AnchorHandler registerAnchorHandler(TagNodeHandler wrapThis) {
-    AnchorHandler handler = new AnchorHandler(wrapThis);
+    final AnchorHandler handler = new AnchorHandler(wrapThis);
     anchorHandlers.add(handler);
     return handler;
   }
@@ -263,7 +259,7 @@ public class StreamingTextLoader implements TextLoader {
     return imageCache.containsKey(href);
   }
 
-  public void storeImageInChache(String href, FastBitmapDrawable drawable) {
+  public void storeImageInCache(String href, FastBitmapDrawable drawable) {
     this.imageCache.put(href, drawable);
   }
 
@@ -282,10 +278,8 @@ public class StreamingTextLoader implements TextLoader {
     return option(renderedText.get(resource.getHref()));
   }
 
-  public Spannable getText(final Resource resource,
-      HtmlSpanner.CancellationCallback cancellationCallback) throws IOException {
-
-    Option<Spannable> cached = getCachedTextForResource(resource);
+  public Spannable getText(final Resource resource, HtmlSpanner.CancellationCallback cancellationCallback) throws IOException {
+    final Option<Spannable> cached = getCachedTextForResource(resource);
 
     if (!isEmpty(cached)) {
       return cached.unsafeGet();
@@ -299,17 +293,15 @@ public class StreamingTextLoader implements TextLoader {
       });
     }
 
-    double memoryUsage = Configuration.getMemoryUsage();
-    double bitmapUsage = Configuration.getBitmapMemoryUsage();
+    final double memoryUsage = Configuration.getMemoryUsage();
+    final double bitmapUsage = Configuration.getBitmapMemoryUsage();
 
     Log.d(TAG, "Current memory usage is " + (int) (memoryUsage * 100) + "%");
     Log.d(TAG, "Current bitmap memory usage is " + (int) (bitmapUsage * 100) + "%");
 
     //If memory usage gets over the threshold, try to free up memory
     if (memoryUsage > CACHE_CLEAR_THRESHOLD || bitmapUsage > CACHE_CLEAR_THRESHOLD) {
-
       Log.d(TAG, "Clearing cached resources.");
-
       clearCachedText();
       closeLazyLoadedResources();
     }

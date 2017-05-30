@@ -19,7 +19,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -48,21 +47,22 @@ public class ResourceLoader {
   public static final String TAG = ResourceLoader.class.getSimpleName();
 
   private String fileName;
+  private List<Holder> callbacks = new ArrayList<>();
 
   public ResourceLoader(String fileName) {
     this.fileName = fileName;
   }
 
   public interface ResourceCallback {
+
     void onLoadResource(String href, InputStream stream);
   }
 
   private class Holder {
+
     String href;
     ResourceCallback callback;
   }
-
-  private List<Holder> callbacks = new ArrayList<>();
 
   public void clear() {
     this.callbacks.clear();

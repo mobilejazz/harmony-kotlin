@@ -6,7 +6,6 @@ import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
-
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -27,15 +26,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
     this.logger = logger;
   }
 
-  private static class Holder {
-
-    Holder(String href, ImageResourceCallback callback) {
-      this.href = href;
-      this.callback = callback;
-    }
-    String href;
-    ImageResourceCallback callback;
-  }  @Override public InputStream loadResource(String path) {
+  @Override public InputStream loadResource(String path) {
     StreamingResource bookResource;
     try {
       bookResource = dataSource.getBookResource(bookMetadata.getBookId(), bookMetadata, URLDecoder.decode(path));
@@ -57,7 +48,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
   @Override public void loadImageResources() {
     for (Holder holder : callbacks) {
 
-      String finalUrl = holder.href + "?size=480x800";
+      final String finalUrl = holder.href + "?size=480x800";
 
       StreamingResource streamingResource;
       try {
@@ -70,7 +61,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
         logger.d(TAG, "Book resource image is null with path: " + finalUrl);
       }
 
-      holder.callback.onLoadImageResource(null, streamingResource.getInputStream());
+      holder.callback.onLoadImageResource(finalUrl, streamingResource.getInputStream(), dataSource, bookMetadata);
     }
     callbacks.clear();
   }
@@ -79,5 +70,15 @@ public class StreamingResourcesLoader implements ResourcesLoader {
     this.callbacks.add(new Holder(resolvedHref, imageCallback));
   }
 
+  private static class Holder {
+
+    Holder(String href, ImageResourceCallback callback) {
+      this.href = href;
+      this.callback = callback;
+    }
+
+    String href;
+    ImageResourceCallback callback;
+  }
 
 }

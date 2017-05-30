@@ -56,6 +56,7 @@ import static jedi.option.Options.option;
  *
  * Optimization in case of rotation of the screen.
  */
+@Deprecated
 public class FileTextLoader implements TextLoader {
 
   public static final String TAG = FileTextLoader.class.getSimpleName();
@@ -306,7 +307,7 @@ public class FileTextLoader implements TextLoader {
     return imageCache.containsKey(href);
   }
 
-  public void storeImageInChache(String href, FastBitmapDrawable drawable) {
+  public void storeImageInCache(String href, FastBitmapDrawable drawable) {
     this.imageCache.put(href, drawable);
   }
 
@@ -325,8 +326,7 @@ public class FileTextLoader implements TextLoader {
     return option(renderedText.get(resource.getHref()));
   }
 
-  public Spannable getText(final Resource resource,
-      HtmlSpanner.CancellationCallback cancellationCallback) throws IOException {
+  public Spannable getText(final Resource resource, HtmlSpanner.CancellationCallback cancellationCallback) throws IOException {
 
     Option<Spannable> cached = getCachedTextForResource(resource);
 
@@ -350,7 +350,6 @@ public class FileTextLoader implements TextLoader {
 
     //If memory usage gets over the threshold, try to free up memory
     if (memoryUsage > CACHE_CLEAR_THRESHOLD || bitmapUsage > CACHE_CLEAR_THRESHOLD) {
-
       Log.d(TAG, "Clearing cached resources.");
 
       clearCachedText();
@@ -360,8 +359,7 @@ public class FileTextLoader implements TextLoader {
     boolean shouldClose = false;
     Resource res = resource;
 
-    //If it's already in memory, use that. If not, create a copy
-    //that we can safely close after using it
+    //If it's already in memory, use that. If not, create a copy that we can safely close after using it
     if (!resource.isInitialized()) {
       res = new Resource(this.currentFile, res.getSize(), res.getOriginalHref());
       shouldClose = true;
