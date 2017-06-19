@@ -33,6 +33,8 @@ public class Resource implements Serializable {
   protected String href;
   protected String originalHref;
   protected MediaType mediaType;
+  protected String width;
+  protected String height;
   protected String inputEncoding = Constants.CHARACTER_ENCODING;
   protected byte[] data;
 
@@ -397,6 +399,22 @@ public class Resource implements Serializable {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public String getWidth() {
+    return width;
+  }
+
+  public void setWidth(final String width) {
+    this.width = width;
+  }
+
+  public String getHeight() {
+    return height;
+  }
+
+  public void setHeight(final String height) {
+    this.height = height;
   }
 
   public String toString() {

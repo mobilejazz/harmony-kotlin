@@ -19,6 +19,7 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 import android.util.Log;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import jedi.option.Option;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
@@ -65,13 +66,18 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private ResourcesLoader resourcesLoader;
 
+  private Book book;
+  private Spine originalSpine;
+
   /**
    * Creates a new Spine from this book.
    */
   public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader) {
+    this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
     this.resourcesLoader = resourcesLoader;
+    this.originalSpine = book.getSpine();
 
     addResource(createCoverResource(book));
 
@@ -485,6 +491,14 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     //}
 
     return "<html><body>" + centerpiece + "</body></html>";
+  }
+
+  public Book getBook() {
+    return book;
+  }
+
+  public Spine getOriginalSpine() {
+    return originalSpine;
   }
 
   public static class SpineEntry {

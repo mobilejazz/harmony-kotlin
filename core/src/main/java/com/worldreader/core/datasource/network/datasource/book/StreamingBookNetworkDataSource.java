@@ -11,6 +11,5 @@ public interface StreamingBookNetworkDataSource {
   void retrieveBookMetadata(final String bookId,
       final CompletionCallback<BookMetadataEntity> callback);
 
-  StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata,
-      final String resource) throws Throwable;
+  StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata, final String resource) throws Exception;
 }

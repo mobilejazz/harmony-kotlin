@@ -366,8 +366,7 @@ public abstract class AbstractReaderFragment extends Fragment
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
-    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(),
-        new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
+    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(), new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
 
     this.bookView.addListener(this);
     this.bookView.setTextSelectionCallback(this, this);

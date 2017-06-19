@@ -26,14 +26,14 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
-import jedi.option.Option;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-
 import java.util.ArrayList;
 import java.util.List;
+import jedi.option.Option;
 
 import static java.util.Collections.emptyList;
+
 import static jedi.option.Options.*;
 
 public class FixedPagesStrategy implements PageChangeStrategy {
@@ -92,7 +92,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   @Override public void clearText() {
     this.text = new SpannableStringBuilder("");
     this.childView.setText(text);
-    this.pageOffsets = new ArrayList<Integer>();
+    this.pageOffsets = new ArrayList<>();
   }
 
   /**
@@ -107,20 +107,18 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   public List<Integer> getPageOffsets(CharSequence text, boolean includePageNumbers) {
-
     if (text == null) {
       return emptyList();
     }
 
-    List<Integer> pageOffsets = new ArrayList<Integer>();
+    final List<Integer> pageOffsets = new ArrayList<>();
 
-    TextPaint textPaint = bookView.getInnerView().getPaint();
-    int boundedWidth = bookView.getInnerView().getMeasuredWidth();
+    final TextPaint textPaint = bookView.getInnerView().getPaint();
+    final int boundedWidth = bookView.getInnerView().getMeasuredWidth();
 
     Log.d(TAG, "Page width: " + boundedWidth);
 
-    StaticLayout layout =
-        layoutFactory.create(text, textPaint, boundedWidth, bookView.getLineSpacing());
+    final StaticLayout layout = layoutFactory.create(text, textPaint, boundedWidth, bookView.getLineSpacing());
 
     if (layout == null) {
       return emptyList();
@@ -136,8 +134,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     if (includePageNumbers) {
       String bottomSpace = "0\n";
 
-      StaticLayout numLayout =
-          layoutFactory.create(bottomSpace, textPaint, boundedWidth, bookView.getLineSpacing());
+      StaticLayout numLayout = layoutFactory.create(bottomSpace, textPaint, boundedWidth, bookView.getLineSpacing());
       numLayout.draw(new Canvas());
 
       //Subtract the height needed to show page numbers, or the
@@ -199,7 +196,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public void updatePosition() {
-
     if (pageOffsets.isEmpty() || text.length() == 0 || this.pageNum == -1) {
       return;
     }
@@ -233,7 +229,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   private Option<CharSequence> getTextForPage(int page) {
-
     if (pageOffsets.size() < 1 || page < 0) {
       return none();
     } else if (page >= pageOffsets.size() - 1) {
@@ -260,13 +255,11 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public void setRelativePosition(double position) {
-
     int intPosition = (int) (this.text.length() * position);
     setPosition(intPosition);
   }
 
   public int getTopLeftPosition() {
-
     if (pageOffsets.isEmpty()) {
       return 0;
     }
@@ -279,7 +272,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   public int getProgressPosition() {
-
     if (storedPosition > 0 || this.pageOffsets.isEmpty() || this.pageNum == -1) {
       return this.storedPosition;
     }
@@ -304,7 +296,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public Option<CharSequence> getNextPageText() {
-
     if (isAtEnd()) {
       return none();
     }
@@ -321,7 +312,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public void pageDown() {
-
     this.storedPosition = -1;
 
     if (isAtEnd()) {
@@ -341,7 +331,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public void pageUp() {
-
     this.storedPosition = -1;
 
     if (isAtStart()) {

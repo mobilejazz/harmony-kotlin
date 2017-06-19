@@ -1,5 +1,6 @@
 package com.worldreader.core.domain.repository;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
@@ -16,8 +17,9 @@ public interface StreamingBookRepository {
 
   BookMetadata getBookMetadata(final String bookId);
 
-  StreamingResource getBookResource(final String id, final BookMetadata bookMetadata,
-      final String resource) throws Throwable;
+  StreamingResource getBookResource(final String id, final BookMetadata bookMetadata, final String resource) throws Exception;
+
+  ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource);
 
   StreamingResource getBookResourceFastAccess(final String id, final String resource);
 

@@ -55,8 +55,7 @@ public class StaticLayoutFactory {
     }
   }
 
-  private StaticLayout doCreateLayout(CharSequence source, TextPaint paint, int width,
-      float spacingadd) {
+  private StaticLayout doCreateLayout(CharSequence source, TextPaint paint, int width, float spacingadd) {
     return new StaticLayout(source, paint, width, Alignment.ALIGN_NORMAL, 1.0f, spacingadd, true);
   }
 }

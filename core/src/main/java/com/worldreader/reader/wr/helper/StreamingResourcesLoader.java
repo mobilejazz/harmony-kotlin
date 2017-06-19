@@ -5,6 +5,7 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -19,6 +20,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
   private StreamingBookRepository dataSource;
   private Logger logger;
   private List<Holder> callbacks = new ArrayList<>();
+  private PageTurnerSpine spine;
 
   public StreamingResourcesLoader(BookMetadata bookMetadata, StreamingBookRepository dataSource, Logger logger) {
     this.bookMetadata = bookMetadata;
@@ -47,27 +49,17 @@ public class StreamingResourcesLoader implements ResourcesLoader {
 
   @Override public void loadImageResources() {
     for (Holder holder : callbacks) {
-
-      final String finalUrl = holder.href + "?size=480x800";
-
-      StreamingResource streamingResource;
-      try {
-        streamingResource = this.dataSource.getBookResource(bookMetadata.getBookId(), bookMetadata, URLDecoder.decode(finalUrl));
-      } catch (Throwable throwable) {
-        streamingResource = StreamingResource.create(null);
-      }
-
-      if (streamingResource.getInputStream() == null) {
-        logger.d(TAG, "Book resource image is null with path: " + finalUrl);
-      }
-
-      holder.callback.onLoadImageResource(finalUrl, streamingResource.getInputStream(), dataSource, bookMetadata);
+      holder.callback.onLoadImageResource(holder.href, null, dataSource, bookMetadata);
     }
     callbacks.clear();
   }
 
   @Override public void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback) {
     this.callbacks.add(new Holder(resolvedHref, imageCallback));
+  }
+
+  @Override public void registerSpine(final PageTurnerSpine spine) {
+    this.spine = spine;
   }
 
   private static class Holder {

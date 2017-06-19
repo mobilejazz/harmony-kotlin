@@ -1,5 +1,8 @@
 package com.worldreader.core.datasource;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
@@ -14,9 +17,10 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
-
+import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import javax.inject.Inject;
-import java.io.*;
 
 public class StreamingBookDataSource implements StreamingBookRepository {
 
@@ -75,7 +79,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   @Override
   public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource)
-      throws Throwable {
+      throws Exception {
     String key = id + resource;
     StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
@@ -98,6 +102,16 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     }
 
     return streamingResourceMapper.transform(streamingResourceEntity);
+  }
+
+  static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+
+  @Override public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
+    return executorService.submit(new Callable<StreamingResource>() {
+      @Override public StreamingResource call() throws Exception {
+        return getBookResource(id, bookMetadata, resource);
+      }
+    });
   }
 
   @Override public StreamingResource getBookResourceFastAccess(String id, String resource) {

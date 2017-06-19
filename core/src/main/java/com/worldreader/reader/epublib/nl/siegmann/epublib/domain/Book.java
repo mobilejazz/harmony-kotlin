@@ -4,6 +4,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeServi
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -441,6 +442,8 @@ public class Book implements Serializable {
   private Resource opfResource;
   private Resource ncxResource;
   private Resource coverImage;
+
+  private Map<String, Resource> mediaResources = new HashMap<>();
 
   /**
    * Adds the resource to the table of contents of the book as a child section of the given

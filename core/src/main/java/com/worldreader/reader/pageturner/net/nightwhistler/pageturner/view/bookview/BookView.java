@@ -38,6 +38,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.util.Base64;
@@ -49,22 +50,24 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.worldreader.core.R;
 import com.worldreader.core.domain.model.BookMetadata;
-import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.ResourceLoader.ResourceCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper.TextUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -73,6 +76,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import jedi.functional.Command;
 import jedi.functional.Command0;
@@ -136,8 +140,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private final Drawable.Callback callback = new Drawable.Callback() {
     @Override public void invalidateDrawable(@NonNull final Drawable who) {
-      getInnerView().setVisibility(View.GONE);
-      getInnerView().setVisibility(View.VISIBLE);
+      //childView.invalidate();
+      childView.setShadowLayer(0, 0, 0, 0); // this will trigger an invalidation of the text causing
+      //childView.setVisibility(View.GONE);
+      childView.setVisibility(View.VISIBLE);
     }
 
     @Override public void scheduleDrawable(@NonNull final Drawable who, @NonNull final Runnable what, final long when) {
@@ -448,8 +454,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     restorePosition();
     strategy.updateGUI();
     progressUpdate();
-    parseEntryComplete(spine.getCurrentTitle().getOrElse(""),
-        spine.getCurrentResource().unsafeGet());
+    parseEntryComplete(spine.getCurrentTitle().getOrElse(""), spine.getCurrentResource().unsafeGet());
   }
 
   private Book initBookAndSpine() throws IOException {
@@ -491,8 +496,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     EpubReader.processNcxResource(book);
 
     this.spine = new PageTurnerSpine(this.book, this.resourcesLoader);
-
     this.spine.navigateByIndex(BookView.this.storedIndex);
+
+    this.resourcesLoader.registerSpine(this.spine);
 
     return this.book;
   }
@@ -868,118 +874,23 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       setBitmapDrawable(href, stream, dataSource, bookMetadata);
     }
 
-    private void setBitmapDrawable(final String key, final InputStream input, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-      BitmapFactory.decodeStream(input, null, options);
+    private void setBitmapDrawable(final String resource, final InputStream ignored, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
+      final String url = resource + "?size=480x800";
 
-      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(options.outWidth, options.outHeight);
+      final Map<String, Resource> map = spine.getBook().getResources().getResourceMap();
+      final Resource rawImageResource = map.get(resource);
 
-      ShapeDrawable draw = new ShapeDrawable(new RectShape());
-      draw.getPaint().setColor(Color.RED);
-      draw.setBounds(0, 0, sizes.getValue0(), sizes.getValue1());
-      draw.setIntrinsicWidth(sizes.getValue0());
-      draw.setIntrinsicHeight(sizes.getValue1());
+      final Integer width = !TextUtils.isEmpty(rawImageResource.getWidth()) ? Integer.valueOf(rawImageResource.getWidth()) : 480;
+      final Integer height = !TextUtils.isEmpty(rawImageResource.getHeight()) ? Integer.valueOf(rawImageResource.getHeight()) : 800;
 
-      Canvas canvas = new Canvas();
-      Bitmap bitmap = Bitmap.createBitmap(draw.getIntrinsicWidth(), draw.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-      canvas.setBitmap(bitmap);
-      draw.draw(canvas);
+      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(width, height);
+      final int finalWidth = sizes.getValue0();
+      final int finalHeight = sizes.getValue1();
 
-      final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap, key, dataSource, bookMetadata);
-      drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(getContext(), url, finalWidth, finalHeight, dataSource, bookMetadata);
       drawable.setCallback(callback);
 
       setImageSpan(builder, drawable, start, end);
-
-      //Bitmap bitmap = null;
-      //try {
-      //  bitmap = getBitmapOptimized(input);
-      //
-      //  if (bitmap == null || bitmap.getHeight() < 1 || bitmap.getWidth() < 1) {
-      //    return;
-      //  }
-      //} catch (OutOfMemoryError | IOException e) {
-      //  Log.e(TAG, "Could not load image", e);
-      //}
-      //
-      //if (bitmap != null) {
-      //  final FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap, key);
-      //  drawable.setBounds(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-      //
-      //  setImageSpan(builder, drawable, start, end);
-      //
-      //  Log.d(TAG, "Storing image in cache: " + storedHref);
-      //
-      //  textLoader.storeImageInCache(storedHref, drawable);
-      //}
-    }
-
-    @Nullable private Bitmap getBitmapOptimized(InputStream input) throws IOException {
-      // First, let's decode image size (to avoid having the image loaded in memory
-      final BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-
-      // Let's obtain the size of the bitmap image
-      BitmapFactory.decodeStream(input, null, options);
-
-      // Reset InputStream to beginning for decoding properly later the image
-      input.reset();
-
-      if (options.outHeight != -1 && options.outWidth != -1) {
-        final int originalWidth = options.outWidth;
-        final int originalHeight = options.outHeight;
-
-        final Triplet<Integer, Integer, Boolean> targetSizes = calculateProperImageSize(originalWidth, originalHeight);
-        final int targetWidth = targetSizes.getValue0();
-        final int targetHeight = targetSizes.getValue1();
-        final boolean isResized = targetSizes.getValue2();
-
-        if (targetHeight == 0 || targetWidth == 0) {
-          return null;
-        }
-
-        // Set properly the new sizes to be decoded
-        options.outWidth = targetWidth;
-        options.outHeight = targetHeight;
-
-        // Allow to decode the whole InputStream
-        options.inJustDecodeBounds = false;
-
-        if (!isResized) {
-          // Let's calculate insamplesize to resize the bitmap accordingly
-          options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
-
-          // Let's try to return the most optimized version for the bitmap
-          return BitmapFactory.decodeStream(input, null, options);
-        } else {
-          // Unluckily, we have to resize the Bitmap and for that we need to load Bitmap into memory :( (there's no other option
-          final Bitmap originalBitmap = BitmapFactory.decodeStream(input);
-          return Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
-        }
-      }
-
-      return null;
-    }
-
-    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-      // Raw height and width of image
-      final int height = options.outHeight;
-      final int width = options.outWidth;
-      int inSampleSize = 1;
-
-      if (height > reqHeight || width > reqWidth) {
-        final int halfHeight = height / 2;
-        final int halfWidth = width / 2;
-
-        // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-        // height and width larger than the requested height and width.
-        while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
-          inSampleSize *= 2;
-        }
-      }
-
-      return inSampleSize;
     }
   }
 
@@ -1292,6 +1203,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     public InnerView(Context context, AttributeSet attributes) {
       super(context, attributes);
+      setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     public void setBookView(BookView bookView) {
@@ -1300,10 +1212,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     public void setBlockUntil(long blockUntil) {
       this.blockUntil = blockUntil;
-    }
-
-    @Override protected void onDraw(Canvas canvas) {
-      super.onDraw(canvas);
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -1330,6 +1238,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         clearFocus();
         return null;
       }
+    }
+
+    @Override protected void onDraw(final Canvas canvas) {
+      super.onDraw(canvas);
     }
   }
 

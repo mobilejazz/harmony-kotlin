@@ -1,5 +1,6 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.epub;
 
+import android.text.TextUtils;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Guide;
@@ -41,9 +42,7 @@ public class PackageDocumentReader extends PackageDocumentBase {
   //private static final Logger log = LoggerFactory.getLogger(PackageDocumentReader.class);
   private static final String[] POSSIBLE_NCX_ITEM_IDS = new String[] { "toc", "ncx" };
 
-  public static void read(Resource packageResource, EpubReader epubReader, Book book,
-      Resources resources)
-      throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
+  public static void read(Resource packageResource, EpubReader epubReader, Book book, Resources resources) throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
     Document packageDocument = ResourceUtil.getAsDocument(packageResource);
     String packageHref = packageResource.getHref();
     //resources = fixHrefs(packageHref, resources);
@@ -55,8 +54,7 @@ public class PackageDocumentReader extends PackageDocumentBase {
     resources = readManifest(packageDocument, packageHref, epubReader, resources, idMapping);
     book.setResources(resources);
     readCover(packageDocument, book);
-    book.setMetadata(
-        PackageDocumentMetadataReader.readMetadata(packageDocument, book.getResources()));
+    book.setMetadata(PackageDocumentMetadataReader.readMetadata(packageDocument, book.getResources()));
     book.setSpine(readSpine(packageDocument, epubReader, book.getResources(), idMapping));
 
     // if we did not find a cover page then we make the first page of the book the cover page
@@ -75,32 +73,42 @@ public class PackageDocumentReader extends PackageDocumentBase {
   //	}
 
   public static void processStreamingManifest(Resources resources, Document packageDocument) {
-    Element manifestElement =
-        DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF,
-            OPFTags.manifest);
+    final Element manifestElement = DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF, OPFTags.manifest);
     if (manifestElement == null) {
       //log.error("Package document does not contain element " + OPFTags.manifest);
       return;
     }
 
-    NodeList itemElements = manifestElement.getElementsByTagNameNS(NAMESPACE_OPF, OPFTags.item);
+    final NodeList itemElements = manifestElement.getElementsByTagNameNS(NAMESPACE_OPF, OPFTags.item);
+
     for (int i = 0; i < itemElements.getLength(); i++) {
-      Element itemElement = (Element) itemElements.item(i);
-      String id = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.id);
+      final Element itemElement = (Element) itemElements.item(i);
+      final String id = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.id);
+
       String href = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.href);
       try {
         href = URLDecoder.decode(href, Constants.CHARACTER_ENCODING);
       } catch (UnsupportedEncodingException e) {
         //log.error("Problem while decoding url: " + e.getMessage());
       }
-      String mediaTypeName =
-          DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.media_type);
-      MediaType mediaType = MediatypeService.getMediaTypeByName(mediaTypeName);
+
+      final String mediaTypeName = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.media_type);
+      final MediaType mediaType = MediatypeService.getMediaTypeByName(mediaTypeName);
 
       // TODO: Check if is necessary to create special cases for different media types
-      Resource resource = new StreamingResource(id, null, href, mediaType);
-      if (resource.getMediaType() == MediatypeService.XHTML) {
+      final Resource resource = new StreamingResource(id, null, href, mediaType);
+
+      if (mediaType == MediatypeService.XHTML) {
         resource.setInputEncoding(Constants.CHARACTER_ENCODING);
+      }
+
+      if (MediatypeService.isBitmapImage(mediaType)) {
+        final String width = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.width);
+        final String height = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.height);
+        if (!TextUtils.isEmpty(width) && !TextUtils.isEmpty(height)) {
+          resource.setWidth(width);
+          resource.setHeight(height);
+        }
       }
 
       resources.add(resource);
@@ -112,39 +120,50 @@ public class PackageDocumentReader extends PackageDocumentBase {
    *
    * @return a Map with resources, with their id's as key.
    */
-  private static Resources readManifest(Document packageDocument, String packageHref,
-      EpubReader epubReader, Resources resources, Map<String, String> idMapping) {
-    Element manifestElement =
-        DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF,
-            OPFTags.manifest);
+  private static Resources readManifest(Document packageDocument, String packageHref, EpubReader epubReader, Resources resources, Map<String, String> idMapping) {
+    Element manifestElement = DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF, OPFTags.manifest);
     Resources result = new Resources();
     if (manifestElement == null) {
       //log.error("Package document does not contain element " + OPFTags.manifest);
       return result;
     }
+
     NodeList itemElements = manifestElement.getElementsByTagNameNS(NAMESPACE_OPF, OPFTags.item);
     for (int i = 0; i < itemElements.getLength(); i++) {
-      Element itemElement = (Element) itemElements.item(i);
-      String id = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.id);
+      final Element itemElement = (Element) itemElements.item(i);
+      final String id = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.id);
+
       String href = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.href);
       try {
         href = URLDecoder.decode(href, Constants.CHARACTER_ENCODING);
       } catch (UnsupportedEncodingException e) {
         //log.error(e.getMessage());
       }
-      String mediaTypeName =
-          DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.media_type);
+
+      String mediaTypeName = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.media_type);
       Resource resource = resources.remove(href);
+
       if (resource == null) {
         //log.error("resource with href '" + href + "' not found");
         continue;
+
       }
       resource.setId(id);
-      MediaType mediaType = MediatypeService.getMediaTypeByName(mediaTypeName);
+
+      final MediaType mediaType = MediatypeService.getMediaTypeByName(mediaTypeName);
       if (mediaType != null) {
         resource.setMediaType(mediaType);
+        if (MediatypeService.isBitmapImage(mediaType)) {
+          final String width = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.width);
+          final String height = DOMUtil.getAttribute(itemElement, NAMESPACE_OPF, OPFAttributes.height);
+
+          resource.setWidth(width);
+          resource.setHeight(height);
+        }
       }
+
       result.add(resource);
+
       idMapping.put(id, resource.getId());
     }
     return result;

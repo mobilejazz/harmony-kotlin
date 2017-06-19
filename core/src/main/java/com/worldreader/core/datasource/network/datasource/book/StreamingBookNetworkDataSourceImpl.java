@@ -97,7 +97,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
   }
 
   @Override public StreamingResourceEntity getBookResource(final String id,
-      final BookMetadataEntity bookMetadata, final String resource) throws Throwable {
+      final BookMetadataEntity bookMetadata, final String resource) throws Exception {
     final String resourcePath =
         bookMetadata.getRelativeContentUrl() != null ? bookMetadata.getRelativeContentUrl()
             + resource : "" + resource;
