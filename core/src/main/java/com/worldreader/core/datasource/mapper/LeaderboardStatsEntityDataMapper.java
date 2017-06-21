@@ -5,12 +5,11 @@ import com.worldreader.core.datasource.model.LeaderboardStatEntity;
 import com.worldreader.core.datasource.model.LeaderboardStatsEntity;
 import com.worldreader.core.domain.model.LeaderboardStat;
 import com.worldreader.core.domain.model.LeaderboardStats;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
-public class LeaderboardStatsEntityDataMapper
-    implements Mapper<LeaderboardStats, LeaderboardStatsEntity> {
+public class LeaderboardStatsEntityDataMapper implements Mapper<LeaderboardStats, LeaderboardStatsEntity> {
 
   private LeaderboardStatEntityDataMapper statEntityDataMapper;
 

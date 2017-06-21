@@ -10,35 +10,31 @@ import com.worldreader.core.domain.model.LeaderboardStat;
 import com.worldreader.core.domain.model.user.LeaderboardPeriod;
 import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
-
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.concurrent.*;
 
 @Singleton public class GetUserLeaderboardInteractor {
 
   private final UserRepository repository;
   private final ListeningExecutorService executorService;
 
-  @Inject public GetUserLeaderboardInteractor(UserRepository repository,
-      final ListeningExecutorService executorService) {
+  @Inject public GetUserLeaderboardInteractor(UserRepository repository, final ListeningExecutorService executorService) {
     this.repository = repository;
     this.executorService = executorService;
   }
 
-  public ListenableFuture<LeaderboardStat> execute(final LeaderboardPeriod leaderboardPeriod,
-      final Executor executor) {
+  public ListenableFuture<LeaderboardStat> execute(final LeaderboardPeriod leaderboardPeriod, final Executor executor) {
     final SettableFuture<LeaderboardStat> settableFuture = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        repository.leaderboardStats(leaderboardPeriod, new Callback<Optional<LeaderboardStat>>() {
+        repository.leaderboardStats(toRepositoryLeaderboardPeriod(leaderboardPeriod), new Callback<Optional<LeaderboardStat>>() {
           @Override public void onSuccess(Optional<LeaderboardStat> optional) {
             if (optional.isPresent()) {
               settableFuture.set(optional.get());
             } else {
-              settableFuture.setException(
-                  new UnexpectedErrorException("LeaderboardStat is not defined!"));
+              settableFuture.setException(new UnexpectedErrorException("LeaderboardStat is not defined!"));
             }
           }
 
@@ -54,6 +50,18 @@ import java.util.concurrent.*;
     });
 
     return settableFuture;
+  }
+
+  private UserRepository.LeaderboardPeriod toRepositoryLeaderboardPeriod(final LeaderboardPeriod leaderboardPeriod) {
+    switch (leaderboardPeriod) {
+      case GLOBAL:
+        default:
+        return UserRepository.LeaderboardPeriod.GLOBAL;
+      case MONTHLY:
+        return UserRepository.LeaderboardPeriod.MONTHLY;
+      case WEEKLY:
+        return UserRepository.LeaderboardPeriod.WEEKLY;
+    }
   }
 
   public ListenableFuture<LeaderboardStat> execute(LeaderboardPeriod leaderboardPeriod) {

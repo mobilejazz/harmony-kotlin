@@ -16,14 +16,6 @@ public interface BookApiService {
       @Query("opensCountry") String countryCode, @Query("language") String language,
       Callback<List<BookEntity>> callback);
 
-  @GET("/books") void searchBooksByTitle(@Query("index") int index, @Query("limit") int limit,
-      @Query("country") String country, @Query("title") String title,
-      Callback<List<BookEntity>> callback);
-
-  @GET("/books") void searchBooksByAuthor(@Query("index") int index, @Query("limit") int limit,
-      @Query("country") String country, @Query("author") String author,
-      Callback<List<BookEntity>> callback);
-
   @GET("/books/{id}/{version}") void bookDetail(@Path("id") String id,
       @Path("version") String version, @Query("country") String countryCode,
       Callback<BookEntity> callback);

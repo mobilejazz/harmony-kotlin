@@ -4,10 +4,10 @@ import com.google.common.base.Optional;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.UserReadingStatsEntity;
 import com.worldreader.core.domain.model.user.UserReadingStats;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
 
 @Singleton public class UserReadingStatsEntityToUserReadingStatsMapper
     implements Mapper<Optional<UserReadingStatsEntity>, Optional<UserReadingStats>> {
@@ -18,8 +18,7 @@ import java.util.*;
     toStatMapper = new StatEntityToStaMapper();
   }
 
-  @Override
-  public Optional<UserReadingStats> transform(final Optional<UserReadingStatsEntity> optional) {
+  @Override public Optional<UserReadingStats> transform(final Optional<UserReadingStatsEntity> optional) {
     if (!optional.isPresent()) {
       return Optional.absent();
     } else {
@@ -39,8 +38,7 @@ import java.util.*;
     }
   }
 
-  private static class StatEntityToStaMapper
-      implements Mapper<UserReadingStatsEntity.Stat, UserReadingStats.Stat> {
+  private static class StatEntityToStaMapper implements Mapper<UserReadingStatsEntity.Stat, UserReadingStats.Stat> {
 
     @Override public UserReadingStats.Stat transform(final UserReadingStatsEntity.Stat raw) {
       return new UserReadingStats.Stat(raw.getDate(), raw.getCount());
