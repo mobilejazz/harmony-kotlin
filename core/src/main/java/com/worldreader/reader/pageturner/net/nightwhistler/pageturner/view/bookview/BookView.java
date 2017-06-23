@@ -49,6 +49,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.worldreader.core.R;
+import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
@@ -877,11 +878,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     private void setBitmapDrawable(final String resource, final InputStream ignored, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
       final String url = resource + "?size=480x800";
 
-      final Map<String, Resource> map = spine.getBook().getResources().getResourceMap();
-      final Resource rawImageResource = map.get(resource);
+      final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.getImagesResources();
+      final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(resource) : null;
 
-      final Integer width = !TextUtils.isEmpty(rawImageResource.getWidth()) ? Integer.valueOf(rawImageResource.getWidth()) : 480;
-      final Integer height = !TextUtils.isEmpty(rawImageResource.getHeight()) ? Integer.valueOf(rawImageResource.getHeight()) : 800;
+      final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;
+      final Integer height = item != null && !TextUtils.isEmpty(item.height) ? Integer.valueOf(item.height) : 800;
 
       final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(width, height);
       final int finalWidth = sizes.getValue0();

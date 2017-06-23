@@ -1,6 +1,7 @@
 package com.worldreader.core.datasource.model;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /** Fake class as the response of this is not in JSON format but in XML */
 public class BookMetadataEntity {
@@ -12,6 +13,7 @@ public class BookMetadataEntity {
   private String contentOpfName;
   private String tocResourceName;
   private List<String> resources;
+  private Map<String, ContentOpfEntity.Item> imagesResources;
 
   public void setBookId(String bookId) {
     this.bookId = bookId;
@@ -53,4 +55,11 @@ public class BookMetadataEntity {
     this.resources = resources;
   }
 
+  public void setImagesResources(Map<String, ContentOpfEntity.Item> resources) {
+    this.imagesResources = resources;
+  }
+
+  public Map<String, ContentOpfEntity.Item> getImagesResources() {
+    return imagesResources;
+  }
 }
