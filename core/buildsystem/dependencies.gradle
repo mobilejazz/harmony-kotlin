@@ -7,12 +7,12 @@ rootProject.allprojects {
 
 ext {
     //Android
-    androidBuildToolsVersion = "25.0.0"
+    androidBuildToolsVersion = "25.0.3"
     androidMinSdkVersion = 16
     androidTargetSdkVersion = 25
     androidCompileSdkVersion = 25
 
-    supportLibrariesVersion = '25.1.0'
+    supportLibrariesVersion = '25.2.0'
     mjandroidloggerVersion = '0.2-SNAPSHOT'
     retrofitVersion = '1.9.0'
     guavaVersion = '20.0'
