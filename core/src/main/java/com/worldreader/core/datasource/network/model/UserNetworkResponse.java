@@ -29,6 +29,7 @@ public class UserNetworkResponse extends RepositoryModel {
   @SerializedName("updatedAt") private Date updatedAt;
   @SerializedName("milestones") private List<Integer> milestones;
   @SerializedName("favoriteCategories") private List<String> favoriteCategories;
+  @SerializedName("local_library") private String localLibrary;
 
   public UserNetworkResponse() {
   }
@@ -203,6 +204,10 @@ public class UserNetworkResponse extends RepositoryModel {
 
   public void setFavoriteCategories(List<String> favoriteCategories) {
     this.favoriteCategories = favoriteCategories;
+  }
+
+  public String getLocalLibrary() {
+    return localLibrary;
   }
 
   @Override public String getIdentifier() {

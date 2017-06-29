@@ -1,6 +1,7 @@
 package com.worldreader.core.datasource.network.general.retrofit.services;
 
 import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
+import com.worldreader.core.datasource.network.model.LocalLibraryNetworkBody;
 import com.worldreader.core.datasource.network.model.MilestonesNetworkBody;
 import com.worldreader.core.datasource.network.model.ResetPasswordNetworkBody;
 import com.worldreader.core.datasource.network.model.ResetPasswordResponse;
@@ -29,27 +30,21 @@ public interface UserApiService2 {
 
   @POST("user/register") Call<UserNetworkResponse> register(@Body UserRegisterBody body);
 
-  @POST("me/reset-password") Call<ResetPasswordResponse> resetPassword(
-      @Body ResetPasswordNetworkBody body);
+  @POST("me/reset-password") Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordNetworkBody body);
 
   @POST("user/goals") Call<UserNetworkResponse> updateGoals(@Body UserGoalsBody body);
 
   // "user/leaderboard/{period}"
-  @GET("me/leaderboard/{period}") Call<LeaderboardStatNetwork> leaderboards(
-      @Path("period") String period);
+  @GET("me/leaderboard/{period}") Call<LeaderboardStatNetwork> leaderboards(@Path("period") String period);
 
-  @POST("me/statistics") Call<UserReadingStatsNetworkResponse> readingStats(
-      @Body UserReadingStatNetworkBody body);
+  @POST("me/statistics") Call<UserReadingStatsNetworkResponse> readingStats(@Body UserReadingStatNetworkBody body);
 
   // "user/statistics-update"
-  @POST("me/statistics-update") Call<Void> updateReadingStats(
-      @Body UpdateReadingStatsNetworkBody body);
+  @POST("me/statistics-update") Call<Void> updateReadingStats(@Body UpdateReadingStatsNetworkBody body);
 
-  @POST("user/favorite_categories") Call<UserNetworkResponse> updateFavoriteCategories(
-      @Body UpdateUserFavoriteCategoriesNetworkBody body);
+  @POST("user/favorite_categories") Call<UserNetworkResponse> updateFavoriteCategories(@Body UpdateUserFavoriteCategoriesNetworkBody body);
 
-  @POST("me/add-points") Call<UserPointsNetworkResponse> updatePoints(
-      @Body UserPointsNetworkBody body);
+  @POST("me/add-points") Call<UserPointsNetworkResponse> updatePoints(@Body UserPointsNetworkBody body);
 
   @POST("user/picture") Call<Void> updateUserPicture(@Body UserPictureNetworkBody body);
 
@@ -59,6 +54,7 @@ public interface UserApiService2 {
 
   @POST("user/name") Call<Void> updateName(@Body UserNameNetworkBody body);
 
-  @POST("user/milestone") Call<UserNetworkResponse> updateMilestones(
-      @Body MilestonesNetworkBody body);
+  @POST("user/milestone") Call<UserNetworkResponse> updateMilestones(@Body MilestonesNetworkBody body);
+
+  @POST("user/local_library") Call<Void> sendLocalLibrary(@Body LocalLibraryNetworkBody body);
 }

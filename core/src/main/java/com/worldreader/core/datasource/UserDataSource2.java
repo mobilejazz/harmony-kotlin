@@ -200,6 +200,18 @@ public class UserDataSource2 implements UserRepository {
     });
   }
 
+  @Override public void sendLocalLibrary(final String localLibrary, final Callback<Boolean> callback) {
+    userNetworkDataSource.sendLocalLibrary(localLibrary, new Callback<Void>() {
+      @Override public void onSuccess(final Void aVoid) {
+        notifySuccessCallback(callback, true);
+      }
+
+      @Override public void onError(final Throwable e) {
+        notifyErrorCallback(callback, e);
+      }
+    });
+  }
+
   private void registerUserWithFacebook(Object data, final Callback<Optional<User2>> callback) {
     final String facebookToken = (String) data;
     final FacebookRegisterProviderDataNetwork facebookProviderData = new FacebookRegisterProviderDataNetwork(facebookToken);

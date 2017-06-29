@@ -29,6 +29,7 @@ public class UsersTable {
   public static final String COLUMN_UPDATED_AT = "updatedAt";
   public static final String COLUMN_MILESTONES = "milestones";
   public static final String COLUMN_FAVORITE_CATEGORIES = "favoriteCategories";
+  public static final String COLUMN_LOCAL_LIBRARY = "localLibrary";
 
   public static final String ANONYMOUS_USER_ID = "1";
 
@@ -114,6 +115,8 @@ public class UsersTable {
         + COLUMN_MILESTONES
         + " STRING, "
         + COLUMN_FAVORITE_CATEGORIES
+        + " STRING, "
+        + COLUMN_LOCAL_LIBRARY
         + " STRING"
         + ");";
   }

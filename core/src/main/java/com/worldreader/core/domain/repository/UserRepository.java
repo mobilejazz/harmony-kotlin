@@ -40,4 +40,6 @@ public interface UserRepository extends Repository<User2, RepositorySpecificatio
   void updateEmail(final String email, final Callback<Void> callback);
 
   void updateName(final String name, final Callback<Void> callback);
+
+  void sendLocalLibrary(String localLibrary, final Callback<Boolean> callback);
 }
