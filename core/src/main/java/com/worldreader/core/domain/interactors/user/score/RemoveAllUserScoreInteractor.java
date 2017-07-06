@@ -1,4 +1,4 @@
-package com.worldreader.domain.interactors.user;
+package com.worldreader.core.domain.interactors.user.score;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;

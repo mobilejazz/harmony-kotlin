@@ -11,6 +11,6 @@ public interface UserScoreRepository extends Repository<UserScore, RepositorySpe
 
   void getTotalUserScore(final String userId, final Callback<Integer> callback);
 
-  void getTotalUserScoreUnSynched(final String userId, final Callback<Integer> callback);
+  void getTotalUserScoreUnsynced(final String userId, final Callback<Integer> callback);
 
 }

@@ -1,4 +1,4 @@
-package com.worldreader.domain.interactors.user;
+package com.worldreader.core.domain.interactors.user.score;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,7 +17,6 @@ import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserScore;
 import java.util.Date;
 import java.util.concurrent.Executor;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -52,7 +51,7 @@ import javax.inject.Singleton;
         final ListenableFuture<User2> userLf = getUserInteractor.execute(spec, MoreExecutors.directExecutor());
 
         interactorHandler.addCallback(userLf, new FutureCallback<User2>() {
-          @Override public void onSuccess(@Nullable final User2 result) {
+          @Override public void onSuccess(final User2 result) {
             if (result != null) {
               final String userId = result.getId();
 
