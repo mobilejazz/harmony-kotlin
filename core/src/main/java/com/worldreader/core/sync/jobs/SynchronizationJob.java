@@ -135,13 +135,7 @@ public class SynchronizationJob extends Job {
       }
       logger.d(TAG, "Finished user books synchronization process.");
 
-      // 2 Synchronizing all the user score.
-      // TODO: 11/05/2017 Review this with when Worldreader is finished to use this use case
-      //logger.d(TAG, "Synchronizing the user scores");
-      //userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
-      //logger.d(TAG, "Finished the user scores synchronization.");
-
-      // 3 Synchronizing all the user milestones
+      // 2 Synchronizing all the user milestones
       final ListenableFuture<List<UserMilestone>> getUnsyncUserMilestonesInteractorFuture = getUnsyncUserMilestonesInteractor.execute(MoreExecutors.directExecutor());
       final List<UserMilestone> userMilestonesNotSynched = getUnsyncUserMilestonesInteractorFuture.get();
 
@@ -154,6 +148,11 @@ public class SynchronizationJob extends Job {
         final PutUserMilestonesStorageSpec putUserMilestonesStorageSpec = new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
         putAllUserMilestonesInteractor.execute(putUserMilestonesStorageSpec, userMilestonesUpdatedFromNetwork, MoreExecutors.directExecutor());
       }
+
+      // 3 Synchronizing all the user score.
+      logger.d(TAG, "Synchronizing the user scores");
+      userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
+      logger.d(TAG, "Finished the user scores synchronization.");
 
       // 4 Synchronizing all userbooklikes
       final List<UserBookLike> userBookLikes = getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikesNotSyncStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor()).get();
