@@ -158,8 +158,7 @@ public class UserScoreDataSource implements UserScoreRepository {
     });
   }
 
-  @Override
-  public void getTotalUserScoreUnSynched(final String userId, final Callback<Integer> callback) {
+  @Override public void getTotalUserScoreUnsynced(final String userId, final Callback<Integer> callback) {
     storage.getTotalUserScoreUnSynched(userId, new Callback<Integer>() {
       @Override public void onSuccess(final Integer result) {
         notifySuccessCallback(callback, result);

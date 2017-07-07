@@ -30,9 +30,9 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-
-import javax.inject.Inject;
 import java.util.List;
+import java.util.concurrent.Executor;
+import javax.inject.Inject;
 
 @PerActivity public class AfterLogInUserProcessInteractor {
 
@@ -63,6 +63,12 @@ import java.util.List;
   }
 
   public ListenableFuture<User2> execute(final User2 user) {
+    final SettableFuture<User2> future = SettableFuture.create();
+    executor.execute(getInteractorRunnable(future, user));
+    return future;
+  }
+
+  public ListenableFuture<User2> execute(final User2 user, final Executor executor) {
     final SettableFuture<User2> future = SettableFuture.create();
     executor.execute(getInteractorRunnable(future, user));
     return future;
