@@ -11,23 +11,36 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.reflect.TypeToken;
 import com.worldreader.core.application.di.annotation.PerActivity;
-import com.worldreader.core.application.di.qualifiers.WorldreaderNetworkCacheDb;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserApiEndpoint;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserServer;
-import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.datasource.deprecated.mapper.Mapper;
 import com.worldreader.core.datasource.model.LeaderboardStatEntity;
 import com.worldreader.core.datasource.model.user.LevelEntity;
 import com.worldreader.core.datasource.model.user.UserReadingStatsEntity;
 import com.worldreader.core.datasource.model.user.milestones.MilestoneEntity;
 import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
-import com.worldreader.core.datasource.storage.datasource.cache.CacheBddDataSource;
+import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
+import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
+import com.worldreader.core.datasource.spec.userbooks.PutAllUserBooksStorageSpec;
+import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
+import com.worldreader.core.domain.interactors.user.milestones.CreateUserMilestonesInteractor;
+import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesInteractor;
+import com.worldreader.core.domain.interactors.user.score.AddUserScoreInteractor;
+import com.worldreader.core.domain.interactors.user.userbooks.PutAllUserBooksInteractor;
+import com.worldreader.core.domain.interactors.user.userbookslike.PutAllUserBooksLikesInteractor;
 import com.worldreader.core.domain.model.user.User2;
+import com.worldreader.core.domain.model.user.UserBook;
+import com.worldreader.core.domain.model.user.UserBookLike;
+import com.worldreader.core.domain.model.user.UserMilestone;
+import com.worldreader.core.domain.model.user.UserScore;
 import java.io.File;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,27 +62,37 @@ import okhttp3.Response;
 
   private final HttpUrl httpUrl;
   private final OkHttpClient okHttpClient;
-  private final CacheBddDataSource dataSource;
-  private final Reachability reachability;
   private final Gson gson;
 
   private final GetUserInteractor getUserInteractor;
   private final SaveUserInteractor saveUserInteractor;
+  private final PutAllUserBooksInteractor putAllUserBooksInteractor;
+
   private final AfterLogInUserProcessInteractor afterLogInUserProcessInteractor;
 
-  @Inject public UserMigrationProcessInteractor(@WorldreaderUserApiEndpoint final HttpUrl httpUrl,
-      @WorldreaderNetworkCacheDb final CacheBddDataSource dataSource, @WorldreaderUserServer OkHttpClient okHttpClient,
-      final ListeningExecutorService executor, final Reachability reachability, final Gson gson, final GetUserInteractor getUserInteractor,
-      final SaveUserInteractor saveUserInteractor, final AfterLogInUserProcessInteractor afterLogInUserProcessInteractor) {
+  private final CreateUserMilestonesInteractor createUserMilestonesInteractor;
+  private final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
+  private final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  private final AddUserScoreInteractor addUserScoreInteractor;
+
+  @Inject public UserMigrationProcessInteractor(@WorldreaderUserApiEndpoint final HttpUrl httpUrl, @WorldreaderUserServer OkHttpClient okHttpClient,
+      final ListeningExecutorService executor, final Gson gson, final GetUserInteractor getUserInteractor,
+      final SaveUserInteractor saveUserInteractor, final PutAllUserBooksInteractor putAllUserBooksInteractor,
+      final AfterLogInUserProcessInteractor afterLogInUserProcessInteractor, final CreateUserMilestonesInteractor createUserMilestonesInteractor,
+      final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
+      final AddUserScoreInteractor addUserScoreInteractor) {
     this.httpUrl = httpUrl;
-    this.dataSource = dataSource;
     this.okHttpClient = okHttpClient;
     this.executor = executor;
-    this.reachability = reachability;
     this.gson = gson;
     this.getUserInteractor = getUserInteractor;
     this.saveUserInteractor = saveUserInteractor;
+    this.putAllUserBooksInteractor = putAllUserBooksInteractor;
     this.afterLogInUserProcessInteractor = afterLogInUserProcessInteractor;
+    this.createUserMilestonesInteractor = createUserMilestonesInteractor;
+    this.putAllUserMilestonesInteractor = putAllUserMilestonesInteractor;
+    this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
+    this.addUserScoreInteractor = addUserScoreInteractor;
   }
 
   public ListenableFuture<Boolean> execute(final Context context) {
@@ -122,7 +145,6 @@ import okhttp3.Response;
           // Check if user is anonymous
           if (user.isRegister) {
             // Convert user to JSON
-
             final UserNetworkDataMapper mapper = new UserNetworkDataMapper();
             final UserNetwork userNetwork = mapper.transformInverse(user);
 
@@ -147,7 +169,7 @@ import okhttp3.Response;
               afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor());
 
               // Clean this DB
-              //oldDBFile.delete();
+              oldDBFile.delete();
 
               // Everything went OK
               return true;
@@ -160,13 +182,63 @@ import okhttp3.Response;
             final OldUserToNewUserMapper mapper = new OldUserToNewUserMapper();
 
             // Transform old user to new one
+            user.id = Integer.valueOf(UsersTable.ANONYMOUS_USER_ID);
             final User2 user2 = mapper.transform(user);
-
-            // Generate UserBooks
 
             // Store user in DB
             final SaveUserInteractor.Type type = SaveUserInteractor.Type.ANONYMOUS;
-            saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor());
+            saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor()).get();
+
+            // Generate initial UserBooks collection with read books
+            List<UserBook> userBooks = createReadUserBooks(user);
+
+            // Update UserBooks with favorite books (or create those which weren't listed before)
+            userBooks = addFavoriteUserBooks(userBooks, user);
+
+            // Update UserBooks collections ids (or create those which weren't listed before)
+            // TODO: 11/07/2017 Should we do this one?
+
+            // Store those UserBooks
+            if (!userBooks.isEmpty()) {
+              final PutAllUserBooksStorageSpec spec = new PutAllUserBooksStorageSpec();
+              putAllUserBooksInteractor.execute(spec, userBooks, MoreExecutors.directExecutor()).get();
+            }
+
+            // Create UserBooksLikes with liked UserBooks
+            final List<UserBookLike> userBookLikes = createUserBooksLikes(userBooks);
+
+            // Store UserBooksLikes
+            if (!userBookLikes.isEmpty()) {
+              final PutAllUserBooksStorageSpec allUserBooksSpec = new PutAllUserBooksStorageSpec();
+              putAllUserBooksLikesInteractor.execute(userBookLikes, allUserBooksSpec, MoreExecutors.directExecutor()).get();
+            }
+
+            // Create all user milestones
+            List<UserMilestone> milestones =
+                createUserMilestonesInteractor.execute(UsersTable.ANONYMOUS_USER_ID, Collections.<Integer>emptyList(), MoreExecutors.directExecutor())
+                    .get();
+
+            // Store those in DB
+            final PutUserMilestonesStorageSpec spec1 = new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.ANONYMOUS);
+            putAllUserMilestonesInteractor.execute(spec1, milestones, MoreExecutors.directExecutor()).get();
+
+            // Update user milestones with latest status
+            milestones = updateUserMilestones(milestones, user);
+
+            // Store those on DB (only updated ones)
+            if (!milestones.isEmpty()) {
+              putAllUserMilestonesInteractor.execute(spec1, milestones, MoreExecutors.directExecutor()).get();
+            }
+
+            // Create UserScore
+            final UserScore score = createUserScore(user);
+
+            // Store UserScore in DB
+            final UserStorageSpecification target = UserStorageSpecification.target(UserStorageSpecification.UserTarget.ANONYMOUS);
+            addUserScoreInteractor.execute(score.getScore(), false, target, MoreExecutors.directExecutor()).get();
+
+            // Clean this DB
+            oldDBFile.delete();
           }
         } else {
           return true;
@@ -177,9 +249,127 @@ import okhttp3.Response;
     };
   }
 
-  private static class UserEntity {
+  private UserScore createUserScore(final UserEntity user) {
+    return new UserScore.Builder().setCreatedAt(new Date()).setScore(user.userScore).setUserId(UsersTable.ANONYMOUS_USER_ID).build();
+  }
 
-    public static final String ANONYMOUS_NAME = "Anonymous";
+  private List<UserBookLike> createUserBooksLikes(final List<UserBook> userBooks) {
+    final List<UserBookLike> userBookLikes = new ArrayList<>();
+    for (final UserBook userBook : userBooks) {
+      final boolean liked = userBook.isLiked();
+      if (liked) {
+        final UserBookLike like = new UserBookLike.Builder().withBookId(userBook.getBookId())
+            .withUserId(userBook.getUserId())
+            .withLiked(true)
+            .withLikedAt(new Date())
+            .build();
+        userBookLikes.add(like);
+      }
+    }
+    return userBookLikes;
+  }
+
+  private List<UserMilestone> updateUserMilestones(final List<UserMilestone> milestones, final UserEntity user) {
+    final Set<LevelEntity> levels = user.levels;
+    if (levels == null || levels.isEmpty()) {
+      return new ArrayList<>();
+    }
+
+    final List<UserMilestone> updatedMilestones = new ArrayList<>();
+
+    for (final LevelEntity level : levels) {
+      final Set<MilestoneEntity> userMilestones = level.getMilestones();
+      for (final MilestoneEntity milestone : userMilestones) {
+        final String milestoneId = String.valueOf(milestone.getId());
+
+        for (final UserMilestone userMilestone : milestones) {
+          if (milestoneId.equals(userMilestone.getMilestoneId())) {
+            final MilestoneEntity.State state = milestone.getState();
+            final int userMilestoneState;
+            switch (state) {
+              case PENDING:
+              default:
+                userMilestoneState = UserMilestone.STATE_PENDING;
+                break;
+              case IN_PROGRESS:
+                userMilestoneState = UserMilestone.STATE_IN_PROGRESS;
+                break;
+              case DONE:
+                userMilestoneState = UserMilestone.STATE_DONE;
+                break;
+            }
+
+            final UserMilestone updatedUserMilestone = new UserMilestone.Builder().withUserId(UsersTable.ANONYMOUS_USER_ID)
+                .withMilestoneId(String.valueOf(milestoneId))
+                .withState(userMilestoneState)
+                .withScore(milestone.getPoints())
+                .withCreatedAt(new Date())
+                .withUpdatedAt(new Date())
+                .build();
+            updatedMilestones.add(updatedUserMilestone);
+          }
+        }
+      }
+    }
+
+    return updatedMilestones;
+  }
+
+  private List<UserBook> createReadUserBooks(final UserEntity user) {
+    final Map<Integer, List<String>> finishedBooks = user.finishedBooks != null ? user.finishedBooks : new HashMap<Integer, List<String>>();
+    final Set<Map.Entry<Integer, List<String>>> entries = finishedBooks.entrySet();
+
+    final Set<UserBook> userBooks = new HashSet<>();
+
+    for (final Map.Entry<Integer, List<String>> entry : entries) {
+      final List<String> value = entry.getValue();
+      for (final String bookId : value) {
+        final UserBook userBook = new UserBook.Builder().setUserId(UsersTable.ANONYMOUS_USER_ID)
+            .setBookId(bookId)
+            .setCreatedAt(new Date())
+            .setUpdatedAt(new Date())
+            .setFinished(true)
+            .build();
+        userBooks.add(userBook);
+      }
+    }
+
+    return new ArrayList<>(userBooks);
+  }
+
+  private List<UserBook> addFavoriteUserBooks(final List<UserBook> books, final UserEntity user) {
+    final List<String> favoritesBooks = user.favoritesBooks != null ? user.favoritesBooks : new ArrayList<String>();
+
+    final Set<UserBook> userBooks = new HashSet<>();
+
+    for (final String bookId : favoritesBooks) {
+
+      boolean updated = false;
+      for (final UserBook userBook : books) {
+        if (userBook.getBookId().equals(bookId)) {
+          final UserBook updatedUserBook = new UserBook.Builder(userBook).setInMyBooks(true).build();
+          updated = true;
+          userBooks.add(updatedUserBook);
+          break;
+        }
+      }
+
+      if (!updated) {
+        final UserBook userBook = new UserBook.Builder().setUserId(UsersTable.ANONYMOUS_USER_ID)
+            .setBookId(bookId)
+            .setCreatedAt(new Date())
+            .setUpdatedAt(new Date())
+            .setInMyBooks(true)
+            .build();
+        userBooks.add(userBook);
+      }
+
+    }
+
+    return new ArrayList<>(userBooks);
+  }
+
+  private static class UserEntity {
 
     public int id;
     public String name;
@@ -198,12 +388,8 @@ import okhttp3.Response;
     public boolean hasChildren;
     public int minChildrenAge;
     public int maxChildrenAge;
-    public Set<LevelEntity> levels;
+    public Set<LevelEntity> levels = new LinkedHashSet<>();
     public int userScore;
-
-    public UserEntity() {
-      levels = new LinkedHashSet<>();
-    }
 
   }
 
@@ -536,7 +722,7 @@ import okhttp3.Response;
       Date birthDate;
       try {
         birthDate = ISO8601Utils.parse(raw.birthDate, new ParsePosition(0));
-      } catch (ParseException e) {
+      } catch (Exception e) {
         birthDate = new Date();
       }
 
@@ -564,7 +750,8 @@ import okhttp3.Response;
         }
       }
 
-      final User2 user2 = new User2.Builder().setName(raw.name)
+      final User2 user2 = new User2.Builder().setId(String.valueOf(raw.id))
+          .setName(raw.name)
           .setUserName(raw.username)
           .setBirthDate(birthDate)
           .setEmail(raw.email)
@@ -581,7 +768,6 @@ import okhttp3.Response;
           //.setProfileId()
           //.setReadToKidsId()
           .build();
-
 
       return user2;
     }

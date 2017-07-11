@@ -10,46 +10,40 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.Milestone;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.domain.repository.UserMilestonesRepository;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class CreateUserMilestonesInteractor {
 
   private final ListeningExecutorService executor;
   private final UserMilestonesRepository repository;
 
-  @Inject public CreateUserMilestonesInteractor(final ListeningExecutorService executor,
-      UserMilestonesRepository repository) {
+  @Inject public CreateUserMilestonesInteractor(final ListeningExecutorService executor, UserMilestonesRepository repository) {
     this.executor = executor;
     this.repository = repository;
   }
 
-  public ListenableFuture<List<UserMilestone>> execute(final String userId,
-      final List<Integer> rawMilestones) {
+  public ListenableFuture<List<UserMilestone>> execute(final String userId, final List<Integer> rawMilestones) {
     final SettableFuture<List<UserMilestone>> future = SettableFuture.create();
     executor.execute(getInteractorRunnable(future, userId, rawMilestones));
     return future;
   }
 
-  public ListenableFuture<List<UserMilestone>> execute(final String userId,
-      final List<Integer> rawMilestones, final Executor executor) {
+  public ListenableFuture<List<UserMilestone>> execute(final String userId, final List<Integer> rawMilestones, final Executor executor) {
     final SettableFuture<List<UserMilestone>> future = SettableFuture.create();
     executor.execute(getInteractorRunnable(future, userId, rawMilestones));
     return future;
   }
 
-  private Runnable getInteractorRunnable(final SettableFuture<List<UserMilestone>> future,
-      final String userId, final List<Integer> rawMilestones) {
+  private Runnable getInteractorRunnable(final SettableFuture<List<UserMilestone>> future, final String userId, final List<Integer> rawMilestones) {
     return new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         Preconditions.checkNotNull(rawMilestones, "rawMilestones == null");
-        final List<UserMilestone> userMilestones =
-            Lists.newArrayListWithCapacity(rawMilestones.size());
+        final List<UserMilestone> userMilestones = Lists.newArrayListWithCapacity(rawMilestones.size());
         repository.getAllUserMilestones(new Callback<Set<Milestone>>() {
           @Override public void onSuccess(final Set<Milestone> milestones) {
             for (final Milestone milestone : milestones) {
@@ -65,6 +59,10 @@ import java.util.concurrent.Executor;
             future.set(userMilestones);
           }
 
+          @Override public void onError(final Throwable e) {
+            future.setException(e);
+          }
+
           private boolean isSynced(final int id, final List<Integer> rawMilestones) {
             for (final Integer rawMilestone : rawMilestones) {
               if (id == rawMilestone) {
@@ -72,10 +70,6 @@ import java.util.concurrent.Executor;
               }
             }
             return false;
-          }
-
-          @Override public void onError(final Throwable e) {
-            future.setException(e);
           }
         });
       }

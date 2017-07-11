@@ -36,20 +36,25 @@ import javax.inject.Singleton;
     this.interactorHandler = interactorHandler;
   }
 
+  public ListenableFuture<UserScore> execute(final int amount) {
+    return execute(amount, executorService);
+  }
+
   public ListenableFuture<UserScore> execute(final int amount, Executor executor) {
     return execute(amount, false, executor);
   }
 
   public ListenableFuture<UserScore> execute(final int amount, final boolean synced, Executor executor) {
-    final SettableFuture<UserScore> settableFuture = SettableFuture.create();
+    final UserStorageSpecification spec = UserStorageSpecification.target(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
+    return execute(amount, synced, spec, executor);
+  }
 
+  public ListenableFuture<UserScore> execute(final int amount, final boolean synced, final UserStorageSpecification spec, Executor executor) {
+    final SettableFuture<UserScore> settableFuture = SettableFuture.create();
+    
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-
-        final UserStorageSpecification spec =
-            UserStorageSpecification.target(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
         final ListenableFuture<User2> userLf = getUserInteractor.execute(spec, MoreExecutors.directExecutor());
-
         interactorHandler.addCallback(userLf, new FutureCallback<User2>() {
           @Override public void onSuccess(final User2 result) {
             if (result != null) {
@@ -93,9 +98,5 @@ import javax.inject.Singleton;
     });
 
     return settableFuture;
-  }
-
-  public ListenableFuture<UserScore> execute(final int amount) {
-    return execute(amount, executorService);
   }
 }
