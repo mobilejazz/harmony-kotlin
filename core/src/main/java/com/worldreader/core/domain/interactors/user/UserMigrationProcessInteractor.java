@@ -54,6 +54,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// TODO: 12/07/2017 Review expired token
 @PerActivity public class UserMigrationProcessInteractor {
 
   private static final String OLD_DB_NAME = "app.worldreader.cache.db";
@@ -163,10 +164,10 @@ import okhttp3.Response;
 
               // Store user in DB
               final SaveUserInteractor.Type type = SaveUserInteractor.Type.LOGGED_IN;
-              saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor());
+              saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor()).get();
 
               // Kickstart synchronization process
-              afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor());
+              afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor()).get();
 
               // Clean this DB
               oldDBFile.delete();
@@ -194,9 +195,6 @@ import okhttp3.Response;
 
             // Update UserBooks with favorite books (or create those which weren't listed before)
             userBooks = addFavoriteUserBooks(userBooks, user);
-
-            // Update UserBooks collections ids (or create those which weren't listed before)
-            // TODO: 11/07/2017 Should we do this one?
 
             // Store those UserBooks
             if (!userBooks.isEmpty()) {
