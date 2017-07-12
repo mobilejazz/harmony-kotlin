@@ -79,7 +79,7 @@ public class WorldreaderOAuthTokenInterceptor2 implements Interceptor {
     Request.Builder newRequestBuilder = originalRequest.newBuilder();
     String token = "";
     if (applicationTokenRequest) {
-      final OAuthResponse oAuthResponse = repository.applicationToken();
+      final OAuthResponse oAuthResponse = repository.applicationToken(); // TODO: 12/07/2017 Review when an IllegalTokenException is thrown, esponse get hanged
       if (oAuthResponse != null) {
         token = oAuthResponse.getAccessToken();
       }
