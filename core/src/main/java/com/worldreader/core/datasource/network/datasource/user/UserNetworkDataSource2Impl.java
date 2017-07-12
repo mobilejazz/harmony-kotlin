@@ -31,6 +31,8 @@ import com.worldreader.core.datasource.network.model.UserGoogleRegisterBody;
 import com.worldreader.core.datasource.network.model.UserNameNetworkBody;
 import com.worldreader.core.datasource.network.model.UserNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserPictureNetworkBody;
+import com.worldreader.core.datasource.network.model.UserPointsNetworkBody;
+import com.worldreader.core.datasource.network.model.UserPointsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserReadingStatNetworkBody;
 import com.worldreader.core.datasource.network.model.UserReadingStatsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserRegisterBody;
@@ -347,24 +349,6 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
       final ErrorCore<?> errorCore = mapToErrorCore(e);
       notifyErrorResponse(callback, errorCore.getCause());
     }
-  }
-
-  @Override public void updatePoints(final int points, final Callback<Optional<Boolean>> callback) {
-    //final UserPointsNetworkBody body = new UserPointsNetworkBody(points);
-    //try {
-    //  final Response<Void> response = apiService.updatePoints(body).execute();
-    //  final boolean successful = response.isSuccessful();
-    //  if (successful) {
-    //    notifySuccessResponse(callback, Optional.of(true));
-    //  } else {
-    //    final Retrofit2Error httpError = Retrofit2Error.httpError(response);
-    //    final ErrorCore<?> errorCore = mapToErrorCore(httpError);
-    //    notifyErrorResponse(callback, errorCore.getCause());
-    //  }
-    //} catch (IOException e) {
-    //  final ErrorCore<?> errorCore = mapToErrorCore(e);
-    //  notifyErrorResponse(callback, errorCore.getCause());
-    //}
   }
 
   @Override

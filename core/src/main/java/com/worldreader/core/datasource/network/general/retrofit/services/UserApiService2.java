@@ -13,8 +13,6 @@ import com.worldreader.core.datasource.network.model.UserGoalsBody;
 import com.worldreader.core.datasource.network.model.UserNameNetworkBody;
 import com.worldreader.core.datasource.network.model.UserNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserPictureNetworkBody;
-import com.worldreader.core.datasource.network.model.UserPointsNetworkBody;
-import com.worldreader.core.datasource.network.model.UserPointsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserReadingStatNetworkBody;
 import com.worldreader.core.datasource.network.model.UserReadingStatsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserRegisterBody;
@@ -43,8 +41,6 @@ public interface UserApiService2 {
   @POST("me/statistics-update") Call<Void> updateReadingStats(@Body UpdateReadingStatsNetworkBody body);
 
   @POST("user/favorite_categories") Call<UserNetworkResponse> updateFavoriteCategories(@Body UpdateUserFavoriteCategoriesNetworkBody body);
-
-  @POST("me/add-points") Call<UserPointsNetworkResponse> updatePoints(@Body UserPointsNetworkBody body);
 
   @POST("user/picture") Call<Void> updateUserPicture(@Body UserPictureNetworkBody body);
 

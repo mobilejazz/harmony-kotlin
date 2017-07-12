@@ -31,8 +31,6 @@ public interface UserRepository extends Repository<User2, RepositorySpecificatio
 
   void updateReadingStats(String bookId, int readPages, Date when, Callback<Optional<Boolean>> callback);
 
-  void updatePoints(int points, Callback<Optional<Boolean>> callback);
-
   void updateProfilePicture(final String profilePictureId, final Callback<Void> callback);
 
   void updateBirthdate(final Date birthDate, final Callback<Void> callback);

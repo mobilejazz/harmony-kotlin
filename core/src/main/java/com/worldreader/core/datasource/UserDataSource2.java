@@ -140,18 +140,6 @@ public class UserDataSource2 implements UserRepository {
     });
   }
 
-  @NetworkOnly @Override public void updatePoints(final int points, final Callback<Optional<Boolean>> callback) {
-    userNetworkDataSource.updatePoints(points, new Callback<Optional<Boolean>>() {
-      @Override public void onSuccess(final Optional<Boolean> optional) {
-        notifySuccessCallback(callback, optional);
-      }
-
-      @Override public void onError(final Throwable e) {
-        notifyErrorCallback(callback, e);
-      }
-    });
-  }
-
   @Override public void updateProfilePicture(final String profilePictureId, final Callback<Void> callback) {
     userNetworkDataSource.updateProfilePicture(profilePictureId, new Callback<Void>() {
       @Override public void onSuccess(final Void aVoid) {
