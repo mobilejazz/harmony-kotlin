@@ -13,35 +13,33 @@ import com.worldreader.core.datasource.storage.datasource.score.UserScoreStorage
 import com.worldreader.core.domain.model.user.UserScore;
 import com.worldreader.core.domain.repository.UserScoreRepository;
 import com.worldreader.core.error.score.UserScoreStoragePutOperationFailException;
-
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
 public class UserScoreDataSource implements UserScoreRepository {
 
   private final Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> network;
   private final UserScoreStorageDataSource storage;
+
   private final Mapper<Optional<UserScore>, Optional<UserScoreEntity>> toUserScoreEntity;
   private final Mapper<Optional<UserScoreEntity>, Optional<UserScore>> toUserScore;
+  private final Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScore>>> toListUserScore;
 
-  @Inject public UserScoreDataSource(
-      final Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> network,
-      final UserScoreStorageDataSource storage,
-      final Mapper<Optional<UserScore>, Optional<UserScoreEntity>> toUserScoreEntity,
-      final Mapper<Optional<UserScoreEntity>, Optional<UserScore>> toUserScore) {
+  @Inject public UserScoreDataSource(final Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> network,
+      final UserScoreStorageDataSource storage, final Mapper<Optional<UserScore>, Optional<UserScoreEntity>> toUserScoreEntity,
+      final Mapper<Optional<UserScoreEntity>, Optional<UserScore>> toUserScore,
+      Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScore>>> toListUserScore) {
     this.network = network;
     this.storage = storage;
     this.toUserScoreEntity = toUserScoreEntity;
+    this.toListUserScore = toListUserScore;
     this.toUserScore = toUserScore;
   }
 
-  @Override public void get(final RepositorySpecification specification,
-      final Callback<Optional<UserScore>> callback) {
-    Preconditions.checkArgument(specification instanceof UserScoreStorageSpecification,
-        "get() - specification not supported");
+  @Override public void get(final RepositorySpecification specification, final Callback<Optional<UserScore>> callback) {
+    Preconditions.checkArgument(specification instanceof UserScoreStorageSpecification, "get() - specification not supported");
 
-    final UserScoreStorageSpecification storageSpecification =
-        (UserScoreStorageSpecification) specification;
+    final UserScoreStorageSpecification storageSpecification = (UserScoreStorageSpecification) specification;
 
     storage.get(storageSpecification, new Callback<Optional<UserScoreEntity>>() {
       @Override public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
@@ -56,52 +54,41 @@ public class UserScoreDataSource implements UserScoreRepository {
     });
   }
 
-  @Override public void getAll(final RepositorySpecification specification,
-      final Callback<Optional<List<UserScore>>> callback) {
+  @Override public void getAll(final RepositorySpecification specification, final Callback<Optional<List<UserScore>>> callback) {
     throw new UnsupportedOperationException("getAll() not supported");
   }
 
-  @Override public void put(final UserScore userScore, final RepositorySpecification specification,
-      final Callback<Optional<UserScore>> callback) {
-    final Optional<UserScoreEntity> userScoreEntityOp =
-        toUserScoreEntity.transform(Optional.fromNullable(userScore));
+  @Override public void put(final UserScore userScore, final RepositorySpecification specification, final Callback<Optional<UserScore>> callback) {
+    final Optional<UserScoreEntity> userScoreEntityOp = toUserScoreEntity.transform(Optional.fromNullable(userScore));
 
     if (userScoreEntityOp.isPresent()) {
       if (specification instanceof UserScoreStorageSpecification) {
-        final UserScoreStorageSpecification scoreStorageSpecification =
-            (UserScoreStorageSpecification) specification;
+        final UserScoreStorageSpecification scoreStorageSpecification = (UserScoreStorageSpecification) specification;
 
-        storage.put(userScoreEntityOp.get(), scoreStorageSpecification,
-            new Callback<Optional<UserScoreEntity>>() {
-              @Override
-              public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
-                final Optional<UserScore> userScoreOp =
-                    toUserScore.transform(userScoreEntityOptional);
+        storage.put(userScoreEntityOp.get(), scoreStorageSpecification, new Callback<Optional<UserScoreEntity>>() {
+          @Override public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
+            final Optional<UserScore> userScoreOp = toUserScore.transform(userScoreEntityOptional);
 
-                notifySuccessCallback(callback, userScoreOp);
-              }
+            notifySuccessCallback(callback, userScoreOp);
+          }
 
-              @Override public void onError(final Throwable e) {
-                notifyErrorCallback(callback, new UserScoreStoragePutOperationFailException());
-              }
-            });
+          @Override public void onError(final Throwable e) {
+            notifyErrorCallback(callback, new UserScoreStoragePutOperationFailException());
+          }
+        });
       } else if (specification instanceof UserScoreNetworkSpecification) {
-        final UserScoreNetworkSpecification networkSpecification =
-            (UserScoreNetworkSpecification) specification;
-        network.put(userScoreEntityOp.get(), networkSpecification,
-            new Callback<Optional<UserScoreEntity>>() {
-              @Override
-              public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
-                final Optional<UserScore> userScoreOp =
-                    toUserScore.transform(userScoreEntityOptional);
+        final UserScoreNetworkSpecification networkSpecification = (UserScoreNetworkSpecification) specification;
+        network.put(userScoreEntityOp.get(), networkSpecification, new Callback<Optional<UserScoreEntity>>() {
+          @Override public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
+            final Optional<UserScore> userScoreOp = toUserScore.transform(userScoreEntityOptional);
 
-                notifySuccessCallback(callback, userScoreOp);
-              }
+            notifySuccessCallback(callback, userScoreOp);
+          }
 
-              @Override public void onError(final Throwable e) {
-                notifyErrorCallback(callback, e);
-              }
-            });
+          @Override public void onError(final Throwable e) {
+            notifyErrorCallback(callback, e);
+          }
+        });
       } else {
         throw new UnsupportedOperationException("put() - specification not supported!");
       }
@@ -110,31 +97,24 @@ public class UserScoreDataSource implements UserScoreRepository {
     }
   }
 
-  @Override
-  public void putAll(final List<UserScore> userScores, final RepositorySpecification specification,
+  @Override public void putAll(final List<UserScore> userScores, final RepositorySpecification specification,
       final Callback<Optional<List<UserScore>>> callback) {
     throw new UnsupportedOperationException("putAll() not supported");
   }
 
-  @Override
-  public void remove(final UserScore userScore, final RepositorySpecification specification,
-      final Callback<Optional<UserScore>> callback) {
+  @Override public void remove(final UserScore userScore, final RepositorySpecification specification, final Callback<Optional<UserScore>> callback) {
     throw new UnsupportedOperationException("remove() not supported");
   }
 
-  @Override public void removeAll(final List<UserScore> userScores,
-      final RepositorySpecification specification,
+  @Override public void removeAll(final List<UserScore> userScores, final RepositorySpecification specification,
       final Callback<Optional<List<UserScore>>> callback) {
     throw new UnsupportedOperationException("removeAll() not supported");
   }
 
-  @Override public void removeAll(final RepositorySpecification specification,
-      final Callback<Void> callback) {
-    Preconditions.checkArgument(specification instanceof UserScoreStorageSpecification,
-        "removeAll() - specification not supported");
+  @Override public void removeAll(final RepositorySpecification specification, final Callback<Void> callback) {
+    Preconditions.checkArgument(specification instanceof UserScoreStorageSpecification, "removeAll() - specification not supported");
 
-    final UserScoreStorageSpecification storageSpecification =
-        (UserScoreStorageSpecification) specification;
+    final UserScoreStorageSpecification storageSpecification = (UserScoreStorageSpecification) specification;
     storage.removeAll(storageSpecification, new Callback<Void>() {
       @Override public void onSuccess(final Void result) {
         notifySuccessCallback(callback, result);
@@ -158,8 +138,21 @@ public class UserScoreDataSource implements UserScoreRepository {
     });
   }
 
+  @Override public void getBookPagesUserScore(final String userId, final Callback<List<UserScore>> callback) {
+    storage.getBookPagesUserScore(userId, new Callback<List<UserScoreEntity>>() {
+      @Override public void onSuccess(final List<UserScoreEntity> entities) {
+        final List<UserScore> userScores = toListUserScore.transform(Optional.fromNullable(entities)).get();
+        notifySuccessCallback(callback, userScores);
+      }
+
+      @Override public void onError(final Throwable e) {
+        notifyErrorCallback(callback, e);
+      }
+    });
+  }
+
   @Override public void getTotalUserScoreUnsynced(final String userId, final Callback<Integer> callback) {
-    storage.getTotalUserScoreUnSynched(userId, new Callback<Integer>() {
+    storage.getTotalUserScoreUnSynced(userId, new Callback<Integer>() {
       @Override public void onSuccess(final Integer result) {
         notifySuccessCallback(callback, result);
       }

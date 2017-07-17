@@ -11,10 +11,8 @@ import java.util.*;
 
   @SerializedName("statistics") private final List<NetworkStat> networkStats;
 
-  public static UpdateReadingStatsNetworkBody create(final String bookId, final int pagesRead,
-      final Date date) {
-    List<NetworkStat> stats =
-        Lists.newArrayList(new NetworkStat(date, bookId, pagesRead, pagesRead /* points */));
+  public static UpdateReadingStatsNetworkBody create(final String bookId, final int pagesRead, final Date date) {
+    List<NetworkStat> stats = Lists.newArrayList(new NetworkStat(date, bookId, pagesRead, 0)); // By default points are specified by pages
     return new UpdateReadingStatsNetworkBody(stats);
   }
 

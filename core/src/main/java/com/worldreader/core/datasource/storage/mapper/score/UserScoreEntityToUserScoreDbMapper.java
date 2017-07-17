@@ -22,8 +22,11 @@ public class UserScoreEntityToUserScoreDbMapper
   public Optional<UserScoreDb> transform(final Optional<UserScoreEntity> userScoreEntityOptional) {
     if (userScoreEntityOptional.isPresent()) {
       final UserScoreEntity raw = userScoreEntityOptional.get();
-      final UserScoreDb userScoreDb = new UserScoreDb.Builder().setUserId(raw.getUserId())
+      final UserScoreDb userScoreDb = new UserScoreDb.Builder()
+          .setUserId(raw.getUserId())
+          .setBookId(raw.getBookId())
           .setScore(raw.getScore())
+          .setPages(raw.getPages())
           .setCreatedAt(getIsoDate(raw.getCreatedAt()))
           .setUpdatedAt(getIsoDate(raw.getUpdatedAt()))
           .setSync(raw.isSync())

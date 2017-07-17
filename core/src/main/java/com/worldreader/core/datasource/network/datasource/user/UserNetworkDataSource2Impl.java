@@ -31,8 +31,6 @@ import com.worldreader.core.datasource.network.model.UserGoogleRegisterBody;
 import com.worldreader.core.datasource.network.model.UserNameNetworkBody;
 import com.worldreader.core.datasource.network.model.UserNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserPictureNetworkBody;
-import com.worldreader.core.datasource.network.model.UserPointsNetworkBody;
-import com.worldreader.core.datasource.network.model.UserPointsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserReadingStatNetworkBody;
 import com.worldreader.core.datasource.network.model.UserReadingStatsNetworkResponse;
 import com.worldreader.core.datasource.network.model.UserRegisterBody;
@@ -333,8 +331,7 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
   @Override public void updateReadingStats(String bookId, int readPages, Date when,
       Callback<Optional<Boolean>> callback) {
-    final UpdateReadingStatsNetworkBody body =
-        UpdateReadingStatsNetworkBody.create(bookId, readPages, when);
+    final UpdateReadingStatsNetworkBody body = UpdateReadingStatsNetworkBody.create(bookId, readPages, when);
     try {
       final Response<Void> response = apiService.updateReadingStats(body).execute();
       final boolean successful = response.isSuccessful();
