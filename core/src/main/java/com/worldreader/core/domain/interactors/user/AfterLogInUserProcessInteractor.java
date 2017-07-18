@@ -1,15 +1,12 @@
 package com.worldreader.core.domain.interactors.user;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.AsyncFunction;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
@@ -36,6 +33,8 @@ import javax.inject.Inject;
 
 @PerActivity public class AfterLogInUserProcessInteractor {
 
+  private static final String TAG = AfterLogInUserProcessInteractor.class.getSimpleName();
+
   private final ListeningExecutorService executor;
 
   private final GetAllUserBookInteractor getUserBooksInteractor;
@@ -47,11 +46,14 @@ import javax.inject.Inject;
   private final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
   private final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
 
+  private final Logger logger;
+
   @Inject public AfterLogInUserProcessInteractor(final ListeningExecutorService executor, final GetAllUserBookInteractor getUserBooksInteractor,
       final PutAllUserBooksInteractor putAllUserBooksInteractor, final CreateUserMilestonesInteractor createUserMilestonesInteractor,
       final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor,
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
-      final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor) {
+      final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
+      final Logger logger) {
     this.executor = executor;
     this.getUserBooksInteractor = getUserBooksInteractor;
     this.putAllUserBooksInteractor = putAllUserBooksInteractor;
@@ -60,6 +62,7 @@ import javax.inject.Inject;
     this.userScoreSynchronizationProcessInteractor = userScoreSynchronizationProcessInteractor;
     this.getAllUserBookLikesInteractor = getAllUserBookLikesInteractor;
     this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
+    this.logger = logger;
   }
 
   public ListenableFuture<User2> execute(final User2 user) {
@@ -74,81 +77,57 @@ import javax.inject.Inject;
     return future;
   }
 
-  private Runnable getInteractorRunnable(final SettableFuture<User2> future, final User2 user) {
+  private Runnable getInteractorRunnable(@NonNull final SettableFuture<User2> future, final User2 user) {
     return new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         // First, get user userbooks from Network
-        final ListenableFuture<Optional<List<UserBook>>> getUserBooksFuture =
-            getUserBooksInteractor.execute(new GetAllUserBooksNetworkSpec(), MoreExecutors.directExecutor());
+        logger.d(TAG, "Obtaining UserBooks from network");
+        final Optional<List<UserBook>> userBooksOptional =
+            getUserBooksInteractor.execute(new GetAllUserBooksNetworkSpec(), MoreExecutors.directExecutor()).get();
 
         // Second, store network userbooks in storage
-        final ListenableFuture<Optional<List<UserBook>>> saveUserBooksFuture =
-            Futures.transformAsync(getUserBooksFuture, new AsyncFunction<Optional<List<UserBook>>, Optional<List<UserBook>>>() {
-              @Override public ListenableFuture<Optional<List<UserBook>>> apply(@NonNull final Optional<List<UserBook>> optional) throws Exception {
-                if (optional.isPresent()) {
-                  final PutAllUserBooksStorageSpec spec = new PutAllUserBooksStorageSpec();
-                  final List<UserBook> userBooks = optional.get();
-                  return putAllUserBooksInteractor.execute(spec, userBooks, MoreExecutors.directExecutor());
-                } else {
-                  return Futures.immediateFuture(Optional.<List<UserBook>>absent());
-                }
-              }
-            }, MoreExecutors.directExecutor());
+        if (userBooksOptional.isPresent()) {
+          final List<UserBook> userBooks = userBooksOptional.get();
+          if (!userBooks.isEmpty()) {
+            logger.d(TAG, "Userbooks from network downloaded. Storing those in storage.");
+            final PutAllUserBooksStorageSpec spec = new PutAllUserBooksStorageSpec();
+            putAllUserBooksInteractor.execute(spec, userBooks, MoreExecutors.directExecutor()).get();
+          }
+        }
 
         // Third, let's create UserMilestones from current user
-        final ListenableFuture<List<UserMilestone>> createUserMilestonesFuture =
-            Futures.transformAsync(saveUserBooksFuture, new AsyncFunction<Optional<List<UserBook>>, List<UserMilestone>>() {
-              @Override public ListenableFuture<List<UserMilestone>> apply(@Nullable final Optional<List<UserBook>> input) throws Exception {
-                final String id = user.getId();
-                final List<Integer> milestones = user.getMilestones();
-                return createUserMilestonesInteractor.execute(id, milestones);
-              }
-            }, MoreExecutors.directExecutor());
+        logger.d(TAG, "Creating milestones for user");
+        final String id = user.getId();
+        final List<Integer> milestones = user.getMilestones();
+        final List<UserMilestone> userMilestones = createUserMilestonesInteractor.execute(id, milestones, MoreExecutors.directExecutor()).get();
 
         // Fourth, store, created UserMilestones from current user
-        final ListenableFuture<Optional<List<UserMilestone>>> storeUserMilestonesFuture =
-            Futures.transformAsync(createUserMilestonesFuture, new AsyncFunction<List<UserMilestone>, Optional<List<UserMilestone>>>() {
-              @Override public ListenableFuture<Optional<List<UserMilestone>>> apply(@Nullable final List<UserMilestone> input) throws Exception {
-                final PutUserMilestonesStorageSpec spec = new PutUserMilestonesStorageSpec();
-                return putAllUserMilestonesInteractor.execute(spec, input, MoreExecutors.directExecutor());
-              }
-            }, MoreExecutors.directExecutor());
+        logger.d(TAG, "Storing milestones in storage");
+        final PutUserMilestonesStorageSpec spec = new PutUserMilestonesStorageSpec();
+        putAllUserMilestonesInteractor.execute(spec, userMilestones, MoreExecutors.directExecutor()).get();
 
         // Fifth, store user score generate from current user
-        final ListenableFuture<Boolean> userSynchronizationProcessFuture =
-            Futures.transformAsync(storeUserMilestonesFuture, new AsyncFunction<Optional<List<UserMilestone>>, Boolean>() {
-              @Override public ListenableFuture<Boolean> apply(@Nullable final Optional<List<UserMilestone>> input) throws Exception {
-                return userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
-              }
-            }, MoreExecutors.directExecutor());
+        logger.d(TAG, "Calling user score synchronization process");
+        userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor()).get();
 
         // Seventh, obtain userbooklikes from server
-        final ListenableFuture<List<UserBookLike>> obtainUserBookLikesFuture =
-            Futures.transformAsync(userSynchronizationProcessFuture, new AsyncFunction<Boolean, List<UserBookLike>>() {
-              @Override public ListenableFuture<List<UserBookLike>> apply(final Boolean input) throws Exception {
-                return getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikeNetworkSpec());
-              }
-            }, MoreExecutors.directExecutor());
+        logger.d(TAG, "Obtaining UserBooksLikes from server");
+        final List<UserBookLike> userBookLikes =
+            getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikeNetworkSpec(), MoreExecutors.directExecutor()).get();
 
         // Eight, store those into db
-        final ListenableFuture<List<UserBookLike>> storeUserBookLikesFuture =
-            Futures.transformAsync(obtainUserBookLikesFuture, new AsyncFunction<List<UserBookLike>, List<UserBookLike>>() {
-              @Override public ListenableFuture<List<UserBookLike>> apply(final List<UserBookLike> input) throws Exception {
-                return putAllUserBooksLikesInteractor.execute(input,
-                    new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN));
-              }
-            });
+        logger.d(TAG, "Storing UserBooksLikes in storage");
+        final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
+            new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+        putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec, MoreExecutors.directExecutor()).get();
 
-        Futures.addCallback(storeUserBookLikesFuture, new FutureCallback<List<UserBookLike>>() {
-          @Override public void onSuccess(final List<UserBookLike> result) {
-            WorldreaderJobCreator.scheduleAllJobs();
-            future.set(user);
-          }
+        // Nine, schedule jobs
+        logger.d(TAG, "Scheduling JobManager jobs");
+        WorldreaderJobCreator.scheduleAllJobs();
 
-          @Override public void onFailure(final Throwable t) {
-            future.setException(t);
-          }
-        });
+        // Ten, finish procedure
+        logger.d(TAG, "Finished AfterLoginUserProcess");
+        future.set(user);
       }
 
       @Override protected void onExceptionThrown(final Throwable t) {
