@@ -215,6 +215,7 @@ public class SynchronizationJob extends Job {
   public static void cancelJob() {
     if (jobId > 0) {
       JobManager.instance().cancel(jobId);
+      jobId = -1;
     }
   }
 
