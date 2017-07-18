@@ -11,7 +11,7 @@ public class UserScoreTable {
   public static final String COLUMN_SCORE_ID = "scoreId";
   public static final String COLUMN_SCORE = "score";
   public static final String COLUMN_PAGES = "pages";
-  public static final String COLUMN_SYNCHRONIZED = "synchronized";
+  public static final String COLUMN_SYNCHRONIZED = "sync";
   public static final String COLUMN_CREATED_AT = "createdAt";
   public static final String COLUMN_UPDATED_AT = "updatedAt";
 
