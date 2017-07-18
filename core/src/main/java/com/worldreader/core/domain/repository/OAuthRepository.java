@@ -6,7 +6,7 @@ public interface OAuthRepository {
 
   OAuthResponse applicationToken();
 
-  OAuthResponse userToken();
+  OAuthResponse userToken() throws IllegalStateException;
 
   boolean login(String username, String password);
 
