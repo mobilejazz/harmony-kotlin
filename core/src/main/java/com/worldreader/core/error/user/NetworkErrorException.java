@@ -11,18 +11,15 @@ public class NetworkErrorException extends DataSourceException {
       @Override public String getErrorCause() {
         return "Network error exception occurred!";
       }
-    },
-    CONVERSION {
+    }, CONVERSION {
       @Override public String getErrorCause() {
         return "Conversion error exception occurred!";
       }
-    },
-    HTTP {
+    }, HTTP {
       @Override public String getErrorCause() {
         return "HTTP exception error occurred!";
       }
-    },
-    UNEXPECTED {
+    }, UNEXPECTED {
       @Override public String getErrorCause() {
         return "UNEXPECTED error ocurred!";
       }

@@ -2,9 +2,9 @@ package com.worldreader.core.datasource.network.general.retrofit.adapter;
 
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
-import com.worldreader.core.common.deprecated.error.exception.NetworkErrorException;
 import com.worldreader.core.datasource.network.exceptions.NetworkErrorException2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
+import com.worldreader.core.error.user.NetworkErrorException;
 
 public class Retrofit2ErrorAdapter implements ErrorAdapter<Throwable> {
 
@@ -19,14 +19,11 @@ public class Retrofit2ErrorAdapter implements ErrorAdapter<Throwable> {
   private ErrorCore handleRetrofit2Error(Retrofit2Error error) {
     switch (error.getKind()) {
       case CONVERSION:
-        return ErrorCore.of(
-            NetworkErrorException2.of(NetworkErrorException2.ErrorType.CONVERSION, error));
+        return ErrorCore.of(NetworkErrorException2.of(NetworkErrorException2.ErrorType.CONVERSION, error));
       case HTTP:
-        return ErrorCore.of(
-            NetworkErrorException2.of(NetworkErrorException2.ErrorType.HTTP, error));
+        return ErrorCore.of(NetworkErrorException2.of(NetworkErrorException2.ErrorType.HTTP, error));
       case NETWORK:
-        return ErrorCore.of(
-            NetworkErrorException2.of(NetworkErrorException2.ErrorType.NETWORK, error));
+        return ErrorCore.of(NetworkErrorException2.of(NetworkErrorException2.ErrorType.NETWORK, error));
       default:
         return ErrorCore.of(NetworkErrorException.of(NetworkErrorException.ErrorType.UNEXPECTED),
             NetworkErrorException.ErrorType.UNEXPECTED.getErrorCause());
