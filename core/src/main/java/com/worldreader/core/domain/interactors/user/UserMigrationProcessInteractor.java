@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.reflect.TypeToken;
+import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserApiEndpoint;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserServer;
@@ -57,6 +58,8 @@ import okhttp3.Response;
 // TODO: 12/07/2017 Review expired token
 @PerActivity public class UserMigrationProcessInteractor {
 
+  private static final String TAG = UserMigrationProcessInteractor.class.getSimpleName();
+
   private static final String OLD_DB_NAME = "app.worldreader.cache.db";
 
   private final ListeningExecutorService executor;
@@ -76,12 +79,14 @@ import okhttp3.Response;
   private final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
   private final AddUserScoreInteractor addUserScoreInteractor;
 
+  private final Logger logger;
+
   @Inject public UserMigrationProcessInteractor(@WorldreaderUserApiEndpoint final HttpUrl httpUrl, @WorldreaderUserServer OkHttpClient okHttpClient,
       final ListeningExecutorService executor, final Gson gson, final GetUserInteractor getUserInteractor,
       final SaveUserInteractor saveUserInteractor, final PutAllUserBooksInteractor putAllUserBooksInteractor,
       final AfterLogInUserProcessInteractor afterLogInUserProcessInteractor, final CreateUserMilestonesInteractor createUserMilestonesInteractor,
       final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
-      final AddUserScoreInteractor addUserScoreInteractor) {
+      final AddUserScoreInteractor addUserScoreInteractor, final Logger logger) {
     this.httpUrl = httpUrl;
     this.okHttpClient = okHttpClient;
     this.executor = executor;
@@ -94,6 +99,7 @@ import okhttp3.Response;
     this.putAllUserMilestonesInteractor = putAllUserMilestonesInteractor;
     this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
     this.addUserScoreInteractor = addUserScoreInteractor;
+    this.logger = logger;
   }
 
   public ListenableFuture<Boolean> execute(final Context context) {
@@ -104,19 +110,24 @@ import okhttp3.Response;
     return new Callable<Boolean>() {
       @Override public Boolean call() throws Exception {
         // Try to load the DB
+        logger.d(TAG, "Loading the old database");
         final File oldDBFile = context.getDatabasePath(OLD_DB_NAME);
 
         if (oldDBFile.exists()) {
           // Try to open the dB
+          logger.d(TAG, "Old database found!");
           final SQLiteDatabase db = SQLiteDatabase.openDatabase(oldDBFile.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
 
           // Extract the user in there
+          logger.d(TAG, "Trying to extract the old user");
           final Cursor cursor = db.rawQuery("SELECT value FROM cache WHERE _key LIKE 'user.key'", new String[] {});
 
           // Extract column
           final boolean existUser = cursor.getCount() > 0;
 
           if (!existUser) {
+            logger.d(TAG, "Old user not found. Cleaning old database!");
+
             // Close everything before proceeding
             cursor.close();
             db.close();
@@ -129,28 +140,37 @@ import okhttp3.Response;
           }
 
           // Move to first result and only result
+          logger.d(TAG, "Obtaining old user");
           cursor.moveToFirst();
 
           // Go to value column
           final byte[] rawBlob = cursor.getBlob(0);
 
           // Close everything before proceeding
+          logger.d(TAG, "Closing old database file");
           cursor.close();
           db.close();
 
           // Convert it to UserEntity
+          logger.d(TAG, "Converting raw old user data to user entity");
           final String userJson = new String(rawBlob, "UTF-8");
           final UserEntity user = gson.fromJson(userJson, new TypeToken<UserEntity>() {
           }.getType());
 
           // Check if user is anonymous
+          logger.d(TAG, "Is old user anonymous?");
+
           if (user.isRegister) {
+            logger.d(TAG, "Old user was registered");
+
             // Convert user to JSON
+            logger.d(TAG, "Converting user to old user network model");
             final UserNetworkDataMapper mapper = new UserNetworkDataMapper();
             final UserNetwork userNetwork = mapper.transformInverse(user);
 
             final String userNetworkJson = gson.toJson(userNetwork);
 
+            logger.d(TAG, "Sending old user network model through network");
             final RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), userNetworkJson);
             final Request request = new Request.Builder().url(httpUrl.newBuilder().addPathSegment("me").build()).post(body).build();
 
@@ -159,90 +179,115 @@ import okhttp3.Response;
             final boolean successful = response.isSuccessful();
 
             if (successful) {
+              logger.d(TAG, "Successfully sent old network user model");
+
               // Fetch new user from repository
+              logger.d(TAG, "Fetching new user model from network");
               final User2 user2 = getUserInteractor.execute(MoreExecutors.directExecutor()).get();
 
               // Store user in DB
+              logger.d(TAG, "Store it in storage");
               final SaveUserInteractor.Type type = SaveUserInteractor.Type.LOGGED_IN;
               saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor()).get();
 
               // Kickstart synchronization process
+              logger.d(TAG, "Kick starting after login user process interactor");
               afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor()).get();
 
               // Clean this DB
+              logger.d(TAG, "Cleaning old database file");
               oldDBFile.delete();
 
               // Everything went OK
+              logger.d(TAG, "Everything went OK");
               return true;
             } else {
               // Problem updating user into backend (maybe a failure in Internet?) Don't delete the database and notify back user
+              logger.d(TAG, "There was a problem updating old user into backend. Aborting process");
               return false;
             }
           } else {
             // If user is anonymous, we have to recreate an anonymous user an all of it's information
+            logger.d(TAG, "Old User is anonymous");
             final OldUserToNewUserMapper mapper = new OldUserToNewUserMapper();
 
             // Transform old user to new one
+            logger.d(TAG, "Starting transformation process of old user into newer one");
             user.id = Integer.valueOf(UsersTable.ANONYMOUS_USER_ID);
             final User2 user2 = mapper.transform(user);
 
             // Store user in DB
+            logger.d(TAG, "Storing new user into db");
             final SaveUserInteractor.Type type = SaveUserInteractor.Type.ANONYMOUS;
             saveUserInteractor.execute(user2, type, MoreExecutors.directExecutor()).get();
 
             // Generate initial UserBooks collection with read books
+            logger.d(TAG, "Generate initial UserBooks collection");
             List<UserBook> userBooks = createReadUserBooks(user);
 
             // Update UserBooks with favorite books (or create those which weren't listed before)
+            logger.d(TAG, "Updating UserBooks collection with favorites");
             userBooks = addFavoriteUserBooks(userBooks, user);
 
             // Store those UserBooks
             if (!userBooks.isEmpty()) {
+              logger.d(TAG, "As there are UserBooks for the user, storing those in db");
               final PutAllUserBooksStorageSpec spec = new PutAllUserBooksStorageSpec();
               putAllUserBooksInteractor.execute(spec, userBooks, MoreExecutors.directExecutor()).get();
             }
 
             // Create UserBooksLikes with liked UserBooks
+            logger.d(TAG, "Generating UserBooksLike with liked books");
             final List<UserBookLike> userBookLikes = createUserBooksLikes(userBooks);
 
             // Store UserBooksLikes
             if (!userBookLikes.isEmpty()) {
+              logger.d(TAG, "Storing UserBooksLikes into db");
               final PutAllUserBooksStorageSpec allUserBooksSpec = new PutAllUserBooksStorageSpec();
               putAllUserBooksLikesInteractor.execute(userBookLikes, allUserBooksSpec, MoreExecutors.directExecutor()).get();
             }
 
             // Create all user milestones
+            logger.d(TAG, "Creating all UserMilestones");
             List<UserMilestone> milestones =
                 createUserMilestonesInteractor.execute(UsersTable.ANONYMOUS_USER_ID, Collections.<Integer>emptyList(), MoreExecutors.directExecutor())
                     .get();
 
             // Store those in DB
+            logger.d(TAG, "Storing all UserMilestones in db");
             final PutUserMilestonesStorageSpec spec1 = new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.ANONYMOUS);
             putAllUserMilestonesInteractor.execute(spec1, milestones, MoreExecutors.directExecutor()).get();
 
             // Update user milestones with latest status
+            logger.d(TAG, "Updating UserMilestones with latest status");
             milestones = updateUserMilestones(milestones, user);
 
             // Store those on DB (only updated ones)
             if (!milestones.isEmpty()) {
+              logger.d(TAG, "Store updated UserMilestones in db");
               putAllUserMilestonesInteractor.execute(spec1, milestones, MoreExecutors.directExecutor()).get();
             }
 
             // Create UserScore
+            logger.d(TAG, "Creating UserScore");
             final UserScore score = createUserScore(user);
 
             // Store UserScore in DB
+            logger.d(TAG, "Storing UserScore in db");
             final UserStorageSpecification target = UserStorageSpecification.target(UserStorageSpecification.UserTarget.ANONYMOUS);
             addUserScoreInteractor.execute(score.getScore(), false, target, MoreExecutors.directExecutor()).get();
 
             // Clean this DB
+            logger.d(TAG, "Deleting old db");
             oldDBFile.delete();
+
+            logger.d(TAG, "Everything went OK");
+            return true;
           }
         } else {
+          logger.d(TAG, "No old database found! Ignoring process!");
           return true;
         }
-
-        return false;
       }
     };
   }
