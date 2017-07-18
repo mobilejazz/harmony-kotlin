@@ -15,7 +15,7 @@ ext {
     supportLibrariesVersion = '25.2.0'
     mjandroidloggerVersion = '0.2-SNAPSHOT'
     retrofitVersion = '1.9.0'
-    guavaVersion = '20.0'
+    guavaVersion = '22.0-android'
     javaxAnnotationVersion = '1.2'
 
     picassoVersion = '2.5.2'
