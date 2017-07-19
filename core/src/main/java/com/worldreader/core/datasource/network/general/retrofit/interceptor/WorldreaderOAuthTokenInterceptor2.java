@@ -17,7 +17,7 @@ import okhttp3.Response;
   private static final String AUTHORIZATION = "Authorization";
   private static final String BEARER = "Bearer ";
 
-  private static final Pattern TOKEN_REQUEST_PATTERN = Pattern.compile("/token$");
+  private static final Pattern TOKEN_REQUEST_PATTERN = Pattern.compile("/(?:token|google/login|facebook/login)$");
   private static final Pattern APPLICATION_TOKEN_REQUEST_PATTERN = Pattern.compile("/(?:register|reset-password)$");
 
   private OAuthRepository repository;
