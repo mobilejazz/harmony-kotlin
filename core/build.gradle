@@ -64,7 +64,6 @@ dependencies {
     compile dependencies.guava
     compile dependencies.joda
     compile dependencies.logger
-    compile dependencies.retrofit
     compile dependencies.javaxAnnotation
     compile dependencies.javaxinject
     compile dependencies.vastra
@@ -103,7 +102,6 @@ dependencies {
 
     compile dependencies.okHttp
     compile dependencies.okHttp3LoggingInterceptor
-    compile dependencies.okHttp3Retrofit1Client
 
     compile('net.nightwhistler.htmlspanner:htmlspanner:0.5-SNAPSHOT') {
       exclude module: 'ant'

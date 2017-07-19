@@ -1,37 +1,41 @@
 package com.worldreader.core.datasource.network.datasource.rating;
 
+import android.support.annotation.NonNull;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.datasource.model.ScoreEntity;
-import okhttp3.Response;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-
 import javax.inject.Inject;
+import retrofit2.Call;
 
 public class RatingNetworkDataSourceImpl implements RatingNetworkDataSource {
 
-  private final RatingApiService ratingApiService;
-  private Logger logger;
   public static final String TAG = RatingNetworkDataSource.class.getSimpleName();
+
+  private final RatingApiService ratingApiService;
+  private final Logger logger;
 
   @Inject public RatingNetworkDataSourceImpl(RatingApiService ratingApiService, Logger logger) {
     this.ratingApiService = ratingApiService;
     this.logger = logger;
   }
 
-  @Override
-  public void rate(String id, ScoreEntity scoreEntity, final CompletionCallback<Boolean> callback) {
-    ratingApiService.rate(id, scoreEntity, new Callback<Response>() {
-      @Override public void success(Response response, retrofit.client.Response response2) {
-        if (callback != null) {
-          callback.onSuccess(true);
+  @Override public void rate(String id, ScoreEntity scoreEntity, final CompletionCallback<Boolean> callback) {
+    ratingApiService.rate(id, scoreEntity).enqueue(new retrofit2.Callback<Void>() {
+      @Override public void onResponse(@NonNull final Call<Void> call, @NonNull final retrofit2.Response<Void> response) {
+        final boolean successful = response.isSuccessful();
+        if (successful) {
+          if (callback != null) {
+            callback.onSuccess(true);
+          }
+        } else {
+          if (callback != null) {
+            callback.onSuccess(false);
+          }
         }
       }
 
-      @Override public void failure(RetrofitError error) {
+      @Override public void onFailure(@NonNull final Call<Void> call, @NonNull final Throwable t) {
         if (callback != null) {
-          logger.e(TAG, error.toString());
           callback.onSuccess(false);
         }
       }

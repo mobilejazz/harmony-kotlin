@@ -189,12 +189,12 @@ public class StorIOUserBooksLikeDbDataSourceImpl implements Repository.Storage<U
       this.userId = userId;
     }
 
-    @NonNull @Override protected InsertQuery mapToInsertQuery(@NonNull final UserBookLikeDb object) {
+    @NonNull @Override public InsertQuery mapToInsertQuery(@NonNull final UserBookLikeDb object) {
       object.userId = userId;
       return super.mapToInsertQuery(object);
     }
 
-    @NonNull @Override protected UpdateQuery mapToUpdateQuery(@NonNull final UserBookLikeDb object) {
+    @NonNull @Override public UpdateQuery mapToUpdateQuery(@NonNull final UserBookLikeDb object) {
       object.userId = userId;
       return super.mapToUpdateQuery(object);
     }

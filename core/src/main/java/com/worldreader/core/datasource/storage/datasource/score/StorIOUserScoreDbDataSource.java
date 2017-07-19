@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
-import static com.pushtorefresh.storio.internal.InternalQueries.nullableArrayOfStrings;
+import static com.pushtorefresh.storio.internal.InternalQueries.nullableArrayOfStringsFromListOfStrings;
 import static com.pushtorefresh.storio.internal.InternalQueries.nullableString;
 
 public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
@@ -257,7 +257,7 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
             .query(Query.builder()
                 .table(updateQuery.table())
                 .where(nullableString(updateQuery.where()))
-                .whereArgs((Object[]) nullableArrayOfStrings(updateQuery.whereArgs()))
+                .whereArgs((Object[]) nullableArrayOfStringsFromListOfStrings(updateQuery.whereArgs()))
                 .build());
 
         final PutResult putResult;

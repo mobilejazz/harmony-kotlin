@@ -2,6 +2,7 @@ package com.worldreader.core.datasource.network.general.retrofit;
 
 import android.os.Process;
 import android.support.annotation.NonNull;
+import com.google.common.util.concurrent.MoreExecutors;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
@@ -103,6 +104,10 @@ public interface RetrofitApiManager2 {
           }, IDLE_THREAD_NAME);
         }
       });
+    }
+
+    public static Executor sameThreadExecutor() {
+      return MoreExecutors.directExecutor();
     }
 
   }

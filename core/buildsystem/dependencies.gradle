@@ -1,119 +1,92 @@
 rootProject.allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
+  repositories {
+    maven { url "https://jitpack.io" }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+  }
 }
 
 ext {
-    //Android
-    androidBuildToolsVersion = "25.0.3"
-    androidMinSdkVersion = 16
-    androidTargetSdkVersion = 25
-    androidCompileSdkVersion = 25
+  androidBuildToolsVersion = "25.0.3"
+  androidMinSdkVersion = 16
+  androidTargetSdkVersion = 25
+  androidCompileSdkVersion = 25
 
-    supportLibrariesVersion = '25.2.0'
-    mjandroidloggerVersion = '0.2-SNAPSHOT'
-    retrofitVersion = '1.9.0'
-    guavaVersion = '22.0-android'
-    javaxAnnotationVersion = '1.2'
-
-    picassoVersion = '2.5.2'
-    picassoOkhttp3 = '1.0.2'
-    simpleStorageVersion = '1.2.0'
-
-    materialDialogsVersion = '0.9.0.0'
-
-    jodatimeVersion = '2.8.2'
-
-    jUnitVersion = '4.12'
-    mockitoVersion = '1.10.19'
-    dexmakerVersion = '1.0'
-    espressoVersion = '2.2.2'
-    testingSupportLibVersion = '0.1'
-    powermockVersion = '1.6.2'
-    hamcrestVersion = '1.3'
-    androidRunnerVersion = '0.5'
-    espressoVersion = '2.2.2'
-    dexmakerVersion = '1.4'
-    daggerVersion = '2.8'
-
-    //Datasource libraries
-    storioVersion = '1.8.0'
-    vastraVersion = '1.1.0-SNAPSHOT'
-    sqlcipherVersion = '3.5.1'
-    retrofit2Version = '2.1.0'
-    simplexmlVersion = '2.7.1'
-    androidJobVersion = '1.1.3'
-    okHttpVersion = '3.4.1'
-    okHttp3Retrofit1Version = '1.0.2'
-
-    scaleImageViewVersion = '3.6.0'
-
+  supportLibrariesVersion = '25.4.0'
 
   dependencies = [
-            logger                : "com.mobilejazz.logger:library:$mjandroidloggerVersion",
-            retrofit              : "com.squareup.retrofit:retrofit:$retrofitVersion",
+      appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
+      recyclerView             : "com.android.support:recyclerview-v7:$supportLibrariesVersion",
+      cardView                 : "com.android.support:cardview-v7:$supportLibrariesVersion",
+      design                   : "com.android.support:design:$supportLibrariesVersion",
+      supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
 
-            guava                 : "com.google.guava:guava:$guavaVersion",
+      logger                   : "com.mobilejazz.logger:library:0.2-SNAPSHOT",
 
-            javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
-            javaxinject              : "javax.inject:javax.inject:1",
+      guava                    : "com.google.guava:guava:22.0-android",
 
-            storio                   : "com.pushtorefresh.storio:sqlite:$storioVersion",
-            storioAnnotation         : "com.pushtorefresh.storio:sqlite-annotations:$storioVersion",
-            storioAnnotationProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:$storioVersion",
+      javaxAnnotation          : "javax.annotation:javax.annotation-api:1.2",
+      javaxinject              : "javax.inject:javax.inject:1",
 
-            vastra                   : "com.mobilejazz.vastra:library:$vastraVersion",
+      storio                   : "com.pushtorefresh.storio:sqlite:1.11.0",
+      storioAnnotation         : "com.pushtorefresh.storio:sqlite-annotations:1.11.0",
+      storioAnnotationProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:1.11.0",
 
-            sqlcipher                : "net.zetetic:android-database-sqlcipher:$sqlcipherVersion",
+      sqlcipher                : "net.zetetic:android-database-sqlcipher:3.5.1",
+      simpleStorage            : "com.sromku:simple-storage:1.2.0",
 
-            retrofit2                : "com.squareup.retrofit2:retrofit:${retrofit2Version}",
-            retrofit2Gson            : "com.squareup.retrofit2:converter-gson:${retrofit2Version}",
-            retrofitSimpleXml        : "com.squareup.retrofit2:converter-simplexml:${retrofit2Version}",
-            simplexml                : "org.simpleframework:simple-xml:$simplexmlVersion",
+      vastra                   : "com.mobilejazz.vastra:library:1.1.0-SNAPSHOT",
 
-            androidjob               : "com.evernote:android-job:$androidJobVersion",
+      simplexml                : "org.simpleframework:simple-xml:2.7.1",
 
-            okHttp                   : "com.squareup.okhttp3:okhttp:$okHttpVersion",
-            okHttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
-            okHttp3Retrofit1Client   : "com.jakewharton.retrofit:retrofit1-okhttp3-client:$okHttp3Retrofit1Version",
+      retrofit2                : "com.squareup.retrofit2:retrofit:2.3.0",
+      retrofit2Gson            : "com.squareup.retrofit2:converter-gson:2.3.0",
+      retrofitSimpleXml        : "com.squareup.retrofit2:converter-simplexml:2.3.0",
 
-            appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
-            recyclerView             : "com.android.support:recyclerview-v7:$supportLibrariesVersion",
-            cardView                 : "com.android.support:cardview-v7:$supportLibrariesVersion",
-            design                   : "com.android.support:design:$supportLibrariesVersion",
-            supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
+      androidjob               : "com.evernote:android-job:1.1.11",
 
-            picasso                  : "com.squareup.picasso:picasso:$picassoVersion",
-            simpleStorage         : "com.sromku:simple-storage:$simpleStorageVersion",
-            picassoOkhttp3        : "com.jakewharton.picasso:picasso2-okhttp3-downloader:$picassoOkhttp3",
+      okHttp                   : "com.squareup.okhttp3:okhttp:3.8.1",
+      okHttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:3.8.1",
 
-            materialDialogsCore   : "com.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
-            materialDialogsCommons: "com.afollestad.material-dialogs:commons:${materialDialogsVersion}@aar",
+      picasso                  : "com.squareup.picasso:picasso:2.5.2",
+      picassoOkhttp3           : "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0",
 
-            joda                  : "net.danlew:android.joda:$jodatimeVersion",
+      materialDialogsCore      : "com.afollestad.material-dialogs:core:0.9.0.0@aar",
+      materialDialogsCommons   : "com.afollestad.material-dialogs:commons:0.9.0.0@aar",
 
-            daggerCompiler        : "com.google.dagger:dagger-compiler:${daggerVersion}",
-            dagger                : "com.google.dagger:dagger:${daggerVersion}",
+      joda                     : "net.danlew:android.joda:2.9.9",
 
-            scaleImageView      : "com.davemorrissey.labs:subsampling-scale-image-view:$scaleImageViewVersion"
+      daggerCompiler           : "com.google.dagger:dagger-compiler:2.11",
+      dagger                   : "com.google.dagger:dagger:2.11",
+
+      scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0"
   ]
 
-    testDependencies = [
-            runner         : "com.android.support.test:runner:${androidRunnerVersion}",
-            rules          : "com.android.support.test:rules:${androidRunnerVersion}",
-            espressoCore   : "com.android.support.test.espresso:espresso-core:$espressoVersion",
-            espressoContrib: "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
-            espressoIntents: "com.android.support.test.espresso:espresso-intents:$espressoVersion",
-            junit          : "junit:junit:${jUnitVersion}",
-            mockito        : "org.mockito:mockito-core:${mockitoVersion}",
-            hamcrest       : "org.hamcrest:hamcrest-library:${hamcrestVersion}",
-            powermock      : "org.powermock:powermock-module-junit4:${powermockVersion}",
-            powermockito   : "org.powermock:powermock-api-mockito:${powermockVersion}",
-            dexmaker       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
-            dexmakerDx     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
-            dexmakerMockito: "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion"
-    ]
+  jUnitVersion = '4.12'
+  mockitoVersion = '1.10.19'
+  dexmakerVersion = '1.0'
+  espressoVersion = '2.2.2'
+  testingSupportLibVersion = '0.1'
+  powermockVersion = '1.6.2'
+  hamcrestVersion = '1.3'
+  androidRunnerVersion = '0.5'
+  espressoVersion = '2.2.2'
+  dexmakerVersion = '1.4'
+
+
+  testDependencies = [
+      runner         : "com.android.support.test:runner:${androidRunnerVersion}",
+      rules          : "com.android.support.test:rules:${androidRunnerVersion}",
+      espressoCore   : "com.android.support.test.espresso:espresso-core:$espressoVersion",
+      espressoContrib: "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
+      espressoIntents: "com.android.support.test.espresso:espresso-intents:$espressoVersion",
+      junit          : "junit:junit:${jUnitVersion}",
+      mockito        : "org.mockito:mockito-core:${mockitoVersion}",
+      hamcrest       : "org.hamcrest:hamcrest-library:${hamcrestVersion}",
+      powermock      : "org.powermock:powermock-module-junit4:${powermockVersion}",
+      powermockito   : "org.powermock:powermock-api-mockito:${powermockVersion}",
+      dexmaker       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
+      dexmakerDx     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
+      dexmakerMockito: "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion"
+  ]
 
 }
