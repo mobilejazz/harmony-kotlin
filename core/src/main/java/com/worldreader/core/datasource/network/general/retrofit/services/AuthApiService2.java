@@ -13,12 +13,10 @@ public interface AuthApiService2 {
 
   @POST("facebook") Call<Void> registerWithFacebook(@Body UserFacebookRegisterBody body);
 
-  @POST("facebook/login") Call<OAuthNetworkResponseEntity> userTokenWithFacebook(
-      @Body OAuthFacebookBody body);
+  @POST("facebook/login") Call<OAuthNetworkResponseEntity> userTokenWithFacebook(@Body OAuthFacebookBody body);
 
   @POST("google") Call<Void> registerWithGoogle(@Body UserGoogleRegisterBody body);
 
-  @POST("google/login") Call<OAuthNetworkResponseEntity> userTokenWithGoogle(
-      @Body OAuthGoogleBody body);
+  @POST("google/login") Call<OAuthNetworkResponseEntity> userTokenWithGoogle(@Body OAuthGoogleBody body);
 
 }

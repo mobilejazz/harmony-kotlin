@@ -12,29 +12,25 @@ import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.WorldreaderProviderData;
 import com.worldreader.core.domain.repository.OAuthRepository;
-
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.concurrent.*;
 
 @Singleton public class LoginUserInteractor {
 
   private final ListeningExecutorService executor;
   private final OAuthRepository repository;
 
-  @Inject
-  public LoginUserInteractor(ListeningExecutorService executor, OAuthRepository repository) {
+  @Inject public LoginUserInteractor(ListeningExecutorService executor, OAuthRepository repository) {
     this.executor = executor;
     this.repository = repository;
   }
 
-  public ListenableFuture<Boolean> execute(final RegisterProvider provider,
-      final RegisterProviderData<?> data) {
+  public ListenableFuture<Boolean> execute(final RegisterProvider provider, final RegisterProviderData<?> data) {
     return execute(provider, data, executor);
   }
 
-  public ListenableFuture<Boolean> execute(final RegisterProvider provider,
-      final RegisterProviderData<?> data, final Executor executor) {
+  public ListenableFuture<Boolean> execute(final RegisterProvider provider, final RegisterProviderData<?> data, final Executor executor) {
     final SettableFuture<Boolean> future = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
@@ -49,11 +45,8 @@ import java.util.concurrent.*;
             future.set(isLoggedFacebook);
             break;
           case GOOGLE:
-            final GoogleProviderData.DomainGoogleRegisterData googleRegisterData =
-                ((GoogleProviderData) data).get();
-            final boolean isLoggedGoogle =
-                repository.loginWithGoogle(googleRegisterData.getGoogleId(),
-                    googleRegisterData.getEmail());
+            final GoogleProviderData.DomainGoogleRegisterData googleRegisterData = ((GoogleProviderData) data).get();
+            final boolean isLoggedGoogle = repository.loginWithGoogle(googleRegisterData.getGoogleId(), googleRegisterData.getEmail());
             future.set(isLoggedGoogle);
             break;
           case WORLDREADER:
@@ -61,15 +54,11 @@ import java.util.concurrent.*;
             final String password;
 
             if (data instanceof WorldreaderProviderData) {
-              final WorldreaderProviderData.DomainWorldreaderData worldreaderRegisterData =
-                  ((WorldreaderProviderData) data).get();
+              final WorldreaderProviderData.DomainWorldreaderData worldreaderRegisterData = ((WorldreaderProviderData) data).get();
               username = worldreaderRegisterData.getUsername();
               password = worldreaderRegisterData.getPassword();
             } else if (data instanceof ReadToKidsProviderData) {
-
-              final ReadToKidsProviderData.DomainReadToKidsData readToKidsData =
-                  ((ReadToKidsProviderData) data).get();
-
+              final ReadToKidsProviderData.DomainReadToKidsData readToKidsData = ((ReadToKidsProviderData) data).get();
               username = readToKidsData.getUsername();
               password = readToKidsData.getPassword();
             } else {
