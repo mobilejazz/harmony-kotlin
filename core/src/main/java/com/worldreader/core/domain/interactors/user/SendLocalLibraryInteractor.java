@@ -43,7 +43,7 @@ import javax.inject.Inject;
         switch (type) {
           case ANONYMOUS:
           case NONE:
-            return handleAnonymousUser();
+            return handleAnonymousUser(localLibrary);
           case REGISTERED:
             return handleRegisteredUser(localLibrary, type);
         }
@@ -53,8 +53,16 @@ import javax.inject.Inject;
     };
   }
 
-  // TODO: 28/06/2017 Flavia put Amazon SDK parameters here to be sent
-  private Boolean handleAnonymousUser() {
+  private Boolean handleAnonymousUser(final String localLibrary) throws ExecutionException, InterruptedException {
+    // TODO: 28/06/2017 Flavia put Amazon SDK parameters here to be sent
+    // Send here whatever is needed before continuing
+    // End
+
+    // Update anonymous user local library field
+    final User2 user = getUserInteractor.execute(MoreExecutors.directExecutor()).get();
+    final User2 updatedUser = new User2.Builder(user).setLocalLibrary(localLibrary).build();
+    saveUserInteractor.execute(updatedUser, SaveUserInteractor.Type.ANONYMOUS, MoreExecutors.directExecutor()).get();
+
     return true;
   }
 
