@@ -71,6 +71,7 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
   }
 
   @Override public ListenableFuture<Integer> execute(final Executor executor) {
+    this.collectionId = NONE_COLLECTION_ID;
     final SettableFuture<Integer> future = SettableFuture.create();
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
