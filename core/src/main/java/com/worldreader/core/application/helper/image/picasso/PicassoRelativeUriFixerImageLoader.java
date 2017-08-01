@@ -11,7 +11,7 @@ public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
 
   @Inject public PicassoRelativeUriFixerImageLoader(Picasso picasso, String endpoint, ImageDownloader imageDownloader) {
     super(picasso, imageDownloader);
-    this.endpoint = endpoint.substring(0, endpoint.length() - 1);
+    this.endpoint = endpoint;
   }
 
   @Override public void load(String id, String url, ImageView imageView) {
