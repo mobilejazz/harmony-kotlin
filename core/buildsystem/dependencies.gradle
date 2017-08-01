@@ -11,7 +11,7 @@ ext {
   androidTargetSdkVersion = 25
   androidCompileSdkVersion = 25
 
-  supportLibrariesVersion = '25.4.0'
+  supportLibrariesVersion = '25.1.0'
 
   dependencies = [
       appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
@@ -55,8 +55,8 @@ ext {
 
       joda                     : "net.danlew:android.joda:2.9.9",
 
-      daggerCompiler           : "com.google.dagger:dagger-compiler:2.11",
-      dagger                   : "com.google.dagger:dagger:2.11",
+      daggerCompiler           : "com.google.dagger:dagger-compiler:2.7",
+      dagger                   : "com.google.dagger:dagger:2.7",
 
       scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0"
   ]
