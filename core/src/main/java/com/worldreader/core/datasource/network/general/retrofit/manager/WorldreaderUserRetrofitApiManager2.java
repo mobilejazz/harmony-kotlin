@@ -1,17 +1,17 @@
 package com.worldreader.core.datasource.network.general.retrofit.manager;
 
 import com.google.gson.Gson;
+import com.worldreader.core.datasource.network.datasource.leaderboard.LeaderboardApiService;
 import com.worldreader.core.datasource.network.general.retrofit.AbstractRetrofitApiManager;
 import com.worldreader.core.datasource.network.general.retrofit.services.AuthApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.OAuthApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
+import java.util.concurrent.Executor;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.util.concurrent.*;
 
 public class WorldreaderUserRetrofitApiManager2 extends AbstractRetrofitApiManager {
 
@@ -20,8 +20,7 @@ public class WorldreaderUserRetrofitApiManager2 extends AbstractRetrofitApiManag
   private final Executor callbackExecutor;
   private final Gson gson;
 
-  public WorldreaderUserRetrofitApiManager2(HttpUrl endpoint, OkHttpClient okHttpClient,
-      Executor callbackExecutor, Gson gson) {
+  public WorldreaderUserRetrofitApiManager2(HttpUrl endpoint, OkHttpClient okHttpClient, Executor callbackExecutor, Gson gson) {
     this.okHttpClient = okHttpClient;
     this.endpoint = endpoint;
     this.callbackExecutor = callbackExecutor;
@@ -50,4 +49,9 @@ public class WorldreaderUserRetrofitApiManager2 extends AbstractRetrofitApiManag
   public UserBooksApiService userBooksApiService() {
     return createService(UserBooksApiService.class);
   }
+
+  public LeaderboardApiService leaderboardApiService() {
+    return createService(LeaderboardApiService.class);
+  }
+
 }

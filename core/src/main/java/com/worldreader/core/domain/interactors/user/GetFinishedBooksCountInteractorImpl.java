@@ -19,12 +19,12 @@ import com.worldreader.core.domain.interactors.user.userbooks.GetCollectionIdMap
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
-// TODO: 09/02/2017 @jose Needs to be tested when the server support the collections ids.
 public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Integer, ErrorCore> implements GetFinishedBooksCountInteractor {
 
   private static final String NONE_COLLECTION_ID = String.valueOf(0);
@@ -47,19 +47,6 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
     this.interactorHandler = interactorHandler;
   }
 
-  @Override public void execute(DomainCallback<Integer, ErrorCore> callback) {
-    this.callback = callback;
-    this.collectionId = NONE_COLLECTION_ID;
-    this.executor.run(this);
-  }
-
-  @Override public void execute(DomainBackgroundCallback<Integer, ErrorCore<?>> callback) {
-    this.backgroundCallback = callback;
-    this.callback = null;
-    this.collectionId = NONE_COLLECTION_ID;
-    this.executor.run(this);
-  }
-
   @Override public void execute(int collectionId, DomainCallback<Integer, ErrorCore> callback) {
     this.collectionId = String.valueOf(collectionId);
     this.callback = callback;
@@ -71,6 +58,7 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
   }
 
   @Override public ListenableFuture<Integer> execute(final Executor executor) {
+    this.collectionId = NONE_COLLECTION_ID;
     final SettableFuture<Integer> future = SettableFuture.create();
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
@@ -149,8 +137,6 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
               getCollectionIdMapOfUserBooksInteractor.execute(userBooks, MoreExecutors.directExecutor());
           interactorHandler.addCallback(getCollectionIdMapFuture, new FutureCallback<Map<String, Set<String>>>() {
             @Override public void onSuccess(@Nullable final Map<String, Set<String>> result) {
-              // TODO: 23/02/2017 @Jose double verification with the NONE_COLLECTION_ID
-
               final Set<String> booksFinishedByCollection = result.get(String.valueOf(collectionId));
               final int response = booksFinishedByCollection == null ? 0 : booksFinishedByCollection.size();
 

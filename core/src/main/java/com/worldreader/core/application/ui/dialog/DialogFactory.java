@@ -7,12 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.AnyRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.KeyEvent;
 import android.widget.DatePicker;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldreader.core.R;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,9 +22,12 @@ public class DialogFactory {
 
   public static final int EMPTY = -1;
 
+  private DialogFactory() {
+    throw new AssertionError("No instances of this class are allowed!");
+  }
+
   public enum Action {
-    OK,
-    CANCEL
+    OK, CANCEL
   }
 
   public interface ActionCallback {
@@ -246,15 +250,31 @@ public class DialogFactory {
   }
 
   public static MaterialDialog createProgressDialog(final Context context, @StringRes final int title, @StringRes final int content) {
-    final MaterialDialog.Builder builder =
-        new MaterialDialog.Builder(context).content(content).progress(true, 0).cancelable(false).autoDismiss(false);
+    final MaterialDialog.Builder builder = new MaterialDialog.Builder(context).content(content).progress(true, 0).cancelable(false);
     if (title != 0) {
       builder.title(title);
     }
     return builder.build();
+
   }
 
-  private DialogFactory() {
-    throw new AssertionError("No instances of this class are allowed!");
+  public static MaterialDialog createLocalLibrarySentSuccessfullyDialog(final Context context, @StringRes int message,
+      final ActionCallback callback) {
+    return new MaterialDialog.Builder(context).content(message)
+        .positiveText(R.string.ls_generic_accept)
+        .onPositive(new MaterialDialog.SingleButtonCallback() {
+          @Override public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+            callback.onResponse(dialog, Action.OK);
+          }
+        })
+        .positiveText(android.R.string.ok)
+        .callback(new MaterialDialog.ButtonCallback() {
+          @Override public void onPositive(MaterialDialog dialog) {
+            if (callback != null) {
+              callback.onResponse(dialog, Action.OK);
+            }
+          }
+        })
+        .build();
   }
 }

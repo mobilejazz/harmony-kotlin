@@ -6,12 +6,9 @@ import com.worldreader.core.domain.model.LeaderboardStats;
 public interface LeaderboardRepository {
 
   enum LeaderboardPeriod {
-    GLOBAL,
-    MONTHLY,
-    WEEKLY
+    GLOBAL, MONTHLY, WEEKLY
   }
 
-  void getLeaderboardStats(LeaderboardPeriod period, int offset,
-      CompletionCallback<LeaderboardStats> callback);
+  void getLeaderboardStats(LeaderboardPeriod period, int offset, CompletionCallback<LeaderboardStats> callback);
 
 }

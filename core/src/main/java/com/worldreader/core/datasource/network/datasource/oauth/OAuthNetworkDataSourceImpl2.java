@@ -8,10 +8,9 @@ import com.worldreader.core.datasource.network.model.OAuthGoogleBody;
 import com.worldreader.core.datasource.network.model.OAuthNetworkBody;
 import com.worldreader.core.datasource.network.model.OAuthNetworkResponseEntity;
 import com.worldreader.core.error.user.LoginException;
+import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import java.io.*;
 
 public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
 
@@ -20,8 +19,7 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
   private final String clientId;
   private final String clientSecret;
 
-  public OAuthNetworkDataSourceImpl2(OAuthApiService2 oAuthApiService,
-      AuthApiService2 authApiService, String clientId, String clientSecret) {
+  public OAuthNetworkDataSourceImpl2(OAuthApiService2 oAuthApiService, AuthApiService2 authApiService, String clientId, String clientSecret) {
     this.oAuthApi = oAuthApiService;
     this.authApi = authApiService;
     this.clientId = clientId;
@@ -29,12 +27,9 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
   }
 
   @Override public OAuthNetworkResponseEntity applicationToken() {
-    final OAuthNetworkBody applicationToken =
-        OAuthNetworkBody.createApplicationToken(clientId, clientSecret,
-            OAuthNetworkBody.GRANT_TYPE_CLIENT);
+    final OAuthNetworkBody applicationToken = OAuthNetworkBody.createApplicationToken(clientId, clientSecret, OAuthNetworkBody.GRANT_TYPE_CLIENT);
     try {
-      final Response<OAuthNetworkResponseEntity> response =
-          oAuthApi.token(applicationToken).execute();
+      final Response<OAuthNetworkResponseEntity> response = oAuthApi.token(applicationToken).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         return response.body();
@@ -48,12 +43,10 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
 
   @Override public OAuthNetworkResponseEntity refreshToken(final String refreshToken) {
     final OAuthNetworkBody refreshTokenBody =
-        OAuthNetworkBody.createRefreshToken(clientId, clientSecret,
-            OAuthNetworkBody.GRANT_TYPE_REFRESH_TOKEN, refreshToken);
+        OAuthNetworkBody.createRefreshToken(clientId, clientSecret, OAuthNetworkBody.GRANT_TYPE_REFRESH_TOKEN, refreshToken);
 
     try {
-      final Response<OAuthNetworkResponseEntity> response =
-          oAuthApi.token(refreshTokenBody).execute();
+      final Response<OAuthNetworkResponseEntity> response = oAuthApi.token(refreshTokenBody).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         return response.body();
@@ -68,11 +61,9 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
     }
   }
 
-  @Override
-  public OAuthNetworkResponseEntity userToken(final String username, final String password)
-      throws LoginException {
-    final OAuthNetworkBody userToken = OAuthNetworkBody.createUserToken(clientId, clientSecret,
-        OAuthNetworkBody.GRANT_TYPE_PASSWORD, username, password);
+  @Override public OAuthNetworkResponseEntity userToken(final String username, final String password) throws LoginException {
+    final OAuthNetworkBody userToken =
+        OAuthNetworkBody.createUserToken(clientId, clientSecret, OAuthNetworkBody.GRANT_TYPE_PASSWORD, username, password);
 
     try {
       final Response<OAuthNetworkResponseEntity> response = oAuthApi.token(userToken).execute();
@@ -91,13 +82,11 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
     }
   }
 
-  @Override public OAuthNetworkResponseEntity userTokenWithFacebook(final String facebookToken)
-      throws LoginException {
+  @Override public OAuthNetworkResponseEntity userTokenWithFacebook(final String facebookToken) throws LoginException {
     final OAuthFacebookBody oAuthFacebookBody = OAuthFacebookBody.create(clientId, facebookToken);
 
     try {
-      final Response<OAuthNetworkResponseEntity> response =
-          authApi.userTokenWithFacebook(oAuthFacebookBody).execute();
+      final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithFacebook(oAuthFacebookBody).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         return response.body();
@@ -112,14 +101,11 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
     }
   }
 
-  @Override
-  public OAuthNetworkResponseEntity userTokenWithGoogle(final String googleId, final String email)
-      throws LoginException {
+  @Override public OAuthNetworkResponseEntity userTokenWithGoogle(final String googleId, final String email) throws LoginException {
     final OAuthGoogleBody body = OAuthGoogleBody.create(clientId, googleId, email);
 
     try {
-      final Response<OAuthNetworkResponseEntity> response =
-          authApi.userTokenWithGoogle(body).execute();
+      final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithGoogle(body).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         return response.body();

@@ -473,13 +473,13 @@ public class Configuration {
 
   public AnimationStyle getHorizontalAnim() {
     String animH =
-        settings.getString(KEY_H_ANIMATION, AnimationStyle.CURL.name().toLowerCase(Locale.US));
+        settings.getString(KEY_H_ANIMATION, AnimationStyle.NONE.name().toLowerCase(Locale.US));
     return AnimationStyle.valueOf(animH.toUpperCase(Locale.US));
   }
 
   public AnimationStyle getVerticalAnim() {
     String animV =
-        settings.getString(KEY_V_ANIMATION, AnimationStyle.CURL.name().toLowerCase(Locale.US));
+        settings.getString(KEY_V_ANIMATION, AnimationStyle.NONE.name().toLowerCase(Locale.US));
     return AnimationStyle.valueOf(animV.toUpperCase(Locale.US));
   }
 

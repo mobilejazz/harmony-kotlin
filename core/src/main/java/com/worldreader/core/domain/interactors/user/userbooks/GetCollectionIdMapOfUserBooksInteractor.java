@@ -53,10 +53,9 @@ import java.util.concurrent.*;
             noneCollection.add(userBook.getBookId());
             map.put(NONE_COLLECTION_ID, noneCollection);
           }
-
-          settableFuture.set(map);
         }
 
+        settableFuture.set(map);
       }
 
       @Override protected void onExceptionThrown(final Throwable t) {

@@ -1,19 +1,16 @@
 package com.worldreader.core.datasource.network.datasource.leaderboard;
 
 import com.worldreader.core.datasource.network.model.LeaderboardStatsNetwork;
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface LeaderboardApiService {
 
-  @GET("/leaderboard") void getGlobalLeaderboardStats(@Query("page") int offset,
-      Callback<LeaderboardStatsNetwork> callback);
+  @GET("leaderboard") Call<LeaderboardStatsNetwork> getGlobalLeaderboardStats(@Query("page") int offset);
 
-  @GET("/leaderboard/weekly") void getWeeklyLeaderboardStats(@Query("page") int offset,
-      Callback<LeaderboardStatsNetwork> callback);
+  @GET("leaderboard/weekly") Call<LeaderboardStatsNetwork> getWeeklyLeaderboardStats(@Query("page") int offset);
 
-  @GET("/leaderboard/monthly") void getMonthlyLeaderboardStats(@Query("page") int offset,
-      Callback<LeaderboardStatsNetwork> callback);
+  @GET("leaderboard/monthly") Call<LeaderboardStatsNetwork> getMonthlyLeaderboardStats(@Query("page") int offset);
 
 }

@@ -8,24 +8,22 @@ import com.worldreader.core.datasource.storage.datasource.oauth.OAuthBdDataSourc
 import com.worldreader.core.datasource.storage.datasource.oauth.OAuthBdDataSourceImpl;
 import com.worldreader.core.domain.model.OAuthResponse;
 import com.worldreader.core.domain.repository.OAuthRepository;
-
+import java.util.Date;
 import javax.inject.Inject;
-import java.util.*;
 
 public class OAuthDataSource implements OAuthRepository {
-
-  public enum Token {
-    APPLICATION, USER
-  }
 
   private final OAuthNetworkDataSource networkDataSource;
   private final OAuthBdDataSource bdDataSource;
   private final OAuthEntityDataMapper mapper;
   private final Gson gson;
 
+  public enum Token {
+    APPLICATION, USER
+  }
+
   @Inject
-  public OAuthDataSource(OAuthNetworkDataSource networkDataSource, OAuthBdDataSource bdDataSource,
-      OAuthEntityDataMapper mapper, final Gson gson) {
+  public OAuthDataSource(OAuthNetworkDataSource networkDataSource, OAuthBdDataSource bdDataSource, OAuthEntityDataMapper mapper, final Gson gson) {
     this.networkDataSource = networkDataSource;
     this.bdDataSource = bdDataSource;
     this.mapper = mapper;
@@ -37,7 +35,7 @@ public class OAuthDataSource implements OAuthRepository {
     return mapper.transform(token);
   }
 
-  @Override public synchronized OAuthResponse userToken() {
+  @Override public synchronized OAuthResponse userToken() throws IllegalStateException {
     OAuthNetworkResponseEntity token = getToken(Token.USER);
     final boolean isExpired = isTokenExpired(token);
     if (!isExpired) {
@@ -61,8 +59,7 @@ public class OAuthDataSource implements OAuthRepository {
   }
 
   @Override public boolean loginWithFacebook(String facebookToken) {
-    final OAuthNetworkResponseEntity userToken =
-        networkDataSource.userTokenWithFacebook(facebookToken);
+    final OAuthNetworkResponseEntity userToken = networkDataSource.userTokenWithFacebook(facebookToken);
 
     if (userToken == null) {
       return false;
@@ -73,8 +70,7 @@ public class OAuthDataSource implements OAuthRepository {
   }
 
   @Override public boolean loginWithGoogle(String googleId, String email) {
-    final OAuthNetworkResponseEntity userToken =
-        networkDataSource.userTokenWithGoogle(googleId, email);
+    final OAuthNetworkResponseEntity userToken = networkDataSource.userTokenWithGoogle(googleId, email);
 
     if (userToken == null) {
       return false;
@@ -107,20 +103,18 @@ public class OAuthDataSource implements OAuthRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private OAuthNetworkResponseEntity refreshToken(Token type) {
+  private OAuthNetworkResponseEntity refreshToken(Token type) throws IllegalStateException {
     final OAuthNetworkResponseEntity token = getToken(type);
     if (type == Token.USER) {
       if (token == null || token.getRefreshToken() == null) {
         throw new IllegalStateException("User token is null");
       } else {
-        final OAuthNetworkResponseEntity newUserToken =
-            networkDataSource.refreshToken(token.getRefreshToken());
+        final OAuthNetworkResponseEntity newUserToken = networkDataSource.refreshToken(token.getRefreshToken());
         bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, newUserToken);
         return newUserToken;
       }
     } else {
-      final OAuthNetworkResponseEntity newToken =
-          networkDataSource.refreshToken(token.getRefreshToken());
+      final OAuthNetworkResponseEntity newToken = networkDataSource.refreshToken(token.getRefreshToken());
       bdDataSource.persist(OAuthBdDataSourceImpl.REFRESH_TOKEN, newToken);
       return newToken;
     }

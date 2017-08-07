@@ -16,6 +16,8 @@ import com.worldreader.core.datasource.spec.score.UserScoreNetworkSpecification;
 import com.worldreader.core.datasource.spec.score.UserScoreStorageSpecification;
 import com.worldreader.core.datasource.storage.datasource.score.StorIOUserScoreDbDataSource;
 import com.worldreader.core.datasource.storage.datasource.score.UserScoreStorageDataSource;
+import com.worldreader.core.datasource.storage.mapper.score.ListUserScoreDbToListUserScoreEntityMapper;
+import com.worldreader.core.datasource.storage.mapper.score.ListUserScoreEntityToListUserScoreMapper;
 import com.worldreader.core.datasource.storage.mapper.score.UserScoreDbToUserScoreEntityMapper;
 import com.worldreader.core.datasource.storage.mapper.score.UserScoreEntityToUserScoreDbCollectionMapper;
 import com.worldreader.core.datasource.storage.mapper.score.UserScoreEntityToUserScoreDbMapper;
@@ -24,30 +26,25 @@ import com.worldreader.core.domain.model.user.UserScore;
 import com.worldreader.core.domain.repository.UserScoreRepository;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
 import java.util.List;
+import javax.inject.Singleton;
 
 @Module public class UserScoreModule {
 
   @Provides @Singleton
-  public Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> providerUserScoreNetwork(
-      UserScoreNetworkDataSource networkDataSource) {
+  public Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> providerUserScoreNetwork(UserScoreNetworkDataSource networkDataSource) {
     return networkDataSource;
   }
 
-  @Provides @Singleton
-  Repository.Storage<UserScoreEntity, UserScoreStorageSpecification> providerUserScoreStorage(
-      @WorldreaderOfflineDb StorIOSQLite storIOSQLite,
-      Mapper<Optional<UserScoreDb>, Optional<UserScoreEntity>> toUserScoreEntity,
+  @Provides @Singleton Repository.Storage<UserScoreEntity, UserScoreStorageSpecification> providerUserScoreStorage(
+      @WorldreaderOfflineDb StorIOSQLite storIOSQLite, Mapper<Optional<UserScoreDb>, Optional<UserScoreEntity>> toUserScoreEntity,
       Mapper<Optional<UserScoreEntity>, Optional<UserScoreDb>> toUserScoreDb,
-      Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScoreDb>>> toUserScoreDbCollection) {
-    return new StorIOUserScoreDbDataSource(toUserScoreEntity, toUserScoreDb,
-        toUserScoreDbCollection, storIOSQLite);
+      Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScoreDb>>> toUserScoreDbCollection,
+      ListUserScoreDbToListUserScoreEntityMapper toListUserScoreEntity) {
+    return new StorIOUserScoreDbDataSource(toUserScoreEntity, toUserScoreDb, toUserScoreDbCollection, toListUserScoreEntity, storIOSQLite);
   }
 
-  @Provides @Singleton Repository<UserScore, RepositorySpecification> provideUserScoreDataSource(
-      UserScoreDataSource userScoreDataSource) {
+  @Provides @Singleton Repository<UserScore, RepositorySpecification> provideUserScoreDataSource(UserScoreDataSource userScoreDataSource) {
     return userScoreDataSource;
   }
 
@@ -56,38 +53,35 @@ import java.util.List;
     return (UserScoreStorageDataSource) storage;
   }
 
-  @Provides @Singleton UserScoreRepository provideUserScoreRepository(
-      Repository<UserScore, RepositorySpecification> userScoreRepository) {
+  @Provides @Singleton UserScoreRepository provideUserScoreRepository(Repository<UserScore, RepositorySpecification> userScoreRepository) {
     return (UserScoreRepository) userScoreRepository;
   }
 
   //region Mapper
-  @Provides @Singleton
-  Mapper<Optional<UserScoreDb>, Optional<UserScoreEntity>> provideUserScoreDbToUserScoreEntityMapper(
-      final Gson gson) {
+  @Provides @Singleton Mapper<Optional<UserScoreDb>, Optional<UserScoreEntity>> provideUserScoreDbToUserScoreEntityMapper(final Gson gson) {
     return new UserScoreDbToUserScoreEntityMapper(gson);
   }
 
-  @Provides @Singleton
-  Mapper<Optional<UserScoreEntity>, Optional<UserScoreDb>> providerUserScoreEntityToUserScoreDbMapper(
-      final Gson gson) {
+  @Provides @Singleton Mapper<Optional<UserScoreEntity>, Optional<UserScoreDb>> providerUserScoreEntityToUserScoreDbMapper(final Gson gson) {
     return new UserScoreEntityToUserScoreDbMapper(gson);
   }
 
-  @Provides @Singleton
-  Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScoreDb>>> providerUserScoreEntityToUserScoreDbCollectionMapper(
+  @Provides @Singleton Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScoreDb>>> providerUserScoreEntityToUserScoreDbCollectionMapper(
       Mapper<Optional<UserScoreEntity>, Optional<UserScoreDb>> toUserScoreDb) {
     return new UserScoreEntityToUserScoreDbCollectionMapper(toUserScoreDb);
   }
 
-  @Provides @Singleton
-  Mapper<Optional<UserScore>, Optional<UserScoreEntity>> provideUserScoreToUserScoreEntityMapper() {
+  @Provides @Singleton Mapper<Optional<UserScore>, Optional<UserScoreEntity>> provideUserScoreToUserScoreEntityMapper() {
     return new UserScoreToUserScoreEntityMapper();
   }
 
-  @Provides @Singleton
-  Mapper<Optional<UserScoreEntity>, Optional<UserScore>> provideUserScoreEntityToUserScoreMapper() {
+  @Provides @Singleton Mapper<Optional<UserScoreEntity>, Optional<UserScore>> provideUserScoreEntityToUserScoreMapper() {
     return new UserScoreEntityToUserScoreMapper();
+  }
+
+  @Provides @Singleton Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScore>>> provideListUSerScoreEntityMapper(
+      Mapper<Optional<UserScoreEntity>, Optional<UserScore>> mapper) {
+    return new ListUserScoreEntityToListUserScoreMapper(mapper);
   }
   //endregion
 

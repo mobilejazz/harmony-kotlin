@@ -34,11 +34,7 @@ public class BookEntityDataMapper implements Mapper<Book, BookEntity> {
     book.setDescription(bookEntity.getDescription());
     book.setScore(bookEntity.getScore());
     book.setRatings(bookEntity.getRatings());
-
-    if (bookEntity.getCover() != null) {
-      book.setCover(new StringBuilder().append(endpoint).append(bookEntity.getCover()).toString());
-    }
-
+    book.setCover(bookEntity.getCover());
     book.setContent(bookEntity.getContent());
     book.setSize(bookEntity.getSize());
     book.setOpens(bookEntity.getOpens());
@@ -80,11 +76,7 @@ public class BookEntityDataMapper implements Mapper<Book, BookEntity> {
     bookEntity.setDescription(data.getDescription());
     bookEntity.setScore(data.getScore());
     bookEntity.setRatings(data.getRatings());
-
-    if (bookEntity.getCover() != null) {
-      bookEntity.setCover(new StringBuilder().append(endpoint).append(data.getCover()).toString());
-    }
-
+    bookEntity.setCover(bookEntity.getCover());
     bookEntity.setContent(data.getContent());
     bookEntity.setSize(data.getSize());
     bookEntity.setOpens(data.getOpens());

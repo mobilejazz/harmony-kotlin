@@ -22,8 +22,7 @@ public class LeaderboardDataSource implements LeaderboardRepository {
   }
 
   @Override
-  public void getLeaderboardStats(LeaderboardRepository.LeaderboardPeriod period, int offset,
-      CompletionCallback<LeaderboardStats> callback) {
+  public void getLeaderboardStats(LeaderboardRepository.LeaderboardPeriod period, int offset, CompletionCallback<LeaderboardStats> callback) {
 
     switch (period) {
       case GLOBAL:

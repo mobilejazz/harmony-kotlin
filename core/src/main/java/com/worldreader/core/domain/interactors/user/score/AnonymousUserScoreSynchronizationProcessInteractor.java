@@ -35,7 +35,7 @@ import java.util.concurrent.Executor;
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         // Get the sum of points from the anonymous user
-        userScoreRepository.getTotalUserScoreUnSynched(anonymousUserId, new Callback<Integer>() {
+        userScoreRepository.getTotalUserScoreUnsynced(anonymousUserId, new Callback<Integer>() {
           @Override public void onSuccess(final Integer value) {
 
             final UserScore userScore = new UserScore.Builder().setScore(value).build();

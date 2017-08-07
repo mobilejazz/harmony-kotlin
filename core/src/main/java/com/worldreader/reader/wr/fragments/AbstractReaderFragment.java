@@ -47,6 +47,9 @@ import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
 import com.worldreader.core.analytics.Analytics;
@@ -66,7 +69,7 @@ import com.worldreader.core.domain.interactors.book.GetBookDetailInteractor;
 import com.worldreader.core.domain.interactors.book.SaveBookCurrentlyReadingInteractor;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
 import com.worldreader.core.domain.interactors.user.FinishBookInteractor;
-import com.worldreader.core.domain.interactors.user.SendPageReadsInteractor;
+import com.worldreader.core.domain.interactors.user.SendReadPagesInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.model.WordDefinition;
@@ -236,7 +239,7 @@ public abstract class AbstractReaderFragment extends Fragment
   protected Logger logger;
   protected GetWordDefinitionInteractor getWordDefinitionInteractor;
   protected FinishBookInteractor finishBookInteractor;
-  protected SendPageReadsInteractor sendPageReadsInteractor;
+  protected SendReadPagesInteractor sendReadPagesInteractor;
   protected MainThread mainThread;
   protected UserFlowTutorial userFlowTutorial;
   protected BrightnessManager brightnessManager;
@@ -496,7 +499,7 @@ public abstract class AbstractReaderFragment extends Fragment
   @Override public void onPause() {
     Log.d(TAG, "onPause() called.");
     saveReadingPosition();
-    notifyReadPages();
+    onNotifyReadPagesAnalytics();
     super.onPause();
   }
 
@@ -717,22 +720,6 @@ public abstract class AbstractReaderFragment extends Fragment
         config.setLastPosition(this.bookMetadata.getBookId(), -1);
         config.setLastIndex(this.bookMetadata.getBookId(), -1);
       }
-    }
-  }
-
-  private void notifyReadPages() {
-    if (currentScrolledPages > 0) {
-      final String bookId = bookMetadata.getBookId();
-      final Date now = dateUtils.now();
-      try {
-        sendPageReadsInteractor.execute(bookId, currentScrolledPages, now);
-      } catch (Exception e) {
-        // Ignore
-      }
-      onNotifyReadPagesAnalytics();
-
-      // Restart counter
-      currentScrolledPages = 0;
     }
   }
 
@@ -2289,16 +2276,16 @@ public abstract class AbstractReaderFragment extends Fragment
   protected abstract void onEventNavigateToSignUpScreen();
 
   private void notifyFinishedBookEventInteractor() {
-    finishBookInteractor.execute(bookMetadata.getBookId(),
-        new DomainCallback<Boolean, ErrorCore>(mainThread) {
-          @Override public void onSuccessResult(Boolean aBoolean) {
-            //Timber.d("Reached end of book! Fired finish book interactor and resolved correctly!");
-          }
+    final ListenableFuture<Boolean> finishBookFuture = finishBookInteractor.execute(bookMetadata.getBookId());
+    Futures.addCallback(finishBookFuture, new FutureCallback<Boolean>() {
+      @Override public void onSuccess(final Boolean result) {
+        // Ignored result
+      }
 
-          @Override public void onErrorResult(ErrorCore errorCore) {
-            //Timber.d("Reached end of book! Some problem hapenned!");
-          }
-        });
+      @Override public void onFailure(final Throwable t) {
+        // Ignored result
+      }
+    });
   }
 
   private void formatPageChapterProgress() {

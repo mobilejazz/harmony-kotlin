@@ -11,6 +11,7 @@ import com.worldreader.core.datasource.network.exceptions.NetworkErrorException2
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.error.user.UnAuthorizedUserException;
+import java.net.UnknownHostException;
 import retrofit2.Response;
 
 import java.net.SocketTimeoutException;
@@ -44,7 +45,7 @@ public class WorldreaderErrorAdapter2 implements ErrorAdapter<Throwable> {
       } else {
         return retrofit2ErrorAdapter.of(error);
       }
-    } else if (error instanceof SocketTimeoutException) {
+    } else if (error instanceof SocketTimeoutException || error instanceof UnknownHostException) {
       return ErrorCore.of(NetworkErrorException2.of(NetworkErrorException2.ErrorType.NETWORK, error));
     } else {
       throw new IllegalArgumentException("Add implementation logic if special case arises!");

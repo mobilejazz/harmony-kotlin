@@ -30,10 +30,9 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   private final Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper;
   private final Logger logger;
 
-  @Inject public StreamingBookDataSource(StreamingBookNetworkDataSource networkDataSource,
-      StreamingBookBdDataSource bddDataSource,
-      BookMetadataEntityDataMapper bookMetadataEntityDataMapper,
-      Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper, Logger logger) {
+  @Inject public StreamingBookDataSource(StreamingBookNetworkDataSource networkDataSource, StreamingBookBdDataSource bddDataSource,
+      BookMetadataEntityDataMapper bookMetadataEntityDataMapper, Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper,
+      Logger logger) {
     this.networkDataSource = networkDataSource;
     this.bddDataSource = bddDataSource;
     this.bookMetadataEntityDataMapper = bookMetadataEntityDataMapper;
@@ -41,8 +40,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     this.logger = logger;
   }
 
-  @Override public void retrieveBookMetadata(String bookId, boolean forceRefreshBookMetadata,
-      CompletionCallback<BookMetadata> callback) {
+  @Override public void retrieveBookMetadata(String bookId, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
     final String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
         .addId(bookId)
         .addVersion(StreamingBookRepository.KEY_LATEST)
@@ -84,18 +82,14 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
     if (streamingResourceEntity == null) {
-      streamingResourceEntity =
-          networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
+      streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
 
       try {
         final StreamingResourceEntity savedStreamingResourceEntity =
             StreamingResourceEntity.create(bddDataSource.persist(key, streamingResourceEntity));
         return streamingResourceMapper.transform(savedStreamingResourceEntity);
       } catch (IOException e) {
-        logger.e(TAG, "Error while trying to save resource to database for book id: "
-            + id
-            + " exception: "
-            + e);
+        logger.e(TAG, "Error while trying to save resource to database for book id: " + id + " exception: " + e);
         return StreamingResource.EMPTY;
       }
 
@@ -116,11 +110,9 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   @Override public StreamingResource getBookResourceFastAccess(String id, String resource) {
     String key = id + resource;
-    final StreamingResourceEntity streamingResourceEntity =
-        bddDataSource.obtainStreamingResource(key);
+    final StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
-    return streamingResourceEntity == null ? null : streamingResourceMapper.transform(
-        streamingResourceEntity);
+    return streamingResourceEntity == null ? null : streamingResourceMapper.transform(streamingResourceEntity);
   }
 
   @Override public boolean deleteBookResource(String bookId, String resource) {
@@ -132,8 +124,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private void fetchBookMetadata(final String key, final String bookId,
-      final CompletionCallback<BookMetadata> callback) {
+  private void fetchBookMetadata(final String key, final String bookId, final CompletionCallback<BookMetadata> callback) {
     networkDataSource.retrieveBookMetadata(bookId, new CompletionCallback<BookMetadataEntity>() {
       @Override public void onSuccess(BookMetadataEntity bookMetadataEntity) {
         bddDataSource.persist(key, bookMetadataEntity);

@@ -28,12 +28,13 @@ import java.util.*;
   private final Date updatedAt;
   private final List<Integer> milestones;
   private final List<String> favoriteCategories;
+  private final String localLibrary;
 
   private User2(String id, int profileId, String readToKidsId, String userName, String name,
       String email, boolean emailConfirmed, int pagesPerDay, String locale, int fontSize,
       int gender, int age, Date birthDate, int childrenCount, int minChildAge, int maxChildAge,
       String picture, Date createdAt, Date updatedAt, List<Integer> milestones,
-      List<String> favoriteCategories) {
+      List<String> favoriteCategories, String localLibrary) {
     this.id = id;
     this.profileId = profileId;
     this.readToKidsId = readToKidsId;
@@ -55,6 +56,7 @@ import java.util.*;
     this.updatedAt = updatedAt;
     this.milestones = milestones;
     this.favoriteCategories = favoriteCategories;
+    this.localLibrary = localLibrary;
   }
 
   public String getId() {
@@ -145,6 +147,10 @@ import java.util.*;
     return id;
   }
 
+  public String getLocalLibrary() {
+    return localLibrary;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -168,6 +174,7 @@ import java.util.*;
     private Date updatedAt;
     private List<Integer> milestones;
     private List<String> favoriteCategories;
+    private String localLibrary;
 
     public Builder(final User2 raw) {
       setId(raw.getId());
@@ -190,6 +197,7 @@ import java.util.*;
       setUpdatedAt(raw.getUpdatedAt());
       setFavoriteCategories(raw.getFavoriteCategories());
       setPicture(raw.getPicture());
+      setLocalLibrary(raw.getLocalLibrary());
     }
 
     public Builder() {
@@ -300,10 +308,15 @@ import java.util.*;
       return this;
     }
 
+    public Builder setLocalLibrary(final String localLibrary) {
+      this.localLibrary = localLibrary;
+      return this;
+    }
+
     public User2 build() {
       return new User2(id, profileId, readToKidsId, userName, name, email, emailConfirmed,
           pagesPerDay, locale, fontSize, gender, age, birthDate, childrenCount, minChildAge,
-          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories);
+          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary);
     }
   }
 

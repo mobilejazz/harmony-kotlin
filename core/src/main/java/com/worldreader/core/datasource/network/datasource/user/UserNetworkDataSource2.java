@@ -10,30 +10,21 @@ import com.worldreader.core.datasource.network.model.RegisterProviderDataNetwork
 import com.worldreader.core.datasource.network.model.RegisterProviderNetwork;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
+import java.util.Date;
 
-import java.util.*;
+public interface UserNetworkDataSource2 extends Repository.Network<UserEntity2, RepositorySpecification> {
 
-public interface UserNetworkDataSource2
-    extends Repository.Network<UserEntity2, RepositorySpecification> {
-
-  void register(RegisterProviderNetwork provider,
-      RegisterProviderDataNetwork<?> registerProviderData,
-      Callback<Optional<UserEntity2>> callback);
+  void register(RegisterProviderNetwork provider, RegisterProviderDataNetwork<?> registerProviderData, Callback<Optional<UserEntity2>> callback);
 
   void resetPassword(String email, Callback<Optional<Boolean>> callback);
 
-  void updateGoals(int pagesPerDay, int minChildAge, int maxChildAge,
-      Callback<Optional<UserEntity2>> callback);
+  void updateGoals(int pagesPerDay, int minChildAge, int maxChildAge, Callback<Optional<UserEntity2>> callback);
 
-  void leaderboardStats(LeaderboardPeriodEntity leaderboardPeriodEntity,
-      Callback<Optional<LeaderboardStatEntity>> callback);
+  void leaderboardStats(LeaderboardPeriodEntity leaderboardPeriodEntity, Callback<Optional<LeaderboardStatEntity>> callback);
 
   void readingStats(Date from, Date to, Callback<Optional<UserReadingStatsEntity>> callback);
 
-  void updateReadingStats(String bookId, int readPages, Date when,
-      Callback<Optional<Boolean>> callback);
-
-  void updatePoints(int points, Callback<Optional<Boolean>> callback);
+  void updateReadingStats(String bookId, int readPages, Date when, Callback<Optional<Boolean>> callback);
 
   void updateProfilePicture(final String profilePictureId, final Callback<Void> callback);
 
@@ -42,4 +33,6 @@ public interface UserNetworkDataSource2
   void updateEmail(final String email, final Callback<Void> callback);
 
   void updateName(final String name, final Callback<Void> callback);
+
+  void sendLocalLibrary(String localLibrary, final Callback<Void> callback);
 }

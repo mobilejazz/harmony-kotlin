@@ -16,6 +16,7 @@ import com.worldreader.core.datasource.network.general.retrofit.services.AuthApi
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.network.model.GoogleProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
+import com.worldreader.core.datasource.network.model.LocalLibraryNetworkBody;
 import com.worldreader.core.datasource.network.model.RegisterProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.RegisterProviderNetwork;
 import com.worldreader.core.datasource.network.model.ResetPasswordNetworkBody;
@@ -37,11 +38,10 @@ import com.worldreader.core.datasource.network.model.WorldreaderProviderDataNetw
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.datasource.spec.user.UpdateUserCategoriesSpecification;
 import com.worldreader.core.error.user.RegisterException;
-import retrofit2.Response;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import retrofit2.Response;
 
 public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
@@ -331,8 +331,7 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
   @Override public void updateReadingStats(String bookId, int readPages, Date when,
       Callback<Optional<Boolean>> callback) {
-    final UpdateReadingStatsNetworkBody body =
-        UpdateReadingStatsNetworkBody.create(bookId, readPages, when);
+    final UpdateReadingStatsNetworkBody body = UpdateReadingStatsNetworkBody.create(bookId, readPages, when);
     try {
       final Response<Void> response = apiService.updateReadingStats(body).execute();
       final boolean successful = response.isSuccessful();
@@ -347,24 +346,6 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
       final ErrorCore<?> errorCore = mapToErrorCore(e);
       notifyErrorResponse(callback, errorCore.getCause());
     }
-  }
-
-  @Override public void updatePoints(final int points, final Callback<Optional<Boolean>> callback) {
-    //final UserPointsNetworkBody body = new UserPointsNetworkBody(points);
-    //try {
-    //  final Response<Void> response = apiService.updatePoints(body).execute();
-    //  final boolean successful = response.isSuccessful();
-    //  if (successful) {
-    //    notifySuccessResponse(callback, Optional.of(true));
-    //  } else {
-    //    final Retrofit2Error httpError = Retrofit2Error.httpError(response);
-    //    final ErrorCore<?> errorCore = mapToErrorCore(httpError);
-    //    notifyErrorResponse(callback, errorCore.getCause());
-    //  }
-    //} catch (IOException e) {
-    //  final ErrorCore<?> errorCore = mapToErrorCore(e);
-    //  notifyErrorResponse(callback, errorCore.getCause());
-    //}
   }
 
   @Override
@@ -426,6 +407,24 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
     final UserNameNetworkBody body = new UserNameNetworkBody(name);
     try {
       final Response<Void> response = apiService.updateName(body).execute();
+      final boolean successful = response.isSuccessful();
+      if (successful) {
+        notifySuccessResponse(callback, null);
+      } else {
+        final Retrofit2Error httpError = Retrofit2Error.httpError(response);
+        final ErrorCore<?> errorCore = mapToErrorCore(httpError);
+        notifyErrorResponse(callback, errorCore.getCause());
+      }
+    } catch (IOException e) {
+      final ErrorCore<?> errorCore = mapToErrorCore(e);
+      notifyErrorResponse(callback, errorCore.getCause());
+    }
+  }
+
+  @Override public void sendLocalLibrary(final String localLibrary, final Callback<Void> callback) {
+    final LocalLibraryNetworkBody body = new LocalLibraryNetworkBody(localLibrary);
+    try {
+      final Response<Void> response = apiService.sendLocalLibrary(body).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         notifySuccessResponse(callback, null);

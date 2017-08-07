@@ -11,6 +11,5 @@ public interface GetBookMetadataInteractor {
 
   void execute(String bookId, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 
-  void execute(String bookId, boolean forceRefreshBookMetadata,
-      DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
+  void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 }

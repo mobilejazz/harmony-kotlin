@@ -30,6 +30,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   @StorIOSQLiteColumn(name = COLUMN_UPDATED_AT) public long updatedAt;
   @StorIOSQLiteColumn(name = COLUMN_MILESTONES) public String milestones;
   @StorIOSQLiteColumn(name = COLUMN_FAVORITE_CATEGORIES) public String favoriteCategories;
+  @StorIOSQLiteColumn(name = COLUMN_LOCAL_LIBRARY) public String localLibrary;
 
   public User2Db() {
   }
@@ -39,7 +40,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       final int pagesPerDay, final String locale, final int fontSize, final int gender,
       final int age, final long birthDate, final int childrenCount, final int minChildAge,
       final int maxChildAge, final String picture, final long createdAt, final long updatedAt,
-      final String milestones, final String favoriteCategories) {
+      final String milestones, final String favoriteCategories, final String localLibrary) {
     this.id = id;
     this.profileId = profileId;
     this.readToKidsId = readToKidsId;
@@ -61,6 +62,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.updatedAt = updatedAt;
     this.milestones = milestones;
     this.favoriteCategories = favoriteCategories;
+    this.localLibrary = localLibrary;
   }
 
   public String getId() {
@@ -231,6 +233,14 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.favoriteCategories = favoriteCategories;
   }
 
+  public String getLocalLibrary() {
+    return localLibrary;
+  }
+
+  public void setLocalLibrary(final String localLibrary) {
+    this.localLibrary = localLibrary;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -254,6 +264,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     private long updatedAt;
     private String milestones;
     private String favoriteCategories;
+    private String localLibrary;
 
     public Builder() {
     }
@@ -375,10 +386,15 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       return this;
     }
 
+    public Builder setLocalLibrary(String localLibrary) {
+      this.localLibrary = localLibrary;
+      return this;
+    }
+
     public User2Db build() {
       return new User2Db(id, profileId, readToKidsId, userName, name, email, emailConfirmed,
           pagesPerDay, locale, fontSize, gender, age, birthDate, childrenCount, minChildAge,
-          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories);
+          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary);
     }
   }
 }

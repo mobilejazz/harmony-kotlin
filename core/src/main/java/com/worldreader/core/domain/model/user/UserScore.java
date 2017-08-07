@@ -1,23 +1,26 @@
 package com.worldreader.core.domain.model.user;
 
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
-
-import java.util.*;
+import java.util.Date;
 
 public class UserScore extends RepositoryModel {
 
   private final String userId;
+  private final String bookId;
   private final int scoreId;
   private final int score;
+  private final int pages;
   private final boolean sync;
   private final Date createdAt;
   private final Date updatedAt;
 
-  public UserScore(final String userId, final int scoreId, final int score, final boolean sync,
+  public UserScore(final String userId, final String bookId, final int scoreId, final int score, final int pages, final boolean sync,
       final Date createdAt, final Date updatedAt) {
     this.userId = userId;
+    this.bookId = bookId;
     this.scoreId = scoreId;
     this.score = score;
+    this.pages = pages;
     this.sync = sync;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -27,12 +30,20 @@ public class UserScore extends RepositoryModel {
     return userId;
   }
 
+  public String getBookId() {
+    return bookId;
+  }
+
   public int getScoreId() {
     return scoreId;
   }
 
   public int getScore() {
     return score;
+  }
+
+  public int getPages() {
+    return pages;
   }
 
   public boolean isSync() {
@@ -54,8 +65,10 @@ public class UserScore extends RepositoryModel {
   public static class Builder {
 
     private String userId;
+    private String bookId;
     private int scoreId;
     private int score;
+    private int pages;
     private boolean sync;
     private Date createdAt;
     private Date updatedAt;
@@ -77,6 +90,11 @@ public class UserScore extends RepositoryModel {
       return this;
     }
 
+    public Builder setBookId(final String bookId) {
+      this.bookId = bookId;
+      return this;
+    }
+
     public Builder setScoreId(final int scoreId) {
       this.scoreId = scoreId;
       return this;
@@ -84,6 +102,11 @@ public class UserScore extends RepositoryModel {
 
     public Builder setScore(final int score) {
       this.score = score;
+      return this;
+    }
+
+    public Builder setPages(final int pages) {
+      this.pages = pages;
       return this;
     }
 
@@ -103,7 +126,7 @@ public class UserScore extends RepositoryModel {
     }
 
     public UserScore build() {
-      return new UserScore(userId, scoreId, score, sync, createdAt, updatedAt);
+      return new UserScore(userId, bookId, scoreId, score, pages, sync, createdAt, updatedAt);
     }
   }
 

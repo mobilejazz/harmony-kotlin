@@ -40,6 +40,7 @@ import javax.inject.Singleton;
           .setMilestones(raw.getMilestones())
           .setFavoriteCategories(raw.getFavoriteCategories())
           .setPicture(raw.getPicture())
+          .setLocalLibrary(raw.getLocalLibrary())
           .build();
       return Optional.of(userEntity);
 

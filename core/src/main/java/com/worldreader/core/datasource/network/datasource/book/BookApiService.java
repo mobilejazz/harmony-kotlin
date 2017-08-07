@@ -1,35 +1,21 @@
 package com.worldreader.core.datasource.network.datasource.book;
 
 import com.worldreader.core.datasource.model.BookEntity;
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
-
-import java.util.*;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface BookApiService {
 
-  @GET("/books") void books(@Query("index") int index, @Query("limit") int limit,
-      @Query(value = "sort", encodeValue = false) List<String> sort, @Query("list") String list,
-      @Query("category") List<Integer> categories, @Query("country") String country,
-      @Query("opensCountry") String countryCode, @Query("language") String language,
-      Callback<List<BookEntity>> callback);
+  @GET("books") Call<List<BookEntity>> books(@Query("index") int index, @Query("limit") int limit,
+      @Query(value = "sort", encoded = false) List<String> sort, @Query("list") String list, @Query("category") List<Integer> categories,
+      @Query("country") String country, @Query("opensCountry") String countryCode, @Query("language") String language);
 
-  @GET("/books") void searchBooksByTitle(@Query("index") int index, @Query("limit") int limit,
-      @Query("country") String country, @Query("title") String title,
-      Callback<List<BookEntity>> callback);
+  @GET("books/{id}/{version}") Call<BookEntity> bookDetail(@Path("id") String id, @Path("version") String version,
+      @Query("country") String countryCode);
 
-  @GET("/books") void searchBooksByAuthor(@Query("index") int index, @Query("limit") int limit,
-      @Query("country") String country, @Query("author") String author,
-      Callback<List<BookEntity>> callback);
-
-  @GET("/books/{id}/{version}") void bookDetail(@Path("id") String id,
-      @Path("version") String version, @Query("country") String countryCode,
-      Callback<BookEntity> callback);
-
-  @GET("/books") void search(@Query("index") int index, @Query("limit") int limit,
-      @Query("country") String country, @Query("title") String title,
-      @Query("author") String author, @Query("category") List<Integer> categories,
-      Callback<List<BookEntity>> callback);
+  @GET("books") Call<List<BookEntity>> search(@Query("index") int index, @Query("limit") int limit, @Query("country") String country,
+      @Query("title") String title, @Query("author") String author, @Query("category") List<Integer> categories);
 }

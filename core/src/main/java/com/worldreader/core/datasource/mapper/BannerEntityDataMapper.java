@@ -28,13 +28,7 @@ public class BannerEntityDataMapper implements Mapper<Banner, BannerEntity> {
     banner.setName(bannerEntity.getName());
     banner.setStart(bannerEntity.getStart());
     banner.setEnd(bannerEntity.getEnd());
-
-    StringBuilder builder =
-        new StringBuilder(worldreaderApi.length() + bannerEntity.getImage().length());
-    builder.append(worldreaderApi);
-    builder.append(bannerEntity.getImage());
-
-    banner.setImage(builder.toString());
+    banner.setImage(bannerEntity.getImage());
     banner.setType(bannerEntity.getType());
     banner.setBooks(bookEntityDataMapper.transform(bannerEntity.getBookEntities()));
 

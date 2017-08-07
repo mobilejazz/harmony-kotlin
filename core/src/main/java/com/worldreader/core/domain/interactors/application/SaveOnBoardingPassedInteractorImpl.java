@@ -39,12 +39,6 @@ import java.util.concurrent.*;
     callback = null;
   }
 
-  @Override public void execute(boolean status, DomainCallback<Boolean, ErrorCore> callback) {
-    this.status = status;
-    this.callback = callback;
-    this.executor.run(this);
-  }
-
   @Override public ListenableFuture<Boolean> execute(final boolean status) {
     final Executor executor = this.executor.getExecutor();
     final SettableFuture<Boolean> future = SettableFuture.create();
@@ -52,10 +46,10 @@ import java.util.concurrent.*;
     return future;
   }
 
-  @NonNull Runnable getInteractorRunnable(final boolean status,
-      final SettableFuture<Boolean> future) {
+  @NonNull Runnable getInteractorRunnable(final boolean statusResult, final SettableFuture<Boolean> future) {
     return new Runnable() {
       @Override public void run() {
+        status = statusResult;
         performActions();
         future.set(true);
       }

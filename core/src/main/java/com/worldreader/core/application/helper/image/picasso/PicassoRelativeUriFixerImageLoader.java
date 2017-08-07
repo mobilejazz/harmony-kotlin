@@ -2,17 +2,14 @@ package com.worldreader.core.application.helper.image.picasso;
 
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
-import com.worldreader.core.application.di.qualifiers.WorldreaderApiEndpoint;
 import com.worldreader.core.application.helper.image.ImageDownloader;
-
 import javax.inject.Inject;
 
 public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
 
   private final String endpoint;
 
-  @Inject public PicassoRelativeUriFixerImageLoader(Picasso picasso,
-      @WorldreaderApiEndpoint String endpoint, ImageDownloader imageDownloader) {
+  @Inject public PicassoRelativeUriFixerImageLoader(Picasso picasso, String endpoint, ImageDownloader imageDownloader) {
     super(picasso, imageDownloader);
     this.endpoint = endpoint;
   }
