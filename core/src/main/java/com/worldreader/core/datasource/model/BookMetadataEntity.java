@@ -9,6 +9,7 @@ public class BookMetadataEntity {
   public static final BookMetadataEntity EMPTY = new BookMetadataEntity();
 
   private String bookId;
+  private String version;
   private String relativeContentUrl;
   private String contentOpfName;
   private String tocResourceName;
@@ -21,6 +22,14 @@ public class BookMetadataEntity {
 
   public String getBookId() {
     return bookId;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(final String version) {
+    this.version = version;
   }
 
   public void setRelativeContentUrl(String relativeUrl) {

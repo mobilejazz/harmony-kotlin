@@ -6,10 +6,10 @@ import com.worldreader.core.domain.deprecated.DomainCallback;
 
 public interface DownloadBookInteractor {
 
-  void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, DomainCallback<Integer, ErrorCore<?>> callback);
 
-  void execute(String bookId, DomainBackgroundCallback<Void, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, DomainBackgroundCallback<Void, ErrorCore<?>> callback);
 
-  void execute(String bookId, boolean forceBookMetadataRefresh,
+  void execute(final String bookId, final String version, boolean forceBookMetadataRefresh,
       DomainBackgroundCallback<Void, ErrorCore<?>> callback);
 }

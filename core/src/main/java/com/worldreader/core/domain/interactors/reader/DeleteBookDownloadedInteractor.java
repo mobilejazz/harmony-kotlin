@@ -7,9 +7,9 @@ import com.worldreader.core.domain.deprecated.DomainCallback;
 
 public interface DeleteBookDownloadedInteractor {
 
-  void execute(String bookId, DomainCallback<Boolean, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, final DomainCallback<Boolean, ErrorCore<?>> callback);
 
-  void execute(String bookId, DomainBackgroundCallback<Boolean, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, final DomainBackgroundCallback<Boolean, ErrorCore<?>> callback);
 
-  ListenableFuture<Void> execute(final String bookId);
+  ListenableFuture<Void> execute(final String bookId, final String version);
 }

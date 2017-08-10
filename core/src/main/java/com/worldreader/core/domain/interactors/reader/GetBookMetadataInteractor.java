@@ -7,9 +7,9 @@ import com.worldreader.core.domain.model.BookMetadata;
 
 public interface GetBookMetadataInteractor {
 
-  void execute(String bookId, DomainCallback<BookMetadata, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, final DomainCallback<BookMetadata, ErrorCore<?>> callback);
 
-  void execute(String bookId, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 
-  void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
+  void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 }

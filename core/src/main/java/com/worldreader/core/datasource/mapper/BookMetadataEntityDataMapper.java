@@ -11,6 +11,7 @@ public class BookMetadataEntityDataMapper implements Mapper<BookMetadata, BookMe
   @Override public BookMetadata transform(BookMetadataEntity data) {
     BookMetadata bookMetadata = new BookMetadata();
     bookMetadata.setBookId(data.getBookId());
+    bookMetadata.setVersion(data.getVersion());
     bookMetadata.setContentOpfName(data.getContentOpfName());
     bookMetadata.setRelativeContentUrl(data.getRelativeContentUrl());
     bookMetadata.setTocResource(data.getTocResource());
@@ -26,6 +27,7 @@ public class BookMetadataEntityDataMapper implements Mapper<BookMetadata, BookMe
   @Override public BookMetadataEntity transformInverse(BookMetadata data) {
     BookMetadataEntity bookMetadataEntity = new BookMetadataEntity();
     bookMetadataEntity.setBookId(data.getBookId());
+    bookMetadataEntity.setVersion(data.getVersion());
     bookMetadataEntity.setTocResource(data.getTocResource());
     bookMetadataEntity.setContentOpfName(data.getContentOpfName());
     bookMetadataEntity.setRelativeContentUrl(data.getRelativeContentUrl());

@@ -17,10 +17,10 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
+
 import javax.inject.Inject;
+import java.io.*;
+import java.util.concurrent.*;
 
 public class StreamingBookDataSource implements StreamingBookRepository {
 
@@ -40,7 +40,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     this.logger = logger;
   }
 
-  @Override public void retrieveBookMetadata(String bookId, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
+  @Override public void retrieveBookMetadata(String bookId, final String version, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
     final String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
         .addId(bookId)
         .addVersion(StreamingBookRepository.KEY_LATEST)
@@ -48,14 +48,14 @@ public class StreamingBookDataSource implements StreamingBookRepository {
         .build();
 
     if (forceRefreshBookMetadata) {
-      fetchBookMetadata(key, bookId, callback);
+      fetchBookMetadata(key, version, bookId, callback);
     } else {
       try {
         BookMetadataEntity cached = bddDataSource.obtainBookMetadata(key);
         BookMetadata response = transform(cached);
         notifyResponse(response, callback);
       } catch (InvalidCacheException e) {
-        fetchBookMetadata(key, bookId, callback);
+        fetchBookMetadata(key, version, bookId, callback);
       }
     }
   }
@@ -124,8 +124,8 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private void fetchBookMetadata(final String key, final String bookId, final CompletionCallback<BookMetadata> callback) {
-    networkDataSource.retrieveBookMetadata(bookId, new CompletionCallback<BookMetadataEntity>() {
+  private void fetchBookMetadata(final String key, final String version, final String bookId, final CompletionCallback<BookMetadata> callback) {
+    networkDataSource.retrieveBookMetadata(bookId, version, new CompletionCallback<BookMetadataEntity>() {
       @Override public void onSuccess(BookMetadataEntity bookMetadataEntity) {
         bddDataSource.persist(key, bookMetadataEntity);
 

@@ -33,6 +33,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   private final Logger logger;
 
   private String bookId;
+  private String version;
   private DomainCallback<Boolean, ErrorCore<?>> callback;
   private DomainBackgroundCallback<Boolean, ErrorCore<?>> backgroundCallback;
 
@@ -50,25 +51,27 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
     this.logger = logger;
   }
 
-  @Override public void execute(String bookId, DomainCallback<Boolean, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final DomainCallback<Boolean, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.callback = callback;
     this.executor.run(this);
   }
 
   @Override
-  public void execute(String bookId, DomainBackgroundCallback<Boolean, ErrorCore<?>> callback) {
+  public void execute(final String bookId, final String version, final DomainBackgroundCallback<Boolean, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.backgroundCallback = callback;
     this.executor.run(this);
   }
 
-  @Override public ListenableFuture<Void> execute(final String bookId) {
+  @Override public ListenableFuture<Void> execute(final String bookId, final String version) {
     final SettableFuture<Void> settableFuture = SettableFuture.create();
 
     getExecutor().execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        execute(bookId, new Callback<Boolean>() {
+        execute(bookId, version, new Callback<Boolean>() {
           @Override public void onSuccess(final Boolean aBoolean) {
             settableFuture.set(null);
           }
@@ -88,7 +91,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   }
 
   @Override public void run() {
-    execute(this.bookId, new Callback<Boolean>() {
+    execute(this.bookId, this.version, new Callback<Boolean>() {
       @Override public void onSuccess(final Boolean result) {
         if (backgroundCallback == null) {
           performSuccessCallback(callback, result);
@@ -109,8 +112,8 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
   //region Private methods
 
-  private void execute(final String bookId, final Callback<Boolean> callback) {
-    getBookMetadataInteractor.execute(bookId,
+  private void execute(final String bookId, final String version, final Callback<Boolean> callback) {
+    getBookMetadataInteractor.execute(bookId, version,
         new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
           @Override public void onSuccess(BookMetadata bookMetadata) {
             logger.d(TAG, "Deleting downloaded book with id: " + bookId);

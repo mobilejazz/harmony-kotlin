@@ -16,6 +16,7 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
   private StreamingBookRepository streamingBookRepository;
 
   private String bookId;
+  private String version;
   private boolean forceBookMetadataRefresh;
 
   private DomainCallback<BookMetadata, ErrorCore<?>> callback;
@@ -26,29 +27,32 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.streamingBookRepository = streamingBookRepository;
   }
 
-  @Override public void execute(String bookId, DomainCallback<BookMetadata, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final DomainCallback<BookMetadata, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = false;
     this.callback = callback;
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = false;
     this.backgroundCallback = callback;
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.backgroundCallback = callback;
     this.forceBookMetadataRefresh = forceRefreshBookMetadata;
     this.executor.run(this);
   }
 
   @Override public void run() {
-    streamingBookRepository.retrieveBookMetadata(this.bookId, this.forceBookMetadataRefresh, new CompletionCallback<BookMetadata>() {
+    streamingBookRepository.retrieveBookMetadata(this.bookId, this.version, this.forceBookMetadataRefresh, new CompletionCallback<BookMetadata>() {
       @Override public void onSuccess(final BookMetadata result) {
         if (backgroundCallback != null) {
           backgroundCallback.onSuccess(result);

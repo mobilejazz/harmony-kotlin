@@ -9,6 +9,7 @@ public class BookMetadata implements Serializable {
   public static final BookMetadata EMPTY = new BookMetadata();
 
   private String bookId;
+  private String version;
   private int collectionId;
   private String relativeContentUrl;
   private String contentOpfName;
@@ -27,6 +28,14 @@ public class BookMetadata implements Serializable {
 
   public void setBookId(String bookId) {
     this.bookId = bookId;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(final String version) {
+    this.version = version;
   }
 
   public boolean isStreaming() {

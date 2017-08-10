@@ -44,7 +44,7 @@ public class LoadingBookPresenterImpl implements LoadingBookPresenter {
   }
 
   @Override public void initialize(final Book book, final Collection collection) {
-    getBookMetadataInteractor.execute(book.getId(),
+    getBookMetadataInteractor.execute(book.getId(), book.getVersion(),
         new DomainCallback<BookMetadata, ErrorCore<?>>(mainThread) {
           @Override public void onSuccessResult(BookMetadata bookMetadata) {
             int collectionId = collection == null ? 0 : collection.getId();

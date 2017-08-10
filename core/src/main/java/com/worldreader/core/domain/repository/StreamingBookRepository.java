@@ -12,7 +12,7 @@ public interface StreamingBookRepository {
   String KEY_LATEST = "latest";
   String CONTENT_OPF_LOCATION_PATH = "content/META-INF/container.xml";
 
-  void retrieveBookMetadata(final String bookId, final boolean forceRefreshBookMetadata,
+  void retrieveBookMetadata(final String bookId, final String version, final boolean forceRefreshBookMetadata,
       final CompletionCallback<BookMetadata> callback);
 
   BookMetadata getBookMetadata(final String bookId);

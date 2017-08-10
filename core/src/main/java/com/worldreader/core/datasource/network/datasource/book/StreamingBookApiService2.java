@@ -2,6 +2,7 @@ package com.worldreader.core.datasource.network.datasource.book;
 
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.datasource.model.ContentOpfLocationEntity;
+import com.worldreader.core.datasource.model.ResourcesCredentialsEntity;
 import com.worldreader.core.datasource.network.general.retrofit.annotations.XML;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -19,4 +20,6 @@ public interface StreamingBookApiService2 {
   @GET("/books/{id}/{version}/content/META-INF/container.xml") @XML Call<ContentOpfLocationEntity> getContentOpfLocationEntity(@Path("id") String id, @Path("version") String version);
 
   @GET("/books/{id}/{version}/content/{resource}") @XML Call<ContentOpfEntity> getContentOpfEntity(@Path("id") String id, @Path("version") String version, @Path(value = "resource", encoded = true) String resource);
+
+  @GET("/v1/assets/get_resources_credentials") Call<ResourcesCredentialsEntity> getResourcesCredentials();
 }

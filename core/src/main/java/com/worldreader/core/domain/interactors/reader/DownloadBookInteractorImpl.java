@@ -24,6 +24,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   private final StreamingBookRepository streamingBookRepository;
 
   private String bookId;
+  private String version;
   private boolean forceBookMetadataRefresh;
   private DomainCallback<Integer, ErrorCore<?>> callback;
   private DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback;
@@ -37,31 +38,34 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.streamingBookRepository = streamingBookRepository;
   }
 
-  @Override public void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final DomainCallback<Integer, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = false;
     this.callback = callback;
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId,
+  @Override public void execute(final String bookId, final String version,
       final DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = false;
     this.backgroundCallback = backgroundCallback;
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId, boolean forceBookMetadataRefresh,
-      DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
+  @Override public void execute(final String bookId, final String version, final boolean forceBookMetadataRefresh,
+      final DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = forceBookMetadataRefresh;
     this.backgroundCallback = backgroundCallback;
     this.executor.run(this);
   }
 
   @Override public void run() {
-    getBookMetadataInteractor.execute(bookId, forceBookMetadataRefresh,
+    getBookMetadataInteractor.execute(bookId, version, forceBookMetadataRefresh,
         new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
           @Override public void onSuccess(BookMetadata bookMetadata) {
             try {
