@@ -188,7 +188,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
     if (credentialsEntity != null) {
       // TODO: 08/08/2017 Improve check if it's a image or a data
-      final String queryDelimiter = !resourcePath.contains(".jpg") ? "?" : "&";
+      final String queryDelimiter = !(resourcePath.contains(".jpg") || resourcePath.contains(".png") || resourcePath.contains(".gif"))? "?" : "&";
 
       // TODO: Improve concat with a String.format()...
       final String httpUrl = credentialsEntity.getHost()
