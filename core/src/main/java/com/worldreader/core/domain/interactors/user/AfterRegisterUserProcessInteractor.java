@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
@@ -45,8 +45,7 @@ import com.worldreader.core.sync.WorldreaderJobCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Singleton public class AfterRegisterUserProcessInteractor {
 
@@ -69,6 +68,7 @@ import java.util.List;
   private final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor;
   private final SaveSessionInteractor saveSessionInteractor;
   private final Dates dateUtils;
+  private final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
 
   @Inject public AfterRegisterUserProcessInteractor(final ListeningExecutorService executor, final SaveUserInteractor saveUserInteractor,
       final GetUserInteractor getUserInteractor, final DeleteUserInteractor deleteUserInteractor,
@@ -80,7 +80,8 @@ import java.util.List;
       final SaveUserCategoriesInteractor saveUserCategoriesInteractor,
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
       final AnonymousUserScoreSynchronizationProcessInteractor anonymousUserScoreSynchronizationProcessInteractor,
-      final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor, final SaveSessionInteractor saveSessionInteractor, final Dates dateUtils) {
+      final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor, final SaveSessionInteractor saveSessionInteractor, final Dates dateUtils,
+      final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor) {
     this.executor = executor;
     this.saveUserInteractor = saveUserInteractor;
     this.getUserInteractor = getUserInteractor;
@@ -100,6 +101,7 @@ import java.util.List;
     this.saveOnBoardingPassedInteractor = saveOnBoardingPassedInteractor;
     this.saveSessionInteractor = saveSessionInteractor;
     this.dateUtils = dateUtils;
+    this.configAnalyticsUserIdInteractor = configAnalyticsUserIdInteractor;
   }
 
   public enum From {
@@ -262,6 +264,9 @@ import java.util.List;
 
           // 15 - SaveOnBoarding
           saveOnBoardingPassedAndSaveSessionPassed(future, newUpdatedUser);
+
+          // 16 - Config the user id
+          configAnalyticsUserIdInteractor.execute(newUpdatedUser, MoreExecutors.directExecutor()).get();
 
         } catch (Throwable e) {
 
