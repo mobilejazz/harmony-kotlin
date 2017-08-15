@@ -21,10 +21,9 @@ import com.worldreader.core.datasource.spec.score.UserScoreStorageSpecification;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserScoreTable;
 import com.worldreader.core.datasource.storage.model.UserScoreDb;
 import com.worldreader.core.error.score.UserScoreStoragePutOperationFailException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 import static com.pushtorefresh.storio.internal.InternalQueries.nullableArrayOfStringsFromListOfStrings;
 import static com.pushtorefresh.storio.internal.InternalQueries.nullableString;
@@ -140,7 +139,7 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
         .cursor()
         .withQuery(RawQuery.builder()
             .query("SELECT sum("
-                + UserScoreTable.COLUMN_SCORE
+                + UserScoreTable.COLUMN_SCORE + " + " + UserScoreTable.COLUMN_PAGES
                 + ") FROM "
                 + UserScoreTable.TABLE
                 + " WHERE "
