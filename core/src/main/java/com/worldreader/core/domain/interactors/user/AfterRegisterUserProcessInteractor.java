@@ -11,7 +11,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
@@ -45,8 +44,7 @@ import com.worldreader.core.sync.WorldreaderJobCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Singleton public class AfterRegisterUserProcessInteractor {
 
@@ -273,8 +271,18 @@ import java.util.List;
               final User2 userWithCategories = saveUserCategoriesInteractor.execute(categoriesId, MoreExecutors.directExecutor()).get();
 
               // Update the new user with the category ids.
-              saveUserInteractor.execute(userWithCategories, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor());
+              saveUserInteractor.execute(userWithCategories, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor()).get();
             }
+
+            // generate the user milestones.
+            final String id = getUserInteractor.execute(MoreExecutors.directExecutor()).get().getId();
+            final List<UserMilestone> userMilestones =
+                createUserMilestonesInteractor.execute(id, Collections.<Integer>emptyList(),
+                    MoreExecutors.directExecutor()).get();
+
+            final PutUserMilestonesStorageSpec putUserMilestonesStorageSpec =
+                new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+            putAllUserMilestonesInteractor.execute(putUserMilestonesStorageSpec, userMilestones, MoreExecutors.directExecutor()).get();
 
             // Save onboarding and finishe the user.
             saveOnBoardingPassedAndSaveSessionPassed(future, user);
