@@ -50,6 +50,7 @@ import java.util.*;
           .setFavoriteCategories((List<String>) gson.fromJson(raw.getFavoriteCategories(),
               new TypeToken<ArrayList<String>>() {
               }.getType()))
+          .setLocalLibrary(raw.getLocalLibrary())
           .build();
       return Optional.of(userEntity);
     }

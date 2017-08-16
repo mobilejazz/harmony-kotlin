@@ -41,6 +41,7 @@ import javax.inject.Singleton;
           .setUpdatedAt(raw.getUpdatedAt())
           .setMilestones(raw.getMilestones())
           .setFavoriteCategories(raw.getFavoriteCategories())
+          .setLocalLibrary(raw.getLocalLibrary())
           .build();
 
       return Optional.of(user);

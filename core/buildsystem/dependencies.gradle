@@ -58,7 +58,10 @@ ext {
       daggerCompiler           : "com.google.dagger:dagger-compiler:2.7",
       dagger                   : "com.google.dagger:dagger:2.7",
 
-      scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0"
+      scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0",
+
+      awsCore             : "com.amazonaws:aws-android-sdk-core:2.2.+",
+      awsMobileAnalytics  : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
   ]
 
   jUnitVersion = '4.12'

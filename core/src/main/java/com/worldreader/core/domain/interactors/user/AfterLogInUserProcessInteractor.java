@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
@@ -27,9 +28,10 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-import java.util.List;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 @PerActivity public class AfterLogInUserProcessInteractor {
 
@@ -45,6 +47,7 @@ import javax.inject.Inject;
   private final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
   private final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
   private final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  private final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
 
   private final Logger logger;
 
@@ -53,7 +56,7 @@ import javax.inject.Inject;
       final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor,
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
       final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
-      final Logger logger) {
+      final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor, final Logger logger) {
     this.executor = executor;
     this.getUserBooksInteractor = getUserBooksInteractor;
     this.putAllUserBooksInteractor = putAllUserBooksInteractor;
@@ -62,6 +65,7 @@ import javax.inject.Inject;
     this.userScoreSynchronizationProcessInteractor = userScoreSynchronizationProcessInteractor;
     this.getAllUserBookLikesInteractor = getAllUserBookLikesInteractor;
     this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
+    this.configAnalyticsUserIdInteractor = configAnalyticsUserIdInteractor;
     this.logger = logger;
   }
 
@@ -120,6 +124,10 @@ import javax.inject.Inject;
         final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
             new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
         putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec, MoreExecutors.directExecutor()).get();
+
+        // Nine, add the user id to the analytics.
+        logger.d(TAG, "Configuring user id in analytics");
+        configAnalyticsUserIdInteractor.execute(user, MoreExecutors.directExecutor()).get();
 
         // Nine, schedule jobs
         logger.d(TAG, "Scheduling JobManager jobs");

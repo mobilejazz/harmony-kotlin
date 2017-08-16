@@ -44,6 +44,7 @@ import javax.inject.Singleton;
           .setPicture(raw.getPicture())
           .setMilestones(gson.toJson(raw.getMilestones()))
           .setFavoriteCategories(gson.toJson(raw.getFavoriteCategories()))
+          .setLocalLibrary(raw.getLocalLibrary())
           .build();
       return Optional.of(user2Db);
     }

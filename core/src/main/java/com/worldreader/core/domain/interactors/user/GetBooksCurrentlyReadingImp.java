@@ -156,7 +156,7 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
             try {
               bookOptional = bookFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-              // Ignore this exception
+                e.printStackTrace();
             }
             if (bookOptional != null && bookOptional.isPresent()) {
               booksLf.add(bookFuture);
