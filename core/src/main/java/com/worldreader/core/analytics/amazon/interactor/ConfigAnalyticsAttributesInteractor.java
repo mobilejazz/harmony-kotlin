@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.analytics.amazon.AmazonMobileAnalytics;
 import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.concurrency.SafeRunnable;
+import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -17,14 +18,16 @@ public class ConfigAnalyticsAttributesInteractor {
   private final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService executorService;
   private final AmazonMobileAnalytics amazonMobileAnalytics;
+  private final CountryCodeProvider countryCodeProvider;
 
   @Inject public ConfigAnalyticsAttributesInteractor(
       final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor,
       final ListeningExecutorService executorService,
-      final AmazonMobileAnalytics amazonMobileAnalytics) {
+      final AmazonMobileAnalytics amazonMobileAnalytics, final CountryCodeProvider countryCodeProvider) {
     this.getAnalyticsInfoInteractor = getAnalyticsInfoInteractor;
     this.executorService = executorService;
     this.amazonMobileAnalytics = amazonMobileAnalytics;
+    this.countryCodeProvider = countryCodeProvider;
   }
 
   public ListenableFuture<Void> execute(final Executor executor) {
@@ -40,6 +43,12 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("UserId", analyticsInfoModel.getUserId());
         attributes.put("DeviceId", analyticsInfoModel.getDeviceId());
         attributes.put("ClientId", analyticsInfoModel.getClientId());
+        attributes.put("Sim-country-code", countryCodeProvider.getSimCountryIsoCode());
+        attributes.put("Network-country-code", countryCodeProvider.getNetworkCountryIsoCode());
+        attributes.put("Device-IPV4", countryCodeProvider.getIPAddress(true));
+        attributes.put("Device-IPV6", countryCodeProvider.getIPAddress(false));
+        attributes.put("locale-country-code", countryCodeProvider.getCountryIso3Code());
+        attributes.put("locale-language-code", countryCodeProvider.getLanguageIso3Code());
 
         amazonMobileAnalytics.addGlobalProperties(attributes);
 
