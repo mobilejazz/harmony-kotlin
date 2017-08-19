@@ -18,10 +18,10 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String COLLECTIONS_EVENT = "Collections";
   public static final String CATEGORIES_EVENT = "Categories";
   public static final String CATEGORY_EVENT = "CategoryDetails";
-  public static final String SUBCATEGORY_EVENT = "CategorySelection";
+  public static final String SUBCATEGORY_EVENT = "SubCategorySelection";
   public static final String CATEGORY_SELECTION_EVENT = "CategorySelection";
   public static final String CATEGORY_SELECTED_ATTRIBUTE = "CategorySelected";
-  public static final String PARENT_CATEGORY_ATTRIBUTE = "ParentCategory";
+  public static final String PARENT_CATEGORY_ID_ATTRIBUTE = "ParentCategoryId";
   public static final String PARENT_CATEGORY_TITLE_ATTRIBUTE = "ParentCategoryTitle";
 
   //Kenya LEAP Program events
@@ -55,13 +55,13 @@ public final class AmazonMobileAnalyticsConstants {
 
   public static final String SEARCH_RESULT_SIZE_ATTRIBUTE ="SearchResultsSize";
 
-  public static final String BOOK_ATTRIBUTE = "BookId";
+  public static final String BOOK_ID_ATTRIBUTE = "BookId";
   public static final String BOOK_VERSION_ATTRIBUTE = "BookVersion";
   public static final String BOOK_TITLE_ATTRIBUTE = "BookTitle";
-  public static final String CATEGORY_ATTRIBUTE = "Category";
+  public static final String CATEGORY_ID_ATTRIBUTE = "CategoryId";
   public static final String SHELVE_ATTRIBUTE = "Shelve";
   public static final String SHELVE_TITLE_ATTRIBUTE = "ShelveTitle";
-  public static final String COLLECTION_ATTRIBUTE = "Collection";
+  public static final String COLLECTION_ID_ATTRIBUTE = "CollectionId";
   public static final String COLLECTION_TITLE_ATTRIBUTE = "CollectionTitle";
 
   public static final String CATEGORY_TITLE_ATTRIBUTE = "CategoryTitle";
@@ -77,7 +77,7 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String CLICKED_IN_EXTRA = "ClickedInExtraInfo";
 
   public static final String IN_SCREEN = "InScreen";
-  public static final String SCREEN_NAME = "ScreenName";
+  public static final String SCREEN_NAME_ATTRIBUTE = "ScreenName";
 
   public static String getBookVersionIntValue(String bookVersion){
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;

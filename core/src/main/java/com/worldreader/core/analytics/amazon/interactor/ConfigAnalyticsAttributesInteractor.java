@@ -43,12 +43,14 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("UserId", analyticsInfoModel.getUserId());
         attributes.put("DeviceId", analyticsInfoModel.getDeviceId());
         attributes.put("ClientId", analyticsInfoModel.getClientId());
-        attributes.put("Sim-country-code", countryCodeProvider.getSimCountryIsoCode());
+        attributes.put("country-code", countryCodeProvider.getCountryIso3Code());
+
+        /*attributes.put("Sim-country-code", countryCodeProvider.getSimCountryIsoCode());
         attributes.put("Network-country-code", countryCodeProvider.getNetworkCountryIsoCode());
         attributes.put("Device-IPV4", countryCodeProvider.getIPAddress(true));
         attributes.put("Device-IPV6", countryCodeProvider.getIPAddress(false));
-        attributes.put("locale-country-code", countryCodeProvider.getCountryIso3Code());
-        attributes.put("locale-language-code", countryCodeProvider.getLanguageIso3Code());
+
+        attributes.put("locale-language-code", countryCodeProvider.getLanguageIso3Code());*/
 
         amazonMobileAnalytics.addGlobalProperties(attributes);
 
