@@ -177,7 +177,7 @@ import java.util.*;
             // 5.1 - If we have updated userbooks, store it for the current user
             if (!updatedUserBooks.isEmpty()) {
               final UserBookStorageSpecification updatedUserBookStorageSpecification = new PutAllUserBooksStorageSpec();
-              putAllUserBooksInteractor.execute(updatedUserBookStorageSpecification, updatedUserBooks, MoreExecutors.directExecutor());
+              putAllUserBooksInteractor.execute(updatedUserBookStorageSpecification, updatedUserBooks, MoreExecutors.directExecutor()).get();
             }
           }
 
@@ -194,7 +194,7 @@ import java.util.*;
 
             // After everything OK, then we store it for the current user
             putAllUserBooksLikesInteractor.execute(updatedUserBooksLike,
-                new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor());
+                new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor()).get();
           }
 
           // 6 - Get anonymous completed milestones
@@ -213,13 +213,8 @@ import java.util.*;
           }
 
           // 8 - Launch userscore process to sync the score
-          //final ListenableFuture<Boolean> userScoreSyncFuture =
-          //    userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
-          //userScoreSyncFuture.get();
-
-          final ListenableFuture<Boolean> anonymousUserScoreSyncronizationFuture =
-              anonymousUserScoreSynchronizationProcessInteractor.execute(anonymousUser.getId(), user.getId(), MoreExecutors.directExecutor());
-          anonymousUserScoreSyncronizationFuture.get();
+          userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor()).get();
+          //anonymousUserScoreSynchronizationProcessInteractor.execute(anonymousUser.getId(), user.getId(), MoreExecutors.directExecutor()).get();
 
           // 9 - Save markInMyBooks categories
           final List<String> favoriteCategories = anonymousUser.getFavoriteCategories();
