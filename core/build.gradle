@@ -45,6 +45,7 @@ android {
         buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_ID", '"worldreader"'
         buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_SECRET", '"MGQUm2oNtyaHCBhV2J6YvLFmRRWZF4ry"'
     }
+    buildToolsVersion '25.0.0'
 }
 
 dependencies {
@@ -113,6 +114,9 @@ dependencies {
     compile project.ext.dependencies.androidjob
 
     compile dependencies.scaleImageView
+
+    compile dependencies.awsCore
+    compile dependencies.awsMobileAnalytics
 
     testCompile testDependencies.hamcrest
     testCompile(testDependencies.junit) {

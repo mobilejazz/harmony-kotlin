@@ -2290,17 +2290,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void formatPageChapterProgress() {
-
-    /*I want to be able to track:
-
-      Book toc size if existent (example: 12 entries in toc)
-      Currently reading toc entry number (example, when reading third chapter in toc: 3)
-      Chapter size in chars
-      Amount of "pages" that entry is going to be divided in
-
-      Size in chars of currently presented text (screen text size in chars)
-
-     */
     if (bookView.getPagesForResource() < bookView.getCurrentPage()) {
       chapterProgressPagesTv.setText("");
     } else {
@@ -2320,13 +2309,13 @@ public abstract class AbstractReaderFragment extends Fragment
           String.valueOf(bookView.getSpineSize()));
 
       //Currently reading toc entry number
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CHAPTER_IN_BOOK,
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION,
           String.valueOf(bookView.getIndex()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CHAPTER_SIZE_IN_CHARS,
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS,
           String.valueOf(spanned.length()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_TOC_ENTRY,
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM,
           String.valueOf(bookView.getCurrentPage()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_TOC_ENTRY,
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM,
           String.valueOf(bookView.getPagesForResource()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS,
           String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
@@ -2337,12 +2326,10 @@ public abstract class AbstractReaderFragment extends Fragment
       int count = sPattern.matcher(chartDisplayed).groupCount();
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_AMOUNT_OF_IMAGES, String.valueOf(count));*/
 
-      amaAttributes.put("Controller", AnalyticsEventConstants.BOOK_READ_CONTROLLER);
-      amaAttributes.put("Action", AnalyticsEventConstants.BOOK_READ_ACTION);
-      amaAttributes.put(AnalyticsEventConstants.BOOK_ATTRIBUTE, bookMetadata.getBookId());
-      amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE, bookMetadata.getTitle());
+      amaAttributes.put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
+      amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());
 
-      analytics.sendEvent(new BasicAnalyticsEvent("BOOK_READ", amaAttributes));
+      analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
 
     }
     text = null;

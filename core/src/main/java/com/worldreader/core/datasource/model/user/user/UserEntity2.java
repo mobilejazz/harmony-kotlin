@@ -147,6 +147,10 @@ import java.util.*;
     return id;
   }
 
+  public String getLocalLibrary() {
+    return localLibrary;
+  }
+
   public static final class Builder {
 
     private String id;
