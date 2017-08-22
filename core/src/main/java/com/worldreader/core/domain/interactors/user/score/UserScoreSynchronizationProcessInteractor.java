@@ -17,11 +17,11 @@ import com.worldreader.core.domain.model.LeaderboardStat;
 import com.worldreader.core.domain.model.user.LeaderboardPeriod;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserScore;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class UserScoreSynchronizationProcessInteractor {
 
@@ -113,7 +113,7 @@ import javax.inject.Singleton;
 
         // 4. Store new user score
         logger.d(TAG, "Storing new user score for user");
-        addUserScoreInteractor.execute(stat.getScore(), true, MoreExecutors.directExecutor()).get();
+        addUserScoreInteractor.execute(stat.getScore(), true, true, MoreExecutors.directExecutor()).get();
 
         // 4. Return successfully
         logger.d(TAG, "Process done");

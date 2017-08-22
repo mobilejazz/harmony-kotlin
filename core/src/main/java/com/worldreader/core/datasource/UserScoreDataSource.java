@@ -13,8 +13,9 @@ import com.worldreader.core.datasource.storage.datasource.score.UserScoreStorage
 import com.worldreader.core.domain.model.user.UserScore;
 import com.worldreader.core.domain.repository.UserScoreRepository;
 import com.worldreader.core.error.score.UserScoreStoragePutOperationFailException;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class UserScoreDataSource implements UserScoreRepository {
 
@@ -74,19 +75,6 @@ public class UserScoreDataSource implements UserScoreRepository {
 
           @Override public void onError(final Throwable e) {
             notifyErrorCallback(callback, new UserScoreStoragePutOperationFailException());
-          }
-        });
-      } else if (specification instanceof UserScoreNetworkSpecification) {
-        final UserScoreNetworkSpecification networkSpecification = (UserScoreNetworkSpecification) specification;
-        network.put(userScoreEntityOp.get(), networkSpecification, new Callback<Optional<UserScoreEntity>>() {
-          @Override public void onSuccess(final Optional<UserScoreEntity> userScoreEntityOptional) {
-            final Optional<UserScore> userScoreOp = toUserScore.transform(userScoreEntityOptional);
-
-            notifySuccessCallback(callback, userScoreOp);
-          }
-
-          @Override public void onError(final Throwable e) {
-            notifyErrorCallback(callback, e);
           }
         });
       } else {

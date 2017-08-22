@@ -10,12 +10,11 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.Milestone;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.domain.repository.UserMilestonesRepository;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class CreateUserMilestonesInteractor {
 
@@ -47,12 +46,14 @@ import javax.inject.Singleton;
         repository.getAllUserMilestones(new Callback<Set<Milestone>>() {
           @Override public void onSuccess(final Set<Milestone> milestones) {
             for (final Milestone milestone : milestones) {
+              final boolean synced = isSynced(milestone.getId(), rawMilestones);
               final UserMilestone userMilestone = new UserMilestone.Builder().withUserId(userId)
                   .withMilestoneId(String.valueOf(milestone.getId()))
                   .withScore(milestone.getPoints())
                   .withCreatedAt(new Date())
                   .withUpdatedAt(new Date())
-                  .withSync(isSynced(milestone.getId(), rawMilestones))
+                  .withState(synced ? UserMilestone.STATE_DONE : UserMilestone.STATE_PENDING)
+                  .withSync(synced)
                   .build();
               userMilestones.add(userMilestone);
             }
