@@ -13,8 +13,8 @@ public class AnalyticsEventConstants {
   public static final String BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS = "SpineElementSizeInChars";
   public static final String BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS = "ScreenTextSizeInChars";
   public static final String BOOK_READING_SCREEN_AMOUNT_OF_IMAGES = "ScreenAmountOfImages";
-  public static final String BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM = "CurrentPageNumberInSpineElemnt";
-  public static final String BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM = "AmountOfPagesForSpineElemnt";
+  public static final String BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM = "CurrentPageNumberInSpineElement";
+  public static final String BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM = "AmountOfPagesForSpineElement";
 
 
   public static class Reader {
