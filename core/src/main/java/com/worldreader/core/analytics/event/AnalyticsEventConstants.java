@@ -5,7 +5,7 @@ public class AnalyticsEventConstants {
   public static final String BOOK_READ_EVENT = "BOOK_READ";
   public static final String BOOK_ID_ATTRIBUTE = "BookId";
   public static final String BOOK_TITLE_ATTRIBUTE = "BookTitle";
-
+  public static final String APP_IN_OFFLINE = "AppInOfflineMode";
   public static final String BOOK_AMOUNT_OF_TOC_ENTRIES = "BookAmountOfTocEntries";
   public static final String BOOK_SPINE_SIZE = "BookSpineSize";
 
