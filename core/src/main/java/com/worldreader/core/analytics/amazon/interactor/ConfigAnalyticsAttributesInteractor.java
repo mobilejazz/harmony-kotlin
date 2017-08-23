@@ -45,20 +45,20 @@ public class ConfigAnalyticsAttributesInteractor {
 
         final AnalyticsInfoModel analyticsInfoModel = getAnalyticsInfoFuture.get();
         final HashMap<String, String> attributes = new HashMap<>();
-        attributes.put("UserId", analyticsInfoModel.getUserId());
-        attributes.put("DeviceId", analyticsInfoModel.getDeviceId());
-        attributes.put("ClientId", analyticsInfoModel.getClientId());
+        attributes.put("userId", analyticsInfoModel.getUserId());
+        attributes.put("deviceId", analyticsInfoModel.getDeviceId());
+        attributes.put("clientId", analyticsInfoModel.getClientId());
         attributes.put(AnalyticsEventConstants.APP_IN_OFFLINE, String.valueOf((reachability.isReachable()) ? 0 : 1));
-        attributes.put("country-code", countryCodeProvider.getCountryIso3Code()); //When generating logs for Opera, I use only this attribute and
+        attributes.put("countryCode", countryCodeProvider.getCountryCode()); //When generating logs for Opera, I use only this attribute and
         // disable the following 5 ones.
 
-        /*
-        attributes.put("Sim-country-code", countryCodeProvider.getSimCountryIsoCode());
-        attributes.put("Network-country-code", countryCodeProvider.getNetworkCountryIsoCode());
-        attributes.put("Device-IPV4", countryCodeProvider.getIPAddress(true));
-        attributes.put("Device-IPV6", countryCodeProvider.getIPAddress(false));
-        attributes.put("locale-language-code", countryCodeProvider.getLanguageIso3Code());
-        */
+
+        attributes.put("simCountryCode", countryCodeProvider.getSimCountryIsoCode());
+        attributes.put("networkCountryCode", countryCodeProvider.getNetworkCountryIsoCode());
+        attributes.put("deviceIPV4", countryCodeProvider.getIPAddress(true));
+        attributes.put("deviceIPV6", countryCodeProvider.getIPAddress(false));
+        attributes.put("localeLanguageCode", countryCodeProvider.getLanguageIso3Code());
+
 
         amazonMobileAnalytics.addGlobalProperties(attributes);
 

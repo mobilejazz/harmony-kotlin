@@ -12,6 +12,8 @@ public interface CountryCodeProvider {
 
   String getCountryIso3Code();
 
+  String getCountry();
+
   String getLanguageIso3Code();
 
   String getDisplayLanguage();

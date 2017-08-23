@@ -43,6 +43,10 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
     return getLocale().getISO3Country();
   }
 
+  @Override public String getCountry() {
+    return getLocale().getCountry();
+  }
+
   @Override public String getLanguageIso3Code() {
     return getLocale().getISO3Language();
   }
