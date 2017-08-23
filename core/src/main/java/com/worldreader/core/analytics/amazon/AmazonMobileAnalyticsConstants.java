@@ -58,8 +58,8 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String BOOK_VERSION_ATTRIBUTE = "bookVersion";
   public static final String BOOK_TITLE_ATTRIBUTE = "bookTitle";
   public static final String CATEGORY_ID_ATTRIBUTE = "categoryId";
-  public static final String SHELVE_ATTRIBUTE = "shelve";
-  public static final String SHELVE_TITLE_ATTRIBUTE = "shelveTitle";
+  public static final String SHELVE_ATTRIBUTE = "sortingCriteria";
+  public static final String SHELVE_TITLE_ATTRIBUTE = "sortingCriteriaTitle";
   public static final String COLLECTION_ID_ATTRIBUTE = "collectionId";
   public static final String COLLECTION_TITLE_ATTRIBUTE = "collectionTitle";
 
