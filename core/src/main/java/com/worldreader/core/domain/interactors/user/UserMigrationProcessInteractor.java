@@ -252,7 +252,7 @@ import java.util.concurrent.*;
 
             // Create UserBooksLikes with liked UserBooks
             logger.d(TAG, "Generating UserBooksLike with liked books");
-            final List<UserBookLike> userBookLikes = createUserBooksLikes(userBooks);
+            final List<UserBookLike> userBookLikes = createUserBooksLikes(user);
 
             // Store UserBooksLikes
             if (!userBookLikes.isEmpty()) {
@@ -310,19 +310,35 @@ import java.util.concurrent.*;
     return new UserScore.Builder().setCreatedAt(new Date()).setScore(user.userScore).setUserId(UsersTable.ANONYMOUS_USER_ID).build();
   }
 
-  private List<UserBookLike> createUserBooksLikes(final List<UserBook> userBooks) {
-    final List<UserBookLike> userBookLikes = new ArrayList<>();
-    for (final UserBook userBook : userBooks) {
-      final boolean liked = userBook.isLiked();
-      if (liked) {
-        final UserBookLike like = new UserBookLike.Builder().withBookId(userBook.getBookId())
-            .withUserId(userBook.getUserId())
-            .withLiked(true)
-            .withLikedAt(new Date())
-            .build();
-        userBookLikes.add(like);
-      }
+  private List<UserBookLike> createUserBooksLikes(final UserEntity user) {
+    final List<String> favoritesBooks =
+        user.favoritesBooks != null ? user.favoritesBooks : new ArrayList<String>();
+    //UsersTable.ANONYMOUS_USER_ID
+
+    final List<UserBookLike> userBookLikes = new ArrayList<>(favoritesBooks.size());
+    for (final String favoriteBookId : favoritesBooks) {
+      final UserBookLike userBookLike = new UserBookLike.Builder().withBookId(favoriteBookId)
+          .withLiked(true)
+          .withUserId(UsersTable.ANONYMOUS_USER_ID)
+          .withLikedAt(new Date())
+          .withSync(false)
+          .build();
+
+      userBookLikes.add(userBookLike);
     }
+
+    //final List<UserBookLike> userBookLikes = new ArrayList<>();
+    //for (final UserBook userBook : userBooks) {
+    //  final boolean liked = userBook.isLiked();
+    //  if (liked) {
+    //    final UserBookLike like = new UserBookLike.Builder().withBookId(userBook.getBookId())
+    //        .withUserId(userBook.getUserId())
+    //        .withLiked(true)
+    //        .withLikedAt(new Date())
+    //        .build();
+    //    userBookLikes.add(like);
+    //  }
+    //}
     return userBookLikes;
   }
 
