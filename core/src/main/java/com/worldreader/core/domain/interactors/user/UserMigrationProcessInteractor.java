@@ -248,7 +248,7 @@ import java.util.concurrent.*;
 
             // Update UserBooks with favorite books (or create those which weren't listed before)
             logger.d(TAG, "Updating UserBooks collection with favorites");
-            userBooks = addFavoriteUserBooks(userBooks, user);
+            userBooks = addInMyBooksUserBooks(userBooks, user);
 
             // Store those UserBooks
             if (!userBooks.isEmpty()) {
@@ -419,12 +419,13 @@ import java.util.concurrent.*;
     return new ArrayList<>(userBooks);
   }
 
-  private List<UserBook> addFavoriteUserBooks(final List<UserBook> books, final UserEntity user) {
-    final List<String> favoritesBooks = user.favoritesBooks != null ? user.favoritesBooks : new ArrayList<String>();
+  private List<UserBook> addInMyBooksUserBooks(final List<UserBook> books, final UserEntity user) {
+    final List<String> inMyBooksId =
+        user.booksCurrentlyReading != null ? user.booksCurrentlyReading : new ArrayList<String>();
 
     final Set<UserBook> userBooks = new HashSet<>();
 
-    for (final String bookId : favoritesBooks) {
+    for (final String bookId : inMyBooksId) {
 
       boolean updated = false;
       for (final UserBook userBook : books) {
