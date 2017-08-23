@@ -14,6 +14,7 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserApiEndpoint;
 import com.worldreader.core.application.di.qualifiers.WorldreaderUserServer;
+import com.worldreader.core.concurrency.SafeCallable;
 import com.worldreader.core.datasource.deprecated.mapper.Mapper;
 import com.worldreader.core.datasource.model.LeaderboardStatEntity;
 import com.worldreader.core.datasource.model.user.LevelEntity;
@@ -101,8 +102,14 @@ import java.util.concurrent.*;
   }
 
   private Callable<Boolean> getInteractorCallable(final Context context) {
-    return new Callable<Boolean>() {
-      @Override public Boolean call() throws Exception {
+    return new SafeCallable<Boolean>() {
+
+      @Override protected void onExceptionThrown(final Throwable t) {
+        logger.e(TAG, "Error migrating the old user.");
+        logger.d(TAG, t.getMessage());
+      }
+
+      @Override public Boolean safeCall() throws Throwable {
         // Try to load the DB
         logger.d(TAG, "Loading the old database");
         final File oldDBFile = context.getDatabasePath(OLD_DB_NAME);
@@ -257,8 +264,10 @@ import java.util.concurrent.*;
             // Store UserBooksLikes
             if (!userBookLikes.isEmpty()) {
               logger.d(TAG, "Storing UserBooksLikes into db");
-              final PutAllUserBooksStorageSpec allUserBooksSpec = new PutAllUserBooksStorageSpec();
-              putAllUserBooksLikesInteractor.execute(userBookLikes, allUserBooksSpec, MoreExecutors.directExecutor()).get();
+              final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
+                  new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.ANONYMOUS);
+              putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec,
+                  MoreExecutors.directExecutor()).get();
             }
 
             // Create all user milestones
