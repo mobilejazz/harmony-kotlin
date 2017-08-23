@@ -23,6 +23,7 @@ import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.spec.userbooks.PutAllUserBooksStorageSpec;
+import com.worldreader.core.datasource.spec.userbookslike.PutAllUserBookLikeStorageSpec;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
 import com.worldreader.core.domain.interactors.user.milestones.CreateUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesInteractor;
@@ -186,6 +187,26 @@ import java.util.concurrent.*;
               // Kickstart synchronization process
               logger.d(TAG, "Kick starting after login user process interactor");
               afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor()).get();
+
+              logger.d(TAG, "Storing UserBooksLikes in storage");
+              final List<BookNetwork> favoriteBooks = userNetwork.favoriteBooks;
+              final List<UserBookLike> userBookLikes = new ArrayList<>(favoriteBooks.size());
+              for (final BookNetwork favoriteBook : favoriteBooks) {
+                final UserBookLike userBookLike =
+                    new UserBookLike.Builder().withBookId(favoriteBook.bookId)
+                        .withLiked(true)
+                        .withUserId(String.valueOf(favoriteBook.userId))
+                        .withLikedAt(new Date())
+                        .withSync(false)
+                        .build();
+
+                userBookLikes.add(userBookLike);
+              }
+
+              final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
+                  new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+              putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec,
+                  MoreExecutors.directExecutor()).get();
 
               // Clean this DB
               logger.d(TAG, "Cleaning old database file");
