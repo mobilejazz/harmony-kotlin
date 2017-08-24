@@ -75,7 +75,7 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
         if (!allBooks) {
           builder.withLimit(limit);
         }
-
+        builder.withStrictFinished(true);
         execute(builder.build(), new Callback<List<Book>>() {
           @Override public void onSuccess(final List<Book> books) {
             settableFuture.set(books);
@@ -126,6 +126,7 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
     if (!allBooks) {
       builder.withLimit(limit);
     }
+    builder.withStrictFinished(true);
     execute(builder.build(), new Callback<List<Book>>() {
       @Override public void onSuccess(final List<Book> books) {
         performSuccessCallback(callback, books);

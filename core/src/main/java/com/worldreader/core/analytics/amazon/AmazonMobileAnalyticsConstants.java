@@ -31,7 +31,7 @@ public final class AmazonMobileAnalyticsConstants {
 
   public static final String SEARCH_EVENT = "search";
   public static final String SIGNUP_EVENT = "signup";
-  public static final String LOGIN_EVENT = "sogin";
+  public static final String LOGIN_EVENT = "login";
   public static final String REGISTER_ATTRIBUTE = "register";
   public static final String ANONYMOUS_USAGE_EVENT = "anonymousUsage";
   public static final String SAVE_GOALS_EVENT = "saveGoals";
