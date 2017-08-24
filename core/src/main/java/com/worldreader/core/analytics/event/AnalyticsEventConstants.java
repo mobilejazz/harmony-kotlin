@@ -2,15 +2,15 @@ package com.worldreader.core.analytics.event;
 
 public class AnalyticsEventConstants {
 
-  public static final String BOOK_READ_EVENT = "bookPageRead";
+  public static final String BOOK_READ_EVENT = "BookPageRead";
   public static final String BOOK_ID_ATTRIBUTE = "bookId";
   public static final String BOOK_TITLE_ATTRIBUTE = "bookTitle";
   public static final String APP_IN_OFFLINE = "offlineMode";
   public static final String BOOK_AMOUNT_OF_TOC_ENTRIES = "bookAmountOfTocEntries";
   public static final String BOOK_SPINE_SIZE = "bookSpineSize";
-  public static final String BOOK_OPEN_TOC_EVENT = "bookOpenToc";
+  public static final String BOOK_OPEN_TOC_EVENT = "BookOpenToc";
   public static final String TOC_ENTRY_TITLE_ATTRIBUTE = "tocEntryTitle";
-  public static final String TOC_ENTRY_SELECTED_EVENT = "goToTocEntry";
+  public static final String TOC_ENTRY_SELECTED_EVENT = "GoToTocEntry";
 
   public static final String BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION = "bookCurrentlyReadingSpineElement";
   public static final String BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS = "spineElementSizeInChars";
@@ -23,7 +23,5 @@ public class AnalyticsEventConstants {
   public static class Reader {
     public static final String OPEN_READER = "Open";
   }
-
-
 
 }
