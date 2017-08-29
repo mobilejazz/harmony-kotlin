@@ -1,5 +1,8 @@
 package com.worldreader.core.domain.interactors.collection;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.Interactor;
@@ -15,9 +18,10 @@ public class GetCollectionInteractorImp implements GetCollectionInteractor, Inte
 
   private static final String TAG = GetCollectionInteractorImp.class.getSimpleName();
 
-  private InteractorExecutor executor;
-  private MainThread mainThread;
-  private CollectionRepository repository;
+  private final InteractorExecutor executor;
+  private final ListeningExecutorService executorService;
+  private final MainThread mainThread;
+  private final CollectionRepository repository;
 
   private CompletionCallback<Collection> collectionCallback;
   private int collectionId = -1;
@@ -27,9 +31,11 @@ public class GetCollectionInteractorImp implements GetCollectionInteractor, Inte
 
   private List<Collection> responseCollections;
 
-  @Inject public GetCollectionInteractorImp(InteractorExecutor executor, MainThread mainThread,
+  @Inject public GetCollectionInteractorImp(InteractorExecutor executor,
+      final ListeningExecutorService executorService, MainThread mainThread,
       CollectionRepository repository) {
     this.executor = executor;
+    this.executorService = executorService;
     this.mainThread = mainThread;
     this.repository = repository;
   }
@@ -45,6 +51,28 @@ public class GetCollectionInteractorImp implements GetCollectionInteractor, Inte
     this.collectionsCallback = callback;
     this.collectionsId = collectionsId;
     this.executor.run(this);
+  }
+
+  @Override public ListenableFuture<Collection> execute(final int collectionId) {
+    final SettableFuture<Collection> settableFuture = SettableFuture.create();
+
+    executorService.execute(new Runnable() {
+      @Override public void run() {
+        //Execute a simple request to one collection
+        fetchCollection(collectionId, new CompletionCallback<Collection>() {
+          @Override public void onSuccess(final Collection result) {
+            settableFuture.set(result);
+          }
+
+          @Override public void onError(final ErrorCore error) {
+            settableFuture.setException(error.getCause());
+          }
+        });
+      }
+    });
+
+    return settableFuture;
+
   }
 
   @Override public void run() {

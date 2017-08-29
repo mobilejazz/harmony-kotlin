@@ -1,5 +1,6 @@
 package com.worldreader.core.domain.interactors.collection;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.domain.model.Collection;
 
@@ -10,4 +11,6 @@ public interface GetCollectionInteractor {
   void execute(int collectionId, CompletionCallback<Collection> callback);
 
   void execute(List<Integer> collectionsId, CompletionCallback<List<Collection>> callback);
+
+  ListenableFuture<Collection> execute(int collectionId);
 }
