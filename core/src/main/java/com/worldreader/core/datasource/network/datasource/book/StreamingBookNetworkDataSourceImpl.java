@@ -188,19 +188,30 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
     if (credentialsEntity != null) {
       // TODO: 08/08/2017 Improve check if it's a image or a data
-      final String queryDelimiter = !(resourcePath.contains(".jpg") || resourcePath.contains(".png") || resourcePath.contains(".gif"))? "?" : "&";
+      final String queryDelimiter = "?";//!(resourcePath.contains(".jpg") || resourcePath.contains(".png") || resourcePath.contains(".gif"))? "?" :
+      // "&";
 
-      // TODO: Improve concat with a String.format()...
+      String contentFolder = "/content/";
+      String alternativePath = resourcePath;
+      if(resourcePath.contains(".jpg") || resourcePath.contains(".png") || resourcePath.contains(".gif")){
+        contentFolder = "/content_generated/RESOLUTION_480x800/";
+        alternativePath = resourcePath.substring(0, resourcePath.lastIndexOf("."))+".jpg";
+        //alternativePath = resourcePath.substring(0, resourcePath.lastIndexOf("."))+"_medium.jpg";
+        //resourcePath.replaceFirst("/[.](jpg|png|gif)(.*)","_medium.jpg");
+      }
+
       final String httpUrl = credentialsEntity.getHost()
-          + credentialsEntity.getPrefix()
-          + "/"
-          + bookMetadata.getBookId()
-          + "/"
-          + bookMetadata.getVersion()
-          + "/content/"
-          + resourcePath
-          + queryDelimiter
-          + credentialsEntity.getQuery();
+            + credentialsEntity.getPrefix()
+            + "/"
+            + bookMetadata.getBookId()
+            + "/"
+            + bookMetadata.getVersion()
+            + contentFolder
+            + alternativePath
+            + queryDelimiter
+            + credentialsEntity.getQuery();
+
+
 
       final Request request = new Request.Builder().url(httpUrl).get().build();
       final okhttp3.Response response = okHttpClient.newCall(request).execute();

@@ -79,6 +79,79 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String IN_SCREEN = "InScreen";
   public static final String SCREEN_NAME = "ScreenName";
 
+
+  ///REVIEW FROM HERE ON----------------
+  public static final String RAW_CONTROLLER = "Controller";
+  public static final String RC_ACCOUNT = "Account";
+  public static final String RC_AUTHOR = "Author";
+  public static final String RC_BOOK = "Book";
+  public static final String RC_CATEGORY = "Category";
+  public static final String RC_COLLECTION = "Collection";
+  public static final String RC_HOME = "Home";
+  public static final String RC_LIBRARY = "Library";
+  public static final String RC_MANAGE = "Manage";
+  public static final String RC_PROGRESS = "Progress";
+  public static final String RC_SEARCH = "SEARCH";
+  public static final String RC_SHARE = "Share";
+  //Controller: Site, Actions: BookMigrated, BookNotFound, Oops
+  //Controller: Survey, Action: SubmintAjax
+  public static final String RC_TOGHETER = "Together";
+  //Welcome
+  //ShareReturn
+
+  public static final String RAW_ACTION = "Action";
+  public static final String RA_INDEX = "Index";//Controller:Together, Action:Index.
+  // Controller:Account Action:Index, Controller:Author Action:Index,
+  // Controller:Category Action:Index, Controller: Home Action:Index, Controller:Library, Action: Index ->Event: More_Books_Library,
+  // Controller:Search, Action:Index
+  public static final String RA_LOGIN = "Login";//Controller:Account Action:Login
+  public static final String RA_LOGOFF = "LogOff";//Controller:Account Action:LogOff
+  public static final String RA_CHANGE_FONT_SIZE = "ChangeFontSize";//Controller:Account Action:ChangeFontSize
+  public static final String RA_REGISTER = "Register";//Controller:Account Action:Register
+  public static final String RA_FORGOT_PASSWORD = "ForgotPassword";//Controller:Account Action:ForgotPassword
+  public static final String RA_SET_CULTURE = "SetCulture";//Controller:Home Action:SetCulture
+
+
+  public static final String RA_DETAILS = "Details"; //Controller: Book, Action: Details, Controller: Category, Action: Details
+  public static final String RA_PAGE = "Page"; //Controller: Book, Action: Page
+  public static final String RA_BOOKS = "Books"; //Controller: Category, Action: Books -> Event: More
+  public static final String RA_EMAIL_SHARE = "EmailShare"; //Controller:Book Action:EmailShare
+  public static final String RA_LIKE = "Like"; //Controller:Book Action:Like
+  public static final String RA_READ = "Read"; //Controller:Book Action:Read
+  public static final String RA_SAVE = "Save"; //Controller:Book Action:Save -> Event:BookDownload
+  public static final String RA_DELETE_SAVED = "DeleteSavedBook"; //Controller:Book Action:Save ->Event:DeleteDowload
+  public static final String RA_TOC= "TableOfContents"; //Controller:Book Action:TableOfContents
+  public static final String RA_UNLIKE = "UnLike"; //Controller:Book Action:Unlike
+  public static final String RA_ADD_USER_BOOK = "AddUserBook";//Controller: Library, Action:AddUserBook ->Event:AddUserBook
+  public static final String RA_REMOVE_USER_BOOK = "RemoveUserBook";//Controller: Library, Action:RemoveUserBook ->Event:RemoveUserBook
+  public static final String RA_TOGGLE_BOOK_FAVORITE = "ToggleBookFavorite"; //Controller: Library, Action:ToggleBookFavorite
+  public static final String RA_MANAGE_CHANGE_PASSWORD = "ChangePassword"; //Controller: Manage, Action: ChangePassword
+
+  public static final String RA_SHARE_WA="WhatsApp";//Controller:Share Action:WhatsApp
+  public static final String RA_TIPS = "Tips";//Controller: Together, Action:Tips
+  public static final String RA_REQUEST = "Request";//Controller: Serach,  Action: Request
+  public static final String RA_RESULTS = "Req_Results"; //Controller: Search, Action: Results
+  public static final String RA_RESULTS_CLICK = "ResultClick";
+  public static final String RESULT_SIZE ="ResultsSize";
+
+  public static final String TIPS_EVENT = "Tips";
+
+
+  public static final String GO_TO_SHARE_EVENT = "GoToShare";
+
+
+  public static final String GO_TO_HOME_EVENT = "GoToHome";
+  public static final String GO_TO_MY_LIBARY = "GoToMyLibrary";
+  public static final String GO_TO_OFFLINE_BOOKS = "GoToOfflineBooks";
+  public static final String GO_TO_SETTINGS = "GoToSettings";
+  public static final String GO_TO_SEARCH = "GoToSearch";
+  public static final String GO_TO_BOOK_DETAILS_FROM_SERACH_RESULT = "GoToBookDetailsFromSerachResults";
+  public static final String GO_TO_PROFILE = "GoToProfile";
+  public static final String GO_TO_SIGNUP_EVENT = "GoToRegister";
+  public static final String GO_TO_LOGIN = "GoToLogin";
+  public static final String MY_BOOKS_EVENT="MyBooks";
+
+
   public static String getBookVersionIntValue(String bookVersion){
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;
   }
