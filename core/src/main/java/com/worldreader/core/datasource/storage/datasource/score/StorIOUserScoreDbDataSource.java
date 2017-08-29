@@ -17,14 +17,14 @@ import com.pushtorefresh.storio.sqlite.queries.UpdateQuery;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
+import com.worldreader.core.datasource.spec.score.UpdateUserScoreStorageSpecification;
 import com.worldreader.core.datasource.spec.score.UserScoreStorageSpecification;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserScoreTable;
 import com.worldreader.core.datasource.storage.model.UserScoreDb;
 import com.worldreader.core.error.score.UserScoreStoragePutOperationFailException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 import static com.pushtorefresh.storio.internal.InternalQueries.nullableArrayOfStringsFromListOfStrings;
 import static com.pushtorefresh.storio.internal.InternalQueries.nullableString;
@@ -35,8 +35,6 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
   private final Mapper<Optional<UserScoreEntity>, Optional<UserScoreDb>> toUserScoreDb;
   private final Mapper<Optional<List<UserScoreDb>>, Optional<List<UserScoreEntity>>> toListUserScoreEntity;
   private final Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScoreDb>>> toUserScoreDbCollection;
-
-  private final UserScorePutResolver userScorePutResolver = new UserScorePutResolver();
 
   private final StorIOSQLite storio;
 
@@ -67,6 +65,8 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
 
   @Override public void put(final UserScoreEntity userScoreEntity, final UserScoreStorageSpecification specification,
       final Callback<Optional<UserScoreEntity>> callback) {
+    checkUpdateSpecification(specification);
+
     final List<UserScoreEntity> userScoreEntities = Collections.singletonList(userScoreEntity);
     putAll(userScoreEntities, specification, new Callback<Optional<List<UserScoreEntity>>>() {
       @Override public void onSuccess(final Optional<List<UserScoreEntity>> listOptional) {
@@ -91,9 +91,14 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
 
   @Override public void putAll(final List<UserScoreEntity> userScoreEntities, final UserScoreStorageSpecification specification,
       final Callback<Optional<List<UserScoreEntity>>> callback) {
+    checkUpdateSpecification(specification);
+
     final Optional<List<UserScoreDb>> userScoresDb = toUserScoreDbCollection.transform(Optional.fromNullable(userScoreEntities));
 
     if (userScoresDb.isPresent()) {
+      final UpdateUserScoreStorageSpecification updateSpec =
+          (UpdateUserScoreStorageSpecification) specification;
+      final UserScorePutResolver userScorePutResolver = new UserScorePutResolver(updateSpec.shouldResetUserScore());
       final PutResults<UserScoreDb> userScoreDbPutResults =
           storio.put().objects(userScoresDb.get()).withPutResolver(userScorePutResolver).useTransaction(true).prepare().executeAsBlocking();
 
@@ -140,7 +145,7 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
         .cursor()
         .withQuery(RawQuery.builder()
             .query("SELECT sum("
-                + UserScoreTable.COLUMN_SCORE
+                + UserScoreTable.COLUMN_SCORE + " + " + UserScoreTable.COLUMN_PAGES
                 + ") FROM "
                 + UserScoreTable.TABLE
                 + " WHERE "
@@ -224,9 +229,22 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
       callback.onError(error);
     }
   }
+
+  private void checkUpdateSpecification(final UserScoreStorageSpecification specification) {
+    if (!(specification instanceof UpdateUserScoreStorageSpecification)) {
+      throw new IllegalArgumentException("put() & putAll() operation should receive a UpdateUserScoreStorageSpecification ");
+    }
+  }
+
   //endregion
 
   private class UserScorePutResolver extends DefaultPutResolver<UserScoreDb> {
+
+    private final boolean shouldResetUserScore;
+
+    UserScorePutResolver(final boolean shouldResetUserScore) {
+      this.shouldResetUserScore = shouldResetUserScore;
+    }
 
     @NonNull @Override protected InsertQuery mapToInsertQuery(@NonNull final UserScoreDb object) {
       return InsertQuery.builder().table(UserScoreTable.TABLE).build();
@@ -290,7 +308,7 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
     private ContentValues mapToContentValues(@NonNull final UserScoreDb toConvert, final Cursor rawUpdateCursor) {
       final ContentValues contentValues = new ContentValues();
 
-      final int pagesRead;
+      final int pagesRead, score;
 
       // We're going to update the UserScore by bookId
       if (!TextUtils.isEmpty(toConvert.getBookId())) {
@@ -303,15 +321,29 @@ public class StorIOUserScoreDbDataSource implements UserScoreStorageDataSource {
         } else {
           pagesRead = toConvert.getPages();
         }
+
+        score = 0;
       } else {
         contentValues.put(UserScoreTable.COLUMN_SCORE_ID, toConvert.getScoreId());
         pagesRead = toConvert.getPages();
+
+        // if we need to reset the score because came from the server
+        if (shouldResetUserScore) {
+          //contentValues.put(UserScoreTable.COLUMN_SCORE, toConvert.getScore());
+          score = toConvert.getScore();
+        } else {
+          rawUpdateCursor.moveToFirst();
+
+          final int columnIndex = rawUpdateCursor.getColumnIndex(UserScoreTable.COLUMN_SCORE);
+          final int rawScore = rawUpdateCursor.getInt(columnIndex);
+          score = rawScore + toConvert.getScore();
+        }
       }
 
       contentValues.put(UserScoreTable.COLUMN_USER_ID, toConvert.getUserId());
       contentValues.put(UserScoreTable.COLUMN_BOOK_ID, toConvert.getBookId());
-      contentValues.put(UserScoreTable.COLUMN_SCORE, toConvert.getScore());
       contentValues.put(UserScoreTable.COLUMN_PAGES, pagesRead);
+      contentValues.put(UserScoreTable.COLUMN_SCORE, score);
       contentValues.put(UserScoreTable.COLUMN_SYNCHRONIZED, toConvert.isSync());
       contentValues.put(UserScoreTable.COLUMN_CREATED_AT, toConvert.getCreatedAt());
       contentValues.put(UserScoreTable.COLUMN_UPDATED_AT, toConvert.getUpdatedAt());

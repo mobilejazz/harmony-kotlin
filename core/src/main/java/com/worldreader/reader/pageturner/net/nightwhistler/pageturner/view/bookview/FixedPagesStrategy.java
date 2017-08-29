@@ -116,7 +116,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     final TextPaint textPaint = bookView.getInnerView().getPaint();
     final int boundedWidth = bookView.getInnerView().getMeasuredWidth();
 
-    Log.d(TAG, "Page width: " + boundedWidth);
+    Log.d(TAG, "OFFSETT Page width: " + boundedWidth);
 
     final StaticLayout layout = layoutFactory.create(text, textPaint, boundedWidth, bookView.getLineSpacing());
 
@@ -124,12 +124,19 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       return emptyList();
     }
 
-    Log.d(TAG, "Layout height: " + layout.getHeight());
+    Log.d(TAG, "OFFSETT Layout height: " + layout.getHeight());
+    Log.d(TAG, "OFFSETT bookView.getMeasuredHeight(): " + bookView.getMeasuredHeight());
+    Log.d(TAG, "OFFSETT bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
+    Log.d(TAG, "OFFSETT bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
+
 
     layout.draw(new Canvas());
 
     //Subtract the height of the top margin
     int pageHeight = bookView.getMeasuredHeight() - bookView.getVerticalMargin();
+    Log.d(TAG, "OFFSETT FIRST pageHeight " + pageHeight);
+
+
 
     if (includePageNumbers) {
       String bottomSpace = "0\n";
@@ -145,7 +152,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       pageHeight = pageHeight - bookView.getVerticalMargin();
     }
 
-    Log.d(TAG, "Got pageHeight " + pageHeight);
+    Log.d(TAG, "OFFSETT Got pageHeight " + pageHeight);
 
     int totalLines = layout.getLineCount();
     int topLineNextPage = -1;

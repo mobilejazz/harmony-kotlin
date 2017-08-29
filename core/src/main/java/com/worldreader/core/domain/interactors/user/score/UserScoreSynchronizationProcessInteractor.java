@@ -110,7 +110,7 @@ import java.util.concurrent.*;
 
         // 4. Store new user score
         logger.d(TAG, "Storing new user score for user");
-        addUserScoreInteractor.execute(stat.getScore(), true, MoreExecutors.directExecutor()).get();
+        addUserScoreInteractor.execute(stat.getScore(), true, true, MoreExecutors.directExecutor()).get();
 
         // 4. Return successfully
         logger.d(TAG, "Process done");

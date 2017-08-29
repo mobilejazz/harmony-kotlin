@@ -5,6 +5,8 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.*;
 
 public class LocaleCountryCodeProvider implements CountryCodeProvider {
@@ -27,8 +29,22 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
     return countryISO;
   }
 
+  @Override public String getNetworkCountryIsoCode() {
+    TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    return tm.getNetworkCountryIso();
+  }
+
+  @Override public String getSimCountryIsoCode() {
+    TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    return tm.getSimCountryIso();
+  }
+
   @Override public String getCountryIso3Code() {
     return getLocale().getISO3Country();
+  }
+
+  @Override public String getCountry() {
+    return getLocale().getCountry();
   }
 
   @Override public String getLanguageIso3Code() {
@@ -51,5 +67,30 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
       }
     }
     return null;
+  }
+
+  @Override public String getIPAddress(boolean useIPv4) {
+    try {
+      List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+      for (NetworkInterface intf : interfaces) {
+        List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+        for (InetAddress addr : addrs) {
+          if (!addr.isLoopbackAddress()) {
+            String sAddr = addr.getHostAddress();
+            boolean isIPv4 = sAddr.indexOf(':')<0;
+            if (useIPv4) {
+              if (isIPv4)
+                return sAddr;
+            } else {
+              if (!isIPv4) {
+                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+              }
+            }
+          }
+        }
+      }
+    } catch (Exception ex) { } // for now eat exceptions
+    return "";
   }
 }
