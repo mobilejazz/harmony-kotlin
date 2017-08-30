@@ -196,6 +196,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
       if(resourcePath.contains(".jpg") || resourcePath.contains(".png") || resourcePath.contains(".gif")){
         contentFolder = "/content_generated/RESOLUTION_480x800/";
         alternativePath = resourcePath.substring(0, resourcePath.lastIndexOf("."))+".jpg";
+        //TODO: JL when using
         //alternativePath = resourcePath.substring(0, resourcePath.lastIndexOf("."))+"_medium.jpg";
         //resourcePath.replaceFirst("/[.](jpg|png|gif)(.*)","_medium.jpg");
       }

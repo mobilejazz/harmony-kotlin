@@ -73,11 +73,10 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String REFERRING_SCREEN = "referringScreen";//Examples of use of this attribute. BookDetails can be accessed from many different
   // places. When clickin on a book on ReadingTips page, I'll add this attribute with value ReadingTips. We can messure the amount of people
   // accessing book details from there.
-  public static final String REFERRING_META = "refferingMeta";
+  public static final String REFERRING_META = "referringMeta";
 
   public static final String IN_SCREEN = "inScreen";
   public static final String SCREEN_NAME_ATTRIBUTE = "screenName";
-
 
   ///REVIEW FROM HERE ON----------------
   public static final String RAW_CONTROLLER = "Controller";
