@@ -13,15 +13,16 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import com.worldreader.core.datasource.spec.score.UserScoreStorageSpecification;
+import com.worldreader.core.datasource.spec.score.UpdateUserScoreStorageSpecification;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserScore;
-import java.util.Date;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class AddUserScoreInteractor {
 
@@ -30,8 +31,8 @@ import javax.inject.Singleton;
   private final GetUserInteractor getUserInteractor;
   private final InteractorHandler interactorHandler;
 
-  @Inject
-  public AddUserScoreInteractor(final ListeningExecutorService executor, final Repository<UserScore, RepositorySpecification> userScoreRepository,
+  @Inject public AddUserScoreInteractor(final ListeningExecutorService executor,
+      final Repository<UserScore, RepositorySpecification> userScoreRepository,
       final GetUserInteractor getUserInteractor, final InteractorHandler interactorHandler) {
     this.executor = executor;
     this.userScoreRepository = userScoreRepository;
@@ -39,47 +40,44 @@ import javax.inject.Singleton;
     this.interactorHandler = interactorHandler;
   }
 
-  public ListenableFuture<UserScore> execute(final String bookId, final int pages) {
-    return execute(bookId, pages, executor);
-  }
-
-  public ListenableFuture<UserScore> execute(final String bookId, final int pages, Executor executor) {
-    final UserStorageSpecification spec = UserStorageSpecification.target(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
+  public ListenableFuture<UserScore> execute(final String bookId, final int pages,
+      Executor executor) {
+    final UserStorageSpecification spec = UserStorageSpecification.target(
+        UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
     final SettableFuture<UserScore> settableFuture = SettableFuture.create();
-    executor.execute(getInteractorCallable(bookId, pages, false, spec, settableFuture));
+    executor.execute(getInteractorCallable(bookId, pages, false, false, spec, settableFuture));
     return settableFuture;
   }
 
-  public ListenableFuture<UserScore> execute(final int amount) {
-    return execute(amount, executor);
+  public ListenableFuture<UserScore> execute(final int amount, final boolean synced,
+      final boolean shouldResetUserScore, final Executor executor) {
+    final UserStorageSpecification spec = UserStorageSpecification.target(
+        UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
+    return execute(amount, synced, shouldResetUserScore, spec, executor);
   }
 
-  public ListenableFuture<UserScore> execute(final int amount, Executor executor) {
-    return execute(amount, false, executor);
-  }
-
-  public ListenableFuture<UserScore> execute(final int amount, final boolean synced, Executor executor) {
-    final UserStorageSpecification spec = UserStorageSpecification.target(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
-    return execute(amount, synced, spec, executor);
-  }
-
-  public ListenableFuture<UserScore> execute(final int amount, final boolean synced, final UserStorageSpecification spec, Executor executor) {
+  public ListenableFuture<UserScore> execute(final int amount, final boolean synced,
+      final boolean shouldResetUserScore, final UserStorageSpecification spec, Executor executor) {
     final SettableFuture<UserScore> settableFuture = SettableFuture.create();
-    executor.execute(getInteractorCallable(null, amount, synced, spec, settableFuture));
+    executor.execute(getInteractorCallable(null, amount, synced, shouldResetUserScore, spec, settableFuture));
     return settableFuture;
   }
 
-  @NonNull private SafeRunnable getInteractorCallable(@Nullable final String bookId, final int amount, final boolean synced,
-      final UserStorageSpecification spec, final SettableFuture<UserScore> future) {
+  @NonNull
+  private SafeRunnable getInteractorCallable(@Nullable final String bookId, final int amount,
+      final boolean synced, final boolean shouldResetUserScore, final UserStorageSpecification spec,
+      final SettableFuture<UserScore> future) {
     return new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final ListenableFuture<User2> userLf = getUserInteractor.execute(spec, MoreExecutors.directExecutor());
+        final ListenableFuture<User2> userLf =
+            getUserInteractor.execute(spec, MoreExecutors.directExecutor());
 
         interactorHandler.addCallback(userLf, new FutureCallback<User2>() {
           @Override public void onSuccess(final User2 result) {
             if (result != null) {
               final String userId = result.getId();
               final UserScore userScore;
+              final UpdateUserScoreStorageSpecification spec = new UpdateUserScoreStorageSpecification(shouldResetUserScore);
 
               // If bookId param is null then we just want to append a normal user score with amount
               if (bookId == null) {
@@ -100,7 +98,7 @@ import javax.inject.Singleton;
                     .build();
               }
 
-              userScoreRepository.put(userScore, UserScoreStorageSpecification.NONE, new Callback<Optional<UserScore>>() {
+              userScoreRepository.put(userScore, spec, new Callback<Optional<UserScore>>() {
                 @Override public void onSuccess(final Optional<UserScore> userScoreOptional) {
                   if (userScoreOptional.isPresent()) {
                     future.set(userScoreOptional.get());

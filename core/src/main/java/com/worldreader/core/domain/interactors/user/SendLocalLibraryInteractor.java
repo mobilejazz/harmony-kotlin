@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
+import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.repository.UserRepository;
@@ -59,7 +60,9 @@ import javax.inject.Inject;
     // End
 
     // Update anonymous user local library field
-    final User2 user = getUserInteractor.execute(MoreExecutors.directExecutor()).get();
+    final User2 user =
+        getUserInteractor.execute(new UserStorageSpecification(UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS),
+            MoreExecutors.directExecutor()).get();
     final User2 updatedUser = new User2.Builder(user).setLocalLibrary(localLibrary).build();
     saveUserInteractor.execute(updatedUser, SaveUserInteractor.Type.ANONYMOUS, MoreExecutors.directExecutor()).get();
 

@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
@@ -45,8 +45,7 @@ import com.worldreader.core.sync.WorldreaderJobCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Singleton public class AfterRegisterUserProcessInteractor {
 
@@ -69,6 +68,7 @@ import java.util.List;
   private final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor;
   private final SaveSessionInteractor saveSessionInteractor;
   private final Dates dateUtils;
+  private final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
 
   @Inject public AfterRegisterUserProcessInteractor(final ListeningExecutorService executor, final SaveUserInteractor saveUserInteractor,
       final GetUserInteractor getUserInteractor, final DeleteUserInteractor deleteUserInteractor,
@@ -80,7 +80,8 @@ import java.util.List;
       final SaveUserCategoriesInteractor saveUserCategoriesInteractor,
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
       final AnonymousUserScoreSynchronizationProcessInteractor anonymousUserScoreSynchronizationProcessInteractor,
-      final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor, final SaveSessionInteractor saveSessionInteractor, final Dates dateUtils) {
+      final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor, final SaveSessionInteractor saveSessionInteractor, final Dates dateUtils,
+      final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor) {
     this.executor = executor;
     this.saveUserInteractor = saveUserInteractor;
     this.getUserInteractor = getUserInteractor;
@@ -100,6 +101,7 @@ import java.util.List;
     this.saveOnBoardingPassedInteractor = saveOnBoardingPassedInteractor;
     this.saveSessionInteractor = saveSessionInteractor;
     this.dateUtils = dateUtils;
+    this.configAnalyticsUserIdInteractor = configAnalyticsUserIdInteractor;
   }
 
   public enum From {
@@ -179,7 +181,7 @@ import java.util.List;
             // 5.1 - If we have updated userbooks, store it for the current user
             if (!updatedUserBooks.isEmpty()) {
               final UserBookStorageSpecification updatedUserBookStorageSpecification = new PutAllUserBooksStorageSpec();
-              putAllUserBooksInteractor.execute(updatedUserBookStorageSpecification, updatedUserBooks, MoreExecutors.directExecutor());
+              putAllUserBooksInteractor.execute(updatedUserBookStorageSpecification, updatedUserBooks, MoreExecutors.directExecutor()).get();
             }
           }
 
@@ -196,7 +198,7 @@ import java.util.List;
 
             // After everything OK, then we store it for the current user
             putAllUserBooksLikesInteractor.execute(updatedUserBooksLike,
-                new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor());
+                new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN), MoreExecutors.directExecutor()).get();
           }
 
           // 6 - Get anonymous completed milestones
@@ -215,13 +217,8 @@ import java.util.List;
           }
 
           // 8 - Launch userscore process to sync the score
-          //final ListenableFuture<Boolean> userScoreSyncFuture =
-          //    userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor());
-          //userScoreSyncFuture.get();
-
-          final ListenableFuture<Boolean> anonymousUserScoreSyncronizationFuture =
-              anonymousUserScoreSynchronizationProcessInteractor.execute(anonymousUser.getId(), user.getId(), MoreExecutors.directExecutor());
-          anonymousUserScoreSyncronizationFuture.get();
+          userScoreSynchronizationProcessInteractor.execute(MoreExecutors.directExecutor()).get();
+          //anonymousUserScoreSynchronizationProcessInteractor.execute(anonymousUser.getId(), user.getId(), MoreExecutors.directExecutor()).get();
 
           // 9 - Save markInMyBooks categories
           final List<String> favoriteCategories = anonymousUser.getFavoriteCategories();
@@ -263,6 +260,9 @@ import java.util.List;
           // 15 - SaveOnBoarding
           saveOnBoardingPassedAndSaveSessionPassed(future, newUpdatedUser);
 
+          // 16 - Config the user id
+          configAnalyticsUserIdInteractor.execute(newUpdatedUser, MoreExecutors.directExecutor()).get();
+
         } catch (Throwable e) {
 
           // Means that there user came from onboarding process, so there is no anonymous user.
@@ -273,8 +273,18 @@ import java.util.List;
               final User2 userWithCategories = saveUserCategoriesInteractor.execute(categoriesId, MoreExecutors.directExecutor()).get();
 
               // Update the new user with the category ids.
-              saveUserInteractor.execute(userWithCategories, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor());
+              saveUserInteractor.execute(userWithCategories, SaveUserInteractor.Type.LOGGED_IN, MoreExecutors.directExecutor()).get();
             }
+
+            // generate the user milestones.
+            final String id = getUserInteractor.execute(MoreExecutors.directExecutor()).get().getId();
+            final List<UserMilestone> userMilestones =
+                createUserMilestonesInteractor.execute(id, Collections.<Integer>emptyList(),
+                    MoreExecutors.directExecutor()).get();
+
+            final PutUserMilestonesStorageSpec putUserMilestonesStorageSpec =
+                new PutUserMilestonesStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+            putAllUserMilestonesInteractor.execute(putUserMilestonesStorageSpec, userMilestones, MoreExecutors.directExecutor()).get();
 
             // Save onboarding and finishe the user.
             saveOnBoardingPassedAndSaveSessionPassed(future, user);

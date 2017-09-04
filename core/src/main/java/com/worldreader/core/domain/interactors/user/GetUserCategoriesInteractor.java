@@ -1,13 +1,12 @@
 package com.worldreader.core.domain.interactors.user;
 
-import android.support.annotation.NonNull;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.worldreader.core.concurrency.SafeCallable;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.model.user.User2;
 
@@ -17,43 +16,39 @@ import java.util.*;
 
 @Singleton public class GetUserCategoriesInteractor {
 
-  private final InteractorHandler interactorHandler;
   private final GetUserInteractor getUserInteractor;
+  private final ListeningExecutorService executorService;
 
-  @Inject public GetUserCategoriesInteractor(InteractorHandler interactorHandler,
-      GetUserInteractor getUserInteractor) {
-    this.interactorHandler = interactorHandler;
+  @Inject public GetUserCategoriesInteractor(final GetUserInteractor getUserInteractor,
+      final ListeningExecutorService executorService) {
     this.getUserInteractor = getUserInteractor;
+    this.executorService = executorService;
   }
 
   public ListenableFuture<List<Integer>> execute() {
-    final SettableFuture<List<Integer>> future = SettableFuture.create();
+    return executorService.submit(new SafeCallable<List<Integer>>() {
+      @Override protected List<Integer> safeCall() throws Throwable {
+        final UserStorageSpecification spec = new UserStorageSpecification(
+            UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
+        final User2 user = getUserInteractor.execute(spec, MoreExecutors.directExecutor()).get();
 
-    final UserStorageSpecification spec = new UserStorageSpecification(
-        UserStorageSpecification.UserTarget.FIRST_LOGGED_IN_FALLBACK_TO_ANONYMOUS);
-    final ListenableFuture<User2> getUserFuture = getUserInteractor.execute(spec);
-
-    interactorHandler.addCallback(getUserFuture, new FutureCallback<User2>() {
-      @Override public void onSuccess(User2 user) {
         final List<String> categories =
             Collections.unmodifiableList(Lists.newArrayList(user.getFavoriteCategories()));
-        final List<Integer> categoriesId = new ToIntegerListFunction().apply(categories);
-        future.set(categoriesId);
+
+        return new ToIntegerListFunction().apply(categories);
       }
 
-      @Override public void onFailure(@NonNull Throwable t) {
-        future.setException(t);
+      @Override protected void onExceptionThrown(final Throwable t) {
+        // Nothing to do
       }
     });
-
-    return future;
   }
 
   private static class ToIntegerListFunction implements Function<List<String>, List<Integer>> {
 
     @Override public List<Integer> apply(List<String> input) {
       Preconditions.checkNotNull(input, "input == null");
-      final List<Integer> result = Lists.newArrayList(input.size());
+      final List<Integer> result = Lists.newArrayList();
       for (String categoryIdString : input) {
         Integer parsedResult;
         try {

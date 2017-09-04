@@ -23,6 +23,7 @@ import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.datasource.spec.userbooks.PutAllUserBooksStorageSpec;
+import com.worldreader.core.datasource.spec.userbookslike.PutAllUserBookLikeStorageSpec;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
 import com.worldreader.core.domain.interactors.user.milestones.CreateUserMilestonesInteractor;
 import com.worldreader.core.domain.interactors.user.milestones.PutAllUserMilestonesInteractor;
@@ -34,26 +35,19 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.domain.model.user.UserScore;
-import java.io.File;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import javax.inject.Inject;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import javax.inject.Inject;
+import java.io.*;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.util.*;
+import java.util.concurrent.*;
 
 // TODO: 12/07/2017 Review expired token
 @PerActivity public class UserMigrationProcessInteractor {
@@ -108,6 +102,7 @@ import okhttp3.Response;
 
   private Callable<Boolean> getInteractorCallable(final Context context) {
     return new Callable<Boolean>() {
+
       @Override public Boolean call() throws Exception {
         // Try to load the DB
         logger.d(TAG, "Loading the old database");
@@ -194,6 +189,26 @@ import okhttp3.Response;
               logger.d(TAG, "Kick starting after login user process interactor");
               afterLogInUserProcessInteractor.execute(user2, MoreExecutors.directExecutor()).get();
 
+              logger.d(TAG, "Storing UserBooksLikes in storage");
+              final List<BookNetwork> favoriteBooks = userNetwork.favoriteBooks;
+              final List<UserBookLike> userBookLikes = new ArrayList<>(favoriteBooks.size());
+              for (final BookNetwork favoriteBook : favoriteBooks) {
+                final UserBookLike userBookLike =
+                    new UserBookLike.Builder().withBookId(favoriteBook.bookId)
+                        .withLiked(true)
+                        .withUserId(String.valueOf(favoriteBook.userId))
+                        .withLikedAt(new Date())
+                        .withSync(false)
+                        .build();
+
+                userBookLikes.add(userBookLike);
+              }
+
+              final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
+                  new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN);
+              putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec,
+                  MoreExecutors.directExecutor()).get();
+
               // Clean this DB
               logger.d(TAG, "Cleaning old database file");
               oldDBFile.delete();
@@ -227,7 +242,7 @@ import okhttp3.Response;
 
             // Update UserBooks with favorite books (or create those which weren't listed before)
             logger.d(TAG, "Updating UserBooks collection with favorites");
-            userBooks = addFavoriteUserBooks(userBooks, user);
+            userBooks = addInMyBooksUserBooks(userBooks, user);
 
             // Store those UserBooks
             if (!userBooks.isEmpty()) {
@@ -238,13 +253,15 @@ import okhttp3.Response;
 
             // Create UserBooksLikes with liked UserBooks
             logger.d(TAG, "Generating UserBooksLike with liked books");
-            final List<UserBookLike> userBookLikes = createUserBooksLikes(userBooks);
+            final List<UserBookLike> userBookLikes = createUserBooksLikes(user);
 
             // Store UserBooksLikes
             if (!userBookLikes.isEmpty()) {
               logger.d(TAG, "Storing UserBooksLikes into db");
-              final PutAllUserBooksStorageSpec allUserBooksSpec = new PutAllUserBooksStorageSpec();
-              putAllUserBooksLikesInteractor.execute(userBookLikes, allUserBooksSpec, MoreExecutors.directExecutor()).get();
+              final PutAllUserBookLikeStorageSpec userBookLikeStorageSpec =
+                  new PutAllUserBookLikeStorageSpec(UserStorageSpecification.UserTarget.ANONYMOUS);
+              putAllUserBooksLikesInteractor.execute(userBookLikes, userBookLikeStorageSpec,
+                  MoreExecutors.directExecutor()).get();
             }
 
             // Create all user milestones
@@ -275,7 +292,7 @@ import okhttp3.Response;
             // Store UserScore in DB
             logger.d(TAG, "Storing UserScore in db");
             final UserStorageSpecification target = UserStorageSpecification.target(UserStorageSpecification.UserTarget.ANONYMOUS);
-            addUserScoreInteractor.execute(score.getScore(), false, target, MoreExecutors.directExecutor()).get();
+            addUserScoreInteractor.execute(score.getScore(), false, true, target, MoreExecutors.directExecutor()).get();
 
             // Clean this DB
             logger.d(TAG, "Deleting old db");
@@ -296,19 +313,35 @@ import okhttp3.Response;
     return new UserScore.Builder().setCreatedAt(new Date()).setScore(user.userScore).setUserId(UsersTable.ANONYMOUS_USER_ID).build();
   }
 
-  private List<UserBookLike> createUserBooksLikes(final List<UserBook> userBooks) {
-    final List<UserBookLike> userBookLikes = new ArrayList<>();
-    for (final UserBook userBook : userBooks) {
-      final boolean liked = userBook.isLiked();
-      if (liked) {
-        final UserBookLike like = new UserBookLike.Builder().withBookId(userBook.getBookId())
-            .withUserId(userBook.getUserId())
-            .withLiked(true)
-            .withLikedAt(new Date())
-            .build();
-        userBookLikes.add(like);
-      }
+  private List<UserBookLike> createUserBooksLikes(final UserEntity user) {
+    final List<String> favoritesBooks =
+        user.favoritesBooks != null ? user.favoritesBooks : new ArrayList<String>();
+    //UsersTable.ANONYMOUS_USER_ID
+
+    final List<UserBookLike> userBookLikes = new ArrayList<>(favoritesBooks.size());
+    for (final String favoriteBookId : favoritesBooks) {
+      final UserBookLike userBookLike = new UserBookLike.Builder().withBookId(favoriteBookId)
+          .withLiked(true)
+          .withUserId(UsersTable.ANONYMOUS_USER_ID)
+          .withLikedAt(new Date())
+          .withSync(false)
+          .build();
+
+      userBookLikes.add(userBookLike);
     }
+
+    //final List<UserBookLike> userBookLikes = new ArrayList<>();
+    //for (final UserBook userBook : userBooks) {
+    //  final boolean liked = userBook.isLiked();
+    //  if (liked) {
+    //    final UserBookLike like = new UserBookLike.Builder().withBookId(userBook.getBookId())
+    //        .withUserId(userBook.getUserId())
+    //        .withLiked(true)
+    //        .withLikedAt(new Date())
+    //        .build();
+    //    userBookLikes.add(like);
+    //  }
+    //}
     return userBookLikes;
   }
 
@@ -380,12 +413,13 @@ import okhttp3.Response;
     return new ArrayList<>(userBooks);
   }
 
-  private List<UserBook> addFavoriteUserBooks(final List<UserBook> books, final UserEntity user) {
-    final List<String> favoritesBooks = user.favoritesBooks != null ? user.favoritesBooks : new ArrayList<String>();
+  private List<UserBook> addInMyBooksUserBooks(final List<UserBook> books, final UserEntity user) {
+    final List<String> inMyBooksId =
+        user.booksCurrentlyReading != null ? user.booksCurrentlyReading : new ArrayList<String>();
 
     final Set<UserBook> userBooks = new HashSet<>();
 
-    for (final String bookId : favoritesBooks) {
+    for (final String bookId : inMyBooksId) {
 
       boolean updated = false;
       for (final UserBook userBook : books) {

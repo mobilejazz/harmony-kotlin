@@ -13,13 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.worldreader.core.R;
+import com.worldreader.core.analytics.Analytics;
+import com.worldreader.core.analytics.event.AnalyticsEventConstants;
+import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
 import com.worldreader.core.application.helper.ui.adapters.decoration.ItemDividerDecoration;
+import com.worldreader.core.application.ui.widget.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.wr.adapter.TocEntriesAdapter;
 import jedi.option.Option;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 
