@@ -13,15 +13,7 @@ public class ResourcesCredentialsEntity {
 
   public ResourcesCredentialsEntity() {
   }
-
-  public ResourcesCredentialsEntity(final String host, final String prefix, final String query,
-      final Date date) {
-    this.host = host;
-    this.prefix = prefix;
-    this.query = query;
-    this.date = date;
-  }
-
+  
   public String getHost() {
     return host;
   }

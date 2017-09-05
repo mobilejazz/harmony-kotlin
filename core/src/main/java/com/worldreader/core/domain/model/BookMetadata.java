@@ -103,7 +103,7 @@ public class BookMetadata implements Serializable {
   }
 
   public boolean isImage(String resource) {
-    return resource.contains("png") || resource.contains("jpg") || resource.contains("jpeg");
+    return resource.contains("png") || resource.contains("jpg") || resource.contains("jpeg") || resource.contains("bmp") || resource.contains("jpe");
   }
 
   public String addStaticImageSize(String resource) {
