@@ -1,7 +1,11 @@
 package com.worldreader.core.domain.interactors.reader;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -11,8 +15,10 @@ import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.error.book.FailedDownloadBookException;
 
+import java.util.List;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
-import java.util.*;
 
 public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, ErrorCore<?>>
     implements DownloadBookInteractor {
@@ -29,8 +35,8 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   private DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback;
 
   @Inject public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor,
-      MainThread mainThread, GetBookMetadataInteractor getBookMetadataInteractor,
-      StreamingBookRepository streamingBookRepository) {
+                                            MainThread mainThread, GetBookMetadataInteractor getBookMetadataInteractor,
+                                            StreamingBookRepository streamingBookRepository) {
     super(executor, mainThread);
     this.logger = logger;
     this.getBookMetadataInteractor = getBookMetadataInteractor;
@@ -44,20 +50,32 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId,
-      final DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
-    this.bookId = bookId;
-    this.forceBookMetadataRefresh = false;
-    this.backgroundCallback = backgroundCallback;
-    this.executor.run(this);
-  }
-
   @Override public void execute(String bookId, boolean forceBookMetadataRefresh,
-      DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
+                                DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
     this.bookId = bookId;
     this.forceBookMetadataRefresh = forceBookMetadataRefresh;
     this.backgroundCallback = backgroundCallback;
     this.executor.run(this);
+  }
+
+  @Override public ListenableFuture<Void> execute(final String bookId, Executor executor) {
+    this.bookId = bookId;
+    this.forceBookMetadataRefresh = false;
+
+    final SettableFuture<Void> settableFuture = SettableFuture.create();
+    executor.execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+
+        final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, forceBookMetadataRefresh, MoreExecutors.directExecutor()).get();
+        downloadBookResources(bookMetadata, false);
+        settableFuture.set(null);
+      }
+
+      @Override protected void onExceptionThrown(Throwable t) {
+        settableFuture.setException(t);
+      }
+    });
+    return settableFuture;
   }
 
   @Override public void run() {
@@ -124,7 +142,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   }
 
   private void shouldNotifySuccessfulResponse(boolean shouldNotifyResponses, int count,
-      int numberOfResources) {
+                                              int numberOfResources) {
     final int percentage = calculatePercentage(count, numberOfResources);
     if (shouldNotifyResponses && callback != null) {
       performSuccessCallback(callback, percentage);
