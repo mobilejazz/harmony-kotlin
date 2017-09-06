@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.helper.url.URLProvider;
@@ -40,7 +41,8 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     this.logger = logger;
   }
 
-  @Override public void retrieveBookMetadata(String bookId, final String version, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
+  @Override
+  public void retrieveBookMetadata(String bookId, final String version, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
     final String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
         .addId(bookId)
         .addVersion(StreamingBookRepository.KEY_LATEST)
@@ -75,9 +77,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     }
   }
 
-  @Override
-  public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource)
-      throws Exception {
+  @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource) throws Exception {
     String key = id + resource;
     StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
@@ -100,7 +100,8 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
-  @Override public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
+  @Override
+  public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
     return executorService.submit(new Callable<StreamingResource>() {
       @Override public StreamingResource call() throws Exception {
         return getBookResource(id, bookMetadata, resource);
@@ -125,17 +126,16 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   ///////////////////////////////////////////////////////////////////////////
 
   private void fetchBookMetadata(final String key, final String version, final String bookId, final CompletionCallback<BookMetadata> callback) {
-    networkDataSource.retrieveBookMetadata(bookId, version, new CompletionCallback<BookMetadataEntity>() {
+    networkDataSource.retrieveBookMetadata(bookId, version, new Callback<BookMetadataEntity>() {
       @Override public void onSuccess(BookMetadataEntity bookMetadataEntity) {
         bddDataSource.persist(key, bookMetadataEntity);
-
-        BookMetadata transformed = transform(bookMetadataEntity);
+        final BookMetadata transformed = transform(bookMetadataEntity);
         notifyResponse(transformed, callback);
       }
 
-      @Override public void onError(ErrorCore errorCore) {
+      @Override public void onError(Throwable e) {
         if (callback != null) {
-          callback.onError(errorCore);
+          callback.onError(ErrorCore.of(e));
         }
       }
     });

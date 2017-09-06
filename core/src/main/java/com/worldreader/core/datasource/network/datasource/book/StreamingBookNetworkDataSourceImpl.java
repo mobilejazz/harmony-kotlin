@@ -6,7 +6,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.qualifiers.WorldReaderServer;
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
 import com.worldreader.core.datasource.model.BookMetadataEntity;
@@ -53,10 +52,11 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     this.streamingBookApiService = streamingBookApiService;
     this.logger = logger;
     this.okHttpClient = okHttpClient;
-    this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(60, TimeUnit.SECONDS).build();
+    this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(5, TimeUnit.MINUTES).build();
   }
 
-  @Override public void retrieveBookMetadata(final String bookId, final String version, final CompletionCallback<BookMetadataEntity> callback) {
+  @Override public void retrieveBookMetadata(final String bookId, final String version,
+      final com.worldreader.core.common.callback.Callback<BookMetadataEntity> callback) {
     streamingBookApiService.getContentOpfLocationEntity(bookId, StreamingBookApiService2.VERSION_LATEST)
         .enqueue(new Callback<ContentOpfLocationEntity>() {
           @Override public void onResponse(Call<ContentOpfLocationEntity> call, Response<ContentOpfLocationEntity> response) {
@@ -79,12 +79,16 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                     if (response.isSuccessful()) {
                       final ContentOpfEntity contentOpf = response.body();
 
+                      // As we successfully gathered the _generated.opf version, we are going to add that extension
+                      final String rawContentOpfName = contentContainer.getContentOpfName();
+                      final String contentOpfName = rawContentOpfName.substring(0, rawContentOpfName.lastIndexOf("."));
+
                       // Once we currently have the contentContainer and the contentOpf we can generate the BookMetadata
                       final BookMetadataEntity bookMetadataEntity = new BookMetadataEntity();
                       bookMetadataEntity.setBookId(bookId);
                       bookMetadataEntity.setVersion(version);
                       bookMetadataEntity.setRelativeContentUrl(contentContainer.getContentOpfPath());
-                      bookMetadataEntity.setContentOpfName(contentContainer.getContentOpfName());
+                      bookMetadataEntity.setContentOpfName(contentOpfName + "_generated.opf");
                       bookMetadataEntity.setTocResource(contentOpf.getTocEntry());
                       bookMetadataEntity.setResources(contentOpf.getManifestEntries());
                       bookMetadataEntity.setImagesResources(contentOpf.getImagesResourcesEntries());
@@ -116,7 +120,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                                   if (callback != null) {
                                     logger.e(TAG, "Exception finding content opf resource!");
                                     final Retrofit2Error error = Retrofit2Error.httpError(response);
-                                    callback.onError(errorAdapter.of(error));
+                                    callback.onError(errorAdapter.of(error).getCause());
                                   }
                                 }
                               }
@@ -124,7 +128,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                               @Override public void onFailure(final Call<ContentOpfEntity> call, final Throwable t) {
                                 if (callback != null) {
                                   logger.e(TAG, t.toString());
-                                  callback.onError(errorAdapter.of(t));
+                                  callback.onError(errorAdapter.of(t).getCause());
                                 }
                               }
                             });
@@ -133,7 +137,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                         if (callback != null) {
                           logger.e(TAG, "Exception finding content opf resource!");
                           final Retrofit2Error error = Retrofit2Error.httpError(response);
-                          callback.onError(errorAdapter.of(error));
+                          callback.onError(errorAdapter.of(error).getCause());
                         }
                       }
                     }
@@ -142,7 +146,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                   @Override public void onFailure(Call<ContentOpfEntity> call, Throwable t) {
                     if (callback != null) {
                       logger.e(TAG, t.toString());
-                      callback.onError(errorAdapter.of(t));
+                      callback.onError(errorAdapter.of(t).getCause());
                     }
                   }
                 };
@@ -152,14 +156,14 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
                 if (callback != null) {
                   logger.e(TAG, "Exception with the content opf resource for book id: !" + bookId);
                   final Retrofit2Error error = Retrofit2Error.httpError(response);
-                  callback.onError(errorAdapter.of(error));
+                  callback.onError(errorAdapter.of(error).getCause());
                 }
               }
             } else {
               if (callback != null) {
                 logger.e(TAG, "Exception with the content opf resource for book id: !" + bookId);
                 final Retrofit2Error error = Retrofit2Error.httpError(response);
-                callback.onError(errorAdapter.of(error));
+                callback.onError(errorAdapter.of(error).getCause());
               }
             }
           }
@@ -167,7 +171,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
           @Override public void onFailure(Call<ContentOpfLocationEntity> call, Throwable t) {
             if (callback != null) {
               logger.e(TAG, "Exception while finding the content opf resource for book id: !" + bookId);
-              callback.onError(errorAdapter.of(t));
+              callback.onError(errorAdapter.of(t).getCause());
             }
           }
         });
@@ -220,10 +224,33 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
       }
 
       return StreamingResourceEntity.create(response.body().byteStream());
-    } else {
-      // Don't do anything special to this request
+    }
+    //} else if (cache.size() > 0) {
+    //  // If we have a valid resource credential, try to fetch the resource directly
+    //
+    //  final HttpUrl url = HttpUrl.parse(credentials.getHost())
+    //      .newBuilder()
+    //      .addPathSegment(credentials.getPrefix())
+    //      .addPathSegment(bookMetadata.getBookId())
+    //      .addPathSegment(bookMetadata.getVersion())
+    //      .addPathSegment("content")
+    //      .addPathSegments(resource)
+    //      .encodedQuery(credentials.getQuery())
+    //      .build();
+    //
+    //  final Call<ResponseBody> bookResourceCall = streamingBookApiService.getBookResource(url.toString());
+    //  final Response<ResponseBody> bodyResponse = bookResourceCall.execute();
+    //
+    //  if (!bodyResponse.isSuccessful()) {
+    //    throw new Exception("Can't process this request! Request code: " + bodyResponse.code() + " Current URL: " + resourceUrl);
+    //  }
+    //
+    //  return StreamingResourceEntity.create(bodyResponse.body().byteStream());
+    //
+    //} else {
+    else {
+      // As we don't have a valid resource credential, we rely on using the old good known endpoint
       final Call<ResponseBody> bookResourceCall = streamingBookApiService.getBookResource(resourceUrl);
-      logger.d("HTTP", bookResourceCall.request().url().toString());
       final Response<ResponseBody> bodyResponse = bookResourceCall.execute();
 
       if (!bodyResponse.isSuccessful()) {
