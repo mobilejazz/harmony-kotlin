@@ -10,6 +10,9 @@ import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
+import com.worldreader.core.domain.interactors.book.GetBookDetailInteractor;
+import com.worldreader.core.domain.interactors.book.GetRecommendedBooksInteractor;
+import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
@@ -28,6 +31,8 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   private final Logger logger;
   private final GetBookMetadataInteractor getBookMetadataInteractor;
   private final StreamingBookRepository streamingBookRepository;
+  private final GetBookDetailInteractor getBookDetailInteractor;
+  private final GetRecommendedBooksInteractor getRecommendedBooksInteractor;
 
   private String bookId;
   private boolean forceBookMetadataRefresh;
@@ -36,11 +41,13 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
 
   @Inject public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor,
                                             MainThread mainThread, GetBookMetadataInteractor getBookMetadataInteractor,
-                                            StreamingBookRepository streamingBookRepository) {
+                                            StreamingBookRepository streamingBookRepository, GetBookDetailInteractor getBookDetailInteractor, GetRecommendedBooksInteractor getRecommendedBooksInteractor) {
     super(executor, mainThread);
     this.logger = logger;
     this.getBookMetadataInteractor = getBookMetadataInteractor;
     this.streamingBookRepository = streamingBookRepository;
+    this.getBookDetailInteractor = getBookDetailInteractor;
+    this.getRecommendedBooksInteractor = getRecommendedBooksInteractor;
   }
 
   @Override public void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback) {
@@ -129,6 +136,11 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
         streamingBookRepository.getBookResource(bookId, bookMetadata, resourceToDownload);
 
         shouldNotifySuccessfulResponse(shouldNotifyResponses, position + count, numberOfResources);
+      }
+
+      final Book book = getBookDetailInteractor.execute(bookId, MoreExecutors.directExecutor()).get().orNull();
+      if (book != null) {
+        getRecommendedBooksInteractor.execute(book, 0, 3);
       }
 
       shouldNotifySuccessfulResponse(shouldNotifyResponses, numberOfResources, numberOfResources);
