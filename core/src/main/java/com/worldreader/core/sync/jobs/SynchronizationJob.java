@@ -99,8 +99,9 @@ public class SynchronizationJob extends Job {
       final IsAnonymousUserInteractor.Type type = isAnonymousUserInteractor.execute().get();
       logger.d(TAG, "Current user type: " + type.toString());
 
-      if (type == IsAnonymousUserInteractor.Type.ANONYMOUS) {
-        logger.d(TAG, "User is anonymous, ignoring this sync job!");
+      if (type == IsAnonymousUserInteractor.Type.ANONYMOUS || type == IsAnonymousUserInteractor.Type.NONE) {
+        logger.d(TAG, "As user is not registered we're disabling job creator!");
+        WorldreaderJobCreator.cancelAllJobs();
         return Result.SUCCESS;
       }
 
