@@ -7,11 +7,16 @@ import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.Interactor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.Category;
+
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public interface GetHighestRatedBooksInteractor extends Interactor {
 
   void execute(int offset, int limit, List<Category> categories, DomainCallback<List<Book>, ErrorCore> callback);
 
   ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit);
+
+  ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit, Executor executor);
+
 }
