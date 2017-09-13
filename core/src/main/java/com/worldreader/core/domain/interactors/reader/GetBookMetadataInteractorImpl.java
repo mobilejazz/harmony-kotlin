@@ -1,6 +1,6 @@
 package com.worldreader.core.domain.interactors.reader;
 
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
@@ -9,6 +9,7 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
+
 import javax.inject.Inject;
 
 public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetadata, ErrorCore<?>> implements GetBookMetadataInteractor {
@@ -52,7 +53,7 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
   }
 
   @Override public void run() {
-    streamingBookRepository.retrieveBookMetadata(this.bookId, this.version, this.forceBookMetadataRefresh, new CompletionCallback<BookMetadata>() {
+    streamingBookRepository.retrieveBookMetadata(this.bookId, this.version, this.forceBookMetadataRefresh, new Callback<BookMetadata>() {
       @Override public void onSuccess(final BookMetadata result) {
         if (backgroundCallback != null) {
           backgroundCallback.onSuccess(result);
@@ -61,11 +62,11 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
         }
       }
 
-      @Override public void onError(final ErrorCore error) {
+      @Override public void onError(Throwable e) {
         if (backgroundCallback != null) {
-          backgroundCallback.onError(error);
+          backgroundCallback.onError(ErrorCore.of(e));
         } else {
-          performErrorCallback(callback, error);
+          performErrorCallback(callback, ErrorCore.of(e));
         }
       }
     });

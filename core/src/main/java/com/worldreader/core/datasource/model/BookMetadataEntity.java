@@ -64,8 +64,8 @@ public class BookMetadataEntity {
     this.resources = resources;
   }
 
-  public void setImagesResources(Map<String, ContentOpfEntity.Item> resources) {
-    this.imagesResources = resources;
+  public void setImagesResources(Map<String, ContentOpfEntity.Item> imagesResources) {
+    this.imagesResources = imagesResources;
   }
 
   public Map<String, ContentOpfEntity.Item> getImagesResources() {

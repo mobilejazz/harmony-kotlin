@@ -1,6 +1,7 @@
 package com.worldreader.core.domain.model;
 
 import com.worldreader.core.datasource.model.ContentOpfEntity;
+
 import java.io.*;
 import java.util.*;
 
@@ -102,19 +103,12 @@ public class BookMetadata implements Serializable {
     this.resources = resources;
   }
 
-  public boolean isImage(String resource) {
-    return resource.contains("png") || resource.contains("jpg") || resource.contains("jpeg") || resource.contains("bmp") || resource.contains("jpe");
-  }
-
-  public String addStaticImageSize(String resource) {
-    return resource + "?size=480x800";
+  public Map<String, ContentOpfEntity.Item> getImagesResources() {
+    return imagesResources;
   }
 
   public void setImagesResources(Map<String, ContentOpfEntity.Item> resources) {
     this.imagesResources = resources;
   }
 
-  public Map<String, ContentOpfEntity.Item> getImagesResources() {
-    return imagesResources;
-  }
 }

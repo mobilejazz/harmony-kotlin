@@ -7,6 +7,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import java.io.*;
 import java.util.*;
 
 @Root(strict = false, name = "package") public class ContentOpfEntity {

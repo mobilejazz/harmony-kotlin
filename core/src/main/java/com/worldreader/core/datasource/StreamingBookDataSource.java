@@ -5,8 +5,6 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
-import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.helper.url.URLProvider;
 import com.worldreader.core.datasource.mapper.BookMetadataEntityDataMapper;
 import com.worldreader.core.datasource.mapper.deprecated.Mapper;
@@ -18,6 +16,7 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
+import org.javatuples.Pair;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -27,9 +26,13 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   private final StreamingBookNetworkDataSource networkDataSource;
   private final StreamingBookBdDataSource bddDataSource;
+
   private final BookMetadataEntityDataMapper bookMetadataEntityDataMapper;
   private final Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper;
+
   private final Logger logger;
+
+  private static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
   @Inject public StreamingBookDataSource(StreamingBookNetworkDataSource networkDataSource, StreamingBookBdDataSource bddDataSource,
       BookMetadataEntityDataMapper bookMetadataEntityDataMapper, Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper,
@@ -41,8 +44,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
     this.logger = logger;
   }
 
-  @Override
-  public void retrieveBookMetadata(String bookId, final String version, boolean forceRefreshBookMetadata, CompletionCallback<BookMetadata> callback) {
+  @Override public void retrieveBookMetadata(String bookId, String version, boolean forceRefreshBookMetadata, Callback<BookMetadata> callback) {
     final String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
         .addId(bookId)
         .addVersion(StreamingBookRepository.KEY_LATEST)
@@ -53,8 +55,8 @@ public class StreamingBookDataSource implements StreamingBookRepository {
       fetchBookMetadata(key, version, bookId, callback);
     } else {
       try {
-        BookMetadataEntity cached = bddDataSource.obtainBookMetadata(key);
-        BookMetadata response = transform(cached);
+        final BookMetadataEntity cached = bddDataSource.obtainBookMetadata(key);
+        final BookMetadata response = transform(cached);
         notifyResponse(response, callback);
       } catch (InvalidCacheException e) {
         fetchBookMetadata(key, version, bookId, callback);
@@ -63,14 +65,14 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   }
 
   @Override public BookMetadata getBookMetadata(String bookId) {
-    String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
+    final String key = URLProvider.withEndpoint(StreamingBookNetworkDataSource.ENDPOINT)
         .addId(bookId)
         .addVersion(StreamingBookRepository.KEY_LATEST)
         .addSubPath(StreamingBookRepository.CONTENT_OPF_LOCATION_PATH)
         .build();
 
     try {
-      BookMetadataEntity cached = bddDataSource.obtainBookMetadata(key);
+      final BookMetadataEntity cached = bddDataSource.obtainBookMetadata(key);
       return transform(cached);
     } catch (InvalidCacheException e) {
       return null;
@@ -78,7 +80,8 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   }
 
   @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource) throws Exception {
-    String key = id + resource;
+    final String key = id + resource;
+
     StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
     if (streamingResourceEntity == null) {
@@ -92,13 +95,10 @@ public class StreamingBookDataSource implements StreamingBookRepository {
         logger.e(TAG, "Error while trying to save resource to database for book id: " + id + " exception: " + e);
         return StreamingResource.EMPTY;
       }
-
     }
 
     return streamingResourceMapper.transform(streamingResourceEntity);
   }
-
-  static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
   @Override
   public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
@@ -110,14 +110,14 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   }
 
   @Override public StreamingResource getBookResourceFastAccess(String id, String resource) {
-    String key = id + resource;
+    final String key = id + resource;
     final StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
     return streamingResourceEntity == null ? null : streamingResourceMapper.transform(streamingResourceEntity);
   }
 
   @Override public boolean deleteBookResource(String bookId, String resource) {
-    String key = bookId + resource;
+    final String key = bookId + resource;
     return bddDataSource.deleteStreamingResource(key);
   }
 
@@ -125,23 +125,37 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private void fetchBookMetadata(final String key, final String version, final String bookId, final CompletionCallback<BookMetadata> callback) {
-    networkDataSource.retrieveBookMetadata(bookId, version, new Callback<BookMetadataEntity>() {
-      @Override public void onSuccess(BookMetadataEntity bookMetadataEntity) {
+  private void fetchBookMetadata(final String key, final String version, final String bookId, final Callback<BookMetadata> callback) {
+    networkDataSource.retrieveBookMetadata(bookId, version, new Callback<Pair<BookMetadataEntity, InputStream>>() {
+
+      @Override public void onSuccess(Pair<BookMetadataEntity, InputStream> pair) {
+        final BookMetadataEntity bookMetadataEntity = pair.getValue0();
+        final InputStream contentOpfIs = pair.getValue1();
+
         bddDataSource.persist(key, bookMetadataEntity);
+
+        // NOTE: Optimization, we store also the content.opf file to avoid having duplicate network calls later. Later access will reuse the cache
+        final String contentOpfKey = bookId + bookMetadataEntity.getContentOpfName();
+        try {
+          bddDataSource.persist(contentOpfKey, StreamingResourceEntity.create(contentOpfIs));
+        } catch (IOException e) {
+          // If something went wrong, just ignore it (it will be stored on next access with page turner)
+          e.printStackTrace();
+        }
+
         final BookMetadata transformed = transform(bookMetadataEntity);
         notifyResponse(transformed, callback);
       }
 
       @Override public void onError(Throwable e) {
         if (callback != null) {
-          callback.onError(ErrorCore.of(e));
+          callback.onError(e);
         }
       }
     });
   }
 
-  private void notifyResponse(BookMetadata response, CompletionCallback<BookMetadata> callback) {
+  private void notifyResponse(BookMetadata response, Callback<BookMetadata> callback) {
     if (callback != null) {
       callback.onSuccess(response);
     }

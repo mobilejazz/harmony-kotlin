@@ -102,7 +102,7 @@ public class EpubReader {
     try {
       ResourceUtil.generateStreamingResourcesFromPackageResource(resources, packageResource);
     } catch (Exception e) {
-      //log.error(e.getMessage(), e);
+      e.printStackTrace();
     }
     resources.add(packageResource);
 

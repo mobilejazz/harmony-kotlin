@@ -105,14 +105,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
 
         logger.d(TAG, "Downloading current resource: " + resource);
 
-        String resourceToDownload;
-        if (bookMetadata.isImage(resource)) {
-          resourceToDownload = bookMetadata.addStaticImageSize(resource);
-        } else {
-          resourceToDownload = resource;
-        }
-
-        streamingBookRepository.getBookResource(bookId, bookMetadata, resourceToDownload);
+        streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
 
         shouldNotifySuccessfulResponse(shouldNotifyResponses, position + count, numberOfResources);
       }

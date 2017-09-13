@@ -1,15 +1,16 @@
 package com.worldreader.core.datasource.network.general.retrofit.converter;
 
 import com.worldreader.core.datasource.network.general.retrofit.annotations.XML;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import javax.annotation.Nullable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
+
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 public class JsonXmlConverterFactory extends Converter.Factory {
 
@@ -39,5 +40,13 @@ public class JsonXmlConverterFactory extends Converter.Factory {
       }
     }
     return gson.requestBodyConverter(type, annotations, methodAnnotations, retrofit);
+  }
+
+  public Converter.Factory getGson() {
+    return gson;
+  }
+
+  public Converter.Factory getXml() {
+    return xml;
   }
 }

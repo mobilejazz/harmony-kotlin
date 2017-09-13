@@ -21,18 +21,13 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -55,30 +50,16 @@ import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper.TextUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -93,8 +74,12 @@ import net.nightwhistler.htmlspanner.spans.CenterSpan;
 import org.htmlcleaner.TagNode;
 import org.javatuples.Triplet;
 
-import static java.util.Arrays.asList;
+import java.io.*;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.*;
 
+import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.*;
@@ -216,7 +201,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     return fileName;
   }
 
-  public int getSpineSize(){ return spine != null ? spine.size() : 0;}
+  public int getSpineSize() {
+    return spine != null ? spine.size() : 0;
+  }
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
@@ -303,12 +290,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setOnTouchListener(l);
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  public void setTextSelectionCallback(TextSelectionCallback callback,
-      ActionModeListener listener) {
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB) public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener) {
     if (Build.VERSION.SDK_INT >= Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
-      this.childView.setCustomSelectionActionModeCallback(
-          new TextSelectionActions(getContext(), listener, callback, this));
+      this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(getContext(), listener, callback, this));
     }
   }
 
@@ -354,8 +338,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void setVerticalMargin(int verticalMargin) {
     if (verticalMargin != this.verticalMargin) {
       this.verticalMargin = verticalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin,
-          this.verticalMargin);
+      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -669,9 +652,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     // URLDecode the href, so it does not contain %20 etc.
     String href;
     try {
-      href =
-          URLDecoder.decode(StringUtil.substringBefore(rawHref, Constants.FRAGMENT_SEPARATOR_CHAR),
-              charsetName);
+      href = URLDecoder.decode(StringUtil.substringBefore(rawHref, Constants.FRAGMENT_SEPARATOR_CHAR), charsetName);
     } catch (UnsupportedEncodingException e) {
       // Won't ever be reached
       throw new AssertionError(e);
@@ -876,8 +857,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     private void setBitmapDrawable(final String resource, final InputStream ignored, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
-      final String url = resource + "?size=480x800";
-
       final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.getImagesResources();
       final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(resource) : null;
 
@@ -888,7 +867,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       final int finalWidth = sizes.getValue0();
       final int finalHeight = sizes.getValue1();
 
-      final FastBitmapDrawable drawable = new FastBitmapDrawable(getContext(), url, finalWidth, finalHeight, dataSource, bookMetadata);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(getContext(), resource, finalWidth, finalHeight, dataSource, bookMetadata);
       drawable.setCallback(callback);
 
       setImageSpan(builder, drawable, start, end);
@@ -909,14 +888,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       targetHeight = (int) (targetWidth * (1 / ratio));
     }
 
-    Log.d(TAG, "Rescaling from "
-        + originalWidth
-        + "x"
-        + originalHeight
-        + " to "
-        + targetWidth
-        + "x"
-        + targetHeight);
+    Log.d(TAG, "Rescaling from " + originalWidth + "x" + originalHeight + " to " + targetWidth + "x" + targetHeight);
 
     return Triplet.with(targetWidth, targetHeight, true);
   }
@@ -949,8 +921,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         try {
           final String dataString = src.substring(src.indexOf(',') + 1);
           final byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
-          setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)),
-              start, builder.length());
+          setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start,
+              builder.length());
         } catch (OutOfMemoryError | IllegalArgumentException ia) {
           //Out of memory or invalid Base64, ignore
         }
@@ -1053,8 +1025,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
     }).forEach(new Command<Spanned>() {
       @Override public void execute(Spanned text) {
-        int pagesOffset =
-            ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
+        int pagesOffset = ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
         int currentPage = ((FixedPagesStrategy) BookView.this.getStrategy()).getCurrentPage();
         int progressPercentage = (int) Math.floor(((double) currentPage / pagesOffset) * 100);
 
@@ -1229,8 +1200,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       //
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
-    public ActionMode startActionMode(ActionMode.Callback callback) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override public ActionMode startActionMode(ActionMode.Callback callback) {
       if (System.currentTimeMillis() > blockUntil) {
         Log.d(TAG, "InnerView starting action-mode");
         return super.startActionMode(callback);
@@ -1247,11 +1217,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private enum BookReadPhase {
-    START,
-    OPEN_FILE,
-    FETCH_TEXT,
-    PARSE_TEXT,
-    DONE
+    START, OPEN_FILE, FETCH_TEXT, PARSE_TEXT, DONE
   }
 
   private class OpenStreamingBookTask extends QueueableAsyncTask<None, BookReadPhase, Book> {

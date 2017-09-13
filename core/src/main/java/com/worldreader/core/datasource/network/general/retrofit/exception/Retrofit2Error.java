@@ -14,8 +14,13 @@ import java.lang.annotation.Annotation;
 // Once the initial migration has been done, it should be a good idea to remove this class also.
 public class Retrofit2Error extends RuntimeException {
 
+  public static Retrofit2Error httpError(okhttp3.Response response) {
+    final Response<Object> retrofitResponse = Response.error(response.body(), response);
+    return httpError(retrofitResponse);
+  }
+
   public static Retrofit2Error httpError(Response response) {
-    String message = response.code() + " " + response.message();
+    final String message = response.code() + " " + response.message();
     return new Retrofit2Error(message, response.raw().request().url().toString(), response, Kind.HTTP, null, null);
   }
 

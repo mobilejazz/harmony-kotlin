@@ -42,16 +42,16 @@ public class StreamingBookBdDataSourceImpl implements StreamingBookBdDataSource 
     return getBookMetadataEntity(cacheObject);
   }
 
-  @Override public StreamingResourceEntity obtainStreamingResource(String key)
-      throws InvalidCacheException {
-    CacheBytes cacheBytes = cacheBookBddDataSource.get(key);
+  @Override public StreamingResourceEntity obtainStreamingResource(String key) throws InvalidCacheException {
+    final CacheBytes cacheBytes = cacheBookBddDataSource.get(key);
 
     if (cacheBytes == null) {
       return null;
     } else {
       try {
-        InputStream inputStream =
-            new ByteArrayInputStream(Deflaters.decompress(cacheBytes.getValue()));
+        final byte[] bytes = cacheBytes.getValue();
+        final byte[] decompressedBytes = Deflaters.decompress(bytes);
+        final InputStream inputStream = new ByteArrayInputStream(decompressedBytes);
         return StreamingResourceEntity.create(inputStream);
       } catch (IOException | DataFormatException e) {
         return null;
@@ -65,12 +65,10 @@ public class StreamingBookBdDataSourceImpl implements StreamingBookBdDataSource 
     cacheBddDataSource.persist(cacheObject);
   }
 
-  @Override public InputStream persist(String key, StreamingResourceEntity streamingResourceEntity)
-      throws IOException {
+  @Override public InputStream persist(String key, StreamingResourceEntity streamingResourceEntity) throws IOException {
     byte[] bytes = Bytes.toByteArray(streamingResourceEntity.getInputStream());
 
-    CacheBytes cacheBytes =
-        CacheBytes.create(key, Deflaters.compress(bytes), System.currentTimeMillis());
+    final CacheBytes cacheBytes = CacheBytes.create(key, Deflaters.compress(bytes), System.currentTimeMillis());
 
     cacheBookBddDataSource.persist(cacheBytes);
 

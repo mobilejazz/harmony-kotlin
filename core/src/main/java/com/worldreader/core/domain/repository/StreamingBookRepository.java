@@ -1,7 +1,7 @@
 package com.worldreader.core.domain.repository;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
+import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 
@@ -12,8 +12,7 @@ public interface StreamingBookRepository {
   String KEY_LATEST = "latest";
   String CONTENT_OPF_LOCATION_PATH = "content/META-INF/container.xml";
 
-  void retrieveBookMetadata(final String bookId, final String version, final boolean forceRefreshBookMetadata,
-      final CompletionCallback<BookMetadata> callback);
+  void retrieveBookMetadata(final String bookId, final String version, final boolean forceRefreshBookMetadata, final Callback<BookMetadata> callback);
 
   BookMetadata getBookMetadata(final String bookId);
 
