@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
+import com.evernote.android.job.JobManager;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
@@ -44,7 +45,7 @@ public class WorldreaderJobCreator implements JobCreator {
   }
 
   public static void cancelAllJobs() {
-    SynchronizationJob.cancelJob();
+    JobManager.instance().cancelAll();
   }
 
   public static class InjectableCompanion {
