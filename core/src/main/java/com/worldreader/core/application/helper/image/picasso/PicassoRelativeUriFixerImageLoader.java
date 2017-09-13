@@ -28,7 +28,7 @@ public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
 
   private String fixUrl(String url) {
     if (url != null && url.startsWith("/")) {
-      url = endpoint.concat(url);
+      url = endpoint.concat(url.replaceFirst("/", ""));
     }
     return url;
   }
