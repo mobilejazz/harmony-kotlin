@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -272,8 +273,21 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
-  @Override public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // This block need to be called before inflating the view to avoid problems with BookView
+    this.textLoader = StreamingTextLoader.getInstance();
+    this.textLoader.setHtmlSpanner(new HtmlSpanner());
+  }
+
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                     Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_reader, container, false);
+  }
+
+  @Override public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
 
     onInitializeInjectors();
 
@@ -283,9 +297,6 @@ public abstract class AbstractReaderFragment extends Fragment
     this.audioManager = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
 
     this.ttsPlaybackItemQueue = new TTSPlaybackQueue();
-
-    this.textLoader = StreamingTextLoader.getInstance();
-    this.textLoader.setHtmlSpanner(new HtmlSpanner());
 
     //this.actionModeBuilder = new ActionModeBuilder();
 
@@ -332,16 +343,47 @@ public abstract class AbstractReaderFragment extends Fragment
             }
           });
     }
+
+    initViews(getView());
+
+    AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+    DisplayMetrics metrics = new DisplayMetrics();
+    activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    final GestureDetector gestureDetector =
+        new GestureDetector(context, new NavGestureDetector(bookView, this, metrics));
+
+    displayPageNumber(-1); // Initializes the pagenumber view properly
+
+    View.OnTouchListener gestureListener = new View.OnTouchListener() {
+      @Override public boolean onTouch(View v, MotionEvent event) {
+        return !AbstractReaderFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
+      }
+    };
+
+    this.viewSwitcher.setOnTouchListener(gestureListener);
+    this.bookView.setOnTouchListener(gestureListener);
+    this.dummyView.setOnTouchListener(gestureListener);
+
+    registerForContextMenu(bookView);
+    saveConfigState();
+    updateFromPrefs();
+    updateFileName(savedInstanceState);
+
+    bookView.restore();
+
+    if (ttsIsRunning()) {
+      this.mediaLayout.setVisibility(View.VISIBLE);
+      this.ttsPlaybackItemQueue.updateSpeechCompletedCallbacks(new SpeechCompletedCallback() {
+        @Override public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
+          AbstractReaderFragment.this.speechCompleted(item, mediaPlayer);
+        }
+      });
+      uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
+    }
   }
 
-  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_reader, container, false);
-  }
-
-  @Override public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
+  private void initViews(View view){
     this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
     this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
@@ -431,45 +473,6 @@ public abstract class AbstractReaderFragment extends Fragment
             formatPageChapterProgress();
           }
         });
-  }
-
-  @Override public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-    DisplayMetrics metrics = new DisplayMetrics();
-    activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-    final GestureDetector gestureDetector =
-        new GestureDetector(context, new NavGestureDetector(bookView, this, metrics));
-
-    displayPageNumber(-1); // Initializes the pagenumber view properly
-
-    View.OnTouchListener gestureListener = new View.OnTouchListener() {
-      @Override public boolean onTouch(View v, MotionEvent event) {
-        return !AbstractReaderFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
-      }
-    };
-
-    this.viewSwitcher.setOnTouchListener(gestureListener);
-    this.bookView.setOnTouchListener(gestureListener);
-    this.dummyView.setOnTouchListener(gestureListener);
-
-    registerForContextMenu(bookView);
-    saveConfigState();
-    updateFromPrefs();
-    updateFileName(savedInstanceState);
-
-    bookView.restore();
-
-    if (ttsIsRunning()) {
-      this.mediaLayout.setVisibility(View.VISIBLE);
-      this.ttsPlaybackItemQueue.updateSpeechCompletedCallbacks(new SpeechCompletedCallback() {
-        @Override public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
-          AbstractReaderFragment.this.speechCompleted(item, mediaPlayer);
-        }
-      });
-      uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-    }
   }
 
   @Override public void onResume() {
