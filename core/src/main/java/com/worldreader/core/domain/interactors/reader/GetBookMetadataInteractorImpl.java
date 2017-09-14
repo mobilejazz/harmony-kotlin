@@ -1,7 +1,10 @@
 package com.worldreader.core.domain.interactors.reader;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
+import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -9,6 +12,9 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
+
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 
 public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetadata, ErrorCore<?>> implements GetBookMetadataInteractor {
@@ -45,6 +51,30 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.backgroundCallback = callback;
     this.forceBookMetadataRefresh = forceRefreshBookMetadata;
     this.executor.run(this);
+  }
+
+  @Override public ListenableFuture<BookMetadata> execute(final String bookId, final boolean forceRefreshBookMetadata, Executor executor) {
+
+    final SettableFuture<BookMetadata> settableFuture = SettableFuture.create();
+
+    executor.execute(new SafeRunnable() {
+      @Override protected void safeRun() throws Throwable {
+        streamingBookRepository.retrieveBookMetadata(bookId, forceRefreshBookMetadata, new CompletionCallback<BookMetadata>() {
+          @Override public void onSuccess(final BookMetadata result) {
+            settableFuture.set(result);
+          }
+
+          @Override public void onError(final ErrorCore error) {
+            settableFuture.setException(error.getCause());
+          }
+        });
+      }
+
+      @Override protected void onExceptionThrown(Throwable t) {
+        settableFuture.setException(t);
+      }
+    });
+    return settableFuture;
   }
 
   @Override public void run() {

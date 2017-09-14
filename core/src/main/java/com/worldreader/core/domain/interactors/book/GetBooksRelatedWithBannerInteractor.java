@@ -12,9 +12,11 @@ import com.worldreader.core.domain.model.Banner;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.repository.BannerRepository;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 @PerActivity public class GetBooksRelatedWithBannerInteractor {
 
@@ -23,17 +25,21 @@ import java.util.concurrent.*;
   private final MergeBooksDownloadInformationInteractor mergeBooksDownloadInformationInteractor;
 
   @Inject public GetBooksRelatedWithBannerInteractor(ListeningExecutorService executorService,
-      BannerRepository bannerRepository,
-      final MergeBooksDownloadInformationInteractor mergeBooksDownloadInformationInteractor) {
+                                                     BannerRepository bannerRepository,
+                                                     final MergeBooksDownloadInformationInteractor mergeBooksDownloadInformationInteractor) {
     this.executorService = executorService;
     this.bannerRepository = bannerRepository;
     this.mergeBooksDownloadInformationInteractor = mergeBooksDownloadInformationInteractor;
   }
 
   public ListenableFuture<Optional<List<Book>>> execute(final Banner banner) {
+    return execute(banner, executorService);
+  }
+
+  public ListenableFuture<Optional<List<Book>>> execute(final Banner banner, Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
-    executorService.execute(new SafeRunnable() {
+    executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         bannerRepository.get(banner.getId(), banner.getType(), new Callback<Banner>() {
           @Override public void onSuccess(Banner banner) {
@@ -60,7 +66,6 @@ import java.util.concurrent.*;
             settableFuture.setException(e);
           }
         });
-
       }
 
       @Override protected void onExceptionThrown(final Throwable t) {

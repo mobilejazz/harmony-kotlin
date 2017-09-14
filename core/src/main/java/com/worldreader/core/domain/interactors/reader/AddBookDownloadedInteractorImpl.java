@@ -13,8 +13,10 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.BookDownloaded;
 import com.worldreader.core.domain.thread.MainThread;
 
+import java.util.Date;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
-import java.util.*;
 
 public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
     implements AddBookDownloadedInteractor {
@@ -27,7 +29,7 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
   @Inject public AddBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      @AddBookDownloaded final Action<BookDownloaded, Boolean> addBookDownloadedAction, final Dates dates) {
+                                                 @AddBookDownloaded final Action<BookDownloaded, Boolean> addBookDownloadedAction, final Dates dates) {
     super(executor, mainThread);
     this.addBookDownloadedAction = addBookDownloadedAction;
     this.dates = dates;
@@ -42,9 +44,13 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   }
 
   @Override public ListenableFuture<Boolean> execute(final String bookId) {
+    return execute(bookId, getExecutor());
+  }
+
+  @Override public ListenableFuture<Boolean> execute(final String bookId, final Executor executor) {
     final SettableFuture<Boolean> settableFuture = SettableFuture.create();
 
-    getExecutor().execute(new SafeRunnable() {
+    executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         final BookDownloaded bookDownloaded = BookDownloaded.create(bookId, dates.today());
 
