@@ -88,8 +88,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
       streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
 
       try {
-        final StreamingResourceEntity savedStreamingResourceEntity =
-            StreamingResourceEntity.create(bddDataSource.persist(key, streamingResourceEntity));
+        final StreamingResourceEntity savedStreamingResourceEntity = StreamingResourceEntity.create(bddDataSource.persist(key, streamingResourceEntity));
         return streamingResourceMapper.transform(savedStreamingResourceEntity);
       } catch (IOException e) {
         logger.e(TAG, "Error while trying to save resource to database for book id: " + id + " exception: " + e);

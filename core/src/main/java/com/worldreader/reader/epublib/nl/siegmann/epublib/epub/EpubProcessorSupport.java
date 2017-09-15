@@ -109,7 +109,7 @@ public class EpubProcessorSupport {
       result = documentBuilderFactory.newDocumentBuilder();
       result.setEntityResolver(getEntityResolver());
     } catch (ParserConfigurationException e) {
-      //log.error(e.getMessage());
+      e.printStackTrace();
     }
     return result;
   }

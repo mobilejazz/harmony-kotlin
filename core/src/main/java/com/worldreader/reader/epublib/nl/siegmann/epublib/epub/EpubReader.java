@@ -28,7 +28,6 @@ import java.util.zip.ZipInputStream;
 public class EpubReader {
 
   //private static final Logger log = LoggerFactory.getLogger(EpubReader.class);
-  private BookProcessor bookProcessor = BookProcessor.IDENTITY_BOOKPROCESSOR;
 
   public Book readEpub(InputStream in) throws IOException {
     return readEpub(in, Constants.CHARACTER_ENCODING);
@@ -71,7 +70,6 @@ public class EpubReader {
     result.setOpfResource(packageResource);
     Resource ncxResource = processNcxResource(packageResource, result);
     result.setNcxResource(ncxResource);
-    result = postProcessBook(result);
     return result;
   }
 
@@ -95,22 +93,22 @@ public class EpubReader {
   }
 
   public Book readEpubStreaming(InputStream packageResourceInputStream) {
-    Book b = new Book();
-    Resources resources = new Resources();
+    final Book b = new Book();
+    final Resources resources = new Resources();
 
-    Resource packageResource = createFakePackageResource(packageResourceInputStream);
+    final Resource packageResource = createFakePackageResource(packageResourceInputStream);
+
     try {
       ResourceUtil.generateStreamingResourcesFromPackageResource(resources, packageResource);
     } catch (Exception e) {
       e.printStackTrace();
     }
+
     resources.add(packageResource);
 
-    String packageResourceHref = getPackageResourceHref(resources);
+    final String packageResourceHref = getPackageResourceHref(resources);
     b.setOpfResource(processPackageResource(packageResourceHref, b, resources));
     b.setNcxResource(processNcxResource(packageResource, b));
-
-    b = postProcessBook(b);
 
     return b;
   }
@@ -123,15 +121,7 @@ public class EpubReader {
     result.setOpfResource(packageResource);
     Resource ncxResource = processNcxResource(packageResource, result);
     result.setNcxResource(ncxResource);
-    result = postProcessBook(result);
     return result;
-  }
-
-  private Book postProcessBook(Book book) {
-    if (bookProcessor != null) {
-      book = bookProcessor.processBook(book);
-    }
-    return book;
   }
 
   private Resource processNcxResource(Resource packageResource, Book book) {

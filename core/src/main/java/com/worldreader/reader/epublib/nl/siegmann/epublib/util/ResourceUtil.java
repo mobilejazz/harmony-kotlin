@@ -13,14 +13,8 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.io.*;
+import java.util.zip.*;
 
 /**
  * Various resource utility methods
@@ -43,10 +37,8 @@ public class ResourceUtil {
    * Creates a resource with as contents a html page with the given title.
    */
   public static Resource createResource(String title, String href) {
-    String content =
-        "<html><head><title>" + title + "</title></head><body><h1>" + title + "</h1></body></html>";
-    return new Resource(null, content.getBytes(), href, MediatypeService.XHTML,
-        Constants.CHARACTER_ENCODING);
+    String content = "<html><head><title>" + title + "</title></head><body><h1>" + title + "</h1></body></html>";
+    return new Resource(null, content.getBytes(), href, MediatypeService.XHTML, Constants.CHARACTER_ENCODING);
   }
 
   /**
@@ -54,13 +46,11 @@ public class ResourceUtil {
    *
    * @throws IOException
    */
-  public static Resource createResource(ZipEntry zipEntry, ZipInputStream zipInputStream)
-      throws IOException {
+  public static Resource createResource(ZipEntry zipEntry, ZipInputStream zipInputStream) throws IOException {
     return new Resource(zipInputStream, zipEntry.getName());
   }
 
-  public static Resource createResource(ZipEntry zipEntry, InputStream zipInputStream)
-      throws IOException {
+  public static Resource createResource(ZipEntry zipEntry, InputStream zipInputStream) throws IOException {
     return new Resource(zipInputStream, zipEntry.getName());
   }
 
@@ -74,8 +64,7 @@ public class ResourceUtil {
    *
    * @throws UnsupportedEncodingException
    */
-  public static byte[] recode(String inputEncoding, String outputEncoding, byte[] input)
-      throws UnsupportedEncodingException {
+  public static byte[] recode(String inputEncoding, String outputEncoding, byte[] input) throws UnsupportedEncodingException {
     return new String(input, inputEncoding).getBytes(outputEncoding);
   }
 
@@ -98,7 +87,7 @@ public class ResourceUtil {
    * Reads parses the xml therein and returns the result as a Document
    */
   public static Document getAsDocument(Resource resource)
-      throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
+      throws SAXException, IOException, ParserConfigurationException {
     return getAsDocument(resource, EpubProcessorSupport.createDocumentBuilder());
   }
 
@@ -112,19 +101,18 @@ public class ResourceUtil {
    * @throws ParserConfigurationException
    */
   public static Document getAsDocument(Resource resource, DocumentBuilder documentBuilder)
-      throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
-    InputSource inputSource = getInputSource(resource);
+      throws SAXException, IOException, ParserConfigurationException {
+    final InputSource inputSource = getInputSource(resource);
     if (inputSource == null) {
       return null;
     }
-    Document result = documentBuilder.parse(inputSource);
-    return result;
+    //CharStreams.toString(new InputStreamReader(resource.getInputStream(), Charsets.UTF_8));
+    return documentBuilder.parse(inputSource);
   }
 
-  public static void generateStreamingResourcesFromPackageResource(Resources resources,
-      Resource packageResource) throws SAXException, IOException, ParserConfigurationException {
-    Document packageDocument = getAsDocument(packageResource);
-    String packageHref = packageResource.getHref();
+  public static void generateStreamingResourcesFromPackageResource(Resources resources, Resource packageResource)
+      throws SAXException, IOException, ParserConfigurationException {
+    final Document packageDocument = getAsDocument(packageResource);
     PackageDocumentReader.processStreamingManifest(resources, packageDocument);
   }
 }

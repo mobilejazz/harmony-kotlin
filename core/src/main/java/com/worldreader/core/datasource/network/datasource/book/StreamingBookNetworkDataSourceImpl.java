@@ -3,6 +3,7 @@ package com.worldreader.core.datasource.network.datasource.book;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
@@ -22,7 +23,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okio.Buffer;
 import org.javatuples.Pair;
 import org.simpleframework.xml.Serializer;
 
@@ -57,7 +57,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     this.httpClient = httpClient;
     this.gson = gson;
     this.xmlSerializer = xmlSerializer;
-    this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(5, TimeUnit.MINUTES).build();
+    this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(60, TimeUnit.MINUTES).build();
   }
 
   @Override public void retrieveBookMetadata(final String bookId, final String version,
@@ -78,10 +78,6 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
           } catch (Exception e) {
             // Invalid XML response, so we return back early with the same error that Retrofit would raise
             throw new IOException("Can't parse properly this XML", e);
-          } finally {
-            if (rawBody != null) {
-              rawBody.close();
-            }
           }
 
           // Let's try to go first to content_generated.opf
@@ -117,12 +113,11 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
               // Call to network
               final okhttp3.Response contentOpfResponse2 = httpClient.newCall(contentOpfRequest2).execute();
 
-              final boolean contentOpfResponseSuccessful2 = contentOpfResponse.isSuccessful();
+              final boolean contentOpfResponseSuccessful2 = contentOpfResponse2.isSuccessful();
 
               // If response is OK, we return back the result converted
               if (contentOpfResponseSuccessful2) {
-                final Pair<BookMetadataEntity, InputStream> pair =
-                    toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse2, bookId, version, false);
+                final Pair<BookMetadataEntity, InputStream> pair = toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse2, bookId, version, false);
                 notifySuccessCallback(pair, callback);
               } else {
                 notifyErrorCallback(callback, response);
@@ -187,25 +182,28 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     // Extract the original body
     final ResponseBody responseBody = contentOpfResponse.body();
 
-    // Clone the buffer to be consumed later on
-    final Buffer bufferClone = responseBody.source().buffer().clone();
-    final InputStream contentOpfIs = bufferClone.inputStream();
+    Log.d("StreamingBookNetwork", "Current response body size: " + responseBody.source().buffer().size());
+
+    // Create output stream
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     // Convert the original response to ContentOpfEntity
     final ContentOpfEntity contentOpfEntity;
     try {
       contentOpfEntity = xmlSerializer.read(ContentOpfEntity.class, responseBody.charStream(), false);
+      xmlSerializer.write(contentOpfEntity, outputStream);
     } catch (Exception e) {
       throw new IOException("Can't parse properly the XML", e);
-    } finally {
-      responseBody.close();
     }
+
+    // Serialize cloned result to input stream to be returned
+    final InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
     // Let's convert this response into a BookMetadataEntity
     final BookMetadataEntity bookMetadataEntity = toBookMetadataEntity(bookId, version, contentOpfLocation, contentOpfEntity, isContentOpfGenerated);
 
     // Let's wrap the pair with the values
-    return Pair.with(bookMetadataEntity, contentOpfIs);
+    return Pair.with(bookMetadataEntity, inputStream);
   }
 
   private BookMetadataEntity toBookMetadataEntity(final String bookId, final String version, final ContentOpfLocationEntity contentContainer,
@@ -264,7 +262,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
         .addPathSegment(id)
         .addPathSegment(version)
         .addPathSegment("content")
-        .addEncodedPathSegment(finalResourcePath);
+        .addEncodedPathSegments(finalResourcePath);
 
     if (isImageRequest) {
       fallBackUrlBuilder.addQueryParameter("size", "480x800");
@@ -314,7 +312,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
   }
 
   private ResourcesCredentialsEntity getResourcesCredentials() {
-    final HttpUrl url = HttpUrl.parse(resourceEndpointUrl.toString()).newBuilder().addPathSegments("/v1/assets/get_resources_credentials").build();
+    final HttpUrl url = HttpUrl.parse(resourceEndpointUrl.toString()).newBuilder().addPathSegments("v1/assets/get_resources_credentials").build();
     final Request request = new Request.Builder().url(url).build();
     try {
       final Response response = httpClient.newCall(request).execute();

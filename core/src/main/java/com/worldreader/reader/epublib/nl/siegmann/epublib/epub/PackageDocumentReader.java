@@ -1,6 +1,7 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.epub;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Guide;
@@ -75,7 +76,7 @@ public class PackageDocumentReader extends PackageDocumentBase {
   public static void processStreamingManifest(Resources resources, Document packageDocument) {
     final Element manifestElement = DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF, OPFTags.manifest);
     if (manifestElement == null) {
-      //log.error("Package document does not contain element " + OPFTags.manifest);
+      Log.e("PackageDocumentReader", "Package document does not contain element " + OPFTags.manifest);
       return;
     }
 

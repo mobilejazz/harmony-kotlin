@@ -27,18 +27,10 @@ public class EpubWriter {
   // package
   static final String EMPTY_NAMESPACE_PREFIX = "";
 
-  private BookProcessor bookProcessor = BookProcessor.IDENTITY_BOOKPROCESSOR;
-
   public EpubWriter() {
-    this(BookProcessor.IDENTITY_BOOKPROCESSOR);
-  }
-
-  public EpubWriter(BookProcessor bookProcessor) {
-    this.bookProcessor = bookProcessor;
   }
 
   public void write(Book book, OutputStream out) throws IOException {
-    book = processBook(book);
     ZipOutputStream resultStream = new ZipOutputStream(out);
     writeMimeType(resultStream);
     writeContainer(resultStream);
@@ -46,13 +38,6 @@ public class EpubWriter {
     writeResources(book, resultStream);
     writePackageDocument(book, resultStream);
     resultStream.close();
-  }
-
-  private Book processBook(Book book) {
-    if (bookProcessor != null) {
-      book = bookProcessor.processBook(book);
-    }
-    return book;
   }
 
   private void initTOCResource(Book book) {
@@ -114,11 +99,9 @@ public class EpubWriter {
     resultStream.putNextEntry(new ZipEntry("META-INF/container.xml"));
     Writer out = new OutputStreamWriter(resultStream);
     out.write("<?xml version=\"1.0\"?>\n");
-    out.write(
-        "<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\">\n");
+    out.write("<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\">\n");
     out.write("\t<rootfiles>\n");
-    out.write(
-        "\t\t<rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/>\n");
+    out.write("\t\t<rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/>\n");
     out.write("\t</rootfiles>\n");
     out.write("</container>");
     out.flush();
@@ -155,13 +138,5 @@ public class EpubWriter {
 
   String getNcxMediaType() {
     return "application/x-dtbncx+xml";
-  }
-
-  public BookProcessor getBookProcessor() {
-    return bookProcessor;
-  }
-
-  public void setBookProcessor(BookProcessor bookProcessor) {
-    this.bookProcessor = bookProcessor;
   }
 }

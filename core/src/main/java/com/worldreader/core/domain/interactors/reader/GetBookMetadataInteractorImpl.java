@@ -1,5 +1,8 @@
 package com.worldreader.core.domain.interactors.reader;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -14,7 +17,8 @@ import javax.inject.Inject;
 
 public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetadata, ErrorCore<?>> implements GetBookMetadataInteractor {
 
-  private StreamingBookRepository streamingBookRepository;
+  private final ListeningExecutorService executorService;
+  private final StreamingBookRepository streamingBookRepository;
 
   private String bookId;
   private String version;
@@ -23,8 +27,9 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
   private DomainCallback<BookMetadata, ErrorCore<?>> callback;
   private DomainBackgroundCallback<BookMetadata, ErrorCore<?>> backgroundCallback;
 
-  @Inject public GetBookMetadataInteractorImpl(InteractorExecutor executor, MainThread mainThread, StreamingBookRepository streamingBookRepository) {
+  @Inject public GetBookMetadataInteractorImpl(InteractorExecutor executor, MainThread mainThread, ListeningExecutorService executor1, StreamingBookRepository streamingBookRepository) {
     super(executor, mainThread);
+    this.executorService = executor1;
     this.streamingBookRepository = streamingBookRepository;
   }
 
@@ -33,7 +38,7 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.version = version;
     this.forceBookMetadataRefresh = false;
     this.callback = callback;
-    this.executor.run(this);
+    executor.run(this);
   }
 
   @Override public void execute(final String bookId, final String version, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
@@ -52,6 +57,28 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<BookMetadata> execute(final String bookId, final String version) {
+    final SettableFuture<BookMetadata> future = SettableFuture.create();
+    executorService.execute(getInteractorCallable(bookId, version, future));
+    return future;
+  }
+
+  private Runnable getInteractorCallable(final String bookId, final String version, final SettableFuture<BookMetadata> future) {
+    return new Runnable() {
+      @Override public void run() {
+        streamingBookRepository.retrieveBookMetadata(bookId, version, false, new Callback<BookMetadata>() {
+          @Override public void onSuccess(BookMetadata bookMetadata) {
+            future.set(bookMetadata);
+          }
+
+          @Override public void onError(Throwable e) {
+            future.setException(e);
+          }
+        });
+      }
+    };
+  }
+
   @Override public void run() {
     streamingBookRepository.retrieveBookMetadata(this.bookId, this.version, this.forceBookMetadataRefresh, new Callback<BookMetadata>() {
       @Override public void onSuccess(final BookMetadata result) {
@@ -60,6 +87,9 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
         } else {
           performSuccessCallback(callback, result);
         }
+
+        callback = null;
+        backgroundCallback = null;
       }
 
       @Override public void onError(Throwable e) {
@@ -68,6 +98,9 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
         } else {
           performErrorCallback(callback, ErrorCore.of(e));
         }
+
+        callback = null;
+        backgroundCallback = null;
       }
     });
   }
