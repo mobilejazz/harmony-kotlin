@@ -63,6 +63,7 @@ public class BookView extends FrameLayout {
     this.book = book;
 
     if (book != null) {
+      txtTitle.setText(book.getTitle());
       imgBook.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
         @Override public boolean onPreDraw() {
 
