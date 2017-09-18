@@ -1592,10 +1592,14 @@ public abstract class AbstractReaderFragment extends Fragment
         }
       });
 
-      final SubsamplingScaleImageView imageScaleView =
-          (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
-      imageScaleView.setImage(ImageSource.cachedBitmap(drawable.getBitmap()));
-      imageViewContainer.setVisibility(View.VISIBLE);
+      final Bitmap bitmap = drawable.getBitmap();
+
+      if (bitmap != null) {
+        final ImageSource imageSource = ImageSource.cachedBitmap(bitmap);
+        final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
+        imageScaleView.setImage(imageSource);
+        imageViewContainer.setVisibility(View.VISIBLE);
+      }
     }
   }
 

@@ -157,7 +157,7 @@ public class FastBitmapDrawable extends Drawable {
       bitmap = localBitmap;
       isLoaded = true;
       invalidateSelf();
-    } catch (OutOfMemoryError | IOException e) {
+    } catch (OutOfMemoryError | IOException | NullPointerException e) {
       Log.e(TAG, "Could not load image", e);
       isLoaded = true;
     }
