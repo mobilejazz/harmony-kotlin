@@ -2,7 +2,6 @@ package com.worldreader.core.datasource.network.datasource.book;
 
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.model.BookMetadataEntity;
-import com.worldreader.core.datasource.model.ResourcesCredentialsEntity;
 import com.worldreader.core.datasource.model.StreamingResourceEntity;
 import org.javatuples.Pair;
 

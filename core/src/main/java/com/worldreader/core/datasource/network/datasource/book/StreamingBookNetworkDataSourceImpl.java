@@ -3,7 +3,7 @@ package com.worldreader.core.datasource.network.datasource.book;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
+import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
@@ -23,6 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import org.javatuples.Pair;
 import org.simpleframework.xml.Serializer;
 
@@ -51,8 +52,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
   private final Cache<String, ResourcesCredentialsEntity> cache;
 
-  @Inject
-  public StreamingBookNetworkDataSourceImpl(HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient, Gson gson, Serializer xmlSerializer) {
+  @Inject public StreamingBookNetworkDataSourceImpl(HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient, Gson gson,
+      Serializer xmlSerializer) {
     this.resourceEndpointUrl = resourceEndpointUrl;
     this.httpClient = httpClient;
     this.gson = gson;
@@ -101,8 +102,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
             // If response is OK, we return back the result converted
             if (contentOpfResponseSuccessful) {
-              final Pair<BookMetadataEntity, InputStream> pair =
-                  toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse, bookId, version, true);
+              final Pair<BookMetadataEntity, InputStream> pair = toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse, bookId, version,
+                  true);
               notifySuccessCallback(pair, callback);
             } else if (contentOpfResponseCode == HttpStatus.NOT_FOUND) { // Retry same request without generated.opf
 
@@ -181,29 +182,33 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
       final okhttp3.Response contentOpfResponse, final String bookId, final String version, final boolean isContentOpfGenerated) throws IOException {
     // Extract the original body
     final ResponseBody responseBody = contentOpfResponse.body();
+    final BufferedSource responseSource = responseBody != null ? responseBody.source() : null;
 
-    Log.d("StreamingBookNetwork", "Current response body size: " + responseBody.source().buffer().size());
+    // Double check that everything is good to go
+    if (responseSource == null) {
+      throw new IOException("Can't parse properly the XML as the response source is null: " + contentOpfResponse.toString());
+    }
 
-    // Create output stream
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    // Not highly efficient, but we can't clone properly the response buffer with okio (responseBody.source().buffer().clone() doesn't work as expected)
+    final String rawBody = responseBody.string();
+    final InputStream bodyIs = new ByteArrayInputStream(rawBody.getBytes(Charsets.UTF_8));
 
     // Convert the original response to ContentOpfEntity
     final ContentOpfEntity contentOpfEntity;
     try {
-      contentOpfEntity = xmlSerializer.read(ContentOpfEntity.class, responseBody.charStream(), false);
-      xmlSerializer.write(contentOpfEntity, outputStream);
+      contentOpfEntity = xmlSerializer.read(ContentOpfEntity.class, bodyIs, false);
     } catch (Exception e) {
       throw new IOException("Can't parse properly the XML", e);
     }
 
-    // Serialize cloned result to input stream to be returned
-    final InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+    // Reset InputStream to be consumed later
+    bodyIs.reset();
 
     // Let's convert this response into a BookMetadataEntity
     final BookMetadataEntity bookMetadataEntity = toBookMetadataEntity(bookId, version, contentOpfLocation, contentOpfEntity, isContentOpfGenerated);
 
     // Let's wrap the pair with the values
-    return Pair.with(bookMetadataEntity, inputStream);
+    return Pair.with(bookMetadataEntity, bodyIs);
   }
 
   private BookMetadataEntity toBookMetadataEntity(final String bookId, final String version, final ContentOpfLocationEntity contentContainer,
