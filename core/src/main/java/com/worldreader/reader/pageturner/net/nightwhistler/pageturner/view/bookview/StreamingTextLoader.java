@@ -348,8 +348,8 @@ public class StreamingTextLoader implements TextLoader {
 
     this.anchors = new HashMap<>();
 
-    // read epub file
-    Book newBook = new EpubReader().readEpubStreaming(is);
+    final EpubReader epubReader = new EpubReader();
+    final Book newBook = epubReader.readEpubStreaming(is);
 
     this.currentBook = newBook;
 
