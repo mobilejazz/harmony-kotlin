@@ -27,37 +27,26 @@ import java.util.Map;
 // package
 class PackageDocumentMetadataReader extends PackageDocumentBase {
 
-  //private static final Logger log = LoggerFactory.getLogger(PackageDocumentMetadataReader.class);
-
   public static Metadata readMetadata(Document packageDocument, Resources resources) {
     Metadata result = new Metadata();
-    Element metadataElement =
-        DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF,
-            OPFTags.metadata);
+    Element metadataElement = DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF, OPFTags.metadata);
     if (metadataElement == null) {
       //log.error("Package does not contain element " + OPFTags.metadata);
       return result;
     }
-    result.setTitles(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.title));
-    result.setPublishers(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.publisher));
-    result.setDescriptions(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.description));
-    result.setRights(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.rights));
-    result.setTypes(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.type));
-    result.setSubjects(
-        DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.subject));
+    result.setTitles(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.title));
+    result.setPublishers(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.publisher));
+    result.setDescriptions(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.description));
+    result.setRights(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.rights));
+    result.setTypes(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.type));
+    result.setSubjects(DOMUtil.getElementsTextChild(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.subject));
     result.setIdentifiers(readIdentifiers(metadataElement));
     result.setAuthors(readCreators(metadataElement));
     result.setContributors(readContributors(metadataElement));
     result.setDates(readDates(metadataElement));
     result.setOtherProperties(readOtherProperties(metadataElement));
 
-    Element languageTag =
-        DOMUtil.getFirstElementByTagNameNS(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.language);
+    Element languageTag = DOMUtil.getFirstElementByTagNameNS(metadataElement, NAMESPACE_DUBLIN_CORE, DCTags.language);
     if (languageTag != null) {
       result.setLanguage(DOMUtil.getTextChildrenContent(languageTag));
     }
@@ -87,9 +76,7 @@ class PackageDocumentMetadataReader extends PackageDocumentBase {
   }
 
   private static String getBookIdId(Document document) {
-    Element packageElement =
-        DOMUtil.getFirstElementByTagNameNS(document.getDocumentElement(), NAMESPACE_OPF,
-            OPFTags.packageTag);
+    Element packageElement = DOMUtil.getFirstElementByTagNameNS(document.getDocumentElement(), NAMESPACE_OPF, OPFTags.packageTag);
     if (packageElement == null) {
       return null;
     }
@@ -125,8 +112,7 @@ class PackageDocumentMetadataReader extends PackageDocumentBase {
       Element dateElement = (Element) elements.item(i);
       Date date;
       try {
-        date = new Date(DOMUtil.getTextChildrenContent(dateElement),
-            dateElement.getAttributeNS(NAMESPACE_OPF, OPFAttributes.event));
+        date = new Date(DOMUtil.getTextChildrenContent(dateElement), dateElement.getAttributeNS(NAMESPACE_OPF, OPFAttributes.event));
         result.add(date);
       } catch (IllegalArgumentException e) {
         //log.error(e.getMessage());
@@ -145,16 +131,14 @@ class PackageDocumentMetadataReader extends PackageDocumentBase {
     if (spacePos < 0) {
       result = new Author(authorString);
     } else {
-      result =
-          new Author(authorString.substring(0, spacePos), authorString.substring(spacePos + 1));
+      result = new Author(authorString.substring(0, spacePos), authorString.substring(spacePos + 1));
     }
     result.setRole(authorElement.getAttributeNS(NAMESPACE_OPF, OPFAttributes.role));
     return result;
   }
 
   private static List<Identifier> readIdentifiers(Element metadataElement) {
-    NodeList identifierElements =
-        metadataElement.getElementsByTagNameNS(NAMESPACE_DUBLIN_CORE, DCTags.identifier);
+    NodeList identifierElements = metadataElement.getElementsByTagNameNS(NAMESPACE_DUBLIN_CORE, DCTags.identifier);
     if (identifierElements.getLength() == 0) {
       //log.error("Package does not contain element " + DCTags.identifier);
       return new ArrayList<Identifier>();

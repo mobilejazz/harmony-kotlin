@@ -1,19 +1,14 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
+import android.util.Log;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io.XmlStreamReader;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.io.*;
+import java.util.zip.*;
 
 /**
  * Represents a resource that is part of the epub.
@@ -215,8 +210,7 @@ public class Resource implements Serializable {
   public byte[] getData() throws IOException {
 
     if (data == null) {
-
-      //LOG.info("Initializing lazy resource " + fileName + "#" + this.href);
+      Log.e("epublib", "Initializing lazy resource " + fileName + "#" + this.href);
 
       InputStream in = getResourceStream();
       byte[] readData = IOUtil.toByteArray(in, (int) this.cachedSize);
