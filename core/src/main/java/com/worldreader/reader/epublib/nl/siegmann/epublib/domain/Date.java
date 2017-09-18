@@ -1,8 +1,8 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentBase;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader;
 
-import java.io.Serializable;
+import java.io.*;
 import java.text.SimpleDateFormat;
 
 /**
@@ -13,15 +13,11 @@ import java.text.SimpleDateFormat;
  * @author paul
  */
 public class Date implements Serializable {
-  /**
-   *
-   */
+
   private static final long serialVersionUID = 7533866830395120136L;
 
   public enum Event {
-    PUBLICATION("publication"),
-    MODIFICATION("modification"),
-    CREATION("creation");
+    PUBLICATION("publication"), MODIFICATION("modification"), CREATION("creation");
 
     private final String value;
 
@@ -57,7 +53,7 @@ public class Date implements Serializable {
   }
 
   public Date(java.util.Date date, Event event) {
-    this((new SimpleDateFormat(PackageDocumentBase.dateFormat)).format(date), event);
+    this((new SimpleDateFormat(PackageDocumentMetadataReader.dateFormat)).format(date), event);
   }
 
   public Date(String dateString, Event event) {
@@ -66,7 +62,7 @@ public class Date implements Serializable {
   }
 
   public Date(java.util.Date date, String event) {
-    this((new SimpleDateFormat(PackageDocumentBase.dateFormat)).format(date), event);
+    this((new SimpleDateFormat(PackageDocumentMetadataReader.dateFormat)).format(date), event);
   }
 
   public Date(String dateString, String event) {

@@ -55,16 +55,17 @@ public class ResourceUtil {
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  public static Document getAsDocument(Resource resource, DocumentBuilder documentBuilder) throws SAXException, IOException, ParserConfigurationException {
+  public static Document getAsDocument(Resource resource, DocumentBuilder documentBuilder)
+      throws SAXException, IOException, ParserConfigurationException {
     final InputSource inputSource = getInputSource(resource);
     if (inputSource == null) {
       return null;
     }
-    //CharStreams.toString(new InputStreamReader(resource.getInputStream(), Charsets.UTF_8));
     return documentBuilder.parse(inputSource);
   }
 
-  public static void generateStreamingResourcesFromPackageResource(Resources resources, Resource packageResource) throws SAXException, IOException, ParserConfigurationException {
+  public static void generateStreamingResourcesFromPackageResource(Resources resources, Resource packageResource)
+      throws SAXException, IOException, ParserConfigurationException {
     final Document packageDocument = getAsDocument(packageResource, EpubProcessorSupport.createDocumentBuilder());
     PackageDocumentReader.processStreamingManifest(resources, packageDocument);
   }

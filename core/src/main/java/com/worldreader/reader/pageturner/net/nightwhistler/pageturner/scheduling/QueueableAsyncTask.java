@@ -137,34 +137,6 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
     return getClass().getSimpleName() + " (" + toHexString(hashCode()) + ")";
   }
 
-  /**
-   * Sets the operation to be performed when this task is cancelled.
-   *
-   * @return this object
-   */
-  public QueueableAsyncTask setOnCancelled(Command<Option<Result>> onCancelledOperation) {
-    this.onCancelledOperation = onCancelledOperation;
-    return this;
-  }
-
-  public QueueableAsyncTask setOnPostExecute(Command<Option<Result>> onPostExecuteOperation) {
-    this.onPostExecuteOperation = onPostExecuteOperation;
-    return this;
-  }
-
-  public QueueableAsyncTask setDoInBackground(Functor<Params[], Option<Result>> doInBackgroundFunction) {
-    this.doInBackgroundFunction = doInBackgroundFunction;
-    return this;
-  }
-
-  public void setOnPreExecute(UiUtils.Action onPreExecutionOperation) {
-    this.onPreExecutionOperation = onPreExecutionOperation;
-  }
-
-  public void setOnProgressUpdate(Command<Progress[]> onProgressUpdateOperation) {
-    this.onProgressUpdateOperation = onProgressUpdateOperation;
-  }
-
   public interface QueueCallback {
 
     void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled);

@@ -25,7 +25,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
 
-public class AnimatedImageView extends ImageView {
+public class AnimatedImageView extends android.support.v7.widget.AppCompatImageView {
 
 	private Animator animator;
 	

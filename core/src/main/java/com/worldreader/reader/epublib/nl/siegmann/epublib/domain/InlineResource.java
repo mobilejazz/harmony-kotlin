@@ -9,8 +9,7 @@ import java.io.IOException;
 public class InlineResource extends Resource {
 
   public InlineResource(byte[] data, String href) {
-    super(null, data, href, MediatypeService.determineMediaType(href),
-        Constants.CHARACTER_ENCODING);
+    super(null, data, href, MediatypeService.determineMediaType(href), Constants.CHARACTER_ENCODING);
   }
 
   @Override public byte[] getData() throws IOException {

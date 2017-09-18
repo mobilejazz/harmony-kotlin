@@ -12,9 +12,6 @@ import java.io.Serializable;
  */
 public class GuideReference extends TitledResourceReference implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = -316179702440631834L;
 
   /**

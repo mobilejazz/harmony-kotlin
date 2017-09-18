@@ -53,9 +53,7 @@ public class StringUtil {
     if (suffix.length() > source.length()) {
       return false;
     }
-    return source.substring(source.length() - suffix.length())
-        .toLowerCase()
-        .endsWith(suffix.toLowerCase());
+    return source.substring(source.length() - suffix.length()).toLowerCase().endsWith(suffix.toLowerCase());
   }
 
   /**

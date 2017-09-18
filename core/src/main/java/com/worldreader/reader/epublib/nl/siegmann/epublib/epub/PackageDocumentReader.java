@@ -21,24 +21,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.*;
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.NAMESPACE_OPF;
 
 /**
  * Reads the opf package document as defined by namespace http://www.idpf.org/2007/opf
  *
  * @author paul
  */
-public class PackageDocumentReader extends PackageDocumentBase {
+public class PackageDocumentReader {
 
   private static final String[] POSSIBLE_NCX_ITEM_IDS = new String[] { "toc", "ncx" };
 
@@ -55,7 +50,7 @@ public class PackageDocumentReader extends PackageDocumentBase {
     resources = readManifest(packageDocument, resources, idMapping);
     book.setResources(resources);
     readCover(packageDocument, book);
-    book.setMetadata(PackageDocumentMetadataReader.readMetadata(packageDocument, book.getResources()));
+    book.setMetadata(readMetadata(packageDocument));
     book.setSpine(readSpine(packageDocument, epubReader, book.getResources(), idMapping));
 
     // if we did not find a cover page then we make the first page of the book the cover page
@@ -327,9 +322,9 @@ public class PackageDocumentReader extends PackageDocumentBase {
       Log.e("epublib", "Could not find table of contents resource. Tried resource with id '"
           + tocResourceId
           + "', "
-          + Constants.DEFAULT_TOC_ID
+          + "toc"
           + ", "
-          + Constants.DEFAULT_TOC_ID.toUpperCase()
+          + "TOC"
           + " and any NCX resource.");
     }
     return tocResource;

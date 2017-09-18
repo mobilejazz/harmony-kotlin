@@ -19,7 +19,11 @@
 
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
 
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper.PlatformUtil;
+import android.os.Process;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import java.util.concurrent.*;
 
 /**
  * Wraps a QueueableAsyncTask and its parameters, so that it can be executed later.
@@ -27,6 +31,21 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper.Pla
  * It's essentially a simple Command Object for tasks.
  */
 public class QueuedTask<A, B, C> {
+
+  private static final ThreadFactory READER_THREAD_FACTORY = new ThreadFactory() {
+    @Override public Thread newThread(@NonNull Runnable r) {
+      final Thread t = new Thread(r);
+      t.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+      t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        @Override public void uncaughtException(Thread t, Throwable e) {
+          Log.e("ReaderThread-" + t.getId(), "Uncaught exception: ", e);
+        }
+      });
+      return t;
+    }
+  };
+
+  private static final Executor SINGLE_THREAD_EXECUTOR = Executors.newFixedThreadPool(3, READER_THREAD_FACTORY);
 
   private QueueableAsyncTask<A, B, C> task;
   private A[] parameters;
@@ -45,7 +64,7 @@ public class QueuedTask<A, B, C> {
 
     executing = true;
 
-    PlatformUtil.executeTask(task, parameters);
+    task.executeOnExecutor(SINGLE_THREAD_EXECUTOR, parameters);
   }
 
   public boolean isExecuting() {

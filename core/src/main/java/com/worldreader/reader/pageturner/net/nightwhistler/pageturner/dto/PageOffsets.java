@@ -55,7 +55,7 @@ public class PageOffsets {
 
   private List<List<Integer>> offsets;
 
-  private static enum Fields {
+  private enum Fields {
     fontSize, fontFamily, vMargin, hMargin, lineSpacing, fullScreen, offsets,
     allowStyling, algorithmVersion
   }

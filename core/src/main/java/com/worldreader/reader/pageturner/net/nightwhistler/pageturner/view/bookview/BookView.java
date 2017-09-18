@@ -482,8 +482,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.spine = new PageTurnerSpine(this.book, this.resourcesLoader);
     this.spine.navigateByIndex(BookView.this.storedIndex);
 
-    this.resourcesLoader.registerSpine(this.spine);
-
     return this.book;
   }
 

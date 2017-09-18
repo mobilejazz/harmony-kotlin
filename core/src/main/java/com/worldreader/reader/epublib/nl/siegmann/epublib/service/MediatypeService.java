@@ -13,8 +13,7 @@ import java.util.Map;
  */
 public class MediatypeService {
 
-  public static final MediaType XHTML =
-      new MediaType("application/xhtml+xml", ".xhtml", new String[] { ".htm", ".html", ".xhtml" });
+  public static final MediaType XHTML = new MediaType("application/xhtml+xml", ".xhtml", new String[] { ".htm", ".html", ".xhtml" });
   public static final MediaType EPUB = new MediaType("application/epub+zip", ".epub");
   public static final MediaType NCX = new MediaType("application/x-dtbncx+xml", ".ncx");
 
@@ -22,8 +21,7 @@ public class MediatypeService {
   public static final MediaType CSS = new MediaType("text/css", ".css");
 
   // images
-  public static final MediaType JPG =
-      new MediaType("image/jpeg", ".jpg", new String[] { ".jpg", ".jpeg" });
+  public static final MediaType JPG = new MediaType("image/jpeg", ".jpg", new String[] { ".jpg", ".jpeg" });
   public static final MediaType PNG = new MediaType("image/png", ".png");
   public static final MediaType GIF = new MediaType("image/gif", ".gif");
 
@@ -40,20 +38,18 @@ public class MediatypeService {
   public static final MediaType OGG = new MediaType("audio/ogg", ".ogg");
 
   public static final MediaType SMIL = new MediaType("application/smil+xml", ".smil");
-  public static final MediaType XPGT =
-      new MediaType("application/adobe-page-template+xml", ".xpgt");
+  public static final MediaType XPGT = new MediaType("application/adobe-page-template+xml", ".xpgt");
   public static final MediaType PLS = new MediaType("application/pls+xml", ".pls");
 
   public static MediaType[] mediatypes = new MediaType[] {
-      XHTML, EPUB, JPG, PNG, GIF, CSS, SVG, TTF, NCX, XPGT, OPENTYPE, WOFF, SMIL, PLS, JAVASCRIPT,
-      MP3, MP4, OGG
+      XHTML, EPUB, JPG, PNG, GIF, CSS, SVG, TTF, NCX, XPGT, OPENTYPE, WOFF, SMIL, PLS, JAVASCRIPT, MP3, MP4, OGG
   };
 
-  public static Map<String, MediaType> mediaTypesByName = new HashMap<String, MediaType>();
+  public static Map<String, MediaType> mediaTypesByName = new HashMap<>();
 
   static {
-    for (int i = 0; i < mediatypes.length; i++) {
-      mediaTypesByName.put(mediatypes[i].getName(), mediatypes[i]);
+    for (MediaType mediatype : mediatypes) {
+      mediaTypesByName.put(mediatype.getName(), mediatype);
     }
   }
 
@@ -66,8 +62,7 @@ public class MediatypeService {
    * Null of no matching extension found.
    */
   public static MediaType determineMediaType(String filename) {
-    for (int i = 0; i < mediatypes.length; i++) {
-      MediaType mediatype = mediatypes[i];
+    for (MediaType mediatype : mediatypes) {
       for (String extension : mediatype.getExtensions()) {
         if (StringUtil.endsWithIgnoreCase(filename, extension)) {
           return mediatype;

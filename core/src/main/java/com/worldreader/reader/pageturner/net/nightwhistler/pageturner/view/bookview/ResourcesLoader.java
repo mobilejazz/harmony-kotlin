@@ -3,8 +3,8 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import java.io.InputStream;
+
+import java.io.*;
 
 public interface ResourcesLoader {
 
@@ -19,6 +19,4 @@ public interface ResourcesLoader {
   void loadImageResources();
 
   void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback);
-
-  void registerSpine(PageTurnerSpine spine);
 }

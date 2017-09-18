@@ -5,12 +5,11 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
-import java.io.InputStream;
+
+import java.io.*;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class StreamingResourcesLoader implements ResourcesLoader {
 
@@ -20,7 +19,6 @@ public class StreamingResourcesLoader implements ResourcesLoader {
   private StreamingBookRepository dataSource;
   private Logger logger;
   private List<Holder> callbacks = new ArrayList<>();
-  private PageTurnerSpine spine;
 
   public StreamingResourcesLoader(BookMetadata bookMetadata, StreamingBookRepository dataSource, Logger logger) {
     this.bookMetadata = bookMetadata;
@@ -56,10 +54,6 @@ public class StreamingResourcesLoader implements ResourcesLoader {
 
   @Override public void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback) {
     this.callbacks.add(new Holder(resolvedHref, imageCallback));
-  }
-
-  @Override public void registerSpine(final PageTurnerSpine spine) {
-    this.spine = spine;
   }
 
   private static class Holder {
