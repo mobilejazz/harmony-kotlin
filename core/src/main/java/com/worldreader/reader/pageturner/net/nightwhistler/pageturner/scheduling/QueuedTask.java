@@ -45,7 +45,8 @@ public class QueuedTask<A, B, C> {
     }
   };
 
-  private static final Executor SINGLE_THREAD_EXECUTOR = Executors.newFixedThreadPool(3, READER_THREAD_FACTORY);
+  private static final Executor READER_THREAD_EXECUTOR =
+      new ThreadPoolExecutor(1, 5, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(), READER_THREAD_FACTORY);
 
   private QueueableAsyncTask<A, B, C> task;
   private A[] parameters;
@@ -64,7 +65,7 @@ public class QueuedTask<A, B, C> {
 
     executing = true;
 
-    task.executeOnExecutor(SINGLE_THREAD_EXECUTOR, parameters);
+    task.executeOnExecutor(READER_THREAD_EXECUTOR, parameters);
   }
 
   public boolean isExecuting() {
