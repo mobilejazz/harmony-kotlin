@@ -15,9 +15,10 @@ import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.error.book.FailedDownloadBookException;
 
+import java.util.List;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, ErrorCore<?>> implements DownloadBookInteractor {
 
@@ -65,6 +66,10 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   }
 
   @Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
+    this.bookId = bookId;
+    this.version = version;
+    this.forceBookMetadataRefresh = false;
+
     final SettableFuture<Void> settableFuture = SettableFuture.create();
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
