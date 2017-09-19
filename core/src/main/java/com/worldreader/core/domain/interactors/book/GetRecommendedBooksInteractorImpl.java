@@ -15,9 +15,12 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,7 +35,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+                                                   @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
@@ -47,9 +50,13 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   }
 
   @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit) {
+    return execute(book, offset, limit, getExecutor());
+  }
+
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
-    getExecutor().execute(new Runnable() {
+    executor.execute(new Runnable() {
       @Override public void run() {
         execute(book, offset, limit, new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
@@ -65,6 +72,8 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
 
     return settableFuture;
   }
+
+
 
   @Override public void run() {
     execute(book, offset, limit, new Callback<List<Book>>() {

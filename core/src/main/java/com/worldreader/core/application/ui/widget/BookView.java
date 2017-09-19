@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.worldreader.core.R;
 import com.worldreader.core.application.helper.image.ImageLoader;
 import com.worldreader.core.application.helper.reachability.Reachability;
@@ -58,33 +59,38 @@ public class BookView extends FrameLayout {
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
-      final Reachability reachability, @DrawableRes final int placeholder) {
+                      final Reachability reachability, @DrawableRes final int placeholder) {
     this.book = book;
 
     if (book != null) {
       txtTitle.setText(book.getTitle());
       imgBook.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
         @Override public boolean onPreDraw() {
-          imgBook.getViewTreeObserver().removeOnPreDrawListener(this);
 
           int measuredHeight = imgBook.getMeasuredHeight();
           int measuredWidth = imgBook.getMeasuredWidth();
 
-          String cover = book.getCoverUrlWithSize(measuredWidth, measuredHeight);
-          if (cover != null) {
-            imgBook.setCropYCenterOffsetPct(0f);
+          if (measuredHeight > 0 && measuredWidth > 0) {
+            imgBook.getViewTreeObserver().removeOnPreDrawListener(this);
 
-            if (reachability.isReachable()) {
-              imageLoader.load(book.getId(), cover, placeholder, imgBook);
-            } else {
-              if (book.isBookDownloaded()) {
-                imageLoader.load(book.getId(), cover, R.drawable.as_offline_book_cover, imgBook);
+            String cover = book.getCoverUrlWithSize(measuredWidth, measuredHeight);
+            if (cover != null) {
+              imgBook.setCropYCenterOffsetPct(0f);
+
+              if (reachability.isReachable()) {
+                imageLoader.load(book.getId(), cover, placeholder, imgBook);
               } else {
-                imageLoader.load(R.drawable.as_offline_book_cover_inactive, imgBook);
+                if (book.isBookDownloaded()) {
+                  imageLoader.load(book.getId(), cover, R.drawable.as_offline_book_cover, imgBook);
+                } else {
+                  imageLoader.load(R.drawable.as_offline_book_cover_inactive, imgBook);
+                }
               }
             }
+            return false;
+          } else {
+            return true;
           }
-          return false;
         }
       });
       container.setOnClickListener(new OnClickListener() {
@@ -103,7 +109,7 @@ public class BookView extends FrameLayout {
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
-      final Reachability reachability) {
+                      final Reachability reachability) {
     setBook(book, imageLoader, reachability, R.drawable.as_book_placeholder);
   }
 

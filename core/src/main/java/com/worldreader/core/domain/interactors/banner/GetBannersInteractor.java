@@ -6,7 +6,8 @@ import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.model.Banner;
 
-import java.util.*;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 public interface GetBannersInteractor {
 
@@ -18,4 +19,7 @@ public interface GetBannersInteractor {
   void execute(Type type, int index, int limit, DomainCallback<List<Banner>, ErrorCore> callback);
 
   ListenableFuture<Optional<List<Banner>>> execute(String identifier, int index, int limit);
+
+  ListenableFuture<Optional<List<Banner>>> execute(String identifier, int index, int limit, Executor executor);
+
 }

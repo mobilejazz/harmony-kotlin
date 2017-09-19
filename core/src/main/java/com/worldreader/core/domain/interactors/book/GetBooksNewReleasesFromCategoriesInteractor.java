@@ -15,9 +15,12 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
 
 @PerActivity public class GetBooksNewReleasesFromCategoriesInteractor {
 
@@ -38,10 +41,16 @@ import java.util.*;
   }
 
   public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
-      final int offset, final int limit) {
+                                                        final int offset, final int limit) {
+    return execute(categories, offset, limit, listeningExecutorService);
+  }
+
+  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
+                                                        final int offset, final int limit,
+                                                        final Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
-    listeningExecutorService.execute(new Runnable() {
+    executor.execute(new Runnable() {
       @Override public void run() {
 
         List<BookSort> bookSorts = Collections.singletonList(
@@ -65,5 +74,6 @@ import java.util.*;
     });
 
     return settableFuture;
+
   }
 }

@@ -18,9 +18,12 @@ import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
 
 public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetHighestRatedBooksInteractor {
@@ -38,8 +41,8 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
 
   @Inject
   public GetHighestRatedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+                                            BookRepository bookRepository,
+                                            @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
@@ -47,7 +50,7 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
   }
 
   @Override public void execute(int offset, int limit, List<Category> categories,
-      DomainCallback<List<Book>, ErrorCore> callback) {
+                                DomainCallback<List<Book>, ErrorCore> callback) {
     this.offset = offset;
     this.limit = limit;
     this.categories = categories;
@@ -57,10 +60,16 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
   }
 
   @Override public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
-      final int offset, final int limit) {
+                                                                  final int offset, final int limit) {
+    return this.execute(categories, offset, limit, getExecutor());
+  }
+
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
+                                                                  final int offset, final int limit,
+                                                                  Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
-    getExecutor().execute(new Runnable() {
+    executor.execute(new Runnable() {
       @Override public void run() {
         execute(categories, offset, limit, new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
@@ -94,7 +103,7 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
 
   //region Private methods
   private void execute(final List<Category> categories, final int offset, final int limit,
-      final Callback<List<Book>> callback) {
+                       final Callback<List<Book>> callback) {
     List<Integer> categoriesInt = categoryToIntAdapter.transform(categories);
     List<BookSort> sorteredBy =
         Arrays.asList(BookSort.createBookSort(BookSort.Type.SCORE, BookSort.Value.DESC),
