@@ -20,5 +20,5 @@ public interface GetBookMetadataInteractor {
 
   ListenableFuture<BookMetadata> execute(final String bookId, final String version);
 
-  ListenableFuture<BookMetadata> execute(String bookId, boolean forceRefreshBookMetadata, Executor executor);
+  ListenableFuture<BookMetadata> execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final Executor executor);
 }

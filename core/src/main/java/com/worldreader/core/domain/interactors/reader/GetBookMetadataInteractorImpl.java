@@ -74,9 +74,9 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     return future;
   }
 
-  @Override public ListenableFuture<BookMetadata> execute(final String bookId, final boolean forceRefreshBookMetadata, final Executor executor) {
+  @Override public ListenableFuture<BookMetadata> execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final Executor executor) {
     final SettableFuture<BookMetadata> future = SettableFuture.create();
-    executor.execute(getInteractorCallable(bookId, "latest", forceRefreshBookMetadata, future));
+    executor.execute(getInteractorCallable(bookId, version, forceRefreshBookMetadata, future));
     return future;
   }
 

@@ -64,11 +64,11 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
-  @Override public ListenableFuture<Void> execute(final String bookId, Executor executor) {
+  @Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
     final SettableFuture<Void> settableFuture = SettableFuture.create();
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, forceBookMetadataRefresh, MoreExecutors.directExecutor()).get();
+        final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
         downloadBookResources(bookMetadata, false);
         settableFuture.set(null);
       }

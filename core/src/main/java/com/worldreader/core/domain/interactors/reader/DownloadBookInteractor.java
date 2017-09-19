@@ -15,5 +15,5 @@ public interface DownloadBookInteractor {
 
   void execute(final String bookId, final String version, final DomainCallback<Integer, ErrorCore<?>> callback);
 
-  ListenableFuture<Void> execute(String bookId, Executor executor);
+  ListenableFuture<Void> execute(final String bookId, final String version, final Executor executor);
 }
