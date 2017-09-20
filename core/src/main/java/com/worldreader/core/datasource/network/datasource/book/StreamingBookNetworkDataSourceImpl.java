@@ -18,6 +18,7 @@ import com.worldreader.core.datasource.model.ResourcesCredentialsEntity;
 import com.worldreader.core.datasource.model.StreamingResourceEntity;
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
+import com.worldreader.core.datasource.network.quality.ImageResourceQualityProvider;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -48,16 +49,18 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
   private final OkHttpClient httpClient;
   private final Gson gson;
   private final Serializer xmlSerializer;
+  private final ImageResourceQualityProvider imageResourceQualityProvider;
   private final ErrorAdapter<Throwable> errorAdapter = new Retrofit2ErrorAdapter();
 
   private final Cache<String, ResourcesCredentialsEntity> cache;
 
   @Inject public StreamingBookNetworkDataSourceImpl(HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient, Gson gson,
-      Serializer xmlSerializer) {
+      Serializer xmlSerializer, ImageResourceQualityProvider imageResourceQualityProvider) {
     this.resourceEndpointUrl = resourceEndpointUrl;
     this.httpClient = httpClient;
     this.gson = gson;
     this.xmlSerializer = xmlSerializer;
+    this.imageResourceQualityProvider = imageResourceQualityProvider;
     this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(60, TimeUnit.MINUTES).build();
   }
 
@@ -102,8 +105,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
             // If response is OK, we return back the result converted
             if (contentOpfResponseSuccessful) {
-              final Pair<BookMetadataEntity, InputStream> pair = toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse, bookId, version,
-                  true);
+              final Pair<BookMetadataEntity, InputStream> pair =
+                  toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse, bookId, version, true);
               notifySuccessCallback(pair, callback);
             } else if (contentOpfResponseCode == HttpStatus.NOT_FOUND) { // Retry same request without generated.opf
 
@@ -118,7 +121,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
               // If response is OK, we return back the result converted
               if (contentOpfResponseSuccessful2) {
-                final Pair<BookMetadataEntity, InputStream> pair = toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse2, bookId, version, false);
+                final Pair<BookMetadataEntity, InputStream> pair =
+                    toBookMetadataAndInputStreamPair(contentOpfLocation, contentOpfResponse2, bookId, version, false);
                 notifySuccessCallback(pair, callback);
               } else {
                 notifyErrorCallback(callback, response);
@@ -256,7 +260,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     // Perform a fix for the urls related to images
     final String finalResourcePath;
     if (isImageRequest) {
-      finalResourcePath = resourcePath.substring(0, resourcePath.lastIndexOf(".")) + ".jpg";
+      finalResourcePath =
+          resourcePath.substring(0, resourcePath.lastIndexOf(".")) + imageResourceQualityProvider.provideQuality().getUrlQualifier() + ".jpg";
     } else {
       finalResourcePath = resourcePath;
     }
@@ -281,7 +286,6 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     // Check if cache is empty
     ResourcesCredentialsEntity credentials = cache.getIfPresent(RESOURCES_CREDENTIALS_KEY);
 
-    // TODO: 13/09/2017 Add logic for requesting images with different densities
     // If cache entry is not valid, request a new one and store it on cache
     if (!isValidResourcesCredentials(credentials)) {
       cache.invalidateAll();
