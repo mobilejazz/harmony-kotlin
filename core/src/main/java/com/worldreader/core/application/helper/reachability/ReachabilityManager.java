@@ -2,6 +2,8 @@ package com.worldreader.core.application.helper.reachability;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
@@ -19,7 +21,8 @@ public class ReachabilityManager implements Reachability {
     final ConnectivityManager connectivityManager =
         ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
 
-    return connectivityManager.getActiveNetworkInfo() != null
-        && connectivityManager.getActiveNetworkInfo().isConnected();
+    final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
   }
 }
