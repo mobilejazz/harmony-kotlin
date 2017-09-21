@@ -22,6 +22,8 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.schedulin
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.concurrent.*;
 
@@ -45,8 +47,9 @@ public class QueuedTask<A, B, C> {
     }
   };
 
-  private static final Executor READER_THREAD_EXECUTOR =
-      new ThreadPoolExecutor(1, 5, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(), READER_THREAD_FACTORY);
+  public static final ListeningExecutorService READER_THREAD_EXECUTOR =
+      MoreExecutors.listeningDecorator(
+      new ThreadPoolExecutor(1, 5, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(), READER_THREAD_FACTORY));
 
   private QueueableAsyncTask<A, B, C> task;
   private A[] parameters;

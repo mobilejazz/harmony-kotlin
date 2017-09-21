@@ -63,6 +63,7 @@ public class FastBitmapDrawable extends Drawable {
 
   private Bitmap bitmap;
   private boolean isLoaded = false;
+  private boolean isProcessing = false;
 
   public FastBitmapDrawable(final Context context, final String resource, final int width, final int height, final StreamingBookRepository dataSource,
       final BookMetadata metadata) {
@@ -92,7 +93,8 @@ public class FastBitmapDrawable extends Drawable {
       shape.draw(canvas, paint);
       canvas.restoreToCount(count);
 
-      if (!isLoaded) {
+      if (!isLoaded && !isProcessing) {
+        isProcessing=true;
         final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
         Futures.addCallback(future, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {
@@ -100,6 +102,7 @@ public class FastBitmapDrawable extends Drawable {
             handler.post(new Runnable() {
               @Override public void run() {
                 generateDrawable(inputStream);
+                isProcessing = false;
               }
             });
           }
@@ -109,6 +112,7 @@ public class FastBitmapDrawable extends Drawable {
             handler.post(new Runnable() {
               @Override public void run() {
                 generateDrawable(in);
+                isProcessing = false;
               }
             });
           }

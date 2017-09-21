@@ -16,6 +16,7 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueuedTask;
 import org.javatuples.Pair;
 
 import javax.inject.Inject;
@@ -31,8 +32,6 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   private final Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper;
 
   private final Logger logger;
-
-  private static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
   @Inject public StreamingBookDataSource(StreamingBookNetworkDataSource networkDataSource, StreamingBookBdDataSource bddDataSource,
       BookMetadataEntityDataMapper bookMetadataEntityDataMapper, Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper,
@@ -82,7 +81,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource) throws Exception {
     final String key = id + resource;
 
-    StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
+    StreamingResourceEntity streamingResourceEntity = null;//bddDataSource.obtainStreamingResource(key);
 
     if (streamingResourceEntity == null) {
       streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
@@ -101,7 +100,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   @Override
   public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
-    return executorService.submit(new Callable<StreamingResource>() {
+    return QueuedTask.READER_THREAD_EXECUTOR.submit(new Callable<StreamingResource>() {
       @Override public StreamingResource call() throws Exception {
         return getBookResource(id, bookMetadata, resource);
       }
