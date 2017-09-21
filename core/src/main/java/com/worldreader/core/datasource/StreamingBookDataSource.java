@@ -81,7 +81,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource) throws Exception {
     final String key = id + resource;
 
-    StreamingResourceEntity streamingResourceEntity = null;//bddDataSource.obtainStreamingResource(key);
+    StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
     if (streamingResourceEntity == null) {
       streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
