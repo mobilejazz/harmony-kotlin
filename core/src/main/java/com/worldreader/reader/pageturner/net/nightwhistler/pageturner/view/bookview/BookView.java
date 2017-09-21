@@ -31,6 +31,7 @@ import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -62,6 +63,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -71,6 +73,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -195,7 +198,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     return fileName;
   }
 
-  public int getSpineSize(){ return spine != null ? spine.size() : 0;}
+  public int getSpineSize() {
+    return spine != null ? spine.size() : 0;
+  }
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
@@ -283,12 +288,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setOnTouchListener(l);
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  public void setTextSelectionCallback(TextSelectionCallback callback,
-      ActionModeListener listener) {
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB) public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener) {
     if (Build.VERSION.SDK_INT >= Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
-      this.childView.setCustomSelectionActionModeCallback(
-          new TextSelectionActions(getContext(), listener, callback, this));
+      this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(getContext(), listener, callback, this));
     }
   }
 
@@ -311,8 +313,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     if (horizontalMargin != this.horizontalMargin) {
       this.horizontalMargin = horizontalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin,
-          this.verticalMargin);
+      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -336,8 +337,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void setVerticalMargin(int verticalMargin) {
     if (verticalMargin != this.verticalMargin) {
       this.verticalMargin = verticalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin,
-          this.verticalMargin);
+      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -350,8 +350,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     int end = getSelectionEnd();
 
     if (start > 0 && end > 0 && end > start) {
-      return some(
-          childView.getText().subSequence(getSelectionStart(), getSelectionEnd()).toString());
+      return some(childView.getText().subSequence(getSelectionStart(), getSelectionEnd()).toString());
     } else {
       return none();
     }
@@ -441,8 +440,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     restorePosition();
     strategy.updateGUI();
     progressUpdate();
-    parseEntryComplete(spine.getCurrentTitle().getOrElse(""),
-        spine.getCurrentResource().unsafeGet());
+    parseEntryComplete(spine.getCurrentTitle().getOrElse(""), spine.getCurrentResource().unsafeGet());
   }
 
   private Book initBookAndSpine() throws IOException {
@@ -655,9 +653,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     // URLDecode the href, so it does not contain %20 etc.
     String href;
     try {
-      href =
-          URLDecoder.decode(StringUtil.substringBefore(rawHref, Constants.FRAGMENT_SEPARATOR_CHAR),
-              charsetName);
+      href = URLDecoder.decode(StringUtil.substringBefore(rawHref, Constants.FRAGMENT_SEPARATOR_CHAR), charsetName);
     } catch (UnsupportedEncodingException e) {
       // Won't ever be reached
       throw new AssertionError(e);
@@ -854,8 +850,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     private boolean fakeImages;
 
-    public ImageCallback(String href, SpannableStringBuilder builder, int start, int end,
-        boolean fakeImages) {
+    public ImageCallback(String href, SpannableStringBuilder builder, int start, int end, boolean fakeImages) {
       this.builder = builder;
       this.start = start;
       this.end = end;
@@ -886,7 +881,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       setImageSpan(builder, draw, start, end);
     }
 
-    private void setBitmapDrawable(final String key ,final InputStream input) {
+    private void setBitmapDrawable(final String key, final InputStream input) {
       Bitmap bitmap = null;
       try {
         bitmap = getBitmap(input);
@@ -1059,26 +1054,19 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     // We scale to screen width for the cover or if the image is too wide.
     //if (originalWidth > screenWidth || originalHeight > screenHeight) {
 
-      final float ratio = (float) originalWidth / (float) originalHeight;
+    final float ratio = (float) originalWidth / (float) originalHeight;
 
-      int targetHeight = screenHeight - 1;
-      int targetWidth = (int) (targetHeight * ratio);
+    int targetHeight = screenHeight - 1;
+    int targetWidth = (int) (targetHeight * ratio);
 
-      if (targetWidth > screenWidth - 1) {
-        targetWidth = screenWidth - 1;
-        targetHeight = (int) (targetWidth * (1 / ratio));
-      }
+    if (targetWidth > screenWidth - 1) {
+      targetWidth = screenWidth - 1;
+      targetHeight = (int) (targetWidth * (1 / ratio));
+    }
 
-      Log.d(TAG, "Rescaling from "
-          + originalWidth
-          + "x"
-          + originalHeight
-          + " to "
-          + targetWidth
-          + "x"
-          + targetHeight);
+    Log.d(TAG, "Rescaling from " + originalWidth + "x" + originalHeight + " to " + targetWidth + "x" + targetHeight);
 
-      return Triplet.with(targetWidth, targetHeight, true);
+    return Triplet.with(targetWidth, targetHeight, true);
     //}
 
     //// Let's try to upscale the image
@@ -1123,8 +1111,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     @TargetApi(Build.VERSION_CODES.FROYO) @Override
-    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-        SpanStack span) {
+    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack span) {
 
       String src = node.getAttributeByName("src");
 
@@ -1150,7 +1137,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
             byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
 
-            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
+            setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start,
+                builder.length());
           } catch (OutOfMemoryError | IllegalArgumentException ia) {
             //Out of memory or invalid Base64, ignore
           }
@@ -1177,8 +1165,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class StreamingImageTagHandler extends TagNodeHandler {
 
-    protected void registerCallback(String resolvedHref,
-        ResourcesLoader.ImageResourceCallback callback) {
+    protected void registerCallback(String resolvedHref, ResourcesLoader.ImageResourceCallback callback) {
       BookView.this.resourcesLoader.registerImageCallback(resolvedHref, callback);
     }
 
@@ -1204,8 +1191,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         try {
           final String dataString = src.substring(src.indexOf(',') + 1);
           final byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
-          setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)),
-              start, builder.length());
+          setImageSpan(builder, new BitmapDrawable(getContext().getResources(), BitmapFactory.decodeByteArray(binData, 0, binData.length)), start,
+              builder.length());
         } catch (OutOfMemoryError | IllegalArgumentException ia) {
           //Out of memory or invalid Base64, ignore
         }
@@ -1308,8 +1295,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
     }).forEach(new Command<Spanned>() {
       @Override public void execute(Spanned text) {
-        int pagesOffset =
-            ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
+        int pagesOffset = ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
         int currentPage = ((FixedPagesStrategy) BookView.this.getStrategy()).getCurrentPage();
         int progressPercentage = (int) Math.floor(((double) currentPage / pagesOffset) * 100);
 
@@ -1451,7 +1437,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  public static class InnerView extends TextView {
+  public static class InnerView extends AppCompatTextView {
 
     private BookView bookView;
 
@@ -1478,6 +1464,23 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       bookView.onInnerViewResize();
     }
 
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+      // FIXME simple workaround to https://code.google.com/p/android/issues/detail?id=191430
+      if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+        int startSelection = getSelectionStart();
+        int endSelection = getSelectionEnd();
+        if (startSelection != endSelection) {
+          if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            final CharSequence text = getText();
+            setText(null);
+            setText(text);
+          }
+        }
+      }
+
+      return super.dispatchTouchEvent(event);
+    }
+
     @Override public void onWindowFocusChanged(boolean hasWindowFocus) {
       //We override this method to do nothing, since the base
       //implementation closes the ActionMode.
@@ -1487,8 +1490,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       //
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
-    public ActionMode startActionMode(ActionMode.Callback callback) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override public ActionMode startActionMode(ActionMode.Callback callback) {
       if (System.currentTimeMillis() > blockUntil) {
         Log.d(TAG, "InnerView starting action-mode");
         return super.startActionMode(callback);
@@ -1501,11 +1503,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private enum BookReadPhase {
-    START,
-    OPEN_FILE,
-    FETCH_TEXT,
-    PARSE_TEXT,
-    DONE
+    START, OPEN_FILE, FETCH_TEXT, PARSE_TEXT, DONE
   }
 
   private class OpenStreamingBookTask extends QueueableAsyncTask<None, BookReadPhase, Book> {
@@ -1650,8 +1648,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  private class CalculatePageNumbersTask
-      extends QueueableAsyncTask<Object, Void, List<List<Integer>>> {
+  private class CalculatePageNumbersTask extends QueueableAsyncTask<Object, Void, List<List<Integer>>> {
 
     private void checkForCancellation() {
       if (isCancelRequested()) {
