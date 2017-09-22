@@ -66,6 +66,14 @@ public class EnhancedOkHttpBuilder {
     return this;
   }
 
+  public EnhancedOkHttpBuilder addNetworkInterceptor(@NonNull final Interceptor interceptor) {
+    if (interceptor instanceof HttpLoggingInterceptor) {
+      throw new IllegalArgumentException("Enable logging using the logging method");
+    }
+    delegate.addNetworkInterceptor(interceptor);
+    return this;
+  }
+
   public EnhancedOkHttpBuilder retryOnConnectionFailure(boolean retry) {
     delegate.retryOnConnectionFailure(retry);
     return this;
