@@ -36,6 +36,7 @@ import android.util.Log;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.worldreader.core.R;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
@@ -116,7 +117,7 @@ public class FastBitmapDrawable extends Drawable {
               }
             });
           }
-        });
+        }, MoreExecutors.directExecutor());
       }
 
     } else {
