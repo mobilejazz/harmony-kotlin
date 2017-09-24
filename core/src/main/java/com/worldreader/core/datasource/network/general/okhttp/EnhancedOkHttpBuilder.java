@@ -8,6 +8,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
@@ -66,6 +67,11 @@ public class EnhancedOkHttpBuilder {
       throw new IllegalArgumentException("Enable logging using the logging method");
     }
     delegate.addInterceptor(interceptor);
+    return this;
+  }
+
+  public EnhancedOkHttpBuilder addNetworkInterceptor(@Nonnull final Interceptor interceptor) {
+    delegate.addNetworkInterceptor(interceptor);
     return this;
   }
 
