@@ -1,8 +1,6 @@
 package com.worldreader.core.datasource;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.helper.url.URLProvider;
