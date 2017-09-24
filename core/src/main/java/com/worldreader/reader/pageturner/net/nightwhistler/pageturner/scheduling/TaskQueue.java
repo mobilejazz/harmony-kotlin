@@ -1,16 +1,17 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
 
 import android.util.Log;
-import java.util.LinkedList;
 import jedi.functional.Command;
 import jedi.option.Option;
+
+import java.util.*;
 
 import static jedi.option.Options.none;
 import static jedi.option.Options.some;
 
 /**
  * Generic task scheduling queue.
- *
+ * <p>
  * Allows for consistent execution and cancelling of tasks
  * across Android versions.
  *
@@ -20,8 +21,7 @@ public class TaskQueue {
 
   private static final String TAG = TaskQueue.class.getSimpleName();
 
-  private LinkedList<QueuedTask<?, ?, ?>> taskQueue = new LinkedList<QueuedTask<?, ?, ?>>();
-  private TaskQueueListener listener;
+  private final LinkedList<QueuedTask<?, ?, ?>> taskQueue = new LinkedList<>();
 
   public boolean isEmpty() {
     return taskQueue.isEmpty();
@@ -58,10 +58,6 @@ public class TaskQueue {
     }
   }
 
-  public void setTaskQueueListener(TaskQueueListener listener) {
-    this.listener = listener;
-  }
-
   private String getQueueAsString() {
     StringBuilder builder = new StringBuilder("[");
 
@@ -89,7 +85,6 @@ public class TaskQueue {
   }
 
   public void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled) {
-
     if (!wasCancelled) {
       Log.d(TAG, "Completion of task of type " + task);
 
@@ -115,21 +110,12 @@ public class TaskQueue {
     Log.d(TAG, "Total tasks scheduled now: " + this.taskQueue.size() + " with queue: " + getQueueAsString());
 
     if (!this.taskQueue.isEmpty()) {
-
       if (!this.taskQueue.peek().isExecuting()) {
         Log.d(TAG, "Executing task " + this.taskQueue.peek());
         this.taskQueue.peek().execute();
       } else {
         Log.d(TAG, "Task at the head of queue is already running.");
       }
-    } else if (this.listener != null) {
-      Log.d(TAG, "Notifying that the queue is empty.");
-      this.listener.queueEmpty();
     }
-  }
-
-  public interface TaskQueueListener {
-
-    void queueEmpty();
   }
 }

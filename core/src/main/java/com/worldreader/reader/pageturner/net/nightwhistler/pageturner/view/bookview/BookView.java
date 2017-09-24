@@ -153,8 +153,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.taskQueue = new TaskQueue();
   }
 
-  @TargetApi(Configuration.TEXT_SELECTION_PLATFORM_VERSION)
-  public void init(String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader) {
+  @TargetApi(Configuration.TEXT_SELECTION_PLATFORM_VERSION) public void init(String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader) {
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
     this.resourcesLoader = resourcesLoader;
@@ -244,6 +243,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
    * @param x the X coordinate
    * @param y the Y coordinate
    * @param spanClass the class of span to filter for
+   *
    * @return a List of spans of type A, may be empty.
    */
   private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
@@ -802,7 +802,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   /**
    * Scrolls to a previously stored point.
-   *
+   * <p>
    * Call this after setPosition() to actually go there.
    */
   private void restorePosition() {
@@ -981,12 +981,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private void parseEntryComplete(String name, Resource resource) {
     for (BookViewListener listener : this.listeners) {
       listener.parseEntryComplete(name, resource);
-    }
-  }
-
-  private void fireOpenFile() {
-    for (BookViewListener listener : this.listeners) {
-      listener.readingFile();
     }
   }
 
@@ -1215,15 +1209,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private enum BookReadPhase {
-    START, OPEN_FILE, FETCH_TEXT, PARSE_TEXT, DONE
+    START, OPEN_FILE, PARSE_TEXT, DONE
   }
 
   private class OpenStreamingBookTask extends QueueableAsyncTask<None, BookReadPhase, Book> {
 
-    private String error;
-
     @Override public void doOnPreExecute() {
-      fireOpenFile();
     }
 
     @Override public Option<Book> doInBackground(None... nones) {
@@ -1232,8 +1223,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         return some(initStreamingBookAndSpine(is));
       } catch (Exception e) {
         Log.d(TAG, "Exception while reading streaming book has occurred!", e);
+        return none();
       }
-      return none();
     }
 
     @Override public void doOnPostExecute(Option<Book> book) {
@@ -1244,7 +1235,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
                  }, //some
           new Command0() {
             @Override public void execute() {
-              errorOnBookOpening(OpenStreamingBookTask.this.error);
+              errorOnBookOpening("");
             }
           } //none
       );
@@ -1282,8 +1273,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         } else {
           resource = spine.getCurrentResource().getOrElse(new Resource(""));
         }
-
-        publishProgress(BookReadPhase.FETCH_TEXT);
 
         publishProgress(BookReadPhase.PARSE_TEXT);
 
@@ -1323,8 +1312,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       switch (phase) {
         case START:
           parseEntryStart(getIndex());
-          break;
-        case PARSE_TEXT:
           fireRenderingText();
           break;
         case DONE:
