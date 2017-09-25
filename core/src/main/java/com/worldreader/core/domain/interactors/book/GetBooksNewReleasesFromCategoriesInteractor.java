@@ -15,12 +15,10 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
+import java.util.concurrent.*;
 
 @PerActivity public class GetBooksNewReleasesFromCategoriesInteractor {
 
@@ -40,14 +38,16 @@ import javax.inject.Named;
     categoryToIntAdapter = new CategoryToIntAdapter();
   }
 
-  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
-                                                        final int offset, final int limit) {
+  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit) {
     return execute(categories, offset, limit, listeningExecutorService);
   }
 
+  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit, final Executor executor) {
+    return execute(categories, offset, limit, null, executor);
+  }
+
   public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
-                                                        final int offset, final int limit,
-                                                        final Executor executor) {
+      final int offset, final int limit, final String language, final Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
     executor.execute(new Runnable() {
@@ -58,7 +58,7 @@ import javax.inject.Named;
         List<Integer> categoriesList = categoryToIntAdapter.transform(categories);
 
         bookRepository.books(categoriesList, null /*list*/, bookSorts, false /*openCountries*/,
-            localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
+            language == null ? localeProvider.get() : language, offset, limit, new CompletionCallback<List<Book>>() {
               @Override public void onSuccess(final List<Book> result) {
                 Optional<List<Book>> booksOp =
                     result == null ? Optional.<List<Book>>absent() : Optional.of(result);
@@ -74,6 +74,5 @@ import javax.inject.Named;
     });
 
     return settableFuture;
-
   }
 }

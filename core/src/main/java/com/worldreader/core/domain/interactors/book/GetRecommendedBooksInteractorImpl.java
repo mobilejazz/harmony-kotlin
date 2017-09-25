@@ -16,13 +16,10 @@ import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore> implements GetRecommendedBooksInteractor {
 
@@ -35,7 +32,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository,
-                                                   @Named("locale.provider") final Provider<String> localeProvider) {
+      @Named("locale.provider") final Provider<String> localeProvider) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
@@ -54,11 +51,16 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   }
 
   @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Executor executor) {
+    return execute(book, offset, limit, null, executor);
+  }
+
+  @Override
+  public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, final String language, Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
     executor.execute(new Runnable() {
       @Override public void run() {
-        execute(book, offset, limit, new Callback<List<Book>>() {
+        execute(book, offset, limit, language, new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             settableFuture.set(Optional.fromNullable(books));
           }
@@ -73,10 +75,8 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
     return settableFuture;
   }
 
-
-
   @Override public void run() {
-    execute(book, offset, limit, new Callback<List<Book>>() {
+    execute(book, offset, limit, null, new Callback<List<Book>>() {
       @Override public void onSuccess(List<Book> books) {
         performSuccessCallback(callback, books);
       }
@@ -87,18 +87,16 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
     });
   }
 
-  private void execute(Book book, int offset, int limit, final Callback<List<Book>> callback) {
+  private void execute(Book book, int offset, int limit, String language, final Callback<List<Book>> callback) {
     final List<BookSort> bookSorts = Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC),
         BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
-
-    final String language = localeProvider.get();
 
     final List<Integer> categoriesIds = new ArrayList<>(book.getCategories().size());
     for (Category category : book.getCategories()) {
       categoriesIds.add(category.getId());
     }
 
-    bookRepository.books(categoriesIds, null /*list*/, bookSorts, false/*open country*/, language, offset, limit,
+    bookRepository.books(categoriesIds, null /*list*/, bookSorts, false/*open country*/, language == null ? localeProvider.get() : language, offset, limit,
         new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             if (callback != null) {
