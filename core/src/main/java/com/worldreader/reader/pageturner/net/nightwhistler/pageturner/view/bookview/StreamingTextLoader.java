@@ -6,28 +6,23 @@ import android.util.Log;
 import com.osbcp.cssparser.CSSParser;
 import com.osbcp.cssparser.PropertyValue;
 import com.osbcp.cssparser.Rule;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader2;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CSSCompiler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
@@ -133,10 +128,7 @@ public class StreamingTextLoader implements TextLoader {
 
       for (Rule rule : rules) {
 
-        if (rule.getSelectors().size() == 1 && rule.getSelectors()
-            .get(0)
-            .toString()
-            .equals("@font-face")) {
+        if (rule.getSelectors().size() == 1 && rule.getSelectors().get(0).toString().equals("@font-face")) {
           handleFontLoadingRule(rule);
         } else {
           result.add(CSSCompiler.compile(rule, htmlSpanner));
@@ -213,10 +205,6 @@ public class StreamingTextLoader implements TextLoader {
 
   public boolean hasCachedBook(String fileName) {
     return false;
-  }
-
-  public Book initBook(String fileName) throws IOException {
-    throw new UnsupportedOperationException("This operation is not supported by this loader!");
   }
 
   public Book getCurrentBook() {
@@ -345,15 +333,22 @@ public class StreamingTextLoader implements TextLoader {
 
   @Override public Book initBook(InputStream is) {
     closeCurrentBook();
-
-    this.anchors = new HashMap<>();
-
-    final EpubReader epubReader = new EpubReader();
-    final Book newBook = epubReader.readEpubStreaming(is);
-
-    this.currentBook = newBook;
-
+    clearAnchors();
+    final Book newBook = EpubReader.readEpubStreaming(is);
+    setCurrentBook(newBook);
     return newBook;
+  }
+
+  @Override public Book initBook(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {
+    closeCurrentBook();
+    clearAnchors();
+    final Book newBook = EpubReader2.readStreamingEpub(contentOpfIs, tocResourceIs);
+    setCurrentBook(newBook);
+    return newBook;
+  }
+
+  private void clearAnchors() {
+    this.anchors = new HashMap<>();
   }
 
   @Override public Option<Integer> getAnchor(String href, String anchor) {

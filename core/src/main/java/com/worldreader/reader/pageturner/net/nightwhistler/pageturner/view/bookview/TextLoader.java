@@ -1,18 +1,17 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
 import android.text.Spannable;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
@@ -46,8 +45,7 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
   Option<Spannable> getCachedTextForResource(Resource resource);
 
-  Spannable getText(final Resource resource, HtmlSpanner.CancellationCallback cancellationCallback)
-      throws IOException;
+  Spannable getText(final Resource resource, HtmlSpanner.CancellationCallback cancellationCallback) throws IOException;
 
   void clearCachedText();
 
@@ -55,7 +53,7 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
   Book initBook(InputStream is);
 
-  Book initBook(String filename) throws IOException;
+  Book initBook(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception;
 
   void closeCurrentBook();
 
@@ -70,5 +68,4 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
   Option<Integer> getAnchor(String href, String anchor);
 
   void registerTagNodeHandler(String tag, TagNodeHandler handler);
-
 }

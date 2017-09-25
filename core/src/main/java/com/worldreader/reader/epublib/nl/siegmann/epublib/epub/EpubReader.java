@@ -18,7 +18,7 @@ import java.io.*;
  */
 public class EpubReader {
 
-  public Book readEpubStreaming(InputStream packageResourceInputStream) {
+  public static Book readEpubStreaming(InputStream packageResourceInputStream) {
     final Resource packageResource = createFakePackageResource(packageResourceInputStream);
 
     final Resources resources = new Resources();
@@ -43,17 +43,17 @@ public class EpubReader {
     return NCXDocument.read(book);
   }
 
-  private Resource processPackageResource(String packageResourceHref, Book book, Resources resources) {
-    Resource packageResource = resources.remove(packageResourceHref);
+  private static Resource processPackageResource(String packageResourceHref, Book book, Resources resources) {
+    final Resource packageResource = resources.remove(packageResourceHref);
     try {
-      PackageDocumentReader.read(packageResource, this, book, resources);
+      PackageDocumentReader.read(packageResource, book, resources);
     } catch (Exception e) {
       Log.e("epublib", e.getMessage(), e);
     }
     return packageResource;
   }
 
-  private String getPackageResourceHref(Resources resources) {
+  private static String getPackageResourceHref(Resources resources) {
     final String defaultResult = "OEBPS/content.opf";
     String result = defaultResult;
 
@@ -64,7 +64,8 @@ public class EpubReader {
 
     try {
       final Document document = ResourceUtil.getAsDocument(containerResource);
-      final Element rootFileElement = (Element) ((Element) document.getDocumentElement().getElementsByTagName("rootfiles").item(0)).getElementsByTagName("rootfile").item(0);
+      final Element rootFileElement =
+          (Element) ((Element) document.getDocumentElement().getElementsByTagName("rootfiles").item(0)).getElementsByTagName("rootfile").item(0);
       result = rootFileElement.getAttribute("full-path");
     } catch (Exception e) {
       Log.e("epublib", e.getMessage(), e);
@@ -77,7 +78,7 @@ public class EpubReader {
     return result;
   }
 
-  private Resource createFakePackageResource(InputStream inputStream) throws IllegalArgumentException {
+  private static Resource createFakePackageResource(InputStream inputStream) throws IllegalArgumentException {
     try {
       return ResourceUtil.createFakePackageResource(inputStream);
     } catch (IOException e) {

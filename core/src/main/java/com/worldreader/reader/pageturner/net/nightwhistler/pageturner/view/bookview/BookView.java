@@ -52,6 +52,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader2;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
@@ -196,10 +197,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  public String getFileName() {
-    return fileName;
-  }
-
   public int getSpineSize() {
     return spine != null ? spine.size() : 0;
   }
@@ -247,7 +244,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
    * @return a List of spans of type A, may be empty.
    */
   private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
-
     Option<Integer> offsetOption = findOffsetForPosition(x, y);
 
     CharSequence text = childView.getText();
@@ -387,28 +383,28 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       taskQueue.executeTask(new LoadStreamingTextTask(true /* initialLoad*/));
     } else {
 
-      if (spine == null) {
-        try {
-          Book book = initBookAndSpine();
-
-          if (book != null) {
-            bookOpened(book);
-          }
-        } catch (IOException io) {
-          errorOnBookOpening(io.getMessage());
-          return;
-        } catch (OutOfMemoryError e) {
-          errorOnBookOpening(getContext().getString(R.string.out_of_memory));
-          return;
-        }
-      }
+      //if (spine == null) {
+      //  try {
+      //    Book book = initBookAndSpine();
+      //
+      //    if (book != null) {
+      //      bookOpened(book);
+      //    }
+      //  } catch (IOException io) {
+      //    errorOnBookOpening(io.getMessage());
+      //    return;
+      //  } catch (OutOfMemoryError e) {
+      //    errorOnBookOpening(getContext().getString(R.string.out_of_memory));
+      //    return;
+      //  }
+      //}
 
       //TODO: what if the resource is None?
-      spine.getCurrentResource().forEach(new Command<Resource>() {
-        @Override public void execute(Resource resource) {
-          loadText(resource);
-        }
-      });
+      //spine.getCurrentResource().forEach(new Command<Resource>() {
+      //  @Override public void execute(Resource resource) {
+      //    loadText(resource);
+      //  }
+      //});
     }
   }
 
@@ -441,40 +437,60 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     parseEntryComplete(spine.getCurrentTitle().getOrElse(""), spine.getCurrentResource().unsafeGet());
   }
 
-  private Book initBookAndSpine() throws IOException {
-    Book book = textLoader.initBook(fileName);
+  //private Book initBookAndSpine() throws IOException {
+  //  Book book = textLoader.initBook(fileName);
+  //
+  //  this.book = book;
+  //  this.spine = new PageTurnerSpine(book, resourcesLoader);
+  //
+  //  this.spine.navigateByIndex(BookView.this.storedIndex);
+  //
+  //  if (configuration.isShowPageNumbers()) {
+  //
+  //    Option<List<List<Integer>>> offsets = configuration.getPageOffsets(fileName);
+  //
+  //    offsets.filter(new Filter<List<List<Integer>>>() {
+  //      @Override public Boolean execute(List<List<Integer>> o) {
+  //        return o.size() > 0;
+  //      }
+  //    }).forEach(new Command<List<List<Integer>>>() {
+  //      @Override public void execute(List<List<Integer>> o) {
+  //        spine.setPageOffsets(o);
+  //      }
+  //    });
+  //  }
+  //
+  //  return book;
+  //}
 
-    this.book = book;
-    this.spine = new PageTurnerSpine(book, resourcesLoader);
+  private Book initStreamingBook2() throws Exception {
+    final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
+    final InputStream tocResourcesIs = resourcesLoader.loadResource(tocResourcePath);
 
+    this.book = textLoader.initBook(contentOpfIs, tocResourcesIs);
+
+    this.spine = new PageTurnerSpine(this.book, this.resourcesLoader);
     this.spine.navigateByIndex(BookView.this.storedIndex);
 
-    if (configuration.isShowPageNumbers()) {
-
-      Option<List<List<Integer>>> offsets = configuration.getPageOffsets(fileName);
-
-      offsets.filter(new Filter<List<List<Integer>>>() {
-        @Override public Boolean execute(List<List<Integer>> o) {
-          return o.size() > 0;
-        }
-      }).forEach(new Command<List<List<Integer>>>() {
-        @Override public void execute(List<List<Integer>> o) {
-          spine.setPageOffsets(o);
-        }
-      });
-    }
-
-    return book;
+    return this.book;
   }
 
-  private Book initStreamingBookAndSpine(InputStream is) {
-    this.book = textLoader.initBook(is);
+  private Book initStreamingBookAndSpine(InputStream contentOpfIs) {
+    this.book = textLoader.initBook(contentOpfIs);
 
     try {
-      InputStream inputStream = resourcesLoader.loadResource(tocResourcePath);
-      book.getNcxResource().setData(inputStream);
+      final InputStream tocResourceIs = resourcesLoader.loadResource(tocResourcePath);
+      contentOpfIs.reset();
+
+      final Book book = EpubReader2.readStreamingEpub(contentOpfIs, tocResourceIs);
+
+      tocResourceIs.reset();
+
+      this.book.getNcxResource().setData(tocResourceIs);
     } catch (IOException e) {
       book.getNcxResource().setData(new byte[] {});
+    } catch (Exception e) {
+      Log.e("Book", "error");
     }
 
     EpubReader.processNcxResource(book);
@@ -1219,8 +1235,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public Option<Book> doInBackground(None... nones) {
       try {
-        InputStream is = resourcesLoader.loadResource(contentOpf);
-        return some(initStreamingBookAndSpine(is));
+        //InputStream is = resourcesLoader.loadResource(contentOpf);
+        //return some(initStreamingBookAndSpine(is));
+        return some(initStreamingBook2());
       } catch (Exception e) {
         Log.d(TAG, "Exception while reading streaming book has occurred!", e);
         return none();
