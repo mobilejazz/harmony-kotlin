@@ -52,7 +52,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader2;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
@@ -480,12 +479,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     try {
       final InputStream tocResourceIs = resourcesLoader.loadResource(tocResourcePath);
-      contentOpfIs.reset();
-
-      final Book book = EpubReader2.readStreamingEpub(contentOpfIs, tocResourceIs);
-
-      tocResourceIs.reset();
-
       this.book.getNcxResource().setData(tocResourceIs);
     } catch (IOException e) {
       book.getNcxResource().setData(new byte[] {});
@@ -1235,9 +1228,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public Option<Book> doInBackground(None... nones) {
       try {
-        //InputStream is = resourcesLoader.loadResource(contentOpf);
-        //return some(initStreamingBookAndSpine(is));
-        return some(initStreamingBook2());
+        InputStream is = resourcesLoader.loadResource(contentOpf);
+        return some(initStreamingBookAndSpine(is));
+        //return some(initStreamingBook2());
       } catch (Exception e) {
         Log.d(TAG, "Exception while reading streaming book has occurred!", e);
         return none();

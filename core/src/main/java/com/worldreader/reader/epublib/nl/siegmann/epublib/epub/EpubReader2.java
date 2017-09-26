@@ -30,6 +30,7 @@ import java.util.*;
 // TODO: 25/09/2017 Fix gather authors
 // TODO: 25/09/2017 Check that recursive navpoints are working properly
 // TODO: 25/09/2017 Check that get book cover works properly
+// TODO: 26/09/2017 Fix resources titles
 public class EpubReader2 {
 
   private static Serializer XML_PARSER = new Persister();
@@ -39,6 +40,7 @@ public class EpubReader2 {
     final NCXEntity NCXEntity = XML_PARSER.read(NCXEntity.class, tocResourceIs, false);
 
     final Book book = new Book();
+
     book.setOpfResource(toOpfResource(contentOpfIs));
     book.setResources(toBookResources(contentOpf));
     book.setMetadata(toBookMetadata(contentOpf));
