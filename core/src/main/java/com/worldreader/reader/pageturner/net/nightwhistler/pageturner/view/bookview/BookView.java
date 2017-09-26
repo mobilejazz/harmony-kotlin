@@ -401,11 +401,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       //}
 
       //TODO: what if the resource is None?
-      //spine.getCurrentResource().forEach(new Command<Resource>() {
-      //  @Override public void execute(Resource resource) {
-      //    loadText(resource);
-      //  }
-      //});
+      spine.getCurrentResource().forEach(new Command<Resource>() {
+        @Override public void execute(Resource resource) {
+          loadText(resource);
+        }
+      });
     }
   }
 
