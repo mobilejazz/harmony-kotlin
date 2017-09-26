@@ -1,8 +1,6 @@
 package com.worldreader.core.datasource;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.helper.url.URLProvider;
@@ -16,6 +14,7 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueuedTask;
 import org.javatuples.Pair;
 
 import javax.inject.Inject;
@@ -31,8 +30,6 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   private final Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper;
 
   private final Logger logger;
-
-  private static final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
   @Inject public StreamingBookDataSource(StreamingBookNetworkDataSource networkDataSource, StreamingBookBdDataSource bddDataSource,
       BookMetadataEntityDataMapper bookMetadataEntityDataMapper, Mapper<StreamingResource, StreamingResourceEntity> streamingResourceMapper,
@@ -101,7 +98,7 @@ public class StreamingBookDataSource implements StreamingBookRepository {
 
   @Override
   public ListenableFuture<StreamingResource> getBookResourceFuture(final String id, final BookMetadata bookMetadata, final String resource) {
-    return executorService.submit(new Callable<StreamingResource>() {
+    return QueuedTask.READER_THREAD_EXECUTOR.submit(new Callable<StreamingResource>() {
       @Override public StreamingResource call() throws Exception {
         return getBookResource(id, bookMetadata, resource);
       }

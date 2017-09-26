@@ -22,12 +22,14 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.schedulin
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.concurrent.*;
 
 /**
  * Wraps a QueueableAsyncTask and its parameters, so that it can be executed later.
- *
+ * <p>
  * It's essentially a simple Command Object for tasks.
  */
 public class QueuedTask<A, B, C> {
@@ -45,8 +47,19 @@ public class QueuedTask<A, B, C> {
     }
   };
 
-  private static final Executor READER_THREAD_EXECUTOR =
-      new ThreadPoolExecutor(1, 5, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(), READER_THREAD_FACTORY);
+  public static final ListeningExecutorService READER_THREAD_EXECUTOR =
+      MoreExecutors.listeningDecorator(
+          new ThreadPoolExecutor(5, 5, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), READER_THREAD_FACTORY) {
+            @Override protected void beforeExecute(Thread t, Runnable r) {
+              super.beforeExecute(t, r);
+              Log.e("READER_THREAD_EXECUTOR", "Thread: " + t.getId() + " | Runnable: " + r.toString());
+            }
+
+            @Override public boolean allowsCoreThreadTimeOut() {
+              return true;
+            }
+          }
+      );
 
   private QueueableAsyncTask<A, B, C> task;
   private A[] parameters;

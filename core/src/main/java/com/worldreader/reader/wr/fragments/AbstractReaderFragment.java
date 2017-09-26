@@ -1241,15 +1241,10 @@ public abstract class AbstractReaderFragment extends Fragment
     updateFromPrefs();
   }
 
-  @Override public void readingFile() {
-    if (isAdded()) {
-      this.getWaitDialog().setMessage(getString(R.string.opening_file));
-    }
-  }
-
   @Override public void renderingText() {
     if (isAdded()) {
       this.getWaitDialog().setMessage(getString(R.string.ls_loading_text));
+      this.getWaitDialog().show();
     }
   }
 

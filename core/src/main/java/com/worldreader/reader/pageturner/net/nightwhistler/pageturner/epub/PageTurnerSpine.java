@@ -19,21 +19,19 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 import android.util.Log;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
-import jedi.option.Option;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.InlineResource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
+import jedi.option.Option;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
@@ -59,7 +57,9 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   public static final String COVER_HREF = "PageTurnerCover";
 
-  /** How long should a cover page be to be included **/
+  /**
+   * How long should a cover page be to be included
+   **/
   private static final int COVER_PAGE_THRESHOLD = 1024;
 
   private String tocHref;
@@ -441,9 +441,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   private Resource createCoverResource(Book book) {
-    if (book.getCoverPage() != null
-        && book.getCoverPage().getSize() > 0
-        && book.getCoverPage().getSize() < COVER_PAGE_THRESHOLD) {
+    if (book.getCoverPage() != null && book.getCoverPage().getSize() > 0 && book.getCoverPage().getSize() < COVER_PAGE_THRESHOLD) {
 
       Log.d("PageTurnerSpine", "Using cover resource " + book.getCoverPage().getHref());
 
@@ -472,9 +470,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
     //Else we construct a basic front page with title and author.
     //if (book.getCoverImage() == null) {
-    centerpiece = "<center><h1>"
-        + (book.getTitle() != null ? book.getTitle() : "Book without a title")
-        + "</h1>";
+    centerpiece = "<center><h1>" + (book.getTitle() != null ? book.getTitle() : "Book without a title") + "</h1>";
 
     if (!book.getMetadata().getAuthors().isEmpty()) {
       for (Author author : book.getMetadata().getAuthors()) {

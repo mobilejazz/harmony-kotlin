@@ -218,8 +218,7 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
   private BookMetadataEntity toBookMetadataEntity(final String bookId, final String version, final ContentOpfLocationEntity contentContainer,
       final ContentOpfEntity contentOpf, boolean isGeneratedOpf) {
     final String rawContentOpfName = contentContainer.getContentOpfName();
-    final String contentOpfName =
-        isGeneratedOpf ? rawContentOpfName.substring(0, rawContentOpfName.lastIndexOf(".")) + "_generated.opf" : rawContentOpfName;
+    final String contentOpfName = isGeneratedOpf ? rawContentOpfName.substring(0, rawContentOpfName.lastIndexOf(".")) + "_generated.opf" : rawContentOpfName;
 
     final BookMetadataEntity entity = new BookMetadataEntity();
     entity.setBookId(bookId);
@@ -227,14 +226,13 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     entity.setRelativeContentUrl(contentContainer.getContentOpfPath());
     entity.setContentOpfName(contentOpfName);
     entity.setTocResource(contentOpf.getTocEntry());
-    entity.setResources(contentOpf.getManifestEntries());
+    entity.setResources(contentOpf.getManifestEntriesHref());
     entity.setImagesResources(contentOpf.getImagesResourcesEntries());
 
     return entity;
   }
 
-  @Override public StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata, final String resource)
-      throws Exception {
+  @Override public StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata, final String resource) throws Exception {
     // Create resource url
     final String resourcePath = bookMetadata.getRelativeContentUrl() != null ? bookMetadata.getRelativeContentUrl() + resource : "" + resource;
     final String resourceUrl = String.format(GET_BOOK_RESOURCE_URL, id, resourcePath);

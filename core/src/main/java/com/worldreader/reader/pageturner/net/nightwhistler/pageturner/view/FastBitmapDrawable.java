@@ -36,6 +36,7 @@ import android.util.Log;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.worldreader.core.R;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
@@ -63,6 +64,7 @@ public class FastBitmapDrawable extends Drawable {
 
   private Bitmap bitmap;
   private boolean isLoaded = false;
+  private boolean isProcessing = false;
 
   public FastBitmapDrawable(final Context context, final String resource, final int width, final int height, final StreamingBookRepository dataSource,
       final BookMetadata metadata) {
@@ -92,7 +94,8 @@ public class FastBitmapDrawable extends Drawable {
       shape.draw(canvas, paint);
       canvas.restoreToCount(count);
 
-      if (!isLoaded) {
+      if (!isLoaded && !isProcessing) {
+        isProcessing=true;
         final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
         Futures.addCallback(future, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {
@@ -100,6 +103,7 @@ public class FastBitmapDrawable extends Drawable {
             handler.post(new Runnable() {
               @Override public void run() {
                 generateDrawable(inputStream);
+                isProcessing = false;
               }
             });
           }
@@ -109,10 +113,11 @@ public class FastBitmapDrawable extends Drawable {
             handler.post(new Runnable() {
               @Override public void run() {
                 generateDrawable(in);
+                isProcessing = false;
               }
             });
           }
-        });
+        }, MoreExecutors.directExecutor());
       }
 
     } else {

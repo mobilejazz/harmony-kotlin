@@ -1,22 +1,18 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.IOException;
+import java.io.*;
 
 public class StreamingResource extends Resource {
 
-  public StreamingResource(String href) {
-    super(href);
-  }
-
-  public StreamingResource(String id, byte[] data, String href, MediaType mediaType) {
-    super(id, data, href, mediaType);
+  public StreamingResource(final String id, String href, MediaType mediaType) {
+    super(id, null, href, mediaType);
   }
 
   @Override public byte[] getData() throws IOException {
-    return this.data;
+    return super.data;
   }
 
   @Override public void close() {
-    this.data = null;
+    super.data = null;
   }
 }

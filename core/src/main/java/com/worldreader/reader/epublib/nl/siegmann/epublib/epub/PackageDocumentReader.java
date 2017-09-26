@@ -37,7 +37,7 @@ public class PackageDocumentReader {
 
   private static final String[] POSSIBLE_NCX_ITEM_IDS = new String[] { "toc", "ncx" };
 
-  public static void read(Resource packageResource, EpubReader epubReader, Book book, Resources resources)
+  public static void read(Resource packageResource, Book book, Resources resources)
       throws SAXException, IOException, ParserConfigurationException {
     Document packageDocument = ResourceUtil.getAsDocument(packageResource);
     //String packageHref = packageResource.getHref();
@@ -51,7 +51,7 @@ public class PackageDocumentReader {
     book.setResources(resources);
     readCover(packageDocument, book);
     book.setMetadata(readMetadata(packageDocument));
-    book.setSpine(readSpine(packageDocument, epubReader, book.getResources(), idMapping));
+    book.setSpine(readSpine(packageDocument, book.getResources(), idMapping));
 
     // if we did not find a cover page then we make the first page of the book the cover page
     if (book.getCoverPage() == null && book.getSpine().size() > 0) {
@@ -92,7 +92,7 @@ public class PackageDocumentReader {
       final MediaType mediaType = MediatypeService.getMediaTypeByName(mediaTypeName);
 
       // TODO: Check if is necessary to create special cases for different media types
-      final Resource resource = new StreamingResource(id, null, href, mediaType);
+      final Resource resource = new StreamingResource(id, href, mediaType);
 
       if (mediaType == MediatypeService.XHTML) {
         resource.setInputEncoding(Constants.CHARACTER_ENCODING);
@@ -196,8 +196,7 @@ public class PackageDocumentReader {
       if (GuideReference.COVER.equalsIgnoreCase(type)) {
         continue; // cover is handled elsewhere
       }
-      GuideReference reference =
-          new GuideReference(resource, type, title, StringUtil.substringAfter(resourceHref, Constants.FRAGMENT_SEPARATOR_CHAR));
+      GuideReference reference = new GuideReference(resource, type, title, StringUtil.substringAfter(resourceHref, Constants.FRAGMENT_SEPARATOR_CHAR));
       guide.addReference(reference);
     }
   }
@@ -227,7 +226,7 @@ public class PackageDocumentReader {
   /**
    * Reads the document's spine, containing all sections in reading order.
    */
-  private static Spine readSpine(Document packageDocument, EpubReader epubReader, Resources resources, Map<String, String> idMapping) {
+  private static Spine readSpine(Document packageDocument, Resources resources, Map<String, String> idMapping) {
     Element spineElement = DOMUtil.getFirstElementByTagNameNS(packageDocument.getDocumentElement(), NAMESPACE_OPF, OPFTags.spine);
     if (spineElement == null) {
       Log.e("epublib", "Element OPFTags.spine not found in package document, generating one automatically");
@@ -319,13 +318,8 @@ public class PackageDocumentReader {
     tocResource = resources.findFirstResourceByMediaType(MediatypeService.NCX);
 
     if (tocResource == null) {
-      Log.e("epublib", "Could not find table of contents resource. Tried resource with id '"
-          + tocResourceId
-          + "', "
-          + "toc"
-          + ", "
-          + "TOC"
-          + " and any NCX resource.");
+      Log.e("epublib",
+          "Could not find table of contents resource. Tried resource with id '" + tocResourceId + "', " + "toc" + ", " + "TOC" + " and any NCX resource.");
     }
     return tocResource;
   }
@@ -343,8 +337,7 @@ public class PackageDocumentReader {
         DOMUtil.getFindAttributeValue(packageDocument, NAMESPACE_OPF, OPFTags.meta, OPFAttributes.name, OPFValues.meta_cover, OPFAttributes.content);
 
     if (StringUtil.isNotBlank(coverResourceId)) {
-      String coverHref =
-          DOMUtil.getFindAttributeValue(packageDocument, NAMESPACE_OPF, OPFTags.item, OPFAttributes.id, coverResourceId, OPFAttributes.href);
+      String coverHref = DOMUtil.getFindAttributeValue(packageDocument, NAMESPACE_OPF, OPFTags.item, OPFAttributes.id, coverResourceId, OPFAttributes.href);
       if (StringUtil.isNotBlank(coverHref)) {
         result.add(coverHref);
       } else {
@@ -352,8 +345,8 @@ public class PackageDocumentReader {
       }
     }
     // try and find a reference tag with type is 'cover' and reference is not blank
-    String coverHref = DOMUtil.getFindAttributeValue(packageDocument, NAMESPACE_OPF, OPFTags.reference, OPFAttributes.type, OPFValues.reference_cover,
-        OPFAttributes.href);
+    String coverHref =
+        DOMUtil.getFindAttributeValue(packageDocument, NAMESPACE_OPF, OPFTags.reference, OPFAttributes.type, OPFValues.reference_cover, OPFAttributes.href);
     if (StringUtil.isNotBlank(coverHref)) {
       result.add(coverHref);
     }
@@ -365,7 +358,7 @@ public class PackageDocumentReader {
    * Keeps the cover resource in the resources map
    */
   private static void readCover(Document packageDocument, Book book) {
-    Collection<String> coverHrefs = findCoverHrefs(packageDocument);
+    final Collection<String> coverHrefs = findCoverHrefs(packageDocument);
     for (String coverHref : coverHrefs) {
       Resource resource = book.getResources().getByHref(coverHref);
       if (resource == null) {

@@ -153,8 +153,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.taskQueue = new TaskQueue();
   }
 
-  @TargetApi(Configuration.TEXT_SELECTION_PLATFORM_VERSION)
-  public void init(String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader) {
+  @TargetApi(Configuration.TEXT_SELECTION_PLATFORM_VERSION) public void init(String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader) {
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
     this.resourcesLoader = resourcesLoader;
@@ -195,10 +194,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       int tableWidth = (int) (childView.getWidth() * 0.9);
       tableHandler.setTableWidth(tableWidth);
     }
-  }
-
-  public String getFileName() {
-    return fileName;
   }
 
   public int getSpineSize() {
@@ -244,10 +239,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
    * @param x the X coordinate
    * @param y the Y coordinate
    * @param spanClass the class of span to filter for
+   *
    * @return a List of spans of type A, may be empty.
    */
   private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
-
     Option<Integer> offsetOption = findOffsetForPosition(x, y);
 
     CharSequence text = childView.getText();
@@ -387,28 +382,28 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       taskQueue.executeTask(new LoadStreamingTextTask(true /* initialLoad*/));
     } else {
 
-      if (spine == null) {
-        try {
-          Book book = initBookAndSpine();
-
-          if (book != null) {
-            bookOpened(book);
-          }
-        } catch (IOException io) {
-          errorOnBookOpening(io.getMessage());
-          return;
-        } catch (OutOfMemoryError e) {
-          errorOnBookOpening(getContext().getString(R.string.out_of_memory));
-          return;
-        }
-      }
+      //if (spine == null) {
+      //  try {
+      //    Book book = initBookAndSpine();
+      //
+      //    if (book != null) {
+      //      bookOpened(book);
+      //    }
+      //  } catch (IOException io) {
+      //    errorOnBookOpening(io.getMessage());
+      //    return;
+      //  } catch (OutOfMemoryError e) {
+      //    errorOnBookOpening(getContext().getString(R.string.out_of_memory));
+      //    return;
+      //  }
+      //}
 
       //TODO: what if the resource is None?
-      spine.getCurrentResource().forEach(new Command<Resource>() {
-        @Override public void execute(Resource resource) {
-          loadText(resource);
-        }
-      });
+      //spine.getCurrentResource().forEach(new Command<Resource>() {
+      //  @Override public void execute(Resource resource) {
+      //    loadText(resource);
+      //  }
+      //});
     }
   }
 
@@ -441,40 +436,54 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     parseEntryComplete(spine.getCurrentTitle().getOrElse(""), spine.getCurrentResource().unsafeGet());
   }
 
-  private Book initBookAndSpine() throws IOException {
-    Book book = textLoader.initBook(fileName);
+  //private Book initBookAndSpine() throws IOException {
+  //  Book book = textLoader.initBook(fileName);
+  //
+  //  this.book = book;
+  //  this.spine = new PageTurnerSpine(book, resourcesLoader);
+  //
+  //  this.spine.navigateByIndex(BookView.this.storedIndex);
+  //
+  //  if (configuration.isShowPageNumbers()) {
+  //
+  //    Option<List<List<Integer>>> offsets = configuration.getPageOffsets(fileName);
+  //
+  //    offsets.filter(new Filter<List<List<Integer>>>() {
+  //      @Override public Boolean execute(List<List<Integer>> o) {
+  //        return o.size() > 0;
+  //      }
+  //    }).forEach(new Command<List<List<Integer>>>() {
+  //      @Override public void execute(List<List<Integer>> o) {
+  //        spine.setPageOffsets(o);
+  //      }
+  //    });
+  //  }
+  //
+  //  return book;
+  //}
 
-    this.book = book;
-    this.spine = new PageTurnerSpine(book, resourcesLoader);
+  private Book initStreamingBook2() throws Exception {
+    final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
+    final InputStream tocResourcesIs = resourcesLoader.loadResource(tocResourcePath);
 
+    this.book = textLoader.initBook(contentOpfIs, tocResourcesIs);
+
+    this.spine = new PageTurnerSpine(this.book, this.resourcesLoader);
     this.spine.navigateByIndex(BookView.this.storedIndex);
 
-    if (configuration.isShowPageNumbers()) {
-
-      Option<List<List<Integer>>> offsets = configuration.getPageOffsets(fileName);
-
-      offsets.filter(new Filter<List<List<Integer>>>() {
-        @Override public Boolean execute(List<List<Integer>> o) {
-          return o.size() > 0;
-        }
-      }).forEach(new Command<List<List<Integer>>>() {
-        @Override public void execute(List<List<Integer>> o) {
-          spine.setPageOffsets(o);
-        }
-      });
-    }
-
-    return book;
+    return this.book;
   }
 
-  private Book initStreamingBookAndSpine(InputStream is) {
-    this.book = textLoader.initBook(is);
+  private Book initStreamingBookAndSpine(InputStream contentOpfIs) {
+    this.book = textLoader.initBook(contentOpfIs);
 
     try {
-      InputStream inputStream = resourcesLoader.loadResource(tocResourcePath);
-      book.getNcxResource().setData(inputStream);
+      final InputStream tocResourceIs = resourcesLoader.loadResource(tocResourcePath);
+      this.book.getNcxResource().setData(tocResourceIs);
     } catch (IOException e) {
       book.getNcxResource().setData(new byte[] {});
+    } catch (Exception e) {
+      Log.e("Book", "error");
     }
 
     EpubReader.processNcxResource(book);
@@ -802,7 +811,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   /**
    * Scrolls to a previously stored point.
-   *
+   * <p>
    * Call this after setPosition() to actually go there.
    */
   private void restorePosition() {
@@ -981,12 +990,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private void parseEntryComplete(String name, Resource resource) {
     for (BookViewListener listener : this.listeners) {
       listener.parseEntryComplete(name, resource);
-    }
-  }
-
-  private void fireOpenFile() {
-    for (BookViewListener listener : this.listeners) {
-      listener.readingFile();
     }
   }
 
@@ -1215,25 +1218,23 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private enum BookReadPhase {
-    START, OPEN_FILE, FETCH_TEXT, PARSE_TEXT, DONE
+    START, OPEN_FILE, PARSE_TEXT, DONE
   }
 
   private class OpenStreamingBookTask extends QueueableAsyncTask<None, BookReadPhase, Book> {
 
-    private String error;
-
     @Override public void doOnPreExecute() {
-      fireOpenFile();
     }
 
     @Override public Option<Book> doInBackground(None... nones) {
       try {
         InputStream is = resourcesLoader.loadResource(contentOpf);
         return some(initStreamingBookAndSpine(is));
+        //return some(initStreamingBook2());
       } catch (Exception e) {
         Log.d(TAG, "Exception while reading streaming book has occurred!", e);
+        return none();
       }
-      return none();
     }
 
     @Override public void doOnPostExecute(Option<Book> book) {
@@ -1244,7 +1245,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
                  }, //some
           new Command0() {
             @Override public void execute() {
-              errorOnBookOpening(OpenStreamingBookTask.this.error);
+              errorOnBookOpening("");
             }
           } //none
       );
@@ -1282,8 +1283,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         } else {
           resource = spine.getCurrentResource().getOrElse(new Resource(""));
         }
-
-        publishProgress(BookReadPhase.FETCH_TEXT);
 
         publishProgress(BookReadPhase.PARSE_TEXT);
 
@@ -1323,8 +1322,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       switch (phase) {
         case START:
           parseEntryStart(getIndex());
-          break;
-        case PARSE_TEXT:
           fireRenderingText();
           break;
         case DONE:
