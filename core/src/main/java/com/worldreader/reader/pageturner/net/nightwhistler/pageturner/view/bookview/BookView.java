@@ -1194,6 +1194,23 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       bookView.onInnerViewResize();
     }
 
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+      // Workaround to https://code.google.com/p/android/issues/detail?id=191430
+      if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+        int startSelection = getSelectionStart();
+        int endSelection = getSelectionEnd();
+        if (startSelection != endSelection) {
+          if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            final CharSequence text = getText();
+            setText(null);
+            setText(text);
+          }
+        }
+      }
+
+      return super.dispatchTouchEvent(event);
+    }
+
     @Override public void onWindowFocusChanged(boolean hasWindowFocus) {
       //We override this method to do nothing, since the base
       //implementation closes the ActionMode.
