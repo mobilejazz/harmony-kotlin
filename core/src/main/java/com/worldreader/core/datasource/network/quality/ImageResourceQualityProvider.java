@@ -17,13 +17,15 @@ import javax.inject.Singleton;
   }
 
   public ImageResourceQuality provideQuality() {
-    final double downloadKBytesPerSecond = networkQualityChecker.getAverageBandwidthOnKBitsPerSecond();
+    final double downloadKBitsPerSecond = networkQualityChecker.getAverageBandwidthOnKBitsPerSecond();
 
-    if (downloadKBytesPerSecond < 0) {
+    //Log.d(ImageResourceQualityProvider.class.getSimpleName(), String.valueOf(downloadKBitsPerSecond));
+
+    if (downloadKBitsPerSecond < 0) {
       return DEFAULT_QUALITY;
-    } else if (downloadKBytesPerSecond <= LOW_QUALITY_DOWNLOAD_RATE_THRESHOLD) {
+    } else if (downloadKBitsPerSecond <= LOW_QUALITY_DOWNLOAD_RATE_THRESHOLD) {
       return ImageResourceQuality.LOW;
-    } else if (downloadKBytesPerSecond <= MEDIUM_QUALITY_DOWNLOAD_RATE_THRESHOLD) {
+    } else if (downloadKBitsPerSecond <= MEDIUM_QUALITY_DOWNLOAD_RATE_THRESHOLD) {
       return ImageResourceQuality.MEDIUM;
     } else {
       return ImageResourceQuality.ORIGINAL;
