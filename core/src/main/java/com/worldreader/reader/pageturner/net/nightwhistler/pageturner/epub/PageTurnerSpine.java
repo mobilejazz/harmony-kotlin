@@ -442,9 +442,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private Resource createCoverResource(Book book) {
     if (book.getCoverPage() != null && book.getCoverPage().getSize() > 0 && book.getCoverPage().getSize() < COVER_PAGE_THRESHOLD) {
-
       Log.d("PageTurnerSpine", "Using cover resource " + book.getCoverPage().getHref());
-
       return book.getCoverPage();
     }
 
@@ -459,32 +457,24 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     }
 
     Log.d("PageTurnerSpine", "Constructing a cover page");
-    Resource res = new InlineResource(generateCoverPage(book).getBytes(), COVER_HREF);
+    final Resource res = new InlineResource(generateCoverPage(book).getBytes(), COVER_HREF);
     res.setTitle("Cover");
 
     return res;
   }
 
   private String generateCoverPage(Book book) {
-    String centerpiece;
-
-    //Else we construct a basic front page with title and author.
-    //if (book.getCoverImage() == null) {
-    centerpiece = "<center><h1>" + (book.getTitle() != null ? book.getTitle() : "Book without a title") + "</h1>";
+    final StringBuilder centerpiece = new StringBuilder("<center><h1>" + (book.getTitle() != null ? book.getTitle() : "Book without a title") + "</h1>");
 
     if (!book.getMetadata().getAuthors().isEmpty()) {
       for (Author author : book.getMetadata().getAuthors()) {
-        centerpiece += "<h3>" + author.getFirstname() + " " + author.getLastname() + "</h3>";
+        centerpiece.append("<h3>").append(author.getFirstname()).append(" ").append(author.getLastname()).append("</h3>");
       }
     } else {
-      centerpiece += "<h3>Unknown author</h3>";
+      centerpiece.append("<h3>Unknown author</h3>");
     }
 
-    centerpiece += "</center>";
-    //} else {
-    //If the book has a cover image, we display that
-    //  centerpiece = "<img src='" + book.getCoverImage().getHref() + "'>";
-    //}
+    centerpiece.append("</center>");
 
     return "<html><body>" + centerpiece + "</body></html>";
   }

@@ -1145,19 +1145,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(None... nones) {
       try {
-        //final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
-        //
-        //final Book book = textLoader.initBook(contentOpfIs);
-        //final InputStream tocResourceIs = resourcesLoader.loadResource(tocResourcePath);
-        //book.getNcxResource().setData(tocResourceIs);
-        //
-        //EpubReader.processNcxResource(book);
-        //
-        //final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
-        //spine.navigateByIndex(BookView.this.storedIndex);
-        //
-        //return some(Pair.with(book, spine));
-
         final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
         final InputStream tocResourcesIs = resourcesLoader.loadResource(tocResourcePath);
 

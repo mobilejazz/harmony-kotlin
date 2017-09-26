@@ -51,8 +51,6 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
   void setCurrentBook(Book book);
 
-  Book initBook(InputStream is);
-
   Book initBook(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception;
 
   void closeCurrentBook();

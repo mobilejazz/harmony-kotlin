@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.datasource.model.NCXEntity;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.MediaType;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
@@ -27,7 +28,6 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-// TODO: 25/09/2017 Fix gather authors
 // TODO: 25/09/2017 Check that get book cover works properly
 public class EpubReader2 {
 
@@ -86,7 +86,7 @@ public class EpubReader2 {
 
     final Metadata toReturn = new Metadata();
     toReturn.setTitles(Collections.singletonList(metadata.getTitle()));
-    //toReturn.setAuthors(Collections.singletonList(metadata.getCreator()));
+    toReturn.setAuthors(Collections.singletonList(new Author(metadata.getCreator())));
     toReturn.setDescriptions(Collections.singletonList(metadata.getDescription()));
     toReturn.setPublishers(Collections.singletonList(metadata.getPublisher()));
 

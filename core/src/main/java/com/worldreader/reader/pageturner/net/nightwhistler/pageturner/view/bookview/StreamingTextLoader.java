@@ -9,7 +9,6 @@ import com.osbcp.cssparser.Rule;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader2;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
@@ -329,14 +328,6 @@ public class StreamingTextLoader implements TextLoader {
 
   @Override public void setCurrentBook(Book book) {
     this.currentBook = book;
-  }
-
-  @Override public Book initBook(InputStream is) {
-    closeCurrentBook();
-    clearAnchors();
-    final Book newBook = EpubReader.readEpubStreaming(is);
-    setCurrentBook(newBook);
-    return newBook;
   }
 
   @Override public Book initBook(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {

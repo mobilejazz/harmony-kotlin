@@ -1169,34 +1169,20 @@ public abstract class AbstractReaderFragment extends Fragment
 
     if (book.getMetadata() != null) {
       // Author
-      Author authorsOption = firstOption(book.getMetadata().getAuthors()).unsafeGet();
-      if (authorsOption != null) {
-        author = authorsOption.getFirstname() + " " + authorsOption.getLastname();
-      } else {
-        author = context.getString(R.string.ls_book_reading_unknown_author);
-      }
+      final Author authorsOption = firstOption(book.getMetadata().getAuthors()).getOrElse(new Author(getString(R.string.ls_book_reading_unknown_author)));
+      this.author = authorsOption.getLastname();
 
-      // Language
-      //this.language = book.getValue().getLanguage()
-
+      this.language = this.bookView.getBook().getMetadata().getLanguage();
     } else {
       // Assuming defaults
+      this.author = getString(R.string.ls_book_reading_unknown_author);
       this.language = DEFAULT_BOOK_LANGUAGE;
     }
 
-    this.language = this.bookView.getBook().getMetadata().getLanguage();
-
-    Log.d(TAG, "Got language for book: " + language);
-
     activity.invalidateOptionsMenu();
 
-    //if (book.getValue() != null && !book.getValue().getAuthors().isEmpty()) {
-    //  Author author = book.getValue().getAuthors().get(0);
-    //  this.authorField.setText(author.getFirstname() + " " + author.getLastname());
-    //}
-
     if (bookTocEntryListener != null) {
-      Option<List<TocEntry>> optionableToc = this.bookView.getTableOfContents();
+      final Option<List<TocEntry>> optionableToc = this.bookView.getTableOfContents();
       tableOfContents = optionableToc.unsafeGet();
       bookTocEntryListener.onBookTableOfContentsLoaded(optionableToc);
     }
@@ -1234,21 +1220,14 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void displayPageNumber(int pageNumber) {
-    String pageString;
+    final String pageString = !config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
 
-    if (!config.isScrollingEnabled() && pageNumber > 0) {
-      pageString = Integer.toString(pageNumber) + "\n";
-    } else {
-      pageString = "\n";
-    }
-
-    SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
+    final SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
     builder.setSpan(new CenterSpan(), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
     pageNumberView.setTextColor(config.getTextColor());
     pageNumberView.setTextSize(config.getTextSize());
-
     pageNumberView.setTypeface(config.getDefaultFontFamily().getDefaultTypeface());
-
     pageNumberView.setText(builder);
     pageNumberView.invalidate();
   }
@@ -2053,7 +2032,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void prepareSlide(Animation inAnim, Animation outAnim) {
-
     Option<Bitmap> bitmap = getBookViewSnapshot();
     /*
     TODO: is this OK?
@@ -2238,11 +2216,8 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void formatPageChapterProgress() {
-    if (bookView.getPagesForResource() < bookView.getCurrentPage()) {
-      chapterProgressPagesTv.setText("");
-    } else {
-      chapterProgressPagesTv.setText(String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
-    }
+    chapterProgressPagesTv.setText(
+        bookView.getPagesForResource() < bookView.getCurrentPage() ? "" : String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
 
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
@@ -2273,9 +2248,6 @@ public abstract class AbstractReaderFragment extends Fragment
       analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
 
     }
-    text = null;
-    spanned = null;
-
   }
 
   private enum Orientation {
