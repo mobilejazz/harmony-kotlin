@@ -60,7 +60,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
   }
 
   @Override public boolean onSingleTapUp(MotionEvent e) {
-    bookView.blockFor(BOOKVIEW_BLOCK_TIME);
+    bookView.blockInnerViewFor(BOOKVIEW_BLOCK_TIME);
 
     if (bookViewListener.onPreScreenTap()) {
       return true;
@@ -125,7 +125,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
 
     if (Math.abs(distanceX) > Math.abs(distanceY)) {
 
-      bookView.blockFor(BOOKVIEW_BLOCK_TIME);
+      bookView.blockInnerViewFor(BOOKVIEW_BLOCK_TIME);
 
       if (distanceX > 0) {
         return bookViewListener.onSwipeRight();
@@ -134,7 +134,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
       }
     } else if (Math.abs(distanceY) > Math.abs(distanceX)) {
 
-      bookView.blockFor(BOOKVIEW_BLOCK_TIME);
+      bookView.blockInnerViewFor(BOOKVIEW_BLOCK_TIME);
 
       if (distanceY > 0) {
         return bookViewListener.onSwipeUp();

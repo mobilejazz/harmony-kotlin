@@ -20,12 +20,12 @@ import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.NCXDocumen
     @Attribute(name = "playOrder", required = false) public String playOrder;
     @Element(name = "navLabel", required = false) public NavLabel navLabel;
     @Element(name = "content", required = false) public Content content;
-    @Element(name = "navPoint", required = false) public List<NavPoint> navPoints;
+    @ElementList(required = false, inline = true) public List<NavPoint> navPoints;
   }
 
   public static class NavLabel {
 
-    @Attribute(name = "text", required = false) public String text;
+    @Element(name = "text", required = false) public String text;
   }
 
   public static class Content {
