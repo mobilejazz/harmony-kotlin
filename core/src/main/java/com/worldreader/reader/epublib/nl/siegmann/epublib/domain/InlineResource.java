@@ -3,7 +3,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
 
-import java.io.IOException;
+import java.io.*;
 
 /** A Resource that is inlined and does not depend on content outside. */
 public class InlineResource extends Resource {

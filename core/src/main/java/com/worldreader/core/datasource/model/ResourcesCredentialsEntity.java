@@ -13,7 +13,7 @@ public class ResourcesCredentialsEntity {
 
   public ResourcesCredentialsEntity() {
   }
-  
+
   public String getHost() {
     return host;
   }

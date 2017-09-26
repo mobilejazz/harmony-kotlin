@@ -25,8 +25,11 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.*;
 import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.NAMESPACE_OPF;
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.OPFAttributes;
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.OPFTags;
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.OPFValues;
+import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.readMetadata;
 
 /**
  * Reads the opf package document as defined by namespace http://www.idpf.org/2007/opf

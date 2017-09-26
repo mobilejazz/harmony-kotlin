@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Modular Framework Module  ...................................... -->
-<!-- file: xhtml-framework-1.mod
+<!-- ...................................................................... --><!-- XHTML Modular Framework Module  ...................................... --><!-- file: xhtml-framework-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,83 +13,41 @@
      (none)
      ....................................................................... -->
 
-<!-- Modular Framework
+  <!-- Modular Framework
 
-     This required module instantiates the modules needed
-     to support the XHTML modularization model, including:
+       This required module instantiates the modules needed
+       to support the XHTML modularization model, including:
 
-        +  datatypes
-        +  namespace-qualified names
-        +  common attributes
-        +  document model
-        +  character entities
+          +  datatypes
+          +  namespace-qualified names
+          +  common attributes
+          +  document model
+          +  character entities
 
-     The Intrinsic Events module is ignored by default but
-     occurs in this module because it must be instantiated
-     prior to Attributes but after Datatypes.
--->
+       The Intrinsic Events module is ignored by default but
+       occurs in this module because it must be instantiated
+       prior to Attributes but after Datatypes.
+  -->
 
-<!ENTITY % xhtml-arch.module "IGNORE" >
-<![%xhtml-arch.module;[
-<!ENTITY % xhtml-arch.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Base Architecture 1.0//EN"
-            "xhtml-arch-1.mod" >
-%xhtml-arch.mod;]]>
+  <!ENTITY % xhtml-arch.module "IGNORE" ><![%xhtml-arch.module;[<!ENTITY % xhtml-arch.modPUBLIC "-//W3C//ELEMENTS XHTML Base Architecture 1.0//EN""xhtml-arch-1.mod" >%xhtml-arch.mod;]]>
 
-<!ENTITY % xhtml-notations.module "IGNORE" >
-<![%xhtml-notations.module;[
-<!ENTITY % xhtml-notations.mod
-     PUBLIC "-//W3C//NOTATIONS XHTML Notations 1.0//EN"
-            "xhtml-notations-1.mod" >
-%xhtml-notations.mod;]]>
+  <!ENTITY % xhtml-notations.module "IGNORE" ><![%xhtml-notations.module;[<!ENTITY % xhtml-notations.modPUBLIC "-//W3C//NOTATIONS XHTML Notations 1.0//EN""xhtml-notations-1.mod" >%xhtml-notations.mod;]]>
 
-<!ENTITY % xhtml-datatypes.module "INCLUDE" >
-<![%xhtml-datatypes.module;[
-<!ENTITY % xhtml-datatypes.mod
-     PUBLIC "-//W3C//ENTITIES XHTML Datatypes 1.0//EN"
-            "xhtml-datatypes-1.mod" >
-%xhtml-datatypes.mod;]]>
+  <!ENTITY % xhtml-datatypes.module "INCLUDE" ><![%xhtml-datatypes.module;[<!ENTITY % xhtml-datatypes.modPUBLIC "-//W3C//ENTITIES XHTML Datatypes 1.0//EN""xhtml-datatypes-1.mod" >%xhtml-datatypes.mod;]]>
 
-<!-- placeholder for XLink support module -->
-<!ENTITY % xhtml-xlink.mod "" >
-%xhtml-xlink.mod;
+  <!-- placeholder for XLink support module --><!ENTITY % xhtml-xlink.mod "" >%xhtml-xlink.mod;
 
-<!ENTITY % xhtml-qname.module "INCLUDE" >
-<![%xhtml-qname.module;[
-<!ENTITY % xhtml-qname.mod
-     PUBLIC "-//W3C//ENTITIES XHTML Qualified Names 1.0//EN"
-            "xhtml-qname-1.mod" >
-%xhtml-qname.mod;]]>
+  <!ENTITY % xhtml-qname.module "INCLUDE" ><![%xhtml-qname.module;[<!ENTITY % xhtml-qname.modPUBLIC "-//W3C//ENTITIES XHTML Qualified Names 1.0//EN""xhtml-qname-1.mod" >%xhtml-qname.mod;]]>
 
-<!ENTITY % xhtml-events.module "IGNORE" >
-<![%xhtml-events.module;[
-<!ENTITY % xhtml-events.mod
-     PUBLIC "-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN"
-            "xhtml-events-1.mod" >
-%xhtml-events.mod;]]>
+  <!ENTITY % xhtml-events.module "IGNORE" ><![%xhtml-events.module;[<!ENTITY % xhtml-events.modPUBLIC "-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN""xhtml-events-1.mod" >%xhtml-events.mod;]]>
 
-<!ENTITY % xhtml-attribs.module "INCLUDE" >
-<![%xhtml-attribs.module;[
-<!ENTITY % xhtml-attribs.mod
-     PUBLIC "-//W3C//ENTITIES XHTML Common Attributes 1.0//EN"
-            "xhtml-attribs-1.mod" >
-%xhtml-attribs.mod;]]>
+  <!ENTITY % xhtml-attribs.module "INCLUDE" ><![%xhtml-attribs.module;[<!ENTITY % xhtml-attribs.modPUBLIC "-//W3C//ENTITIES XHTML Common Attributes 1.0//EN""xhtml-attribs-1.mod" >%xhtml-attribs.mod;]]>
 
-<!-- placeholder for content model redeclarations -->
-<!ENTITY % xhtml-model.redecl "" >
-%xhtml-model.redecl;
+  <!-- placeholder for content model redeclarations --><!ENTITY % xhtml-model.redecl "" >%xhtml-model.redecl;
 
-<!ENTITY % xhtml-model.module "INCLUDE" >
-<![%xhtml-model.module;[
-<!-- instantiate the Document Model module declared in the DTD driver
--->
-%xhtml-model.mod;]]>
+  <!ENTITY % xhtml-model.module "INCLUDE" ><![%xhtml-model.module;[<!-- instantiate the Document Model module declared in the DTD driver
+-->%xhtml-model.mod;]]>
 
-<!ENTITY % xhtml-charent.module "INCLUDE" >
-<![%xhtml-charent.module;[
-<!ENTITY % xhtml-charent.mod
-     PUBLIC "-//W3C//ENTITIES XHTML Character Entities 1.0//EN"
-            "xhtml-charent-1.mod" >
-%xhtml-charent.mod;]]>
+  <!ENTITY % xhtml-charent.module "INCLUDE" ><![%xhtml-charent.module;[<!ENTITY % xhtml-charent.modPUBLIC "-//W3C//ENTITIES XHTML Character Entities 1.0//EN""xhtml-charent-1.mod" >%xhtml-charent.mod;]]>
 
-<!-- end of xhtml-framework-1.mod -->
+  <!-- end of xhtml-framework-1.mod -->

@@ -10,10 +10,10 @@ import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.model.BookEntity;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.domain.model.BookSort;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit2.Call;
+
+import javax.inject.Inject;
+import java.util.*;
 
 public class BookNetworkDataSourceImp implements BookNetworkDataSource {
 

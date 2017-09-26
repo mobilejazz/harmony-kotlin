@@ -3,7 +3,8 @@ package com.worldreader.core.domain.interactors.user;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
-import java.util.concurrent.Executor;
+
+import java.util.concurrent.*;
 
 public interface GetFinishedBooksCountInteractor {
 

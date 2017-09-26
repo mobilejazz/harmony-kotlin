@@ -1,8 +1,7 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * The guide is a selection of special pages of the book.

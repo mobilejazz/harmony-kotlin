@@ -210,6 +210,7 @@ public class PopupIndicator {
    * (like moving the marker around, having the Marker's outline to work, etc)
    */
   private class Floater extends FrameLayout implements MarkerDrawable.MarkerAnimationListener {
+
     private Marker mMarker;
     private int mOffset;
 

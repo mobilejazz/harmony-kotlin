@@ -19,11 +19,10 @@ import com.worldreader.core.domain.interactors.user.userbooks.GetCollectionIdMap
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Integer, ErrorCore> implements GetFinishedBooksCountInteractor {
 

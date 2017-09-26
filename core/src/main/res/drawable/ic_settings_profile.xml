@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="21dp"
-    android:height="18.032182dp"
-    android:viewportWidth="21"
-    android:viewportHeight="18.032182">
+  android:width="21dp"
+  android:height="18.032182dp"
+  android:viewportWidth="21"
+  android:viewportHeight="18.032182">
 
-    <group android:translateX="-14.500000"
-        android:translateY="-71.500000">
-        <path android:name="ic_settings_profile"
-            android:fillColor="@color/ic_setting_icons"
-            android:pathData="M23.4189834,84.134354 C23.3361147,84.1067311 23.1683649,84.0042173
+  <group
+    android:translateX="-14.500000"
+    android:translateY="-71.500000">
+    <path
+      android:name="ic_settings_profile"
+      android:fillColor="@color/ic_setting_icons"
+      android:pathData="M23.4189834,84.134354 C23.3361147,84.1067311 23.1683649,84.0042173
 22.988324,83.7941695 C22.6601926,83.4113496 22.4565217,82.8342822 22.4565217,82
 C22.4565217,81.7238576 22.2326641,81.5 21.9565217,81.5 C21.9049275,81.5
 21.9049275,80.7608696 21.9565217,80.7608696 C22.2326641,80.7608696
@@ -69,5 +71,5 @@ L21.9565217,80.2608696 L21.9565217,79.7608696 C20.5715942,79.7608696
 20.5715942,82.5 21.9565217,82.5 L21.4565217,82 C21.4565217,83.0678917
 21.7419813,83.8766939 22.2290674,84.4449609 C22.5381568,84.8055653
 22.8595375,85.0019646 23.1027557,85.0830373 L23.1027557,85.0830373 Z" />
-    </group>
+  </group>
 </vector>

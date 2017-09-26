@@ -1,6 +1,5 @@
 package com.worldreader.core.application.di.config;
 
-import android.content.Context;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.mobilejazz.logger.library.Logger;

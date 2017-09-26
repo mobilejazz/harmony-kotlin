@@ -7,7 +7,7 @@ import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
 import org.htmlcleaner.TagNode;
 
-import java.util.List;
+import java.util.*;
 
 public class CSSLinkHandler extends TagNodeHandler {
 
@@ -23,20 +23,20 @@ public class CSSLinkHandler extends TagNodeHandler {
       SpanStack spanStack) {
 
     //if (true && getSpanner().isAllowStyling()) {
-      String type = node.getAttributeByName("type");
-      String href = node.getAttributeByName("href");
+    String type = node.getAttributeByName("type");
+    String href = node.getAttributeByName("href");
 
-      Log.d(TAG, "Found link tag: type=" + type + " and href=" + href);
+    Log.d(TAG, "Found link tag: type=" + type + " and href=" + href);
 
-      if (type == null || !type.equals("text/css")) {
-        Log.d(TAG, "Ignoring link of type " + type);
-      }
+    if (type == null || !type.equals("text/css")) {
+      Log.d(TAG, "Ignoring link of type " + type);
+    }
 
-      List<CompiledRule> rules = this.textLoader.getCSSRules(href);
+    List<CompiledRule> rules = this.textLoader.getCSSRules(href);
 
-      for (CompiledRule rule : rules) {
-        spanStack.registerCompiledRule(rule);
-      }
+    for (CompiledRule rule : rules) {
+      spanStack.registerCompiledRule(rule);
+    }
     //}
   }
 }

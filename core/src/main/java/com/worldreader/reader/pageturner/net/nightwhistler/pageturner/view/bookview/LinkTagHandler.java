@@ -27,9 +27,7 @@ import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import org.htmlcleaner.TagNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Creates clickable links.
@@ -86,6 +84,7 @@ public class LinkTagHandler extends TagNodeHandler {
   }
 
   public static interface LinkCallBack {
+
     void linkClicked(String href);
   }
 }

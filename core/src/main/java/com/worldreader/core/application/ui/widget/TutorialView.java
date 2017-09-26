@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.worldreader.core.R;
 import com.worldreader.core.userflow.model.TutorialModel;
 
-import java.util.List;
+import java.util.*;
 
 public class TutorialView extends FrameLayout {
 
@@ -235,6 +235,7 @@ public class TutorialView extends FrameLayout {
   }
 
   public interface TutorialListener {
+
     void onCompleted();
   }
 

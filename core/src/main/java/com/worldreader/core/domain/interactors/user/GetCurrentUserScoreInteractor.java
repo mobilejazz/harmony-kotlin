@@ -10,9 +10,10 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.repository.UserScoreRepository;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.*;
 
 @Singleton public class GetCurrentUserScoreInteractor {
 

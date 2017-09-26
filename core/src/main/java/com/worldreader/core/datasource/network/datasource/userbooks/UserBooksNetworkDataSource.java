@@ -6,7 +6,7 @@ import com.worldreader.core.datasource.model.user.userbooks.UserBookEntity;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserBooksNetworkDataSource extends Repository.Network<UserBookEntity, RepositorySpecification> {
 

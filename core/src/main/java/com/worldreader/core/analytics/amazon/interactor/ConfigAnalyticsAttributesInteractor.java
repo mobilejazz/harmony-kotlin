@@ -52,13 +52,11 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("countryCode", countryCodeProvider.getCountryCode()); //When generating logs for Opera, I use only this attribute and
         // disable the following 5 ones.
 
-
         attributes.put("simCountryCode", countryCodeProvider.getSimCountryIsoCode());
         attributes.put("networkCountryCode", countryCodeProvider.getNetworkCountryIsoCode());
         attributes.put("deviceIPV4", countryCodeProvider.getIPAddress(true));
         attributes.put("deviceIPV6", countryCodeProvider.getIPAddress(false));
         attributes.put("localeLanguageCode", countryCodeProvider.getLanguageIso3Code());
-
 
         amazonMobileAnalytics.addGlobalProperties(attributes);
 

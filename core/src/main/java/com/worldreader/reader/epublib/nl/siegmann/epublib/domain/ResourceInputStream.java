@@ -1,9 +1,7 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipFile;
+import java.io.*;
+import java.util.zip.*;
 
 /**
  * A wrapper class for closing a ZipFile object when the InputStream derived

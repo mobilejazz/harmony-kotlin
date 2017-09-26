@@ -220,6 +220,7 @@ public final class SystemUiHelper {
    * A callback interface used to listen for system UI visibility changes.
    */
   public interface OnVisibilityChangeListener {
+
     /**
      * Called when the system UI visibility has changed.
      *
@@ -302,6 +303,7 @@ public final class SystemUiHelper {
   }
 
   private class HideRunnable implements Runnable {
+
     @Override public void run() {
       hide();
     }

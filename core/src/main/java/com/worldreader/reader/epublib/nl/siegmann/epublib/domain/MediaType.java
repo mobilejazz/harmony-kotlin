@@ -1,8 +1,7 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
 /**
  * MediaType is used to tell the type of content a resource is.
@@ -15,6 +14,7 @@ import java.util.Collection;
  * @see nl.siegmann.epublib.service.MediatypeService
  */
 public class MediaType implements Serializable {
+
   /**
    *
    */

@@ -6,7 +6,7 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.thread.MainThread;
 
-import java.util.List;
+import java.util.*;
 
 public class BaseUserFlowInteractor extends AbstractInteractor<List<UserFlow>, ErrorCore<?>> {
 

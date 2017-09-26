@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:width="12.5859375dp"
-    android:height="15.890625dp"
-    android:viewportWidth="12.5859375"
-    android:viewportHeight="15.890625"
-    >
+  android:width="12.5859375dp"
+  android:height="15.890625dp"
+  android:viewportWidth="12.5859375"
+  android:viewportHeight="15.890625">
 
+  <group
+    android:translateX="-47.667969"
+    android:translateY="-315.109375">
     <group
-            android:translateX="-47.667969"
-            android:translateY="-315.109375">
-        <group
-                android:translateX="27.000000"
-                android:translateY="138.000000">
-            <path
-                android:name="ic_reader_font"
-                android:fillColor="@color/ic_reader_font"
-                android:pathData="M33.0195312,177.109375 L33.1484375,181.070312 L32.5976562,181.070312
+      android:translateX="27.000000"
+      android:translateY="138.000000">
+      <path
+        android:name="ic_reader_font"
+        android:fillColor="@color/ic_reader_font"
+        android:pathData="M33.0195312,177.109375 L33.1484375,181.070312 L32.5976562,181.070312
 C32.4882807,180.203121 32.2441425,179.486331 31.8652344,178.919922
 C31.4863262,178.353513 31.0898458,178.000001 30.6757812,177.859375
 C30.2617167,177.718749 29.5625049,177.648438 28.578125,177.648438
@@ -39,6 +37,6 @@ C23.1875,179.804681 23.150391,178.988283 23.0761719,178.621094
 C23.0019528,178.253904 22.8457043,178.000001 22.6074219,177.859375
 C22.3691394,177.718749 21.8476603,177.648438 21.0429688,177.648438
 L20.7617188,177.648438 L20.7617188,177.109375 L33.0195312,177.109375 Z" />
-        </group>
     </group>
+  </group>
 </vector>

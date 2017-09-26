@@ -4,10 +4,10 @@ import com.worldreader.core.datasource.mapper.deprecated.Mapper;
 import com.worldreader.core.datasource.model.UserFlowEntity;
 import com.worldreader.core.domain.model.UserFlow;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UserFlowEntityDataMapper implements Mapper<UserFlow, UserFlowEntity> {
+
   @Override public UserFlow transform(UserFlowEntity data) {
     return UserFlow.create(transformTypes(data.getType()), data.getPhase(), data.isDisplayed());
   }

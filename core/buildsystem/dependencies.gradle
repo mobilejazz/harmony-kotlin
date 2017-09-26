@@ -6,12 +6,12 @@ rootProject.allprojects {
 }
 
 ext {
-    androidBuildToolsVersion = "26.0.0"
-    androidMinSdkVersion = 16
-    androidTargetSdkVersion = 25
-    androidCompileSdkVersion = 25
+  androidBuildToolsVersion = "26.0.0"
+  androidMinSdkVersion = 16
+  androidTargetSdkVersion = 25
+  androidCompileSdkVersion = 25
 
-    supportLibrariesVersion = '25.1.0'
+  supportLibrariesVersion = '25.1.0'
 
   dependencies = [
       appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
@@ -60,9 +60,9 @@ ext {
 
       scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0",
 
-      awsCore                   : "com.amazonaws:aws-android-sdk-core:2.2.+",
-      awsMobileAnalytics        : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
-      networkConnectionClass    : "com.facebook.network.connectionclass:connectionclass:1.0.1"
+      awsCore                  : "com.amazonaws:aws-android-sdk-core:2.2.+",
+      awsMobileAnalytics       : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
+      networkConnectionClass   : "com.facebook.network.connectionclass:connectionclass:1.0.1"
 
   ]
 

@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
  * @hide
  */
 public abstract class StateDrawable extends Drawable {
+
   private ColorStateList mTintStateList;
   private final Paint mPaint;
   private int mCurrentColor;

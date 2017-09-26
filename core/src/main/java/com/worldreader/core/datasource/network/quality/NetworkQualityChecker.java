@@ -16,16 +16,18 @@ public final class NetworkQualityChecker {
    * Method call to start sampling for download bandwidth.
    */
   public void startSampling() {
-    if (!DeviceBandwidthSampler.getInstance().isSampling())
+    if (!DeviceBandwidthSampler.getInstance().isSampling()) {
       DeviceBandwidthSampler.getInstance().startSampling();
+    }
   }
 
   /**
    * Finish sampling and prevent further changes to the ConnectionClass until another timer is started.
    */
   public void stopSampling() {
-    if (DeviceBandwidthSampler.getInstance().isSampling())
+    if (DeviceBandwidthSampler.getInstance().isSampling()) {
       DeviceBandwidthSampler.getInstance().stopSampling();
+    }
   }
 
   /**

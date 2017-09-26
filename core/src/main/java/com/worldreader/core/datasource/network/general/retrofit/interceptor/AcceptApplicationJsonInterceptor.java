@@ -4,7 +4,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.IOException;
+import java.io.*;
 
 public class AcceptApplicationJsonInterceptor implements Interceptor {
 
@@ -15,5 +15,5 @@ public class AcceptApplicationJsonInterceptor implements Interceptor {
     final Request withNewRequest = newRequestBuilder.build();
     return chain.proceed(withNewRequest);
   }
-  
+
 }

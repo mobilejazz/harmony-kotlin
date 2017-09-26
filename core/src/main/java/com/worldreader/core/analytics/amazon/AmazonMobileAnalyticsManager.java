@@ -28,7 +28,7 @@ public class AmazonMobileAnalyticsManager implements AmazonMobileAnalytics {
     this.cognitoId = cognitoId;
     this.applicationId = applicationId;
     this.logger = logger;
-    logger.d(TAG, "context: "+ this.context+ ", cognitoId: " + this.cognitoId+ ", applicationId: "+this.applicationId);
+    logger.d(TAG, "context: " + this.context + ", cognitoId: " + this.cognitoId + ", applicationId: " + this.applicationId);
   }
 
   @Override public <T extends AnalyticsEvent> void sendEvent(@NonNull final T event) {
@@ -36,7 +36,6 @@ public class AmazonMobileAnalyticsManager implements AmazonMobileAnalytics {
     Preconditions.checkArgument(event instanceof BasicAnalyticsEvent, "event != BasicAnalyticsEvent");
 
     final BasicAnalyticsEvent basicAnalyticsEvent = (BasicAnalyticsEvent) event;
-
 
     final EventClient eventClient = getMobileAnalyticsManager().getEventClient();
     final com.amazonaws.mobileconnectors.amazonmobileanalytics.AnalyticsEvent analyticsEvent =
@@ -48,7 +47,7 @@ public class AmazonMobileAnalyticsManager implements AmazonMobileAnalytics {
     }
 
     JSONObject jLogger = new JSONObject(analyticsEvent.getAllAttributes());
-    logger.d(TAG, "eventName: "+ basicAnalyticsEvent.getEventName()+ ", attributes: " + jLogger.toString());
+    logger.d(TAG, "eventName: " + basicAnalyticsEvent.getEventName() + ", attributes: " + jLogger.toString());
 
     getMobileAnalyticsManager().getEventClient().recordEvent(analyticsEvent);
   }
@@ -73,8 +72,9 @@ public class AmazonMobileAnalyticsManager implements AmazonMobileAnalytics {
     for (final String key : attributes.keySet()) {
       final String value = attributes.get(key);
       if (TextUtils.isEmpty(eventType)) {
-        if (!TextUtils.isEmpty(value))
+        if (!TextUtils.isEmpty(value)) {
           eventClient.addGlobalAttribute(key, value);
+        }
       } else {
         eventClient.addGlobalAttribute(eventType, key, value);
       }
@@ -85,7 +85,7 @@ public class AmazonMobileAnalyticsManager implements AmazonMobileAnalytics {
 
     if (mobileAnalyticsManager == null) {
       this.mobileAnalyticsManager =
-          MobileAnalyticsManager.getOrCreateInstance(context, applicationId,cognitoId);
+          MobileAnalyticsManager.getOrCreateInstance(context, applicationId, cognitoId);
     }
 
     return mobileAnalyticsManager;

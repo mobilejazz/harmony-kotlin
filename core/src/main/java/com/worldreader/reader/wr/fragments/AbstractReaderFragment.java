@@ -282,7 +282,7 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                     Bundle savedInstanceState) {
+      Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_reader, container, false);
   }
 
@@ -383,7 +383,7 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
-  private void initViews(View view){
+  private void initViews(View view) {
     this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
     this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
@@ -411,7 +411,8 @@ public abstract class AbstractReaderFragment extends Fragment
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
-    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(), new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
+    this.bookView.init(bookMetadata.getContentOpfName(), bookMetadata.getTocResource(),
+        new StreamingResourcesLoader(bookMetadata, this.streamingBookDataSource, this.logger));
 
     this.bookView.addListener(this);
     this.bookView.setTextSelectionCallback(this, this);

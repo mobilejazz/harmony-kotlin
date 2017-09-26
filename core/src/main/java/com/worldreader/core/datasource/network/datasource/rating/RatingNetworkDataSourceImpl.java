@@ -4,8 +4,9 @@ import android.support.annotation.NonNull;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.datasource.model.ScoreEntity;
-import javax.inject.Inject;
 import retrofit2.Call;
+
+import javax.inject.Inject;
 
 public class RatingNetworkDataSourceImpl implements RatingNetworkDataSource {
 

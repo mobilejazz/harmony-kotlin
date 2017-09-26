@@ -60,7 +60,8 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.executor.run(this);
   }
 
-  @Override public void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata,
+      final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
     this.bookId = bookId;
     this.version = version;
     this.backgroundCallback = callback;
@@ -74,7 +75,8 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     return future;
   }
 
-  @Override public ListenableFuture<BookMetadata> execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final Executor executor) {
+  @Override
+  public ListenableFuture<BookMetadata> execute(final String bookId, final String version, final boolean forceRefreshBookMetadata, final Executor executor) {
     final SettableFuture<BookMetadata> future = SettableFuture.create();
     executor.execute(getInteractorCallable(bookId, version, forceRefreshBookMetadata, future));
     return future;

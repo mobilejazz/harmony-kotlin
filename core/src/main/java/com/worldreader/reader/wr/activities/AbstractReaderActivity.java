@@ -22,13 +22,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
-import com.worldreader.reader.wr.fragments.BookIndexFragment;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
+import com.worldreader.reader.wr.fragments.BookIndexFragment;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractReaderActivity extends AppCompatActivity
     implements AbstractReaderFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {

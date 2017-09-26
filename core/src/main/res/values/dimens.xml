@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Banner layout-->
-    <dimen name="global_banner_layout_height">80dp</dimen>
+  <!-- Banner layout-->
+  <dimen name="global_banner_layout_height">80dp</dimen>
 
-    <!-- Global book layout-->
-    <dimen name="global_book_layout_img_height">150dp</dimen>
-    <dimen name="global_book_layout_height">205dp</dimen>
+  <!-- Global book layout-->
+  <dimen name="global_book_layout_img_height">150dp</dimen>
+  <dimen name="global_book_layout_height">205dp</dimen>
 
-    <!-- Detail book content -->
-    <dimen name="detail_book_content_layout_margin_right">8dp</dimen>
+  <!-- Detail book content -->
+  <dimen name="detail_book_content_layout_margin_right">8dp</dimen>
 
-    <!-- Shelve View layout -->
-    <dimen name="global_shelve_books_layout_margin_left_right_bottom">5dp</dimen>
-    <dimen name="global_shelve_books_layout_btn_view_all_height">35dp</dimen>
+  <!-- Shelve View layout -->
+  <dimen name="global_shelve_books_layout_margin_left_right_bottom">5dp</dimen>
+  <dimen name="global_shelve_books_layout_btn_view_all_height">35dp</dimen>
 
-    <!-- View all Books -->
-    <dimen name="view_all_progress_view_book_height">180dp</dimen>
+  <!-- View all Books -->
+  <dimen name="view_all_progress_view_book_height">180dp</dimen>
 
-    <!-- GridView Decoration-->
-    <dimen name="grid_insets">2dp</dimen>
+  <!-- GridView Decoration-->
+  <dimen name="grid_insets">2dp</dimen>
 
-    <!-- Book Detail layout-->
-    <dimen name="book_detail_book_cover_height">240dp</dimen>
-    <dimen name="detail_book_title_padding_right">@dimen/span_64</dimen>
+  <!-- Book Detail layout-->
+  <dimen name="book_detail_book_cover_height">240dp</dimen>
+  <dimen name="detail_book_title_padding_right">@dimen/span_64</dimen>
 
-    <!-- Register & Login -->
-    <dimen name="global_register_login_activity_side_margin">24dp</dimen>
+  <!-- Register & Login -->
+  <dimen name="global_register_login_activity_side_margin">24dp</dimen>
 
 </resources>

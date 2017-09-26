@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import javax.annotation.Nullable;
 
 public abstract class CancelableFutureCallback<V> implements FutureCallback<V> {
+
   private boolean canceled;
 
   public CancelableFutureCallback() {

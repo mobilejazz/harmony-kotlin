@@ -4,7 +4,7 @@ import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.userflow.model.TutorialModel;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserFlowTutorial {
 

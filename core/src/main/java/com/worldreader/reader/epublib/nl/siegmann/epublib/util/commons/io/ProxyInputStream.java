@@ -17,9 +17,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io;
  * limitations under the License.
  */
 
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * A Proxy stream which acts as expected, that is it passes the method

@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Block Presentation Module  ..................................... -->
-<!-- file: xhtml-blkpres-1.mod
+<!-- ...................................................................... --><!-- XHTML Block Presentation Module  ..................................... --><!-- file: xhtml-blkpres-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,26 +13,16 @@
      (none)
      ....................................................................... -->
 
-<!-- Block Presentational Elements
+  <!-- Block Presentational Elements
 
-        hr
+          hr
 
-     This module declares the elements and their attributes used to
-     support block-level presentational markup.
--->
+       This module declares the elements and their attributes used to
+       support block-level presentational markup.
+  -->
 
-<!ENTITY % hr.element  "INCLUDE" >
-<![%hr.element;[
-<!ENTITY % hr.content  "EMPTY" >
-<!ENTITY % hr.qname  "hr" >
-<!ELEMENT %hr.qname;  %hr.content; >
-<!-- end of hr.element -->]]>
+  <!ENTITY % hr.element  "INCLUDE" ><![%hr.element;[<!ENTITY % hr.content  "EMPTY" ><!ENTITY % hr.qname  "hr" ><!ELEMENT %hr.qname;  %hr.content; ><!-- end of hr.element -->]]>
 
-<!ENTITY % hr.attlist  "INCLUDE" >
-<![%hr.attlist;[
-<!ATTLIST %hr.qname;
-      %Common.attrib;
->
-<!-- end of hr.attlist -->]]>
+  <!ENTITY % hr.attlist  "INCLUDE" ><![%hr.attlist;[<!ATTLIST %hr.qname;%Common.attrib;><!-- end of hr.attlist -->]]>
 
-<!-- end of xhtml-blkpres-1.mod -->
+  <!-- end of xhtml-blkpres-1.mod -->

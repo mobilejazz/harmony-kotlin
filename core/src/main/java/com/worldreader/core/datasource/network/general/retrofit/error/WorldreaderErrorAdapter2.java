@@ -11,10 +11,10 @@ import com.worldreader.core.datasource.network.exceptions.NetworkErrorException2
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.error.user.UnAuthorizedUserException;
-import java.net.UnknownHostException;
 import retrofit2.Response;
 
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 public class WorldreaderErrorAdapter2 implements ErrorAdapter<Throwable> {
 

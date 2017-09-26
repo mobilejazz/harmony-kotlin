@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 
-import java.util.Date;
-import java.util.concurrent.Executor;
+import java.util.*;
+import java.util.concurrent.*;
 
 public interface AddBookDownloadedInteractor {
 

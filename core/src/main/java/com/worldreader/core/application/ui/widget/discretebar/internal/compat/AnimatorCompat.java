@@ -35,7 +35,9 @@ import android.os.Build;
  * @hide
  */
 public abstract class AnimatorCompat {
+
   public interface AnimationFrameUpdateListener {
+
     void onAnimationFrame(float currentValue);
   }
 

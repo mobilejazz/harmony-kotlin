@@ -8,10 +8,11 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
-import java.util.Date;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class SendReadPagesInteractor {
 

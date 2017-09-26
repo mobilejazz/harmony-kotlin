@@ -15,10 +15,12 @@ import android.view.MenuItem;
 public class ActionModeBuilder {
 
   public interface ActionModeAction<A> {
+
     boolean perform(ActionMode actionMode, A item);
   }
 
   public interface DestroyActionModeCommand {
+
     void perform(ActionMode mode);
   }
 

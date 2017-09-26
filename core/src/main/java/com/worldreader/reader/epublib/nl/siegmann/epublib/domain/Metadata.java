@@ -4,11 +4,8 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeServi
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * A Book's collection of Metadata.

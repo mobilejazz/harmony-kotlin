@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="18dp"
-    android:height="20dp"
-    android:viewportWidth="18"
-    android:viewportHeight="20">
+  android:width="18dp"
+  android:height="20dp"
+  android:viewportWidth="18"
+  android:viewportHeight="20">
 
-    <group android:translateX="-20.000000"
-        android:translateY="-807.000000">
-        <group android:translateX="6.500000"
-            android:translateY="65.500000">
-            <group android:translateX="0.500000"
-                android:translateY="728.500000">
-                <group android:translateX="13.000000"
-                    android:translateY="13.000000">
-                    <path android:name="Imported-Layers"
-                        android:fillColor="@color/ic_collection_color"
-                        android:pathData="M1.39885395,18.9537005 L5.8028999,18.9537005 L5.8028999,17.2596631
+  <group
+    android:translateX="-20.000000"
+    android:translateY="-807.000000">
+    <group
+      android:translateX="6.500000"
+      android:translateY="65.500000">
+      <group
+        android:translateX="0.500000"
+        android:translateY="728.500000">
+        <group
+          android:translateX="13.000000"
+          android:translateY="13.000000">
+          <path
+            android:name="Imported-Layers"
+            android:fillColor="@color/ic_collection_color"
+            android:pathData="M1.39885395,18.9537005 L5.8028999,18.9537005 L5.8028999,17.2596631
 L1.39885395,17.2596631 L1.39885395,18.9537005 Z M6.81435813,18.9537005
 L11.2184041,18.9537005 L11.2184041,17.2596631 L6.81435813,17.2596631
 L6.81435813,18.9537005 Z M12.2295802,18.9537005 L16.6336262,18.9537005
@@ -57,8 +62,8 @@ L0.893124839,19.9691075 C0.612759675,19.9691075 0.385421323,19.7417692
 0.387395726,19.417403 L0.387395726,0.507421459 C0.387395726,0.228184525
 0.613887905,0.00169234505 0.893124839,0.00169234505 L0.893124839,0
 L0.893124839,0 Z" />
-                </group>
-            </group>
         </group>
+      </group>
     </group>
+  </group>
 </vector>

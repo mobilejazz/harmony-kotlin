@@ -22,31 +22,30 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
 
 public class AnimatedImageView extends android.support.v7.widget.AppCompatImageView {
 
-	private Animator animator;
-	
-	public AnimatedImageView(Context context, AttributeSet attributes) {
-		super(context, attributes);		
-	}
-	
-	public void setAnimator(Animator animator) {
-		this.animator = animator;
-	}
-	
-	public Animator getAnimator() {
-		return animator;
-	}
-	
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
-		if ( this.animator != null ) {
-			animator.draw(canvas);
-		}
-	}
+  private Animator animator;
+
+  public AnimatedImageView(Context context, AttributeSet attributes) {
+    super(context, attributes);
+  }
+
+  public void setAnimator(Animator animator) {
+    this.animator = animator;
+  }
+
+  public Animator getAnimator() {
+    return animator;
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+
+    if (this.animator != null) {
+      animator.draw(canvas);
+    }
+  }
 }

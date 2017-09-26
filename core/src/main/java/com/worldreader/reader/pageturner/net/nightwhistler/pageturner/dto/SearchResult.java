@@ -9,38 +9,38 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto;
  */
 public class SearchResult {
 
-    private String query;
-    private String display;
-    private int index;
-    private int start;
-    private int end;
+  private String query;
+  private String display;
+  private int index;
+  private int start;
+  private int end;
 
-    public SearchResult(String query, String display, int index, int offset, int end) {
-        this.query = query;
-        this.display = display;
-        this.index = index;
-        this.start = offset;
-        this.end = end;
-    }
+  public SearchResult(String query, String display, int index, int offset, int end) {
+    this.query = query;
+    this.display = display;
+    this.index = index;
+    this.start = offset;
+    this.end = end;
+  }
 
-    public String getDisplay() {
-        return display;
-    }
+  public String getDisplay() {
+    return display;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public int getStart() {
-        return start;
-    }
+  public int getStart() {
+    return start;
+  }
 
-    public int getEnd() {
-        return end;
-    }
+  public int getEnd() {
+    return end;
+  }
 
-    public String getQuery() {
-        return query;
-    }
+  public String getQuery() {
+    return query;
+  }
 
 }

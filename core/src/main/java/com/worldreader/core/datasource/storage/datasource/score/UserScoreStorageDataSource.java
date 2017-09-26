@@ -4,7 +4,8 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.spec.score.UserScoreStorageSpecification;
-import java.util.List;
+
+import java.util.*;
 
 public interface UserScoreStorageDataSource
     extends Repository.Storage<UserScoreEntity, UserScoreStorageSpecification> {

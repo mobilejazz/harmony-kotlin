@@ -22,7 +22,7 @@ import com.worldreader.core.domain.repository.UserBooksLikeRepository;
 import com.worldreader.core.error.user.GetUserFailException;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
 
 import static com.worldreader.core.datasource.spec.user.UserStorageSpecification.UserTarget;
 import static com.worldreader.core.datasource.spec.user.UserStorageSpecification.target;
@@ -55,7 +55,8 @@ public class UserBooksLikeDataSource implements UserBooksLikeRepository {
           UserStorageSpecification.target(((UserBookLikeStorageSpec) specification).getTarget());
       getConcreteUserEntityId(userStorageSpecification, new Callback<String>() {
         @Override public void onSuccess(final String userId) {
-          final UserBookLikeStorageSpec getUserBookLikeStorageSpec = new GetUserBookLikeStorageSpec(((UserBookLikeStorageSpec) specification).getBookId(), userId);
+          final UserBookLikeStorageSpec getUserBookLikeStorageSpec =
+              new GetUserBookLikeStorageSpec(((UserBookLikeStorageSpec) specification).getBookId(), userId);
           storage.get(getUserBookLikeStorageSpec, new Callback<Optional<UserBookLikeEntity>>() {
             @Override public void onSuccess(final Optional<UserBookLikeEntity> optional) {
               final Optional<UserBookLike> response = toUserBookLikeMapper.transform(optional);

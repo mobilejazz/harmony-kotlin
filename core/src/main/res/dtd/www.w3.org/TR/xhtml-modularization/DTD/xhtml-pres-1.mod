@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Presentation Module ............................................ -->
-<!-- file: xhtml-pres-1.mod
+<!-- ...................................................................... --><!-- XHTML Presentation Module ............................................ --><!-- file: xhtml-pres-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,24 +13,14 @@
      (none)
      ....................................................................... -->
 
-<!-- Presentational Elements
+  <!-- Presentational Elements
 
-     This module defines elements and their attributes for
-     simple presentation-related markup.
--->
+       This module defines elements and their attributes for
+       simple presentation-related markup.
+  -->
 
-<!ENTITY % xhtml-inlpres.module "INCLUDE" >
-<![%xhtml-inlpres.module;[
-<!ENTITY % xhtml-inlpres.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN"
-            "xhtml-inlpres-1.mod" >
-%xhtml-inlpres.mod;]]>
+  <!ENTITY % xhtml-inlpres.module "INCLUDE" ><![%xhtml-inlpres.module;[<!ENTITY % xhtml-inlpres.modPUBLIC "-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN""xhtml-inlpres-1.mod" >%xhtml-inlpres.mod;]]>
 
-<!ENTITY % xhtml-blkpres.module "INCLUDE" >
-<![%xhtml-blkpres.module;[
-<!ENTITY % xhtml-blkpres.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN"
-            "xhtml-blkpres-1.mod" >
-%xhtml-blkpres.mod;]]>
+  <!ENTITY % xhtml-blkpres.module "INCLUDE" ><![%xhtml-blkpres.module;[<!ENTITY % xhtml-blkpres.modPUBLIC "-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN""xhtml-blkpres-1.mod" >%xhtml-blkpres.mod;]]>
 
-<!-- end of xhtml-pres-1.mod -->
+  <!-- end of xhtml-pres-1.mod -->

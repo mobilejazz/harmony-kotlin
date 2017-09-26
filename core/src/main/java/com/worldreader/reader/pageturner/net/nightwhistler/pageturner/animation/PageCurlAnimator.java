@@ -171,7 +171,7 @@ public class PageCurlAnimator implements Animator {
     posY = debugDrawPoint(canvas, "F", mF, Color.LTGRAY, posX, posY);
     posY = debugDrawPoint(canvas, "Mov", mMovement, Color.DKGRAY, posX, posY);
     posY = debugDrawPoint(canvas, "Origin", mOrigin, Color.MAGENTA, posX, posY);
-		
+
 		/**/
   }
 
@@ -557,6 +557,7 @@ public class PageCurlAnimator implements Animator {
    * Inner class used to represent a 2D point.
    */
   private class Vector2D {
+
     public float x, y;
 
     public Vector2D(float x, float y) {

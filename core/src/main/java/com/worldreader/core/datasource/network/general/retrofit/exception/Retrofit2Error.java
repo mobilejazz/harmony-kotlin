@@ -5,7 +5,7 @@ import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.annotation.Annotation;
 
 // As Retrofit2 doesn't have the concept of RetrofitError like the previous version, this class handle this gap as the whole codebase depends on

@@ -1,10 +1,7 @@
 package com.worldreader.reader.epublib.org.apache.commons.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
+import java.io.*;
+import java.util.*;
 
 /**
  * General filename and filepath manipulation utilities.
@@ -97,6 +94,7 @@ public class FilenameUtils {
    * The separator character that is the opposite of the system separator.
    */
   private static final char OTHER_SEPARATOR;
+
   static {
     if (isSystemWindows()) {
       OTHER_SEPARATOR = UNIX_SEPARATOR;
@@ -113,6 +111,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Determines if Windows file system is in use.
    *
@@ -123,6 +122,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Checks if the character is a separator.
    *
@@ -134,6 +134,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Normalizes a path, removing double and single dot path steps.
    * <p>
@@ -177,6 +178,7 @@ public class FilenameUtils {
   public static String normalize(String filename) {
     return doNormalize(filename, SYSTEM_SEPARATOR, true);
   }
+
   /**
    * Normalizes a path, removing double and single dot path steps.
    * <p>
@@ -227,6 +229,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Normalizes a path, removing double and single dot path steps,
    * and removing any final directory separator.
@@ -376,7 +379,7 @@ public class FilenameUtils {
           lastIsDirectory = true;
         }
         System.arraycopy(array, i + 1, array, i - 1, size - i);
-        size -=2;
+        size -= 2;
         i--;
       }
     }
@@ -393,7 +396,7 @@ public class FilenameUtils {
           lastIsDirectory = true;
         }
         int j;
-        for (j = i - 4 ; j >= prefix; j--) {
+        for (j = i - 4; j >= prefix; j--) {
           if (array[j] == separator) {
             // remove b/../ from a/b/../c
             System.arraycopy(array, i + 1, array, j + 1, size - i);
@@ -422,6 +425,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Concatenates a filename to a base path using normal command line style rules.
    * <p>
@@ -528,6 +532,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Converts all separators to the Unix separator of forward slash.
    *
@@ -572,6 +577,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Returns the length of the filename prefix, such as <code>C:/</code> or <code>~/</code>.
    * <p>
@@ -701,6 +707,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Gets the prefix from a full filename, such as <code>C:/</code>
    * or <code>~/</code>.
@@ -813,7 +820,7 @@ public class FilenameUtils {
       return null;
     }
     int index = indexOfLastSeparator(filename);
-    int endIndex = index+separatorAdd;
+    int endIndex = index + separatorAdd;
     if (prefix >= filename.length() || index < 0 || prefix >= endIndex) {
       return "";
     }
@@ -905,7 +912,7 @@ public class FilenameUtils {
     if (index < 0) {
       return filename.substring(0, prefix);
     }
-    int end = index + (includeSeparator ?  1 : 0);
+    int end = index + (includeSeparator ? 1 : 0);
     if (end == 0) {
       end++;
     }
@@ -989,6 +996,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Removes the extension from a filename.
    * <p>
@@ -1019,6 +1027,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Checks whether two filenames are equal exactly.
    * <p>
@@ -1050,6 +1059,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Checks whether two filenames are equal after both have been normalized.
    * <p>
@@ -1115,6 +1125,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Checks whether the extension of the filename is that specified.
    * <p>
@@ -1192,6 +1203,7 @@ public class FilenameUtils {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Checks a filename to see if it matches the specified wildcard matcher,
    * always testing case-sensitive.
@@ -1312,7 +1324,7 @@ public class FilenameUtils {
             }
             int repeat = caseSensitivity.checkIndexOf(filename, textIdx + 1, wcs[wcsIdx]);
             if (repeat >= 0) {
-              backtrack.push(new int[] {wcsIdx, repeat});
+              backtrack.push(new int[] { wcsIdx, repeat });
             }
           } else {
             // matching from current position
@@ -1379,7 +1391,7 @@ public class FilenameUtils {
       list.add(buffer.toString());
     }
 
-    return list.toArray( new String[ list.size() ] );
+    return list.toArray(new String[list.size()]);
   }
 
 }

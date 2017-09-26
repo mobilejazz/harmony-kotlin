@@ -14,9 +14,8 @@ import com.worldreader.core.domain.model.user.User2;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class CreateAnonymousUserInteractor {
 

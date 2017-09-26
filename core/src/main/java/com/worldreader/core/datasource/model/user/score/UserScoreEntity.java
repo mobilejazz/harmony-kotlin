@@ -1,7 +1,8 @@
 package com.worldreader.core.datasource.model.user.score;
 
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
-import java.util.Date;
+
+import java.util.*;
 
 public class UserScoreEntity extends RepositoryModel {
 

@@ -41,8 +41,8 @@ import com.worldreader.core.R;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.net.URLDecoder;
 
 public class FastBitmapDrawable extends Drawable {
@@ -95,7 +95,7 @@ public class FastBitmapDrawable extends Drawable {
       canvas.restoreToCount(count);
 
       if (!isLoaded && !isProcessing) {
-        isProcessing=true;
+        isProcessing = true;
         final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
         Futures.addCallback(future, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {

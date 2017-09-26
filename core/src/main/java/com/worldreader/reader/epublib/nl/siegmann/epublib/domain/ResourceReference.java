@@ -1,6 +1,6 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class ResourceReference implements Serializable {
 

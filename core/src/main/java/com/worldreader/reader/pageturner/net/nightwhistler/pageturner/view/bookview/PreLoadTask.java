@@ -1,10 +1,10 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
-import jedi.functional.Command;
-import jedi.option.Option;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import jedi.functional.Command;
+import jedi.option.Option;
 
 import static jedi.option.Options.none;
 

@@ -23,8 +23,7 @@ import com.worldreader.reader.wr.adapter.ReaderFontSizes;
 import com.worldreader.reader.wr.adapter.ReaderFontSizesAdapter;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ModifyReaderSettingsDialog extends DialogFragment {
 
@@ -48,6 +47,7 @@ public class ModifyReaderSettingsDialog extends DialogFragment {
   public enum Action {
     MODIFIED, NOT_MODIFIED
   }
+
   private enum SettingsModified {
     COLOR_PROFILE, FONT_SIZE, FONT_FAMILY,
   }

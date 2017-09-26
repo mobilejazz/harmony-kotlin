@@ -6,7 +6,7 @@ import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.domain.model.user.UserBookLike;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserBooksLikeRepository extends Repository<UserBookLike, RepositorySpecification> {
 

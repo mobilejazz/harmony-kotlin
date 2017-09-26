@@ -5,11 +5,11 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
 
 import javax.inject.Inject;
 import java.util.*;

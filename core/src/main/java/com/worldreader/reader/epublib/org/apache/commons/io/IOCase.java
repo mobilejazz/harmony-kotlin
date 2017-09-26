@@ -16,7 +16,7 @@
  */
 package com.worldreader.reader.epublib.org.apache.commons.io;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Enumeration of IO case sensitivity.
@@ -70,6 +70,7 @@ public final class IOCase implements Serializable {
   private final transient boolean sensitive;
 
   //-----------------------------------------------------------------------
+
   /**
    * Factory method to create an IOCase from a name.
    *
@@ -78,19 +79,20 @@ public final class IOCase implements Serializable {
    * @throws IllegalArgumentException if the name is invalid
    */
   public static IOCase forName(String name) {
-    if (IOCase.SENSITIVE.name.equals(name)){
+    if (IOCase.SENSITIVE.name.equals(name)) {
       return IOCase.SENSITIVE;
     }
-    if (IOCase.INSENSITIVE.name.equals(name)){
+    if (IOCase.INSENSITIVE.name.equals(name)) {
       return IOCase.INSENSITIVE;
     }
-    if (IOCase.SYSTEM.name.equals(name)){
+    if (IOCase.SYSTEM.name.equals(name)) {
       return IOCase.SYSTEM;
     }
     throw new IllegalArgumentException("Invalid IOCase name: " + name);
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Private constructor.
    *
@@ -113,6 +115,7 @@ public final class IOCase implements Serializable {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Gets the name of the constant.
    *
@@ -132,6 +135,7 @@ public final class IOCase implements Serializable {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Compares two strings using the case-sensitivity rule.
    * <p>
@@ -243,6 +247,7 @@ public final class IOCase implements Serializable {
   }
 
   //-----------------------------------------------------------------------
+
   /**
    * Gets a string describing the sensitivity.
    *

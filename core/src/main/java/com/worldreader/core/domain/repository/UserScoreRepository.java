@@ -4,7 +4,8 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.domain.model.user.UserScore;
-import java.util.List;
+
+import java.util.*;
 
 public interface UserScoreRepository extends Repository<UserScore, RepositorySpecification> {
 

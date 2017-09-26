@@ -7,8 +7,9 @@ import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
-import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 @PerActivity public class FinishBookInteractor {
 

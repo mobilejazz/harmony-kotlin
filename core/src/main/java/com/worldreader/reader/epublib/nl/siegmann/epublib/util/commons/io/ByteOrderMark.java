@@ -17,7 +17,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Byte Order Mark (BOM) representation -

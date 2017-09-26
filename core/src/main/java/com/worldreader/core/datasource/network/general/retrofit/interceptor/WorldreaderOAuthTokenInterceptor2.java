@@ -2,15 +2,15 @@ package com.worldreader.core.datasource.network.general.retrofit.interceptor;
 
 import com.worldreader.core.domain.model.OAuthResponse;
 import com.worldreader.core.domain.repository.OAuthRepository;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.*;
+import java.util.regex.*;
 
 @Singleton public class WorldreaderOAuthTokenInterceptor2 implements Interceptor {
 

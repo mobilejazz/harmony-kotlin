@@ -43,6 +43,7 @@ public class CheckableImageButton extends ImageButton implements Checkable {
    * Interface definition for a callback to be invoked when the checked state changed.
    */
   public static interface OnCheckedChangeListener {
+
     /**
      * Called when the checked state has changed.
      *

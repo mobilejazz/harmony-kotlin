@@ -98,8 +98,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <!-- Like / Times read -->
-    <LinearLayout
+    <!-- Like / Times read --><LinearLayout
     android:layout_width="match_parent"
     android:layout_height="@dimen/span_32"
     android:background="@color/background_material_light"
@@ -225,13 +224,13 @@
     <!-- Book DownloadDescription -->
 
     <com.worldreader.core.application.ui.widget.DownloadBookView
-    android:id="@+id/detail_book_offline_switch"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/span_48"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:paddingLeft="@dimen/span_8"
-    android:paddingRight="@dimen/span_8" />
+      android:id="@+id/detail_book_offline_switch"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/span_48"
+      android:background="?android:attr/selectableItemBackground"
+      android:clickable="true"
+      android:paddingLeft="@dimen/span_8"
+      android:paddingRight="@dimen/span_8" />
 
     <View
       android:id="@+id/detail_book_offline_switch_separator"

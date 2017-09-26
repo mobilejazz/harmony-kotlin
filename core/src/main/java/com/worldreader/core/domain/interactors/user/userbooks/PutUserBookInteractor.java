@@ -8,6 +8,7 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.spec.userbooks.UserBookStorageSpecification;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

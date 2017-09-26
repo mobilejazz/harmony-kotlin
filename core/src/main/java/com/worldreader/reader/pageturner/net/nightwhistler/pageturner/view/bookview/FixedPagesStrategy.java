@@ -28,13 +28,14 @@ import android.util.Log;
 import android.widget.TextView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import java.util.ArrayList;
-import java.util.List;
 import jedi.option.Option;
 
-import static java.util.Collections.emptyList;
+import java.util.*;
 
-import static jedi.option.Options.*;
+import static java.util.Collections.*;
+import static jedi.option.Options.none;
+import static jedi.option.Options.option;
+import static jedi.option.Options.some;
 
 public class FixedPagesStrategy implements PageChangeStrategy {
 
@@ -129,14 +130,11 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     Log.d(TAG, "OFFSETT bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
     Log.d(TAG, "OFFSETT bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
 
-
     layout.draw(new Canvas());
 
     //Subtract the height of the top margin
     int pageHeight = bookView.getMeasuredHeight() - bookView.getVerticalMargin();
     Log.d(TAG, "OFFSETT FIRST pageHeight " + pageHeight);
-
-
 
     if (includePageNumbers) {
       String bottomSpace = "0\n";

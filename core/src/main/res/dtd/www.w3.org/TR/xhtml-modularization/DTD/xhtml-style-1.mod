@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Document Style Sheet Module  ................................... -->
-<!-- file: xhtml-style-1.mod
+<!-- ...................................................................... --><!-- XHTML Document Style Sheet Module  ................................... --><!-- file: xhtml-style-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,34 +13,18 @@
      (none)
      ....................................................................... -->
 
-<!-- Style Sheets
+  <!-- Style Sheets
 
-        style
+          style
 
-     This module declares the style element type and its attributes,
-     used to embed style sheet information in the document head element.
--->
+       This module declares the style element type and its attributes,
+       used to embed style sheet information in the document head element.
+  -->
 
-<!-- style: Style Sheet Information .................... -->
+  <!-- style: Style Sheet Information .................... -->
 
-<!ENTITY % style.element  "INCLUDE" >
-<![%style.element;[
-<!ENTITY % style.content  "( #PCDATA )" >
-<!ENTITY % style.qname  "style" >
-<!ELEMENT %style.qname;  %style.content; >
-<!-- end of style.element -->]]>
+  <!ENTITY % style.element  "INCLUDE" ><![%style.element;[<!ENTITY % style.content  "( #PCDATA )" ><!ENTITY % style.qname  "style" ><!ELEMENT %style.qname;  %style.content; ><!-- end of style.element -->]]>
 
-<!ENTITY % style.attlist  "INCLUDE" >
-<![%style.attlist;[
-<!ATTLIST %style.qname;
-      %XHTML.xmlns.attrib;
-      %id.attrib;
-      %title.attrib;
-      %I18n.attrib;
-      xml:space    ( preserve )             #FIXED 'preserve'
-      type         %ContentType.datatype;   #REQUIRED
-      media        %MediaDesc.datatype;     #IMPLIED
->
-<!-- end of style.attlist -->]]>
+  <!ENTITY % style.attlist  "INCLUDE" ><![%style.attlist;[<!ATTLIST %style.qname;%XHTML.xmlns.attrib;%id.attrib;%title.attrib;%I18n.attrib;xml:space    ( preserve )             #FIXED 'preserve'type         %ContentType.datatype;   #REQUIREDmedia        %MediaDesc.datatype;     #IMPLIED><!-- end of style.attlist -->]]>
 
-<!-- end of xhtml-style-1.mod -->
+  <!-- end of xhtml-style-1.mod -->

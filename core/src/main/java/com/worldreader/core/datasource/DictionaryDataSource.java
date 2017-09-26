@@ -25,15 +25,15 @@ public class DictionaryDataSource implements DictionaryRepository {
   @Override public void searchWordDefinition(String word, final CompletionCallback<WordDefinition> callback) {
     dictionaryNetworkDataSource.searchWordDefinition(word, new Callback<WordDefinitionEntity>() {
       @Override public void onSuccess(final WordDefinitionEntity wordDefinitionEntity) {
-            if (callback != null) {
-              callback.onSuccess(wordDefinitionEntityDataMapper.transform(wordDefinitionEntity));
-            }
+        if (callback != null) {
+          callback.onSuccess(wordDefinitionEntityDataMapper.transform(wordDefinitionEntity));
+        }
       }
 
       @Override public void onError(final Throwable e) {
-            if (callback != null) {
-              callback.onError(ErrorCore.of(e));
-            }
+        if (callback != null) {
+          callback.onError(ErrorCore.of(e));
+        }
       }
     });
   }

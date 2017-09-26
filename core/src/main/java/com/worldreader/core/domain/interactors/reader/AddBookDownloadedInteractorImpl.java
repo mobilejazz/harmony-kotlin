@@ -13,10 +13,9 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.BookDownloaded;
 import com.worldreader.core.domain.thread.MainThread;
 
-import java.util.Date;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
     implements AddBookDownloadedInteractor {
@@ -29,7 +28,7 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
   @Inject public AddBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-                                                 @AddBookDownloaded final Action<BookDownloaded, Boolean> addBookDownloadedAction, final Dates dates) {
+      @AddBookDownloaded final Action<BookDownloaded, Boolean> addBookDownloadedAction, final Dates dates) {
     super(executor, mainThread);
     this.addBookDownloadedAction = addBookDownloadedAction;
     this.dates = dates;

@@ -21,9 +21,9 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts;
 
 import android.media.MediaPlayer;
 
-import java.io.File;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /*
 Playback queue which is thread-safe, so it can be a singleton.

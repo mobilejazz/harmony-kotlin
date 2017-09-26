@@ -14,9 +14,8 @@ import android.widget.DatePicker;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldreader.core.R;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+
+import java.util.*;
 
 public class DialogFactory {
 

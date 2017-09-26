@@ -27,12 +27,10 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 // TODO: 09/02/2017 @Jose we should refactor this method with the new ListenableFuture approach
 public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, ErrorCore> implements GetBooksCurrentlyReading {
@@ -157,7 +155,7 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
             try {
               bookOptional = bookFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+              e.printStackTrace();
             }
             if (bookOptional != null && bookOptional.isPresent()) {
               booksLf.add(bookFuture);

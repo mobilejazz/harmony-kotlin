@@ -5,8 +5,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.model.Book;
-import java.util.List;
-import java.util.concurrent.Executor;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 public interface GetRecommendedBooksInteractor {
 

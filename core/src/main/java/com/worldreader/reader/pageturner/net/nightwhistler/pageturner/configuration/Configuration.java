@@ -29,20 +29,19 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import jedi.functional.Filter;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import org.json.JSONException;
 
-import static java.util.Arrays.asList;
+import java.io.*;
+import java.util.*;
 
-import static jedi.functional.FunctionalPrimitives.*;
+import static java.util.Arrays.*;
+import static jedi.functional.FunctionalPrimitives.firstOption;
+import static jedi.functional.FunctionalPrimitives.isEmpty;
+import static jedi.functional.FunctionalPrimitives.select;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 

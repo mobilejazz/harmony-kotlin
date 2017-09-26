@@ -8,8 +8,9 @@ import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.spec.score.UserScoreNetworkSpecification;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class UserScoreNetworkDataSource implements Repository.Network<UserScoreEntity, UserScoreNetworkSpecification> {
 
@@ -29,7 +30,8 @@ public class UserScoreNetworkDataSource implements Repository.Network<UserScoreE
     throw new UnsupportedOperationException("getAll() not supported");
   }
 
-  @Override public void put(final UserScoreEntity userScoreEntity, final UserScoreNetworkSpecification specification, final Callback<Optional<UserScoreEntity>> callback) {
+  @Override public void put(final UserScoreEntity userScoreEntity, final UserScoreNetworkSpecification specification,
+      final Callback<Optional<UserScoreEntity>> callback) {
     //final UserPointsNetworkBody body = new UserPointsNetworkBody(userScoreEntity.getScore());
     //try {
     //  final Response<UserPointsNetworkResponse> response = apiService.updatePoints(body).execute();

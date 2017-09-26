@@ -26,7 +26,6 @@ import jedi.functional.Functor;
 import jedi.option.Option;
 
 import static java.lang.Integer.toHexString;
-
 import static jedi.option.Options.none;
 
 /**

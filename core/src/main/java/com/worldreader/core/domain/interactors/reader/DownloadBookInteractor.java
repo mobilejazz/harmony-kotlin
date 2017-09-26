@@ -5,7 +5,7 @@ import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
 
 public interface DownloadBookInteractor {
 

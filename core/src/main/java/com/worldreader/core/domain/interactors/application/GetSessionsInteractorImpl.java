@@ -10,8 +10,7 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.thread.MainThread;
 
 import javax.inject.Inject;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class GetSessionsInteractorImpl extends AbstractInteractor<List<Date>, ErrorCore<?>> implements GetSessionsInteractor {
 

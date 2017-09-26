@@ -9,7 +9,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.worldreader.core.R;
 import com.worldreader.core.application.helper.image.ImageLoader;
 import com.worldreader.core.application.helper.reachability.Reachability;
@@ -59,7 +58,7 @@ public class BookView extends FrameLayout {
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
-                      final Reachability reachability, @DrawableRes final int placeholder) {
+      final Reachability reachability, @DrawableRes final int placeholder) {
     this.book = book;
 
     if (book != null) {
@@ -109,7 +108,7 @@ public class BookView extends FrameLayout {
   }
 
   public void setBook(final Book book, final ImageLoader imageLoader,
-                      final Reachability reachability) {
+      final Reachability reachability) {
     setBook(book, imageLoader, reachability, R.drawable.as_book_placeholder);
   }
 

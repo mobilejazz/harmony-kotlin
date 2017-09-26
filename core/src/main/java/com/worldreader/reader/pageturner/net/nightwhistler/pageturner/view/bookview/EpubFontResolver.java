@@ -3,17 +3,13 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
-import net.nightwhistler.htmlspanner.FontFamily;
-import net.nightwhistler.htmlspanner.SystemFontResolver;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
+import net.nightwhistler.htmlspanner.FontFamily;
+import net.nightwhistler.htmlspanner.SystemFontResolver;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.

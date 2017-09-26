@@ -20,11 +20,10 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper;
 
 import jedi.functional.Filter;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.select;
 
 public class TextUtil {

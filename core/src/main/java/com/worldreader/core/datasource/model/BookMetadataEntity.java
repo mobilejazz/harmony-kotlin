@@ -1,7 +1,6 @@
 package com.worldreader.core.datasource.model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Fake class as the response of this is not in JSON format but in XML */
 public class BookMetadataEntity {

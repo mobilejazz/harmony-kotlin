@@ -3,7 +3,6 @@ package com.worldreader.core.application.helper.reachability;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;

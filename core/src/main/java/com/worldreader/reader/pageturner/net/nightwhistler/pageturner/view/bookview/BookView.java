@@ -82,7 +82,9 @@ import java.util.*;
 import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
-import static jedi.option.Options.*;
+import static jedi.option.Options.none;
+import static jedi.option.Options.option;
+import static jedi.option.Options.some;
 
 public class BookView extends ScrollView implements TextSelectionActions.SelectedTextProvider {
 

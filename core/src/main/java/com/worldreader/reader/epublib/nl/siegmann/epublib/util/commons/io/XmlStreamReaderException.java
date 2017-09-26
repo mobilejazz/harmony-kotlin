@@ -17,7 +17,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io;
  * limitations under the License.
  */
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * The XmlStreamReaderException is thrown by the XmlStreamReader constructors if

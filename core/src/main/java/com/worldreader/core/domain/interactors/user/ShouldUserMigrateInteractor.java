@@ -4,9 +4,10 @@ import android.content.Context;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.worldreader.core.application.di.annotation.PerActivity;
-import java.io.File;
-import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
+import java.io.*;
+import java.util.concurrent.*;
 
 @PerActivity public class ShouldUserMigrateInteractor {
 

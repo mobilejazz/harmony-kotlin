@@ -41,6 +41,7 @@ import jedi.option.Option;
   private Context context;
 
   public interface SelectedTextProvider {
+
     Option<String> getSelectedText();
 
     int getSelectionStart();

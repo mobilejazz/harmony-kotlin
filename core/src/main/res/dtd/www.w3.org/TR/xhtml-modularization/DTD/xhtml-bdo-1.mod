@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML BDO Element Module ............................................. -->
-<!-- file: xhtml-bdo-1.mod
+<!-- ...................................................................... --><!-- XHTML BDO Element Module ............................................. --><!-- file: xhtml-bdo-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,33 +13,19 @@
      (none)
      ....................................................................... -->
 
-<!-- Bidirectional Override (bdo) Element
+  <!-- Bidirectional Override (bdo) Element
 
-     This modules declares the element 'bdo', used to override the
-     Unicode bidirectional algorithm for selected fragments of text.
+       This modules declares the element 'bdo', used to override the
+       Unicode bidirectional algorithm for selected fragments of text.
 
-     DEPENDENCIES:
-     Relies on the conditional section keyword %XHTML.bidi; declared
-     as "INCLUDE". Bidirectional text support includes both the bdo
-     element and the 'dir' attribute.
--->
+       DEPENDENCIES:
+       Relies on the conditional section keyword %XHTML.bidi; declared
+       as "INCLUDE". Bidirectional text support includes both the bdo
+       element and the 'dir' attribute.
+  -->
 
-<!ENTITY % bdo.element  "INCLUDE" >
-<![%bdo.element;[
-<!ENTITY % bdo.content
-     "( #PCDATA | %Inline.mix; )*"
->
-<!ENTITY % bdo.qname  "bdo" >
-<!ELEMENT %bdo.qname;  %bdo.content; >
-<!-- end of bdo.element -->]]>
+  <!ENTITY % bdo.element  "INCLUDE" ><![%bdo.element;[<!ENTITY % bdo.content"( #PCDATA | %Inline.mix; )*"><!ENTITY % bdo.qname  "bdo" ><!ELEMENT %bdo.qname;  %bdo.content; ><!-- end of bdo.element -->]]>
 
-<!ENTITY % bdo.attlist  "INCLUDE" >
-<![%bdo.attlist;[
-<!ATTLIST %bdo.qname;
-      %Core.attrib;
-	  %lang.attrib;
-      dir          ( ltr | rtl )            #REQUIRED
->
-]]>
+  <!ENTITY % bdo.attlist  "INCLUDE" ><![%bdo.attlist;[<!ATTLIST %bdo.qname;%Core.attrib;  %lang.attrib;dir          ( ltr | rtl )            #REQUIRED>]]>
 
-<!-- end of xhtml-bdo-1.mod -->
+  <!-- end of xhtml-bdo-1.mod -->

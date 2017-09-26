@@ -2,10 +2,8 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * The spine sections are the sections of the book in the order in which the book should be read.

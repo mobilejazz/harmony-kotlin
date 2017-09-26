@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/show_book_content"
-        android:icon="@drawable/ic_reader_index"
-        android:title="@string/ls_contents"
-        app:showAsAction="ifRoom" />
+  <item
+    android:id="@+id/show_book_content"
+    android:icon="@drawable/ic_reader_index"
+    android:title="@string/ls_contents"
+    app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/display_options"
-        android:icon="@drawable/ic_reader_style"
-        android:title="@string/ls_display_options"
-        app:showAsAction="ifRoom" />
+  <item
+    android:id="@+id/display_options"
+    android:icon="@drawable/ic_reader_style"
+    android:title="@string/ls_display_options"
+    app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/text_to_speech"
-        android:enabled="false"
-        android:title="@string/ls_text_to_speech"
-        app:showAsAction="never" />
+  <item
+    android:id="@+id/text_to_speech"
+    android:enabled="false"
+    android:title="@string/ls_text_to_speech"
+    app:showAsAction="never" />
 </menu>

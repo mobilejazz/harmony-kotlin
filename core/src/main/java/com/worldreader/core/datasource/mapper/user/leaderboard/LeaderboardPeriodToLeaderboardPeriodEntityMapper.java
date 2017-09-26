@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.LeaderboardPeriodEntity;
 import com.worldreader.core.domain.repository.UserRepository;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

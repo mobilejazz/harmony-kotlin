@@ -18,8 +18,8 @@
  */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.library;
 
-import java.io.Serializable;
-import java.util.Locale;
+import java.io.*;
+import java.util.*;
 
 public class Author implements Serializable {
 

@@ -134,7 +134,9 @@ public class EpubReader2 {
     return new TableOfContents(references);
   }
 
-  @NonNull private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book) throws Exception {
+  @NonNull
+  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book)
+      throws Exception {
     final List<TOCReference> references = new ArrayList<>();
 
     for (NCXEntity.NavPoint navPoint : navPoints) {
@@ -147,7 +149,8 @@ public class EpubReader2 {
     return references;
   }
 
-  @Nullable private static TOCReference toTOCReference(final ContentOpfEntity contentOpfEntity, final NCXEntity.NavPoint navPoint, final Book book) throws Exception {
+  @Nullable private static TOCReference toTOCReference(final ContentOpfEntity contentOpfEntity, final NCXEntity.NavPoint navPoint, final Book book)
+      throws Exception {
     // Retrieve values from XML
     final String label = navPoint.navLabel.text;
     final String rawSrc = navPoint.content.src;

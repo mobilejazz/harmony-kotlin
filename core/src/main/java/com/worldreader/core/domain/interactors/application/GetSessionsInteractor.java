@@ -4,8 +4,7 @@ import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public interface GetSessionsInteractor {
 

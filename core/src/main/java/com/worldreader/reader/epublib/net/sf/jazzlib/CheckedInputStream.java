@@ -37,9 +37,7 @@ exception statement from your version. */
 
 package com.worldreader.reader.epublib.net.sf.jazzlib;
 
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /* Written using on-line Java Platform 1.2 API Specification
  * and JCL book.
@@ -56,80 +54,81 @@ import java.io.InputStream;
  * @date May 17, 1999
  */
 public class CheckedInputStream extends FilterInputStream {
-	/**
-	 * Creates a new CheckInputStream on top of the supplied OutputStream using
-	 * the supplied Checksum.
-	 */
-	public CheckedInputStream(final InputStream in, final Checksum sum) {
-		super(in);
-		this.sum = sum;
-	}
 
-	/**
-	 * Returns the Checksum object used. To get the data checksum computed so
-	 * far call <code>getChecksum.getValue()</code>.
-	 */
-	public Checksum getChecksum() {
-		return sum;
-	}
+  /**
+   * Creates a new CheckInputStream on top of the supplied OutputStream using
+   * the supplied Checksum.
+   */
+  public CheckedInputStream(final InputStream in, final Checksum sum) {
+    super(in);
+    this.sum = sum;
+  }
 
-	/**
-	 * Reads one byte, updates the checksum and returns the read byte (or -1
-	 * when the end of file was reached).
-	 */
-	@Override
-	public int read() throws IOException {
-		final int x = in.read();
-		if (x != -1) {
-			sum.update(x);
-		}
-		return x;
-	}
+  /**
+   * Returns the Checksum object used. To get the data checksum computed so
+   * far call <code>getChecksum.getValue()</code>.
+   */
+  public Checksum getChecksum() {
+    return sum;
+  }
 
-	/**
-	 * Reads at most len bytes in the supplied buffer and updates the checksum
-	 * with it. Returns the number of bytes actually read or -1 when the end of
-	 * file was reached.
-	 */
-	@Override
-	public int read(final byte[] buf, final int off, final int len)
-			throws IOException {
-		final int r = in.read(buf, off, len);
-		if (r != -1) {
-			sum.update(buf, off, r);
-		}
-		return r;
-	}
+  /**
+   * Reads one byte, updates the checksum and returns the read byte (or -1
+   * when the end of file was reached).
+   */
+  @Override
+  public int read() throws IOException {
+    final int x = in.read();
+    if (x != -1) {
+      sum.update(x);
+    }
+    return x;
+  }
 
-	/**
-	 * Skips n bytes by reading them in a temporary buffer and updating the the
-	 * checksum with that buffer. Returns the actual number of bytes skiped
-	 * which can be less then requested when the end of file is reached.
-	 */
-	@Override
-	public long skip(long n) throws IOException {
-		if (n == 0) {
-			return 0;
-		}
+  /**
+   * Reads at most len bytes in the supplied buffer and updates the checksum
+   * with it. Returns the number of bytes actually read or -1 when the end of
+   * file was reached.
+   */
+  @Override
+  public int read(final byte[] buf, final int off, final int len)
+      throws IOException {
+    final int r = in.read(buf, off, len);
+    if (r != -1) {
+      sum.update(buf, off, r);
+    }
+    return r;
+  }
 
-		int min = (int) Math.min(n, 1024);
-		final byte[] buf = new byte[min];
+  /**
+   * Skips n bytes by reading them in a temporary buffer and updating the the
+   * checksum with that buffer. Returns the actual number of bytes skiped
+   * which can be less then requested when the end of file is reached.
+   */
+  @Override
+  public long skip(long n) throws IOException {
+    if (n == 0) {
+      return 0;
+    }
 
-		long s = 0;
-		while (n > 0) {
-			final int r = in.read(buf, 0, min);
-			if (r == -1) {
-				break;
-			}
-			n -= r;
-			s += r;
-			min = (int) Math.min(n, 1024);
-			sum.update(buf, 0, r);
-		}
+    int min = (int) Math.min(n, 1024);
+    final byte[] buf = new byte[min];
 
-		return s;
-	}
+    long s = 0;
+    while (n > 0) {
+      final int r = in.read(buf, 0, min);
+      if (r == -1) {
+        break;
+      }
+      n -= r;
+      s += r;
+      min = (int) Math.min(n, 1024);
+      sum.update(buf, 0, r);
+    }
 
-	/** The checksum object. */
-	private final Checksum sum;
+    return s;
+  }
+
+  /** The checksum object. */
+  private final Checksum sum;
 }

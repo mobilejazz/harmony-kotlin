@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="22dp"
-    android:height="22dp"
-    android:viewportWidth="22"
-    android:viewportHeight="22">
+  android:width="22dp"
+  android:height="22dp"
+  android:viewportWidth="22"
+  android:viewportHeight="22">
 
-    <group android:translateX="-19.000000"
-        android:translateY="-465.500000">
-        <group android:translateX="6.500000"
-            android:translateY="65.500000">
-            <group android:translateX="0.500000"
-                android:translateY="388.000000">
-                <group android:translateX="12.000000"
-                    android:translateY="12.000000">
-                    <path android:name="Stroke-2567"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M20.0833333,18.9166667 C20.0833333,19.5608508 19.5610312,20.0833333
+  <group
+    android:translateX="-19.000000"
+    android:translateY="-465.500000">
+    <group
+      android:translateX="6.500000"
+      android:translateY="65.500000">
+      <group
+        android:translateX="0.500000"
+        android:translateY="388.000000">
+        <group
+          android:translateX="12.000000"
+          android:translateY="12.000000">
+          <path
+            android:name="Stroke-2567"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M20.0833333,18.9166667 C20.0833333,19.5608508 19.5610312,20.0833333
 18.9166667,20.0833333 L3.08333333,20.0833333 C2.43896879,20.0833333
 1.91666667,19.5608508 1.91666667,18.9166667 L1.91666667,15.5833333
 C1.91666667,14.9391492 2.43896879,14.4166667 3.08333333,14.4166667
@@ -27,37 +32,42 @@ C1.88660671,13.4166667 0.916666667,14.3869418 0.916666667,15.5833333
 L0.916666667,18.9166667 C0.916666667,20.1130582 1.88660671,21.0833333
 3.08333333,21.0833333 L18.9166667,21.0833333 C20.1133933,21.0833333
 21.0833333,20.1130582 21.0833333,18.9166667 L21.0833333,18.9166667 Z" />
-                    <path android:name="Stroke-2568"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M3.91666667,18.5833333 L18.0833333,18.5833333 C18.3594757,18.5833333
+          <path
+            android:name="Stroke-2568"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M3.91666667,18.5833333 L18.0833333,18.5833333 C18.3594757,18.5833333
 18.5833333,18.3594757 18.5833333,18.0833333 C18.5833333,17.807191
 18.3594757,17.5833333 18.0833333,17.5833333 L3.91666667,17.5833333
 C3.64052429,17.5833333 3.41666667,17.807191 3.41666667,18.0833333
 C3.41666667,18.3594757 3.64052429,18.5833333 3.91666667,18.5833333
 L3.91666667,18.5833333 Z" />
-                    <path android:name="Fill-2569"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M16.4166667,16 C16.185,16 16,16.1866667 16,16.4166667 C16,16.6475
+          <path
+            android:name="Fill-2569"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M16.4166667,16 C16.185,16 16,16.1866667 16,16.4166667 C16,16.6475
 16.185,16.8333333 16.4166667,16.8333333 C16.6458333,16.8333333
 16.8333333,16.6475 16.8333333,16.4166667 C16.8333333,16.1866667 16.6458333,16
 16.4166667,16" />
-                    <path android:name="Fill-2570"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M18.0833333,16 C17.8516667,16 17.6666667,16.1866667 17.6666667,16.4166667
+          <path
+            android:name="Fill-2570"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M18.0833333,16 C17.8516667,16 17.6666667,16.1866667 17.6666667,16.4166667
 C17.6666667,16.6475 17.8516667,16.8333333 18.0833333,16.8333333
 C18.3125,16.8333333 18.5,16.6475 18.5,16.4166667 C18.5,16.1866667 18.3125,16
 18.0833333,16" />
-                    <path android:name="Stroke-2571"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M11.0833333,11.4166667 L11.0833333,1.41666667 C11.0833333,1.14052429
+          <path
+            android:name="Stroke-2571"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M11.0833333,11.4166667 L11.0833333,1.41666667 C11.0833333,1.14052429
 10.8594757,0.916666667 10.5833333,0.916666667 C10.307191,0.916666667
 10.0833333,1.14052429 10.0833333,1.41666667 L10.0833333,11.4166667
 C10.0833333,11.692809 10.307191,11.9166667 10.5833333,11.9166667
 C10.8594757,11.9166667 11.0833333,11.692809 11.0833333,11.4166667
 L11.0833333,11.4166667 Z" />
-                    <path android:name="Stroke-2572"
-                        android:fillColor="@color/ic_download_color"
-                        android:pathData="M14.8131133,6.47977994 L10.2297799,11.0631133 L10.9368867,11.0631133
+          <path
+            android:name="Stroke-2572"
+            android:fillColor="@color/ic_download_color"
+            android:pathData="M14.8131133,6.47977994 L10.2297799,11.0631133 L10.9368867,11.0631133
 L6.35355339,6.47977994 C6.15829124,6.2845178 5.84170876,6.2845178
 5.64644661,6.47977994 C5.45118446,6.67504209 5.45118446,6.99162458
 5.64644661,7.18688672 L10.2297799,11.7702201 C10.4250421,11.9654822
@@ -65,8 +75,8 @@ L6.35355339,6.47977994 C6.15829124,6.2845178 5.84170876,6.2845178
 C15.7154822,6.99162458 15.7154822,6.67504209 15.5202201,6.47977994
 C15.3249579,6.2845178 15.0083754,6.2845178 14.8131133,6.47977994
 L14.8131133,6.47977994 Z" />
-                </group>
-            </group>
         </group>
+      </group>
     </group>
+  </group>
 </vector>

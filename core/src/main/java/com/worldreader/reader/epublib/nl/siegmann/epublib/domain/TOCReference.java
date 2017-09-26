@@ -1,9 +1,7 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * An item in the Table of Contents.

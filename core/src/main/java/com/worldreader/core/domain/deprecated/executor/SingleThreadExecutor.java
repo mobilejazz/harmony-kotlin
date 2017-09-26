@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 
 @Deprecated
 public class SingleThreadExecutor implements InteractorExecutor {
+
   public static final String TAG = ThreadExecutor.class.getSimpleName();
 
   private static final int CORE_POOL_SIZE = 1;

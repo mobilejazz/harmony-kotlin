@@ -16,10 +16,8 @@
  */
 package com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * This class is used to wrap a stream that includes an encoded

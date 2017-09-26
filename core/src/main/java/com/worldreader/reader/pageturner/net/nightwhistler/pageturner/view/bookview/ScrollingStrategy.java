@@ -154,10 +154,10 @@ public class ScrollingStrategy implements PageChangeStrategy {
     builder.setSpan(span, length, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     builder.setSpan((AlignmentSpan) new AlignmentSpan() {
-          @Override public Alignment getAlignment() {
-            return Alignment.ALIGN_CENTER;
-          }
-        }, length, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      @Override public Alignment getAlignment() {
+        return Alignment.ALIGN_CENTER;
+      }
+    }, length, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     return builder;
   }

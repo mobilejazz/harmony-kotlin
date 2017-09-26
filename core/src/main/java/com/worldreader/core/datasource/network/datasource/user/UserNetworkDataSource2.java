@@ -10,7 +10,8 @@ import com.worldreader.core.datasource.network.model.RegisterProviderDataNetwork
 import com.worldreader.core.datasource.network.model.RegisterProviderNetwork;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import java.util.Date;
+
+import java.util.*;
 
 public interface UserNetworkDataSource2 extends Repository.Network<UserEntity2, RepositorySpecification> {
 

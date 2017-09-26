@@ -4,9 +4,9 @@ public abstract class SafeRunnable implements Runnable {
 
   @Override public void run() {
     try {
-      safeRun ();
+      safeRun();
     } catch (Throwable t) {
-      onExceptionThrown (t);
+      onExceptionThrown(t);
     }
   }
 

@@ -17,9 +17,8 @@ import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import retrofit2.Response;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class UserMilestonesNetworkDataSourceImpl implements UserMilestonesNetworkDataSource {
 
@@ -29,7 +28,8 @@ public class UserMilestonesNetworkDataSourceImpl implements UserMilestonesNetwor
 
   private final ErrorAdapter<Throwable> errorAdapter;
 
-  @Inject public UserMilestonesNetworkDataSourceImpl(ErrorAdapter<Throwable> errorAdapter, final UserApiService2 apiService, final UserNetworkResponseToUserEntityMapper toUserEntityMapper, final Logger logger) {
+  @Inject public UserMilestonesNetworkDataSourceImpl(ErrorAdapter<Throwable> errorAdapter, final UserApiService2 apiService,
+      final UserNetworkResponseToUserEntityMapper toUserEntityMapper, final Logger logger) {
     this.apiService = apiService;
     this.toUserEntityMapper = toUserEntityMapper;
     this.errorAdapter = errorAdapter;

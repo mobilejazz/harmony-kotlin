@@ -15,10 +15,9 @@ import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.error.book.FailedDownloadBookException;
 
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, ErrorCore<?>> implements DownloadBookInteractor {
 

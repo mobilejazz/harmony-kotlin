@@ -9,6 +9,7 @@ import java.io.*;
 public interface ResourcesLoader {
 
   interface ImageResourceCallback {
+
     void onLoadImageResource(String href, InputStream stream, StreamingBookRepository datasource, BookMetadata bookMetadata);
   }
 

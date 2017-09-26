@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--
-    GRID:
+  <!--
+  GRID:
 
-    This are generic and basic common Android dimensions.
-    The idea is to create a grid elements much like how Bootstrap does
-    with CSS. Url: http://getbootstrap.com/css/#grid
+  This are generic and basic common Android dimensions.
+  The idea is to create a grid elements much like how Bootstrap does
+  with CSS. Url: http://getbootstrap.com/css/#grid
 
-    Each common dimension is called span_2 for 2dp, span_48 for 48dp and so on.
-    -->
+  Each common dimension is called span_2 for 2dp, span_48 for 48dp and so on.
+  -->
 
-    <dimen name="span_0">0dp</dimen>
-    <dimen name="span_1">1dp</dimen>
-    <dimen name="span_2">2dp</dimen>
-    <dimen name="span_4">4dp</dimen>
-    <dimen name="span_5">5dp</dimen>
-    <dimen name="span_8">8dp</dimen>
-    <dimen name="span_10">10dp</dimen>
-    <dimen name="span_16">16dp</dimen>
-    <dimen name="span_18">18dp</dimen>
-    <dimen name="span_20">20dp</dimen>
-    <dimen name="span_24">24dp</dimen>
-    <dimen name="span_26">26dp</dimen>
-    <dimen name="span_32">32dp</dimen>
-    <dimen name="span_40">40dp</dimen>
-    <dimen name="span_48">48dp</dimen>
-    <dimen name="span_52">52dp</dimen>
-    <dimen name="span_64">64dp</dimen>
-    <dimen name="span_96">96dp</dimen>
-    <dimen name="span_144">144dp</dimen>
-    <dimen name="span_256">256dp</dimen>
+  <dimen name="span_0">0dp</dimen>
+  <dimen name="span_1">1dp</dimen>
+  <dimen name="span_2">2dp</dimen>
+  <dimen name="span_4">4dp</dimen>
+  <dimen name="span_5">5dp</dimen>
+  <dimen name="span_8">8dp</dimen>
+  <dimen name="span_10">10dp</dimen>
+  <dimen name="span_16">16dp</dimen>
+  <dimen name="span_18">18dp</dimen>
+  <dimen name="span_20">20dp</dimen>
+  <dimen name="span_24">24dp</dimen>
+  <dimen name="span_26">26dp</dimen>
+  <dimen name="span_32">32dp</dimen>
+  <dimen name="span_40">40dp</dimen>
+  <dimen name="span_48">48dp</dimen>
+  <dimen name="span_52">52dp</dimen>
+  <dimen name="span_64">64dp</dimen>
+  <dimen name="span_96">96dp</dimen>
+  <dimen name="span_144">144dp</dimen>
+  <dimen name="span_256">256dp</dimen>
 
-    <!--
-    Elevation:
+  <!--
+  Elevation:
 
-    The same applies to elevation measures.
+  The same applies to elevation measures.
 
-    Each common elevation is called e_2 for 2dp, e_48 for 48dp and so on.
-    -->
+  Each common elevation is called e_2 for 2dp, e_48 for 48dp and so on.
+  -->
 
 </resources>

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="19.25dp"
-    android:height="17.875dp"
-    android:viewportWidth="19.25"
-    android:viewportHeight="17.875">
+  android:width="19.25dp"
+  android:height="17.875dp"
+  android:viewportWidth="19.25"
+  android:viewportHeight="17.875">
 
-    <group android:translateX="-277.750000"
-        android:translateY="-17.125000">
-        <path android:name="ic_edit"
-            android:fillColor="@color/white"
-            android:pathData="M277.75,30.1875 L277.75,33.625 L281.1875,33.625 L291.328125,23.484375
+  <group
+    android:translateX="-277.750000"
+    android:translateY="-17.125000">
+    <path
+      android:name="ic_edit"
+      android:fillColor="@color/white"
+      android:pathData="M277.75,30.1875 L277.75,33.625 L281.1875,33.625 L291.328125,23.484375
 L287.890625,20.046875 L277.75,30.1875 Z M293.970703,20.8417969
 C294.070964,20.741536 294.142578,20.6376958 294.185547,20.5302734
 C294.228516,20.422851 294.25,20.3046881 294.25,20.1757812 C294.25,20.0611973
@@ -20,5 +22,5 @@ C291.428385,17.1464842 291.313803,17.125 291.199219,17.125 C291.070312,17.125
 290.952149,17.1464842 290.844727,17.1894531 C290.737304,17.2324221
 290.633464,17.304036 290.533203,17.4042969 L288.857422,19.0800781
 L292.294922,22.5175781 L293.970703,20.8417969 Z" />
-    </group>
+  </group>
 </vector>

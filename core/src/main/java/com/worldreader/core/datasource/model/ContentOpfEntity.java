@@ -90,6 +90,7 @@ import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDoc
   }
 
   public static class Spine implements Serializable {
+
     @Attribute(name = "toc", required = false) public String toc;
     @ElementList(inline = true) public List<itemref> itemrefs;
   }

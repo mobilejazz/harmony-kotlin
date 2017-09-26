@@ -13,10 +13,12 @@ import static jedi.option.Options.option;
 public class UiUtils {
 
   public interface Operation<A> {
+
     void thenDo(A arg);
   }
 
   public interface Action {
+
     void perform();
   }
 

@@ -64,7 +64,8 @@ public class ResourceUtil {
     return documentBuilder.parse(inputSource);
   }
 
-  public static void generateStreamingResourcesFromPackageResource(Resources resources, Resource packageResource) throws SAXException, IOException, ParserConfigurationException {
+  public static void generateStreamingResourcesFromPackageResource(Resources resources, Resource packageResource)
+      throws SAXException, IOException, ParserConfigurationException {
     final Document packageDocument = getAsDocument(packageResource, EpubProcessorSupport.createDocumentBuilder());
     PackageDocumentReader.processStreamingManifest(resources, packageDocument);
   }

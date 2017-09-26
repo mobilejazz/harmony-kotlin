@@ -1,61 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.CardView android:id="@+id/global_book_layout_container"
-        style="@style/CardViewStyle"
+  <android.support.v7.widget.CardView
+    android:id="@+id/global_book_layout_container"
+    style="@style/CardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/span_2"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="@dimen/global_book_layout_height"
+    app:cardCornerRadius="0dp">
+
+    <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent">
+
+      <com.worldreader.core.application.ui.widget.PercentageCropImageView
+        android:id="@+id/global_book_layout_img_book"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/span_2"
-        android:clickable="true"
-        android:focusable="true"
-        android:minHeight="@dimen/global_book_layout_height"
-        app:cardCornerRadius="0dp">
+        android:layout_height="@dimen/global_book_layout_img_height"
+        android:contentDescription="@null"
+        android:scaleType="matrix"
+        android:src="@drawable/as_book_placeholder" />
 
-        <RelativeLayout android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+      <TextView
+        android:id="@+id/global_book_layout_txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/global_book_layout_img_book"
+        android:layout_alignRight="@id/global_book_layout_img_book"
+        android:layout_below="@id/global_book_layout_img_book"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:padding="10dp"
+        android:text="@null" />
 
-            <com.worldreader.core.application.ui.widget.PercentageCropImageView android:id="@+id/global_book_layout_img_book"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/global_book_layout_img_height"
-                android:contentDescription="@null"
-                android:scaleType="matrix"
-                android:src="@drawable/as_book_placeholder" />
+    </RelativeLayout>
 
-            <TextView android:id="@+id/global_book_layout_txt_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/global_book_layout_img_book"
-                android:layout_alignRight="@id/global_book_layout_img_book"
-                android:layout_below="@id/global_book_layout_img_book"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:padding="10dp"
-                android:text="@null" />
-
-        </RelativeLayout>
-
-        <ImageView android:id="@+id/global_book_layout_img_offline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="top|right"
-            android:src="@drawable/as_downloaded_book_cover" />
+    <ImageView
+      android:id="@+id/global_book_layout_img_offline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_gravity="top|right"
+      android:src="@drawable/as_downloaded_book_cover" />
 
 
-        <FrameLayout android:id="@+id/global_book_layout_container_edit_mode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@color/black_book_edit_mode">
+    <FrameLayout
+      android:id="@+id/global_book_layout_container_edit_mode"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="center"
+      android:background="@color/black_book_edit_mode">
 
-            <ImageView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_delete" />
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_delete" />
 
-        </FrameLayout>
+    </FrameLayout>
 
-    </android.support.v7.widget.CardView>
+  </android.support.v7.widget.CardView>
 
 </merge>

@@ -3,8 +3,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.service;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.MediaType;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Manages mediatypes that are used by epubs

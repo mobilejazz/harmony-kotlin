@@ -5,7 +5,29 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
 import java.util.*;
 
-import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.*;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_AGE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_BIRTHDATE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_CHILDREN_COUNT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_CREATED_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_EMAIL;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_EMAIL_CONFIRMED;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_FAVORITE_CATEGORIES;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_FONT_SIZE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_GENDER;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_LOCALE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_LOCAL_LIBRARY;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_MAX_CHILD_AGE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_MILESTONES;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_MIN_CHILD_AGE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_NAME;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_PAGES_PER_DAY;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_PICTURE;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_PROFILE_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_READS_TO_KIDS_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_UPDATED_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.COLUMN_USERNAME;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable.TABLE;
 
 @StorIOSQLiteType(table = TABLE) public class User2Db {
 

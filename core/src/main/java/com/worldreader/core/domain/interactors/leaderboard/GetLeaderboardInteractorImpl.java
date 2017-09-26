@@ -8,6 +8,7 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.LeaderboardStats;
 import com.worldreader.core.domain.repository.LeaderboardRepository;
 import com.worldreader.core.domain.thread.MainThread;
+
 import javax.inject.Inject;
 
 public class GetLeaderboardInteractorImpl extends AbstractInteractor<LeaderboardStats, ErrorCore> implements GetLeaderboardInteractor {

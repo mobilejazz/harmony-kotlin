@@ -25,15 +25,15 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import jedi.functional.Command;
-import jedi.functional.Command0;
-import jedi.option.Option;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.SelectedWord;
+import jedi.functional.Command;
+import jedi.functional.Command0;
+import jedi.option.Option;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Translates low-level touch and gesture events into more high-level
