@@ -19,4 +19,6 @@ public interface GetHighestRatedBooksInteractor extends Interactor {
 
   ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit, Executor executor);
 
+  ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit, String language,
+      Executor executor);
 }

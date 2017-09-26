@@ -8,4 +8,6 @@ import java.util.*;
 public interface CategoryRepository {
 
   void categories(CompletionCallback<List<Category>> callback);
+
+  void categories(String language, CompletionCallback<List<Category>> callback);
 }
