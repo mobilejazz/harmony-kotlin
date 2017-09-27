@@ -112,8 +112,8 @@ public class FastBitmapDrawable extends Drawable {
             final InputStream in = StreamingResource.create(null).getInputStream();
             handler.post(new Runnable() {
               @Override public void run() {
-                generateDrawable(in);
                 isProcessing = false;
+                isLoaded = true;
               }
             });
           }
