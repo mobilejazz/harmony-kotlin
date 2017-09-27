@@ -350,18 +350,6 @@ public class Resource implements Serializable {
   }
 
   /**
-   * Gets the contents of the Resource as Reader.
-   *
-   * Does all sorts of smart things (courtesy of apache commons io XMLStreamREader) to handle
-   * encodings, byte order markers, etc.
-   *
-   * @throws IOException
-   */
-  public Reader getReader() throws IOException {
-    return new XmlStreamReader(new ByteArrayInputStream(getData()), getInputEncoding());
-  }
-
-  /**
    * Gets the hashCode of the Resource's href.
    */
   public int hashCode() {

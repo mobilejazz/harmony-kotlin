@@ -7,9 +7,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.NamespaceList;
-import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
 
 import java.io.*;
 import java.util.*;
@@ -38,38 +36,29 @@ import java.util.*;
   }) public static class Metadata implements Serializable {
 
     @Element(name = "dc:title", required = false) public String title;
-    @Element(name = "title", required = false) public String title2;
-
     @Element(name = "dc:creator", required = false) public String creator;
-    @Element(name = "creator", required = false) public String creator2;
-
     @Element(name = "dc:publisher", required = false) public String publisher;
-    @Element(name = "publisher", required = false) public String publisher2;
-
     @Element(name = "dc:language", required = false) public String language;
-    @Element(name = "language", required = false) public String language2;
-
-    @Path("dc:description") @Text(required = false) public String description; //@Element(name = "dc:description", required = false)
-    @Path("description") @Text(required = false) public String description2;
+    @Element(name = "dc:description", required = false) public String description; //@Element(name = "dc:description", required = false)
 
     public String getTitle() {
-      return !TextUtils.isEmpty(title) ? title : title2;
+      return !TextUtils.isEmpty(title) ? title : "";
     }
 
     public String getCreator() {
-      return !TextUtils.isEmpty(creator) ? creator : creator2;
+      return !TextUtils.isEmpty(creator) ? creator : "";
     }
 
     public String getPublisher() {
-      return !TextUtils.isEmpty(publisher) ? publisher : publisher2;
+      return !TextUtils.isEmpty(publisher) ? publisher : "";
     }
 
     public String getLanguage() {
-      return !TextUtils.isEmpty(language) ? language : language2;
+      return !TextUtils.isEmpty(language) ? language : "";
     }
 
     public String getDescription() {
-      return !TextUtils.isEmpty(description) ? description : description2;
+      return !TextUtils.isEmpty(description) ? description : "";
     }
 
   }

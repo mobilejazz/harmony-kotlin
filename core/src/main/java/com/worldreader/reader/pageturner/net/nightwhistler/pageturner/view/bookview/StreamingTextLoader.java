@@ -120,7 +120,10 @@ public class StreamingTextLoader implements TextLoader {
       if (res instanceof StreamingResource && !res.isInitialized()) {
         res.setData(resourcesLoader.loadResource(res));
       }
-      IOUtil.copy(res.getReader(), writer);
+
+      final InputStreamReader inputStreamReader = new InputStreamReader(res.getInputStream());
+
+      IOUtil.copy(inputStreamReader, writer);
 
       List<Rule> rules = CSSParser.parse(writer.toString());
       Log.d(TAG, "Parsed " + rules.size() + " raw rules.");
@@ -301,7 +304,7 @@ public class StreamingTextLoader implements TextLoader {
     Spannable result;
 
     try {
-      result = htmlSpanner.fromHtml(resource.getReader(), cancellationCallback);
+      result = htmlSpanner.fromHtml(new InputStreamReader(resource.getInputStream()), cancellationCallback);
       renderedText.put(resource.getHref(), result);
     } catch (Exception e) {
       Log.e(TAG, "Caught exception while rendering text", e);
