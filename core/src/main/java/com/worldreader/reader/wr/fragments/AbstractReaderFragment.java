@@ -28,6 +28,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -79,6 +80,7 @@ import com.worldreader.core.userflow.UserFlowTutorial;
 import com.worldreader.core.userflow.model.TutorialModel;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animations;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
@@ -1167,12 +1169,14 @@ public abstract class AbstractReaderFragment extends Fragment
 
     this.bookTitle = book.getTitle();
 
-    if (book.getMetadata() != null) {
-      // Author
-      final Author authorsOption = firstOption(book.getMetadata().getAuthors()).getOrElse(new Author(getString(R.string.ls_book_reading_unknown_author)));
-      this.author = authorsOption.getLastname();
+    final Metadata metadata = book.getMetadata();
 
-      this.language = this.bookView.getBook().getMetadata().getLanguage();
+    if (metadata != null) {
+      // Author
+      final Author authorsOption = firstOption(metadata.getAuthors()).getOrElse(new Author(getString(R.string.ls_book_reading_unknown_author)));
+      this.author = TextUtils.isEmpty(authorsOption.getLastname()) ? getString(R.string.ls_book_reading_unknown_author) : authorsOption.getLastname();
+
+      this.language = TextUtils.isEmpty(metadata.getLanguage()) ? DEFAULT_BOOK_LANGUAGE : metadata.getLanguage();
     } else {
       // Assuming defaults
       this.author = getString(R.string.ls_book_reading_unknown_author);
