@@ -5,7 +5,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io.XmlStreamReader;
 
 import java.io.*;
 import java.util.zip.*;

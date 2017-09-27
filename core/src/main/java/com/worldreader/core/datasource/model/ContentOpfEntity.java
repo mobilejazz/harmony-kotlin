@@ -7,28 +7,21 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.NamespaceList;
+import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Text;
 
 import java.io.*;
 import java.util.*;
 
-import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.NAMESPACE_DUBLIN_CORE;
-import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDocumentMetadataReader.NAMESPACE_OPF;
+@Root(strict = false, name = "package") @Namespace(reference = "http://www.idpf.org/2007/opf") public class ContentOpfEntity {
 
-@Root(strict = false, name = "package") @Namespace(reference = NAMESPACE_OPF) public class ContentOpfEntity {
-
-  public static final String TOC_ID = "ncx";
-  public static final String DEFAULT_TOC_NAME = "toc.ncx";
-
-  @Attribute(name = "cover", required = false) public String cover;
-  @Attribute(name = "COVER", required = false) public String cover2;
+  private static final String TOC_ID = "ncx";
+  private static final String DEFAULT_TOC_NAME = "toc.ncx";
 
   @Attribute(name = "image", required = false) public String image;
-
   @Element(name = "metadata") public Metadata metadata;
-
   @Element(name = "spine") public Spine spine;
-
   @ElementList(name = "manifest") public List<Item> manifest;
 
   public static class Item implements Serializable {
@@ -41,7 +34,7 @@ import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDoc
   }
 
   @NamespaceList({
-      @Namespace(reference = ""), @Namespace(reference = NAMESPACE_DUBLIN_CORE),
+      @Namespace(reference = ""), @Namespace(reference = "http://purl.org/dc/elements/1.1/"),
   }) public static class Metadata implements Serializable {
 
     @Element(name = "dc:title", required = false) public String title;
@@ -56,10 +49,8 @@ import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDoc
     @Element(name = "dc:language", required = false) public String language;
     @Element(name = "language", required = false) public String language2;
 
-    @Element(name = "dc:description", required = false) public String description;
-    @Element(name = "description", required = false) public String description2;
-
-    @Element(name = "date", required = false) public String date;
+    @Path("dc:description") @Text(required = false) public String description; //@Element(name = "dc:description", required = false)
+    @Path("description") @Text(required = false) public String description2;
 
     public String getTitle() {
       return !TextUtils.isEmpty(title) ? title : title2;
@@ -81,12 +72,6 @@ import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.PackageDoc
       return !TextUtils.isEmpty(description) ? description : description2;
     }
 
-  }
-
-  public static class Meta implements Serializable {
-
-    @Attribute(name = "name") public String name;
-    @Attribute(name = "content") public String content;
   }
 
   public static class Spine implements Serializable {

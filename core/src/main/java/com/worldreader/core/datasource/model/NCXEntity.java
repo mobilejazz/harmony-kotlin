@@ -8,9 +8,7 @@ import org.simpleframework.xml.Root;
 
 import java.util.*;
 
-import static com.worldreader.reader.epublib.nl.siegmann.epublib.epub.NCXDocument.NAMESPACE_NCX;
-
-@Root(strict = false, name = "ncx") @Namespace(reference = NAMESPACE_NCX) public class NCXEntity {
+@Root(strict = false, name = "ncx") @Namespace(reference = "http://www.daisy.org/z3986/2005/ncx/") public class NCXEntity {
 
   @ElementList(name = "navMap") public List<NavPoint> navPoints;
 
