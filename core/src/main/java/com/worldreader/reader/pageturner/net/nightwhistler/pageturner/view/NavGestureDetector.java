@@ -43,6 +43,8 @@ import java.util.*;
  */
 public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
+  private static final String TAG = NavGestureDetector.class.getSimpleName();
+
   //Distance to scroll 1 unit on edge slide.
   private static final int SCROLL_FACTOR = 50;
 
@@ -66,11 +68,25 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
       return true;
     }
 
-    //Links get preference
-    List<ClickableSpan> spans = bookView.getLinkAt(e.getX(), e.getY());
+    final float x = e.getX();
+    final float y = e.getY();
 
-    Log.d("NavGestureDetector", "Got " + spans.size() + " ClickableSpans.");
-    if (spans.size() > 0) {
+    // First we check if we want to scroll the page
+
+    final int TAP_RANGE_H = bookView.getWidth() / 5;
+
+    if (x < TAP_RANGE_H) {
+      return bookViewListener.onTapLeftEdge();
+    } else if (x > bookView.getWidth() - TAP_RANGE_H) {
+      return bookViewListener.onTapRightEdge();
+    }
+
+    // If not, maybe the user wants to click on a link
+    final List<ClickableSpan> spans = bookView.getLinkAt(x, y);
+
+    Log.d(TAG, "Got " + spans.size() + " ClickableSpans.");
+
+    if (!spans.isEmpty()) {
       for (ClickableSpan span : spans) {
         span.onClick(bookView);
       }
@@ -78,24 +94,8 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
       return true;
     }
 
-    final int TAP_RANGE_H = bookView.getWidth() / 5;
-    final int TAP_RANGE_V = bookView.getHeight() / 5;
-
-    if (e.getX() < TAP_RANGE_H) {
-      return bookViewListener.onTapLeftEdge();
-    } else if (e.getX() > bookView.getWidth() - TAP_RANGE_H) {
-      return bookViewListener.onTapRightEdge();
-    }
-
-    int yBase = bookView.getScrollY();
-
-    if (e.getY() < TAP_RANGE_V + yBase) {
-      return bookViewListener.onTapTopEdge();
-    } else if (e.getY() > (yBase + bookView.getHeight()) - TAP_RANGE_V) {
-      return bookViewListener.onTapBottomEdge();
-    }
-
     this.bookViewListener.onScreenTap();
+
     return false;
   }
 
