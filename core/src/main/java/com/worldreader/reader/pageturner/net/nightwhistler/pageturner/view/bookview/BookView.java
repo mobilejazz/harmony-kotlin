@@ -1200,8 +1200,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         if (resources != null && resources.length > 0) {
           resource = resources[0];
-        } else if (initialLoad && spine.shouldNavigateToFirstContent(storedIndex)) {
-          resource = spine.tryToNavigateToChapterContent().getOrElse(new Resource(""));
+          //} else if (initialLoad && spine.shouldNavigateToFirstContent(storedIndex)) {
+          //  resource = spine.tryToNavigateToChapterContent().getOrElse(new Resource(""));
+          //} else {
         } else {
           resource = spine.getCurrentResource().getOrElse(new Resource(""));
         }
