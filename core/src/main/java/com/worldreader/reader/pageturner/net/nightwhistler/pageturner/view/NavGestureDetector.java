@@ -124,7 +124,6 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
     float distanceY = e2.getY() - e1.getY();
 
     if (Math.abs(distanceX) > Math.abs(distanceY)) {
-
       bookView.blockInnerViewFor(BOOKVIEW_BLOCK_TIME);
 
       if (distanceX > 0) {
@@ -133,14 +132,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
         return bookViewListener.onSwipeLeft();
       }
     } else if (Math.abs(distanceY) > Math.abs(distanceX)) {
-
       bookView.blockInnerViewFor(BOOKVIEW_BLOCK_TIME);
-
-      if (distanceY > 0) {
-        return bookViewListener.onSwipeUp();
-      } else {
-        return bookViewListener.onSwipeDown();
-      }
     }
 
     return false;

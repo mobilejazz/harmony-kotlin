@@ -42,7 +42,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -52,6 +51,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
 import com.worldreader.core.analytics.Analytics;
@@ -104,7 +104,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.NavGe
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.SelectedWord;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StreamingTextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
@@ -136,9 +135,11 @@ public abstract class AbstractReaderFragment extends Fragment
   private static final String TAG = AbstractReaderFragment.class.getSimpleName();
   private static final String POS_KEY = "offset:";
   private static final String IDX_KEY = "index:";
-  private static final String DEFAULT_BOOK_LANGUAGE = "en";
+
+  private final Object lock = new Object();
 
   private Context context;
+
   private TelephonyManager telephonyManager;
   private AudioManager audioManager;
   private boolean ttsAvailable;
@@ -148,14 +149,10 @@ public abstract class AbstractReaderFragment extends Fragment
   private TextLoader textLoader;
   private ProgressDialog waitDialog;
   private String bookTitle;
-  private String titleBase;
   private String author;
-  private String language = DEFAULT_BOOK_LANGUAGE;
-  private int currentPageNumber = -1;
   private List<TocEntry> tableOfContents;
   private boolean hasSharedText;
   private SavedConfigState savedConfigState = new SavedConfigState();
-  private SelectedWord selectedWord = null;
   private Handler uiHandler;
   private OnBookTocEntryListener bookTocEntryListener;
 
@@ -175,62 +172,10 @@ public abstract class AbstractReaderFragment extends Fragment
   private DiscreteSeekBar chapterProgressDsb;
   private TextView chapterProgressPagesTv;
   private DefinitionView definitionView;
-  private RelativeLayout mainContainerRl;
   private TutorialView tutorialView;
   private View containerTutorialView;
   private View progressContainer;
-  private Runnable mediaPlayerSeekBarUpdaterRunnable = new Runnable() {
-    private boolean pausedBecauseOfCall = false;
-
-    public void run() {
-      if (!ttsIsRunning()) {
-        return;
-      }
-
-      long delay = 1000;
-
-      synchronized (ttsPlaybackItemQueue) {
-        TTSPlaybackItem item = ttsPlaybackItemQueue.peek();
-
-        if (item != null) {
-          MediaPlayer mediaPlayer = item.getMediaPlayer();
-          int phoneState = telephonyManager.getCallState();
-
-          if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            if (phoneState == TelephonyManager.CALL_STATE_RINGING || phoneState == TelephonyManager.CALL_STATE_OFFHOOK) {
-              Log.d(TAG, "Detected call, pausing TTS.");
-              mediaPlayer.pause();
-              this.pausedBecauseOfCall = true;
-            } else {
-              double percentage = (double) mediaPlayer.getCurrentPosition() / (double) mediaPlayer.getDuration();
-
-              mediaProgressBar.setMax(mediaPlayer.getDuration());
-              mediaProgressBar.setProgress(mediaPlayer.getCurrentPosition());
-
-              int currentDuration = item.getOffset() + (int) (percentage * item.getText().length());
-
-              bookView.navigateTo(bookView.getIndex(), currentDuration);
-
-              wordView.setText(item.getText());
-
-              delay = 100;
-            }
-          } else if (mediaPlayer != null && phoneState == TelephonyManager.CALL_STATE_IDLE && pausedBecauseOfCall) {
-            Log.d(TAG, "Call over, resuming TTS.");
-
-            //We reset to the start of the current section before resuming playback.
-            mediaPlayer.seekTo(0);
-            mediaPlayer.start();
-            pausedBecauseOfCall = false;
-            delay = 100;
-          }
-        }
-      }
-
-      // Running this thread after 100 milliseconds
-      uiHandler.postDelayed(this, delay);
-    }
-  };
+  private Runnable mediaPlayerSeekBarUpdaterRunnable = new TTSSeekBarUpdaterRunnable();
 
   protected Configuration config;
   protected StreamingBookDataSource streamingBookDataSource;
@@ -248,16 +193,6 @@ public abstract class AbstractReaderFragment extends Fragment
   protected int currentScrolledPages = 0;
   protected BookMetadata bookMetadata;
   protected Analytics analytics;
-
-  @Override public void onVisibilityChange(boolean visible) {
-    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
-  }
-
-  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    onFragmentActivityResult(requestCode, resultCode, data);
-  }
-
-  protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
 
   @Override public void onAttach(Context context) {
     super.onAttach(context);
@@ -293,13 +228,10 @@ public abstract class AbstractReaderFragment extends Fragment
 
     //this.actionModeBuilder = new ActionModeBuilder();
 
-    // Restore preferences
     this.uiHandler = new Handler();
-    HandlerThread bgThread = new HandlerThread("background");
-    bgThread.start();
 
     // Load metadata
-    Intent intent = getActivity().getIntent();
+    final Intent intent = getActivity().getIntent();
     if (intent != null) {
       bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
       onGamificationInitialize();
@@ -372,6 +304,16 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
+  @Override public void onVisibilityChange(boolean visible) {
+    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    onFragmentActivityResult(requestCode, resultCode, data);
+  }
+
+  protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
+
   private void initViews(View view) {
     this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
@@ -389,7 +331,6 @@ public abstract class AbstractReaderFragment extends Fragment
     this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
     this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
     this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
-    this.mainContainerRl = (RelativeLayout) view.findViewById(R.id.reading_fragment_parent_container);
     this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
@@ -460,6 +401,30 @@ public abstract class AbstractReaderFragment extends Fragment
     checkIfHasBeenSharedQuote();
   }
 
+  @Override public void onPause() {
+    Log.d(TAG, "onPause() called.");
+    saveReadingPosition();
+    onNotifyReadPagesAnalytics();
+    super.onPause();
+  }
+
+  @Override public void onStop() {
+    super.onStop();
+    Log.d(TAG, "onStop() called.");
+    closeWaitDialog();
+  }
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    if (this.textToSpeech != null) this.textToSpeech.shutdown();
+    this.closeWaitDialog();
+  }
+
+  @Override public void onLowMemory() {
+    super.onLowMemory();
+    this.textLoader.clearCachedText();
+  }
+
   private void checkIfHasBeenSharedQuote() {
     if (hasSharedText) {
       hasSharedText = false;
@@ -478,30 +443,6 @@ public abstract class AbstractReaderFragment extends Fragment
       outState.putInt(POS_KEY, this.bookView.getProgressPosition());
       outState.putInt(IDX_KEY, this.bookView.getIndex());
     }
-  }
-
-  @Override public void onPause() {
-    Log.d(TAG, "onPause() called.");
-    saveReadingPosition();
-    onNotifyReadPagesAnalytics();
-    super.onPause();
-  }
-
-  @Override public void onStop() {
-    super.onStop();
-    Log.d(TAG, "onStop() called.");
-    closeWaitDialog();
-  }
-
-  @Override public void onLowMemory() {
-    super.onLowMemory();
-    this.textLoader.clearCachedText();
-  }
-
-  @Override public void onDestroy() {
-    super.onDestroy();
-    if (this.textToSpeech != null) this.textToSpeech.shutdown();
-    this.closeWaitDialog();
   }
 
   @Override public void onPrepareOptionsMenu(Menu menu) {
@@ -949,13 +890,10 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void streamPartToDisk(String fileName, String part, int offset, int totalLength, boolean endOfPage) throws TTSFailedException {
-
     Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
 
     if (part.trim().length() > 0 || endOfPage) {
-
-      HashMap<String, String> params = new HashMap<>();
-
+      final HashMap<String, String> params = new HashMap<>();
       params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
 
       TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
@@ -986,15 +924,11 @@ public abstract class AbstractReaderFragment extends Fragment
   private void showTTSFailed(final String message) {
     uiHandler.post(new Runnable() {
       @Override public void run() {
-
         AbstractReaderFragment.this.stopTextToSpeech();
         AbstractReaderFragment.this.closeWaitDialog();
 
         if (AbstractReaderFragment.this.isAdded()) {
-          StringBuilder textBuilder = new StringBuilder(AbstractReaderFragment.this.getString(R.string.tts_failed));
-          textBuilder.append("\n").append(message);
-
-          Toast.makeText(context, textBuilder.toString(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(context, AbstractReaderFragment.this.getString(R.string.tts_failed) + "\n" + message, Toast.LENGTH_SHORT).show();
         }
       }
     });
@@ -1141,10 +1075,6 @@ public abstract class AbstractReaderFragment extends Fragment
     //config.setLastOpenedFile(fileName);
   }
 
-  private void restartActivity() {
-    restartActivity(false, false);
-  }
-
   public void onWindowFocusChanged(boolean hasFocus) {
     if (hasFocus) {
       updateFromPrefs();
@@ -1175,12 +1105,9 @@ public abstract class AbstractReaderFragment extends Fragment
       // Author
       final Author authorsOption = firstOption(metadata.getAuthors()).getOrElse(new Author(getString(R.string.ls_book_reading_unknown_author)));
       this.author = TextUtils.isEmpty(authorsOption.getLastname()) ? getString(R.string.ls_book_reading_unknown_author) : authorsOption.getLastname();
-
-      this.language = TextUtils.isEmpty(metadata.getLanguage()) ? DEFAULT_BOOK_LANGUAGE : metadata.getLanguage();
     } else {
       // Assuming defaults
       this.author = getString(R.string.ls_book_reading_unknown_author);
-      this.language = DEFAULT_BOOK_LANGUAGE;
     }
 
     activity.invalidateOptionsMenu();
@@ -1237,13 +1164,7 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public void parseEntryComplete(String name, Resource resource) {
-    if (name != null && !name.equals(this.bookTitle)) {
-      this.titleBase = this.bookTitle + " - " + name;
-    } else {
-      this.titleBase = this.bookTitle;
-    }
-
-    Activity activity = getActivity();
+    final Activity activity = getActivity();
 
     if (activity != null) {
       if (this.ttsPlaybackItemQueue.isActive() && this.ttsPlaybackItemQueue.isEmpty()) {
@@ -1330,27 +1251,10 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public void onWordLongPressed(int startOffset, int endOffset, CharSequence word) {
-    this.selectedWord = new SelectedWord(startOffset, endOffset, word);
-    Activity activity = getActivity();
+    final Activity activity = getActivity();
     if (activity != null) {
       activity.openContextMenu(bookView);
     }
-  }
-
-  @Override public boolean onSwipeUp() {
-    if (config.isVerticalSwipeEnabled()) {
-      pageUp(Orientation.VERTICAL);
-      return true;
-    }
-    return false;
-  }
-
-  @Override public boolean onSwipeDown() {
-    if (config.isVerticalSwipeEnabled()) {
-      pageDown(Orientation.VERTICAL);
-      return true;
-    }
-    return false;
   }
 
   @Override public boolean onSwipeLeft() {
@@ -1437,24 +1341,6 @@ public abstract class AbstractReaderFragment extends Fragment
     return false;
   }
 
-  @Override public boolean onTapTopEdge() {
-    if (config.isVerticalTappingEnabled()) {
-      pageUp(Orientation.VERTICAL);
-      return true;
-    }
-
-    return false;
-  }
-
-  @Override public boolean onTapBottomEdge() {
-    if (config.isVerticalTappingEnabled()) {
-      pageDown(Orientation.VERTICAL);
-      return true;
-    }
-
-    return false;
-  }
-
   @Override public boolean onPreSlide() {
     if (isDefinitionViewDisplayed()) {
       hideDefinitionView();
@@ -1476,21 +1362,15 @@ public abstract class AbstractReaderFragment extends Fragment
       return true;
     }
 
-    if (isPhotoViewerDisplayed()) {
-      return true;
-    }
-
-    return false;
+    return isPhotoViewerDisplayed();
   }
 
   @Override public void onScreenTap() {
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
     }
-
     stopAnimating();
-
     getSystemUiHelper().toggle();
   }
 
@@ -1571,7 +1451,6 @@ public abstract class AbstractReaderFragment extends Fragment
   protected abstract void onEventNavigateToBookFinishedScreen();
 
   private void stopAnimating() {
-
     if (dummyView.getAnimator() != null) {
       dummyView.getAnimator().stop();
       this.dummyView.setAnimator(null);
@@ -1678,14 +1557,6 @@ public abstract class AbstractReaderFragment extends Fragment
 
   private void showDefinitionView() {
     definitionView.setVisibility(View.VISIBLE);
-  }
-
-  private String getLanguageCode() {
-    if (this.language == null || this.language.equals("") || this.language.equalsIgnoreCase("und")) {
-      return Locale.getDefault().getLanguage();
-    }
-
-    return this.language;
   }
 
   private boolean isTutorial(List<TutorialModel> tutorials) {
@@ -1908,7 +1779,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void doPageCurl(boolean flipRight, boolean pageDown) {
-
     if (isAnimating() || bookView == null) {
       return;
     }
@@ -1999,7 +1869,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private Option<Bitmap> getBookViewSnapshot() {
-
     try {
       Bitmap bitmap = Bitmap.createBitmap(viewSwitcher.getWidth(), viewSwitcher.getHeight(), Bitmap.Config.ARGB_8888);
       Canvas canvas = new Canvas(bitmap);
@@ -2049,19 +1918,6 @@ public abstract class AbstractReaderFragment extends Fragment
 
     this.pageNumberView.setVisibility(View.GONE);
 
-    inAnim.setAnimationListener(new Animation.AnimationListener() {
-
-      public void onAnimationStart(Animation animation) {
-      }
-
-      @Override public void onAnimationEnd(Animation animation) {
-        onSlideFinished();
-      }
-
-      public void onAnimationRepeat(Animation animation) {
-      }
-    });
-
     viewSwitcher.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
     dummyView.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
 
@@ -2069,12 +1925,6 @@ public abstract class AbstractReaderFragment extends Fragment
 
     this.viewSwitcher.setInAnimation(inAnim);
     this.viewSwitcher.setOutAnimation(outAnim);
-  }
-
-  private void onSlideFinished() {
-    if (currentPageNumber > 0) {
-      this.pageNumberView.setVisibility(View.VISIBLE);
-    }
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -2216,7 +2066,7 @@ public abstract class AbstractReaderFragment extends Fragment
       @Override public void onFailure(final Throwable t) {
         // Ignored result
       }
-    });
+    }, MoreExecutors.directExecutor());
   }
 
   private void formatPageChapterProgress() {
@@ -2226,7 +2076,7 @@ public abstract class AbstractReaderFragment extends Fragment
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
     if (bookView.getPagesForResource() > 0) {
-      final Map<String, String> amaAttributes = new HashMap<String, String>();
+      final Map<String, String> amaAttributes = new HashMap<>();
       //Book toc size
       amaAttributes.put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES,
           String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
@@ -2258,6 +2108,59 @@ public abstract class AbstractReaderFragment extends Fragment
     HORIZONTAL, VERTICAL
   }
 
+  private class TTSSeekBarUpdaterRunnable implements Runnable {
+
+    private boolean pausedBecauseOfCall = false;
+
+    public void run() {
+      if (!ttsIsRunning()) {
+        return;
+      }
+
+      long delay = 1000;
+
+      synchronized (lock) {
+        final TTSPlaybackItem item = ttsPlaybackItemQueue.peek();
+
+        if (item != null) {
+          MediaPlayer mediaPlayer = item.getMediaPlayer();
+          int phoneState = telephonyManager.getCallState();
+
+          if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            if (phoneState == TelephonyManager.CALL_STATE_RINGING || phoneState == TelephonyManager.CALL_STATE_OFFHOOK) {
+              Log.d(TAG, "Detected call, pausing TTS.");
+              mediaPlayer.pause();
+              this.pausedBecauseOfCall = true;
+            } else {
+              double percentage = (double) mediaPlayer.getCurrentPosition() / (double) mediaPlayer.getDuration();
+
+              mediaProgressBar.setMax(mediaPlayer.getDuration());
+              mediaProgressBar.setProgress(mediaPlayer.getCurrentPosition());
+
+              int currentDuration = item.getOffset() + (int) (percentage * item.getText().length());
+
+              bookView.navigateTo(bookView.getIndex(), currentDuration);
+              wordView.setText(item.getText());
+
+              delay = 100;
+            }
+          } else if (mediaPlayer != null && phoneState == TelephonyManager.CALL_STATE_IDLE && pausedBecauseOfCall) {
+            Log.d(TAG, "Call over, resuming TTS.");
+
+            //We reset to the start of the current section before resuming playback.
+            mediaPlayer.seekTo(0);
+            mediaPlayer.start();
+            pausedBecauseOfCall = false;
+            delay = 100;
+          }
+        }
+      }
+
+      // Running this thread after 100 milliseconds
+      uiHandler.postDelayed(this, delay);
+    }
+  }
+
   public interface OnBookTocEntryListener {
 
     void onBookTableOfContentsLoaded(Option<List<TocEntry>> book);
@@ -2267,7 +2170,6 @@ public abstract class AbstractReaderFragment extends Fragment
 
   private static class SavedConfigState {
 
-    private boolean brightness;
     private boolean stripWhiteSpace;
     private String fontName;
     private String serifFontName;
