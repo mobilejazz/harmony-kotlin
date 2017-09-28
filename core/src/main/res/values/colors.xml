@@ -11,6 +11,7 @@
   <color name="transparent_background">#b4fafafa</color>
 
   <!-- General colors -->
+  <color name="translucent_white">#A0FFFFFF</color>
   <color name="white">#FFFFFF</color>
   <color name="yellow">#FBB528</color>
   <color name="darkYellow">#AA7B1B</color>
