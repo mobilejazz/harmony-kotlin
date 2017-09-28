@@ -16,6 +16,7 @@ import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.error.book.FailedDownloadBookException;
 
 import javax.inject.Inject;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -122,7 +123,17 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
 
         logger.d(TAG, "Downloading current resource: " + resource);
 
-        streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
+        try {
+          streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
+        } catch (Exception e) {
+          if (e instanceof UnknownHostException){
+            // If we have problems with the network we rethrow the exception (causing the download to stop)
+            throw e;
+          } else {
+            // We want to continue the download even if some resources are not present on the server
+            continue;
+          }
+        }
 
         shouldNotifySuccessfulResponse(shouldNotifyResponses, position + count, numberOfResources);
       }
