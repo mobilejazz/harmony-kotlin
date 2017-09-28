@@ -3,6 +3,8 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.epub;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import com.google.common.base.Function;
+import com.google.common.collect.Ordering;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.datasource.model.NCXEntity;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
@@ -132,10 +134,21 @@ public class EpubReader {
   }
 
   @NonNull
-  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book)
-      throws Exception {
-    final List<TOCReference> references = new ArrayList<>();
+  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book) throws Exception {
+    if (navPoints == null) {
+      return new ArrayList<>();
+    }
 
+    final List<TOCReference> references = new ArrayList<>(navPoints.size());
+
+    // Order this list from min to max by playOrder
+    Collections.sort(navPoints, Ordering.natural().onResultOf(new Function<NCXEntity.NavPoint, Comparable>() {
+      @Nullable @Override public Comparable apply(@Nullable NCXEntity.NavPoint input) {
+        return input.playOrder;
+      }
+    }));
+
+    // Navigate through ordered navPoints
     for (NCXEntity.NavPoint navPoint : navPoints) {
       final TOCReference tocReference = toTOCReference(contentOpfEntity, navPoint, book);
       if (tocReference != null) {
@@ -172,10 +185,18 @@ public class EpubReader {
     final TOCReference result;
     if (resource != null) {
       result = new TOCReference(label, resource, fragmentId);
-      final List<NCXEntity.NavPoint> newNavPoint = navPoint.navPoints;
-      if (newNavPoint != null) {
+      final List<NCXEntity.NavPoint> newNavPoints = navPoint.navPoints;
+
+      if (newNavPoints != null) {
+        // Order this list from min to max by playOrder
+        Collections.sort(newNavPoints, Ordering.natural().onResultOf(new Function<NCXEntity.NavPoint, Comparable>() {
+          @Nullable @Override public Comparable apply(@Nullable NCXEntity.NavPoint input) {
+            return input.playOrder;
+          }
+        }));
+
         // Call recursively until last element inside has been consumed
-        result.setChildren(getTocReferences(contentOpfEntity, newNavPoint, book));
+        result.setChildren(getTocReferences(contentOpfEntity, newNavPoints, book));
       }
     } else {
       result = null;
