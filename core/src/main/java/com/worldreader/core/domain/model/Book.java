@@ -124,7 +124,7 @@ public class Book implements Serializable {
   }
 
   public String getCover() {
-    return cover;
+    return cover + "?size=480x800";
   }
 
   public void setCover(String cover) {
@@ -179,7 +179,7 @@ public class Book implements Serializable {
    */
   public String getCoverUrlWithSize(int measuredWidth, int measuredHeight) {
     StringBuilder urlBuilder = new StringBuilder();
-    urlBuilder.append(getCover());
+    urlBuilder.append(cover);
     urlBuilder.append("?size=");
 
     int height = 0, width = 0;
