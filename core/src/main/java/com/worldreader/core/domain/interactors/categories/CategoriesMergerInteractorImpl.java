@@ -1,5 +1,7 @@
 package com.worldreader.core.domain.interactors.categories;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -9,28 +11,38 @@ import com.worldreader.core.domain.thread.MainThread;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.*;
 
-public class CategoriesMergerInteractorImpl extends AbstractInteractor<List<Category>, ErrorCore>
-    implements CategoriesMergerInteractor {
+public class CategoriesMergerInteractorImpl extends AbstractInteractor<List<Category>, ErrorCore> implements CategoriesMergerInteractor {
+
+  private final ListeningExecutorService executorService;
 
   private List<Category> categories;
   private DomainCallback<List<Category>, ErrorCore> callback;
 
-  @Inject public CategoriesMergerInteractorImpl(MainThread mainThread,
-      InteractorExecutor interactorExecutor) {
+  @Inject public CategoriesMergerInteractorImpl(MainThread mainThread, InteractorExecutor interactorExecutor, ListeningExecutorService executorService) {
     super(interactorExecutor, mainThread);
+    this.executorService = executorService;
   }
 
-  @Override public void execute(List<Category> categories,
-      DomainCallback<List<Category>, ErrorCore> callback) {
+  @Override public void execute(List<Category> categories, DomainCallback<List<Category>, ErrorCore> callback) {
     this.categories = categories;
     this.callback = callback;
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<List<Category>> execute(final List<Category> categories) {
+    return executorService.submit(new Callable<List<Category>>() {
+      @Override public List<Category> call() throws Exception {
+        return flatten(categories);
+      }
+    });
+  }
+
   @Override public void run() {
-    List<Category> mergedCategories = flatten(this.categories);
+    final List<Category> mergedCategories = flatten(this.categories);
     performSuccessCallback(callback, mergedCategories);
+    callback = null;
   }
 
   ///////////////////////////////////////////////////////////////////////////
