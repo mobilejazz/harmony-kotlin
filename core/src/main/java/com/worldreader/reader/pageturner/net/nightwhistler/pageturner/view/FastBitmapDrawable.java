@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -31,13 +32,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.worldreader.core.R;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
@@ -75,14 +74,13 @@ public class FastBitmapDrawable extends Drawable {
     this.width = width;
     this.height = height;
 
-    this.r = new Rect();
-    r.set(0, 0, width, height);
+    this.r = new Rect(0, 0, width, height);
 
     this.shape = new RectShape();
     shape.resize(width, height);
 
     this.paint = new Paint();
-    paint.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+    paint.setColor(Color.parseColor("#fbf3ea"));
 
     setBounds(0, 0, width - 1, height - 1);
   }
@@ -109,7 +107,6 @@ public class FastBitmapDrawable extends Drawable {
           }
 
           @Override public void onFailure(@NonNull final Throwable t) {
-            final InputStream in = StreamingResource.create(null).getInputStream();
             handler.post(new Runnable() {
               @Override public void run() {
                 isProcessing = false;

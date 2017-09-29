@@ -242,15 +242,14 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
    * @return a List of spans of type A, may be empty.
    */
   private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
-    Option<Integer> offsetOption = findOffsetForPosition(x, y);
-
-    CharSequence text = childView.getText();
+    final Option<Integer> offsetOption = findOffsetForPosition(x, y);
+    final CharSequence text = childView.getText();
 
     if (isEmpty(offsetOption) || !(text instanceof Spanned)) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
 
-    int offset = offsetOption.getOrElse(0);
+    final int offset = offsetOption.getOrElse(0);
 
     return asList(((Spanned) text).getSpans(offset, offset, spanClass));
   }
@@ -467,15 +466,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private Option<Integer> findOffsetForPosition(float x, float y) {
-
     if (childView == null || childView.getLayout() == null) {
       return none();
     }
 
-    Layout layout = this.childView.getLayout();
-    int line = layout.getLineForVertical((int) y);
+    final Layout layout = this.childView.getLayout();
+    final int line = layout.getLineForVertical((int) y);
+    final int horizontalOffset = layout.getOffsetForHorizontal(line, x);
 
-    return option(layout.getOffsetForHorizontal(line, x));
+    return option(horizontalOffset);
   }
 
   /**
@@ -1201,8 +1200,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         if (resources != null && resources.length > 0) {
           resource = resources[0];
-        } else if (initialLoad && spine.shouldNavigateToFirstContent(storedIndex)) {
-          resource = spine.tryToNavigateToChapterContent().getOrElse(new Resource(""));
+          //} else if (initialLoad && spine.shouldNavigateToFirstContent(storedIndex)) {
+          //  resource = spine.tryToNavigateToChapterContent().getOrElse(new Resource(""));
+          //} else {
         } else {
           resource = spine.getCurrentResource().getOrElse(new Resource(""));
         }
