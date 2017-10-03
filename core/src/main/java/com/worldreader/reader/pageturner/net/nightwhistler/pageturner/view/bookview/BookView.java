@@ -789,7 +789,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       final int finalWidth = sizes.getValue0();
       final int finalHeight = sizes.getValue1();
 
-      final FastBitmapDrawable drawable = new FastBitmapDrawable(getContext(), resource, finalWidth, finalHeight, dataSource, bookMetadata);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(getContext(), resource, finalWidth, finalHeight, dataSource, bookMetadata, logger);
       drawable.setCallback(callback);
 
       setImageSpan(builder, drawable, start, end);
@@ -1227,7 +1227,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         return option((Spanned) result);
       } catch (Exception | OutOfMemoryError io) {
-        Log.e(TAG, "Error loading text", io);
+        logger.sendIssue(TAG, "Exception loading streaming text with book with ID: " + bookId + " . Current exception: " + Throwables.getStackTraceAsString(io));
       }
 
       return none();
@@ -1328,7 +1328,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         Log.d(TAG, "Calculated offsets: " + offsets);
         return offsets;
       } catch (OutOfMemoryError | Exception e) {
-        Log.e(TAG, "Could not read page-numbers", e);
+        logger.sendIssue(TAG, "Exception while trying to calculate page numbers with ID: " + bookId + " . Current exception: " + Throwables.getStackTraceAsString(e));
       }
 
       return none();

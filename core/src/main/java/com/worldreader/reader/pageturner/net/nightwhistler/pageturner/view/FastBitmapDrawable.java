@@ -32,11 +32,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
@@ -51,6 +52,7 @@ public class FastBitmapDrawable extends Drawable {
   private final String resource;
   private final StreamingBookRepository dataSource;
   private final BookMetadata metadata;
+  private final Logger logger;
 
   private final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -65,14 +67,14 @@ public class FastBitmapDrawable extends Drawable {
   private boolean isLoaded = false;
   private boolean isProcessing = false;
 
-  public FastBitmapDrawable(final Context context, final String resource, final int width, final int height, final StreamingBookRepository dataSource,
-      final BookMetadata metadata) {
+  public FastBitmapDrawable(final Context context, final String resource, final int width, final int height, final StreamingBookRepository dataSource, final BookMetadata metadata, final Logger logger) {
     this.resource = resource;
     this.dataSource = dataSource;
     this.metadata = metadata;
 
     this.width = width;
     this.height = height;
+    this.logger = logger;
 
     this.r = new Rect(0, 0, width, height);
 
@@ -159,8 +161,8 @@ public class FastBitmapDrawable extends Drawable {
       bitmap = localBitmap;
       isLoaded = true;
       invalidateSelf();
-    } catch (OutOfMemoryError | IOException | NullPointerException e) {
-      Log.e(TAG, "Could not load image", e);
+    } catch (Throwable e) {
+      logger.e(TAG, "Could not load image: " + Throwables.getStackTraceAsString(e));
       isLoaded = true;
     }
   }
