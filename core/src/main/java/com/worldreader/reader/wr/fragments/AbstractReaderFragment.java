@@ -768,7 +768,7 @@ public abstract class AbstractReaderFragment extends Fragment
       Option<File> fosOption = config.getTTSFolder();
 
       if (isEmpty(fosOption)) {
-        Log.e(TAG, "Could not get base folder for TTS");
+        logger.e(TAG, "Could not get base folder for TTS");
         showTTSFailed("Could not get base folder for TTS");
       }
 
@@ -781,7 +781,7 @@ public abstract class AbstractReaderFragment extends Fragment
       fos.mkdirs();
 
       if (!(fos.exists() && fos.isDirectory())) {
-        Log.e(TAG, "Failed to build folder " + fos.getAbsolutePath());
+        logger.e(TAG, "Failed to build folder " + fos.getAbsolutePath());
         showTTSFailed("Failed to build folder " + fos.getAbsolutePath());
         return;
       }
@@ -874,7 +874,7 @@ public abstract class AbstractReaderFragment extends Fragment
           pageFile.createNewFile();
         } catch (IOException io) {
           String message = "Can't write to file \n" + pageName + " because of onError\n" + io.getMessage();
-          Log.e(TAG, message);
+          logger.e(TAG, message);
           showTTSFailed(message);
         }
 
@@ -905,14 +905,14 @@ public abstract class AbstractReaderFragment extends Fragment
       try {
         result = textToSpeech.synthesizeToFile(part, params, fileName);
       } catch (Exception e) {
-        Log.e(TAG, "Failed to start TTS", e);
+        logger.e(TAG, "Failed to start TTS", e);
         result = TextToSpeech.ERROR;
         errorMessage = e.getMessage();
       }
 
       if (result != TextToSpeech.SUCCESS) {
         String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
-        Log.e(TAG, message);
+        logger.e(TAG, message);
         showTTSFailed(message);
         throw new TTSFailedException();
       }
@@ -943,7 +943,7 @@ public abstract class AbstractReaderFragment extends Fragment
     }
 
     if (!ttsItemPrep.containsKey(wavFile)) {
-      Log.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
+      logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
       return;
     }
 
@@ -958,7 +958,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
       this.ttsPlaybackItemQueue.add(item);
     } catch (Exception e) {
-      Log.e(TAG, "Could not play", e);
+      logger.e(TAG, "Could not play", e);
       showTTSFailed(e.getLocalizedMessage());
       return;
     }
@@ -1705,7 +1705,7 @@ public abstract class AbstractReaderFragment extends Fragment
         }
       });
     } catch (IllegalStateException is) {
-      Log.e(TAG, "Failed to start autoscroll: " + is.getMessage());
+      logger.e(TAG, "Failed to start autoscroll: " + is.getMessage());
     }
   }
 
