@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.application.di.qualifiers.DownloadedBooksPerDayLimit;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
@@ -21,19 +22,21 @@ import java.util.*;
 public class CanDownloadBookInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
     implements CanDownloadBookInteractor {
 
-  private static final int NUMBER_DOWNLOADED_BOOKS_PER_DAY = 5;
+  //private static final int NUMBER_DOWNLOADED_BOOKS_PER_DAY = 5;
 
   private final Provider<List<BookDownloaded>> bookDownloadedProvider;
   private final Dates dates;
+  private final int downloadedBooksPerDayLimit;
 
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
   @Inject public CanDownloadBookInteractorImpl(final InteractorExecutor executor,
       final MainThread mainThread, final Provider<List<BookDownloaded>> bookDownloadedProvider,
-      Dates dates) {
+      Dates dates, @DownloadedBooksPerDayLimit int downloadedBooksPerDayLimit) {
     super(executor, mainThread);
     this.bookDownloadedProvider = bookDownloadedProvider;
     this.dates = dates;
+    this.downloadedBooksPerDayLimit = downloadedBooksPerDayLimit;
   }
 
   @Override public void execute(DomainCallback<Boolean, ErrorCore<?>> callback) {
@@ -125,7 +128,7 @@ public class CanDownloadBookInteractorImpl extends AbstractInteractor<Boolean, E
         });
 
     if (callback != null) {
-      callback.onSuccess(booksDownloadedToday.size() < NUMBER_DOWNLOADED_BOOKS_PER_DAY);
+      callback.onSuccess(downloadedBooksPerDayLimit < 0 || booksDownloadedToday.size() < downloadedBooksPerDayLimit);
     }
   }
 }
