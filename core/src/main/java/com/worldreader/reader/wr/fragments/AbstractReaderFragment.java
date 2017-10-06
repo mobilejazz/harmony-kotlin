@@ -1419,6 +1419,7 @@ public abstract class AbstractReaderFragment extends Fragment
         final ImageSource imageSource = ImageSource.cachedBitmap(bitmap);
         final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
         imageScaleView.setImage(imageSource);
+        imageScaleView.setMaxScale(3);
         imageViewContainer.setVisibility(View.VISIBLE);
       }
     }
