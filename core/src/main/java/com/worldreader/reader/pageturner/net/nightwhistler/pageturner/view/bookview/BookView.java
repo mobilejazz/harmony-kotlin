@@ -38,7 +38,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
@@ -63,17 +62,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -88,11 +76,17 @@ import net.nightwhistler.htmlspanner.spans.CenterSpan;
 import org.htmlcleaner.TagNode;
 import org.javatuples.Triplet;
 
-import static java.util.Arrays.asList;
+import java.io.*;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.*;
 
+import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
-import static jedi.option.Options.*;
+import static jedi.option.Options.none;
+import static jedi.option.Options.option;
+import static jedi.option.Options.some;
 
 public class BookView extends ScrollView implements TextSelectionActions.SelectedTextProvider {
 
@@ -1437,6 +1431,16 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
+  @Override public boolean dispatchTouchEvent(MotionEvent event) {
+    // Simple workaround to https://code.google.com/p/android/issues/detail?id=191430
+    if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+      final CharSequence text = getInnerView().getText();
+      getInnerView().setText(null);
+      getInnerView().setText(text);
+    }
+    return super.dispatchTouchEvent(event);
+  }
+
   public static class InnerView extends AppCompatTextView {
 
     private BookView bookView;
@@ -1462,23 +1466,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
       super.onSizeChanged(w, h, oldw, oldh);
       bookView.onInnerViewResize();
-    }
-
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-      // FIXME simple workaround to https://code.google.com/p/android/issues/detail?id=191430
-      if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-        int startSelection = getSelectionStart();
-        int endSelection = getSelectionEnd();
-        if (startSelection != endSelection) {
-          if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            final CharSequence text = getText();
-            setText(null);
-            setText(text);
-          }
-        }
-      }
-
-      return super.dispatchTouchEvent(event);
     }
 
     @Override public void onWindowFocusChanged(boolean hasWindowFocus) {
