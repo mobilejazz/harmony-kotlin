@@ -20,4 +20,6 @@ public interface ResourcesLoader {
   void loadImageResources();
 
   void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback);
+
+  void clearImageResources();
 }

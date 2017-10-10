@@ -34,7 +34,7 @@ import java.util.concurrent.*;
  */
 public class QueuedTask<A, B, C> {
 
-  private static final ThreadFactory READER_THREAD_FACTORY = new ThreadFactory() {
+  public static final ThreadFactory READER_THREAD_FACTORY = new ThreadFactory() {
     @Override public Thread newThread(@NonNull Runnable r) {
       final Thread t = new Thread(r);
       t.setPriority(Process.THREAD_PRIORITY_BACKGROUND);

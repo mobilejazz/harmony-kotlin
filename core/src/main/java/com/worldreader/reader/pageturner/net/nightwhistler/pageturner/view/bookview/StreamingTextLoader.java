@@ -12,7 +12,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResour
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
@@ -42,8 +41,6 @@ public class StreamingTextLoader implements TextLoader {
   private Map<String, Spannable> renderedText = new HashMap<>();
   private Map<String, List<CompiledRule>> cssRules = new HashMap<>();
 
-  private Map<String, FastBitmapDrawable> imageCache = new HashMap<>();
-
   private Map<String, Map<String, Integer>> anchors = new HashMap<>();
   private List<AnchorHandler> anchorHandlers = new ArrayList<>();
 
@@ -53,11 +50,7 @@ public class StreamingTextLoader implements TextLoader {
   private LinkTagHandler.LinkCallBack linkCallBack;
   private ResourcesLoader resourcesLoader;
 
-  public static StreamingTextLoader getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new StreamingTextLoader();
-    }
-    return INSTANCE;
+  public StreamingTextLoader() {
   }
 
   public void setHtmlSpanner(HtmlSpanner spanner) {
@@ -241,18 +234,6 @@ public class StreamingTextLoader implements TextLoader {
     this.htmlSpanner.setUseColoursFromStyle(useColours);
   }
 
-  public FastBitmapDrawable getCachedImage(String href) {
-    return imageCache.get(href);
-  }
-
-  public boolean hasCachedImage(String href) {
-    return imageCache.containsKey(href);
-  }
-
-  public void storeImageInCache(String href, FastBitmapDrawable drawable) {
-    this.imageCache.put(href, drawable);
-  }
-
   private void registerNewAnchor(String href, String anchor, int position) {
     if (!anchors.containsKey(href)) {
       anchors.put(href, new HashMap<String, Integer>());
@@ -323,7 +304,6 @@ public class StreamingTextLoader implements TextLoader {
   }
 
   public void clearCachedText() {
-    clearImageCache();
     anchors.clear();
     renderedText.clear();
     cssRules.clear();
@@ -363,16 +343,7 @@ public class StreamingTextLoader implements TextLoader {
 
     currentBook = null;
     renderedText.clear();
-    clearImageCache();
     anchors.clear();
-  }
-
-  public void clearImageCache() {
-    for (Map.Entry<String, FastBitmapDrawable> draw : imageCache.entrySet()) {
-      draw.getValue().destroy();
-    }
-
-    imageCache.clear();
   }
 }
 

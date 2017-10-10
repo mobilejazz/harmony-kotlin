@@ -16,7 +16,6 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -82,12 +81,9 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animations;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.PageCurlAnimator;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.PageTimer;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.RollingBlindAnimator;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.AnimationStyle;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ColorProfile;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ReadingDirection;
@@ -112,14 +108,20 @@ import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.UUID;
 import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
-
-import java.io.*;
-import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
@@ -143,7 +145,7 @@ public abstract class AbstractReaderFragment extends Fragment
   private TelephonyManager telephonyManager;
   private AudioManager audioManager;
   private boolean ttsAvailable;
-  private TextToSpeech textToSpeech;
+  //private TextToSpeech textToSpeech;
   private TTSPlaybackQueue ttsPlaybackItemQueue;
   private Map<String, TTSPlaybackItem> ttsItemPrep = new HashMap<>();
   private TextLoader textLoader;
@@ -194,6 +196,18 @@ public abstract class AbstractReaderFragment extends Fragment
   protected BookMetadata bookMetadata;
   protected Analytics analytics;
 
+  private enum Orientation {
+    HORIZONTAL, VERTICAL
+  }
+
+  @Override public void onVisibilityChange(boolean visible) {
+    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    onFragmentActivityResult(requestCode, resultCode, data);
+  }
+
   @Override public void onAttach(Context context) {
     super.onAttach(context);
     try {
@@ -207,7 +221,7 @@ public abstract class AbstractReaderFragment extends Fragment
     super.onCreate(savedInstanceState);
 
     // This block need to be called before inflating the view to avoid problems with BookView
-    this.textLoader = StreamingTextLoader.getInstance();
+    this.textLoader = new StreamingTextLoader();
     this.textLoader.setHtmlSpanner(new HtmlSpanner());
   }
 
@@ -225,8 +239,6 @@ public abstract class AbstractReaderFragment extends Fragment
     this.audioManager = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
 
     this.ttsPlaybackItemQueue = new TTSPlaybackQueue();
-
-    //this.actionModeBuilder = new ActionModeBuilder();
 
     this.uiHandler = new Handler();
 
@@ -304,101 +316,16 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
-  @Override public void onVisibilityChange(boolean visible) {
-    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
-  }
-
-  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    onFragmentActivityResult(requestCode, resultCode, data);
-  }
-
-  protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
-
-  private void initViews(View view) {
-    this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
-    this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
-    this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
-    this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
-    this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
-    this.mediaLayout = (LinearLayout) view.findViewById(R.id.reading_fragment_media_player_layout);
-    this.playPauseButton = (ImageButton) view.findViewById(R.id.reading_fragment_play_pause_button);
-    this.mediaProgressBar = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_media_progress);
-
-    this.stopButton = (ImageButton) view.findViewById(R.id.reading_fragment_stop_button);
-    this.nextButton = (ImageButton) view.findViewById(R.id.reading_fragment_next_button);
-    this.prevButton = (ImageButton) view.findViewById(R.id.reading_fragment_prev_button);
-    this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
-    this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
-    this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
-    this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
-    this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
-    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
-    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
-
-    final String bookId = bookMetadata.getBookId();
-    final String contentOpf = bookMetadata.getContentOpfName();
-    final StreamingResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
-
-    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, logger);
-    this.bookView.addListener(this);
-    this.bookView.setTextSelectionCallback(this, this);
-
-    this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-          seekToPointInPlayback(progress);
-        }
-      }
-
-      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
-      }
-
-      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-
-      }
-    });
-
-    this.textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-      @Override public void onInit(int status) {
-        AbstractReaderFragment.this.onTextToSpeechInit(status);
-      }
-    });
-
-    // Hide the tutorial view because we need to wait that the book is loaded
-    setTutorialViewVisibility(View.INVISIBLE);
-
-    this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
-      @Override public void onClick(DefinitionView view) {
-        hideDefinitionView();
-      }
-    });
-
-    this.progressContainer.setPadding(progressContainer.getPaddingLeft(), progressContainer.getPaddingTop(), progressContainer.getPaddingRight(),
-        progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context));
-
-    this.chapterProgressDsb.setEnabled(true);
-    this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-
-      private int seekValue;
-
-      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-        this.seekValue = value;
-      }
-
-      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-      }
-
-      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-        bookView.navigateToPercentageInChapter(this.seekValue);
-        formatPageChapterProgress();
-      }
-    });
-  }
-
   @Override public void onResume() {
     super.onResume();
     checkIfHasBeenSharedQuote();
+  }
+
+  @Override public void onSaveInstanceState(final Bundle outState) {
+    if (this.bookView != null) {
+      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
+      outState.putInt(IDX_KEY, this.bookView.getIndex());
+    }
   }
 
   @Override public void onPause() {
@@ -414,35 +341,19 @@ public abstract class AbstractReaderFragment extends Fragment
     closeWaitDialog();
   }
 
-  @Override public void onDestroy() {
-    super.onDestroy();
-    if (this.textToSpeech != null) this.textToSpeech.shutdown();
-    this.closeWaitDialog();
-  }
-
   @Override public void onLowMemory() {
     super.onLowMemory();
     this.textLoader.clearCachedText();
   }
 
-  private void checkIfHasBeenSharedQuote() {
-    if (hasSharedText) {
-      hasSharedText = false;
-      uiHandler.postDelayed(new Runnable() {
-        @Override public void run() {
-          onGamificationEventSharedQuote();
-        }
-      }, 500);
-    }
-  }
-
-  protected abstract void onGamificationEventSharedQuote();
-
-  @Override public void onSaveInstanceState(final Bundle outState) {
-    if (this.bookView != null) {
-      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
-      outState.putInt(IDX_KEY, this.bookView.getIndex());
-    }
+  @Override public void onDestroy() {
+    //if (this.textToSpeech != null) {
+    //  this.textToSpeech.stop();
+    //  this.textToSpeech.shutdown();
+    //  this.textToSpeech = null;
+    //}
+    this.closeWaitDialog();
+    super.onDestroy();
   }
 
   @Override public void onPrepareOptionsMenu(Menu menu) {
@@ -496,6 +407,100 @@ public abstract class AbstractReaderFragment extends Fragment
   @Override public void onOptionsMenuClosed(Menu menu) {
     updateFromPrefs();
   }
+
+  protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
+
+  private void initViews(View view) {
+    this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
+    this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
+    this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
+    this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
+    this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
+    this.mediaLayout = (LinearLayout) view.findViewById(R.id.reading_fragment_media_player_layout);
+    this.playPauseButton = (ImageButton) view.findViewById(R.id.reading_fragment_play_pause_button);
+    this.mediaProgressBar = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_media_progress);
+
+    this.stopButton = (ImageButton) view.findViewById(R.id.reading_fragment_stop_button);
+    this.nextButton = (ImageButton) view.findViewById(R.id.reading_fragment_next_button);
+    this.prevButton = (ImageButton) view.findViewById(R.id.reading_fragment_prev_button);
+    this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
+    this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
+    this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
+    this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
+    this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
+    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
+    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
+
+    final String bookId = bookMetadata.getBookId();
+    final String contentOpf = bookMetadata.getContentOpfName();
+    final StreamingResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
+
+    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
+    this.bookView.addListener(this);
+    this.bookView.setTextSelectionCallback(this, this);
+
+    this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+          seekToPointInPlayback(progress);
+        }
+      }
+
+      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+      }
+
+      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+      }
+    });
+
+    final Context applicationContext = context.getApplicationContext();
+    //this.textToSpeech = new TextToSpeech(applicationContext, new TTSOnInitListener(this));
+
+    // Hide the tutorial view because we need to wait that the book is loaded
+    setTutorialViewVisibility(View.INVISIBLE);
+
+    this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
+      @Override public void onClick(DefinitionView view) {
+        hideDefinitionView();
+      }
+    });
+
+    this.progressContainer.setPadding(progressContainer.getPaddingLeft(), progressContainer.getPaddingTop(), progressContainer.getPaddingRight(),
+        progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context));
+
+    this.chapterProgressDsb.setEnabled(true);
+    this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+
+      private int seekValue;
+
+      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+        this.seekValue = value;
+      }
+
+      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+      }
+
+      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+        bookView.navigateToPercentageInChapter(this.seekValue);
+        formatPageChapterProgress();
+      }
+    });
+  }
+
+  private void checkIfHasBeenSharedQuote() {
+    if (hasSharedText) {
+      hasSharedText = false;
+      uiHandler.postDelayed(new Runnable() {
+        @Override public void run() {
+          onGamificationEventSharedQuote();
+        }
+      }, 500);
+    }
+  }
+
+  protected abstract void onGamificationEventSharedQuote();
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) private void updateFromPrefs() {
     AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -569,14 +574,7 @@ public abstract class AbstractReaderFragment extends Fragment
       restartActivity(isFontChanged, isBackgroundChanged);
     }
 
-    com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Orientation orientation = config.getScreenOrientation();
-
-    switch (orientation) {
-      case PORTRAIT:
-      default:
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        break;
-    }
+    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
   }
 
   private boolean isAnimating() {
@@ -808,8 +806,8 @@ public abstract class AbstractReaderFragment extends Fragment
       streamTTSToDisk();
     } else {
       final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet, R.string.ls_generic_accept,
-              DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
+          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet,
+              R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
                 @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
                 }
               });
@@ -890,35 +888,35 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void streamPartToDisk(String fileName, String part, int offset, int totalLength, boolean endOfPage) throws TTSFailedException {
-    Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
-
-    if (part.trim().length() > 0 || endOfPage) {
-      final HashMap<String, String> params = new HashMap<>();
-      params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
-
-      TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
-      ttsItemPrep.put(fileName, item);
-
-      int result;
-      String errorMessage = "";
-
-      try {
-        result = textToSpeech.synthesizeToFile(part, params, fileName);
-      } catch (Exception e) {
-        logger.e(TAG, "Failed to start TTS", e);
-        result = TextToSpeech.ERROR;
-        errorMessage = e.getMessage();
-      }
-
-      if (result != TextToSpeech.SUCCESS) {
-        String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
-        logger.e(TAG, message);
-        showTTSFailed(message);
-        throw new TTSFailedException();
-      }
-    } else {
-      Log.d(TAG, "Skipping part, since it's empty.");
-    }
+    //Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
+    //
+    //if (part.trim().length() > 0 || endOfPage) {
+    //  final HashMap<String, String> params = new HashMap<>();
+    //  params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
+    //
+    //  TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
+    //  ttsItemPrep.put(fileName, item);
+    //
+    //  int result;
+    //  String errorMessage = "";
+    //
+    //  try {
+    //    result = textToSpeech.synthesizeToFile(part, params, fileName);
+    //  } catch (Exception e) {
+    //    logger.e(TAG, "Failed to start TTS", e);
+    //    result = TextToSpeech.ERROR;
+    //    errorMessage = e.getMessage();
+    //  }
+    //
+    //  if (result != TextToSpeech.SUCCESS) {
+    //    String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
+    //    logger.e(TAG, message);
+    //    showTTSFailed(message);
+    //    throw new TTSFailedException();
+    //  }
+    //} else {
+    //  Log.d(TAG, "Skipping part, since it's empty.");
+    //}
   }
 
   private void showTTSFailed(final String message) {
@@ -935,45 +933,45 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   public void onStreamingCompleted(final String wavFile) {
-    Log.d(TAG, "TTS streaming completed for " + wavFile);
-
-    if (!ttsIsRunning()) {
-      this.textToSpeech.stop();
-      return;
-    }
-
-    if (!ttsItemPrep.containsKey(wavFile)) {
-      logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
-      return;
-    }
-
-    final TTSPlaybackItem item = ttsItemPrep.remove(wavFile);
-
-    try {
-
-      MediaPlayer mediaPlayer = item.getMediaPlayer();
-      mediaPlayer.reset();
-      mediaPlayer.setDataSource(wavFile);
-      mediaPlayer.prepare();
-
-      this.ttsPlaybackItemQueue.add(item);
-    } catch (Exception e) {
-      logger.e(TAG, "Could not play", e);
-      showTTSFailed(e.getLocalizedMessage());
-      return;
-    }
-
-    this.uiHandler.post(new Runnable() {
-      @Override public void run() {
-        AbstractReaderFragment.this.closeWaitDialog();
-      }
-    });
-
-    //If the queue is size 1, it only contains the player we just added,
-    //meaning this is a first playback start.
-    if (ttsPlaybackItemQueue.size() == 1) {
-      startPlayback();
-    }
+    //Log.d(TAG, "TTS streaming completed for " + wavFile);
+    //
+    //if (!ttsIsRunning()) {
+    //  this.textToSpeech.stop();
+    //  return;
+    //}
+    //
+    //if (!ttsItemPrep.containsKey(wavFile)) {
+    //  logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
+    //  return;
+    //}
+    //
+    //final TTSPlaybackItem item = ttsItemPrep.remove(wavFile);
+    //
+    //try {
+    //
+    //  MediaPlayer mediaPlayer = item.getMediaPlayer();
+    //  mediaPlayer.reset();
+    //  mediaPlayer.setDataSource(wavFile);
+    //  mediaPlayer.prepare();
+    //
+    //  this.ttsPlaybackItemQueue.add(item);
+    //} catch (Exception e) {
+    //  logger.e(TAG, "Could not play", e);
+    //  showTTSFailed(e.getLocalizedMessage());
+    //  return;
+    //}
+    //
+    //this.uiHandler.post(new Runnable() {
+    //  @Override public void run() {
+    //    AbstractReaderFragment.this.closeWaitDialog();
+    //  }
+    //});
+    //
+    ////If the queue is size 1, it only contains the player we just added,
+    ////meaning this is a first playback start.
+    //if (ttsPlaybackItemQueue.size() == 1) {
+    //  startPlayback();
+    //}
   }
 
   private boolean ttsIsRunning() {
@@ -1011,7 +1009,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
     this.mediaLayout.setVisibility(View.GONE);
 
-    this.textToSpeech.stop();
+    //this.textToSpeech.stop();
     this.ttsItemPrep.clear();
 
     saveReadingPosition();
@@ -1021,12 +1019,12 @@ public abstract class AbstractReaderFragment extends Fragment
     this.ttsAvailable = (status == TextToSpeech.SUCCESS);
 
     if (this.ttsAvailable) {
-      this.textToSpeech.setSpeechRate(0.7f);
-      this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-        @Override public void onUtteranceCompleted(String wavFile) {
-          AbstractReaderFragment.this.onStreamingCompleted(wavFile);
-        }
-      });
+      //this.textToSpeech.setSpeechRate(0.7f);
+      //this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+      //  @Override public void onUtteranceCompleted(String wavFile) {
+      //    AbstractReaderFragment.this.onStreamingCompleted(wavFile);
+      //  }
+      //});
     } else {
       Log.i(TAG, "Failed to initialize TextToSpeech. Got status " + status);
     }
@@ -1148,19 +1146,6 @@ public abstract class AbstractReaderFragment extends Fragment
     progressDialog.setMessage(getString(R.string.loading_wait));
 
     progressDialog.show();
-  }
-
-  private void displayPageNumber(int pageNumber) {
-    final String pageString = !config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
-
-    final SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
-    builder.setSpan(new CenterSpan(), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    pageNumberView.setTextColor(config.getTextColor());
-    pageNumberView.setTextSize(config.getTextSize());
-    pageNumberView.setTypeface(config.getDefaultFontFamily().getDefaultTypeface());
-    pageNumberView.setText(builder);
-    pageNumberView.invalidate();
   }
 
   @Override public void parseEntryComplete(String name, Resource resource) {
@@ -1385,8 +1370,6 @@ public abstract class AbstractReaderFragment extends Fragment
     onGamificationEventPageDown();
   }
 
-  protected abstract void onGamificationEventPageDown();
-
   @Override public void onPageDownFirstPage() {
   }
 
@@ -1401,6 +1384,21 @@ public abstract class AbstractReaderFragment extends Fragment
   @Override public void onBookImageClicked(final Drawable drawable) {
     displayPhotoViewer((FastBitmapDrawable) drawable);
   }
+
+  private void displayPageNumber(int pageNumber) {
+    final String pageString = !config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
+
+    final SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
+    builder.setSpan(new CenterSpan(), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    pageNumberView.setTextColor(config.getTextColor());
+    pageNumberView.setTextSize(config.getTextSize());
+    pageNumberView.setTypeface(config.getDefaultFontFamily().getDefaultTypeface());
+    pageNumberView.setText(builder);
+    pageNumberView.invalidate();
+  }
+
+  protected abstract void onGamificationEventPageDown();
 
   private void displayPhotoViewer(final FastBitmapDrawable drawable) {
     final FragmentActivity activity = getActivity();
@@ -1779,96 +1777,6 @@ public abstract class AbstractReaderFragment extends Fragment
     });
   }
 
-  private void doPageCurl(boolean flipRight, boolean pageDown) {
-    if (isAnimating() || bookView == null) {
-      return;
-    }
-
-    this.viewSwitcher.setInAnimation(null);
-    this.viewSwitcher.setOutAnimation(null);
-
-    if (viewSwitcher.getCurrentView() == this.dummyView) {
-      viewSwitcher.showNext();
-    }
-
-    Option<Bitmap> before = getBookViewSnapshot();
-
-    this.pageNumberView.setVisibility(View.GONE);
-
-    final PageCurlAnimator animator = new PageCurlAnimator(flipRight);
-
-    // Pagecurls should only take a few frames. When the screen gets
-    // bigger, so do the frames.
-    animator.SetCurlSpeed(bookView.getWidth() / 8);
-
-    animator.setBackgroundColor(config.getBackgroundColor());
-
-    if (pageDown) {
-      bookView.pageDown();
-      formatPageChapterProgress();
-    } else {
-      bookView.pageUp();
-      formatPageChapterProgress();
-    }
-
-    Option<Bitmap> after = getBookViewSnapshot();
-
-    //The animator knows how to handle nulls, so
-    //we can use unsafeGet() here.
-    if (flipRight) {
-      animator.setBackgroundBitmap(after.unsafeGet());
-      animator.setForegroundBitmap(before.unsafeGet());
-    } else {
-      animator.setBackgroundBitmap(before.unsafeGet());
-      animator.setForegroundBitmap(after.unsafeGet());
-    }
-
-    dummyView.setAnimator(animator);
-    this.viewSwitcher.showNext();
-
-    uiHandler.post(new Runnable() {
-      @Override public void run() {
-        AbstractReaderFragment.this.doPageCurl(animator);
-      }
-    });
-
-    dummyView.invalidate();
-  }
-
-  /**
-   * Does the actual page-curl animation.
-   * <p>
-   * This method advances the animator by 1 frame,
-   * and then places itself back on the background
-   * queue, passing along the same animator.
-   * <p>
-   * That was the animator is moved along until it's done.
-   * <p>
-   * Should be called from a background thread.
-   */
-  private void doPageCurl(final PageCurlAnimator animator) {
-    if (animator.isFinished()) {
-
-      if (viewSwitcher.getCurrentView() == dummyView) {
-        viewSwitcher.showNext();
-      }
-
-      dummyView.setAnimator(null);
-      pageNumberView.setVisibility(View.VISIBLE);
-    } else {
-      animator.advanceOneFrame();
-      dummyView.invalidate();
-
-      int delay = 1000 / animator.getAnimationSpeed();
-
-      uiHandler.postDelayed(new Runnable() {
-        @Override public void run() {
-          AbstractReaderFragment.this.doPageCurl(animator);
-        }
-      }, delay);
-    }
-  }
-
   private Option<Bitmap> getBookViewSnapshot() {
     try {
       Bitmap bitmap = Bitmap.createBitmap(viewSwitcher.getWidth(), viewSwitcher.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1880,10 +1788,10 @@ public abstract class AbstractReaderFragment extends Fragment
 
       if (config.isShowPageNumbers()) {
 
-        /**
-         * FIXME: creating an intermediate bitmap here because I can't
-         * figure out how to draw the pageNumberView directly on the
-         * canvas and have it show up in the right place.
+        /*
+          FIXME: creating an intermediate bitmap here because I can't
+          figure out how to draw the pageNumberView directly on the
+          canvas and have it show up in the right place.
          */
 
         Bitmap pageNumberBitmap = Bitmap.createBitmap(pageNumberView.getWidth(), pageNumberView.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1907,10 +1815,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
   private void prepareSlide(Animation inAnim, Animation outAnim) {
     Option<Bitmap> bitmap = getBookViewSnapshot();
-    /*
-    TODO: is this OK?
-        We don't set anything when we get None instead of Some.
-        */
+    // TODO: is this OK? We don't set anything when we get None instead of Some.
     bitmap.forEach(new Command<Bitmap>() {
       @Override public void execute(Bitmap bm) {
         dummyView.setImageBitmap(bm);
@@ -1939,38 +1844,8 @@ public abstract class AbstractReaderFragment extends Fragment
     }
 
     stopAnimating();
-
-    if (o == Orientation.HORIZONTAL) {
-
-      AnimationStyle animH = config.getHorizontalAnim();
-      ReadingDirection direction = config.getReadingDirection();
-
-      if (animH == AnimationStyle.CURL) {
-        doPageCurl(direction == ReadingDirection.LEFT_TO_RIGHT, true);
-      } else if (animH == AnimationStyle.SLIDE) {
-
-        if (direction == ReadingDirection.LEFT_TO_RIGHT) {
-          prepareSlide(Animations.inFromRightAnimation(), Animations.outToLeftAnimation());
-        } else {
-          prepareSlide(Animations.inFromLeftAnimation(), Animations.outToRightAnimation());
-        }
-
-        viewSwitcher.showNext();
-        bookView.pageDown();
-        formatPageChapterProgress();
-      } else {
-        bookView.pageDown();
-        formatPageChapterProgress();
-      }
-    } else {
-      if (config.getVerticalAnim() == AnimationStyle.SLIDE) {
-        prepareSlide(Animations.inFromBottomAnimation(), Animations.outToTopAnimation());
-        viewSwitcher.showNext();
-      }
-
-      bookView.pageDown();
-      formatPageChapterProgress();
-    }
+    bookView.pageDown();
+    formatPageChapterProgress();
   }
 
   private void pageUp(Orientation o) {
@@ -1979,37 +1854,8 @@ public abstract class AbstractReaderFragment extends Fragment
     }
 
     stopAnimating();
-
-    if (o == Orientation.HORIZONTAL) {
-
-      AnimationStyle animH = config.getHorizontalAnim();
-      ReadingDirection direction = config.getReadingDirection();
-
-      if (animH == AnimationStyle.CURL) {
-        doPageCurl(direction == ReadingDirection.RIGHT_TO_LEFT, false);
-      } else if (animH == AnimationStyle.SLIDE) {
-        if (direction == ReadingDirection.LEFT_TO_RIGHT) {
-          prepareSlide(Animations.inFromLeftAnimation(), Animations.outToRightAnimation());
-        } else {
-          prepareSlide(Animations.inFromRightAnimation(), Animations.outToLeftAnimation());
-        }
-        viewSwitcher.showNext();
-        bookView.pageUp();
-        formatPageChapterProgress();
-      } else {
-        bookView.pageUp();
-        formatPageChapterProgress();
-      }
-    } else {
-
-      if (config.getVerticalAnim() == AnimationStyle.SLIDE) {
-        prepareSlide(Animations.inFromTopAnimation(), Animations.outToBottomAnimation());
-        viewSwitcher.showNext();
-      }
-
-      bookView.pageUp();
-      formatPageChapterProgress();
-    }
+    bookView.pageUp();
+    formatPageChapterProgress();
   }
 
   @Override public void onPrepareActionMode() {
@@ -2043,14 +1889,15 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void displayUserNotRegisteredDialog() {
-    MaterialDialog dialog = DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
-        R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
-          @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-            if (action == DialogFactory.Action.OK) {
-              onEventNavigateToSignUpScreen();
-            }
-          }
-        });
+    MaterialDialog dialog =
+        DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
+            R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
+              @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
+                if (action == DialogFactory.Action.OK) {
+                  onEventNavigateToSignUpScreen();
+                }
+              }
+            });
 
     dialog.show();
   }
@@ -2071,8 +1918,9 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void formatPageChapterProgress() {
-    chapterProgressPagesTv.setText(
-        bookView.getPagesForResource() < bookView.getCurrentPage() ? "" : String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
+    chapterProgressPagesTv.setText(bookView.getPagesForResource() < bookView.getCurrentPage() ? ""
+                                                                                              : String.format("%s / %s", bookView.getCurrentPage(),
+                                                                                                  bookView.getPagesForResource()));
 
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
@@ -2089,7 +1937,8 @@ public abstract class AbstractReaderFragment extends Fragment
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(bookView.getCurrentPage()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS,
+          String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
 
 
       /*final CharSequence chartDisplayed = bookView.getStrategy().getChartDisplayed();
@@ -2103,10 +1952,6 @@ public abstract class AbstractReaderFragment extends Fragment
       analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
 
     }
-  }
-
-  private enum Orientation {
-    HORIZONTAL, VERTICAL
   }
 
   private class TTSSeekBarUpdaterRunnable implements Runnable {
@@ -2184,6 +2029,23 @@ public abstract class AbstractReaderFragment extends Fragment
     private boolean allowColoursFromCSS;
     private ColorProfile colorProfile;
   }
+
+  private static class TTSOnInitListener implements TextToSpeech.OnInitListener {
+
+    private final WeakReference<AbstractReaderFragment> fragmentWeakReference;
+
+    public TTSOnInitListener(AbstractReaderFragment fragment) {
+      this.fragmentWeakReference = new WeakReference<>(fragment);
+    }
+
+    @Override public void onInit(int status) {
+      final AbstractReaderFragment fragment = fragmentWeakReference.get();
+      if (fragment != null) {
+        fragment.onTextToSpeechInit(status);
+      }
+    }
+  }
+
   //endregion
 }
 

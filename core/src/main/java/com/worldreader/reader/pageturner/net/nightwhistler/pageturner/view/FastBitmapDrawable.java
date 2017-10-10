@@ -16,7 +16,6 @@
 
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -44,6 +43,7 @@ import com.worldreader.core.domain.repository.StreamingBookRepository;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.util.concurrent.*;
 
 public class FastBitmapDrawable extends Drawable {
 
@@ -64,10 +64,13 @@ public class FastBitmapDrawable extends Drawable {
   private final int height;
 
   private Bitmap bitmap;
-  private boolean isLoaded = false;
-  private boolean isProcessing = false;
+  private boolean isLoaded;
+  private boolean isProcessing;
 
-  public FastBitmapDrawable(final Context context, final String resource, final int width, final int height, final StreamingBookRepository dataSource, final BookMetadata metadata, final Logger logger) {
+  private ListenableFuture<StreamingResource> getBookResourceFuture;
+
+  public FastBitmapDrawable(final String resource, final int width, final int height, final StreamingBookRepository dataSource, final BookMetadata metadata,
+      final Logger logger) {
     this.resource = resource;
     this.dataSource = dataSource;
     this.metadata = metadata;
@@ -96,8 +99,8 @@ public class FastBitmapDrawable extends Drawable {
 
       if (!isLoaded && !isProcessing) {
         isProcessing = true;
-        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
-        Futures.addCallback(future, new FutureCallback<StreamingResource>() {
+        this.getBookResourceFuture = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
+        Futures.addCallback(getBookResourceFuture, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {
             final InputStream inputStream = result.getInputStream();
             handler.post(new Runnable() {
@@ -109,6 +112,10 @@ public class FastBitmapDrawable extends Drawable {
           }
 
           @Override public void onFailure(@NonNull final Throwable t) {
+            if (t instanceof CancellationException) {
+              return;
+            }
+
             handler.post(new Runnable() {
               @Override public void run() {
                 isProcessing = false;
@@ -155,9 +162,10 @@ public class FastBitmapDrawable extends Drawable {
     try {
       final Bitmap localBitmap = getBitmap(inputStream);
       if (localBitmap == null || localBitmap.getHeight() < 1 || localBitmap.getWidth() < 1) {
+        isLoaded = true;
         return;
       }
-      destroy();
+      recycle();
       bitmap = localBitmap;
       isLoaded = true;
       invalidateSelf();
@@ -167,17 +175,21 @@ public class FastBitmapDrawable extends Drawable {
     }
   }
 
-  public Bitmap getBitmap() {
+  @Nullable public Bitmap getBitmap() {
     return bitmap;
   }
 
-  public void destroy() {
+  public void recycle() {
     if (this.bitmap != null) {
       this.bitmap.recycle();
     }
 
     this.bitmap = null;
-    //this.setCallback(null);
+  }
+
+  public void reset() {
+    recycle();
+    isLoaded = false;
   }
 
   @Nullable private Bitmap getBitmap(InputStream is) throws IOException {

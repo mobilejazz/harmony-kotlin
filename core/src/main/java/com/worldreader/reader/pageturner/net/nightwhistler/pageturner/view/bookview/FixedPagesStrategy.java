@@ -20,80 +20,41 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
 import jedi.option.Option;
 
 import java.util.*;
 
 import static java.util.Collections.*;
-import static jedi.option.Options.none;
-import static jedi.option.Options.option;
-import static jedi.option.Options.some;
+import static jedi.option.Options.*;
 
 public class FixedPagesStrategy implements PageChangeStrategy {
 
   private static final String TAG = FixedPagesStrategy.class.getSimpleName();
 
-  private Configuration config;
-
-  private StaticLayoutFactory layoutFactory;
+  private final List<Integer> pageOffsets = new ArrayList<>();
+  private final StaticLayoutFactory layoutFactory;
 
   private Spanned text;
 
   private int pageNum;
-
-  private List<Integer> pageOffsets = new ArrayList<>();
 
   private BookView bookView;
   private TextView childView;
 
   private int storedPosition = -1;
 
-  @Override public void setBookView(BookView bookView) {
-    this.bookView = bookView;
-    this.childView = bookView.getInnerView();
-  }
-
-  @Override public int getSizeChartDisplayed() {
-    if (this.childView != null && this.childView.getText() != null) {
-      return this.childView.getText().length();
-    } else {
-      return 0;
-    }
-  }
-
-  @Override public CharSequence getChartDisplayed() {
-    if (this.childView != null && this.childView.getText() != null) {
-      return this.childView.getText();
-    } else {
-      return "";
-    }
-  }
-
-  public void setLayoutFactory(StaticLayoutFactory layoutFactory) {
-    this.layoutFactory = layoutFactory;
-  }
-
-  public void setConfig(Configuration config) {
-    this.config = config;
-  }
-
-  @Override public void clearStoredPosition() {
-    this.pageNum = 0;
-    this.storedPosition = 0;
-  }
-
-  @Override public void clearText() {
-    this.text = new SpannableStringBuilder("");
-    this.childView.setText(text);
-    this.pageOffsets = new ArrayList<>();
+  public FixedPagesStrategy() {
+    this.layoutFactory = new StaticLayoutFactory();
   }
 
   /**
@@ -107,7 +68,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     return new ArrayList<>(this.pageOffsets);
   }
 
-  public List<Integer> getPageOffsets(CharSequence text, boolean includePageNumbers) {
+  public List<Integer> getPageOffsets(CharSequence text) {
     if (text == null) {
       return emptyList();
     }
@@ -136,19 +97,8 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     int pageHeight = bookView.getMeasuredHeight() - bookView.getVerticalMargin();
     Log.d(TAG, "OFFSETT FIRST pageHeight " + pageHeight);
 
-    if (includePageNumbers) {
-      String bottomSpace = "0\n";
-
-      StaticLayout numLayout = layoutFactory.create(bottomSpace, textPaint, boundedWidth, bookView.getLineSpacing());
-      numLayout.draw(new Canvas());
-
-      //Subtract the height needed to show page numbers, or the
-      //height of the margin, whichever is more
-      pageHeight = pageHeight - Math.max(numLayout.getHeight(), bookView.getVerticalMargin());
-    } else {
-      //Just subtract the bottom margin
-      pageHeight = pageHeight - bookView.getVerticalMargin();
-    }
+    //Just subtract the bottom margin
+    pageHeight = pageHeight - bookView.getVerticalMargin();
 
     Log.d(TAG, "OFFSETT Got pageHeight " + pageHeight);
 
@@ -157,7 +107,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     int pageStartOffset = 0;
 
     while (topLineNextPage < totalLines - 1) {
-
       Log.d(TAG, "Processing line " + topLineNextPage + " / " + totalLines);
 
       int topLine = layout.getLineForOffset(pageStartOffset);
@@ -183,12 +132,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     return pageOffsets;
   }
 
-  @Override public void reset() {
-    clearStoredPosition();
-    this.pageOffsets.clear();
-    clearText();
-  }
-
   private void updatePageNumber() {
     for (int i = 0; i < this.pageOffsets.size(); i++) {
       if (this.pageOffsets.get(i) > this.storedPosition) {
@@ -198,39 +141,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     }
 
     this.pageNum = this.pageOffsets.size() - 1;
-  }
-
-  @Override public void updatePosition() {
-    if (pageOffsets.isEmpty() || text.length() == 0 || this.pageNum == -1) {
-      return;
-    }
-
-    if (storedPosition != -1) {
-      updatePageNumber();
-    }
-
-    CharSequence sequence = getTextForPage(this.pageNum).getOrElse("");
-
-    if (sequence.length() > 0) {
-
-      // #555 Remove \n at the end of sequence which get InnerView size changed
-      int endIndex = sequence.length();
-      while (sequence.charAt(endIndex - 1) == '\n') {
-        endIndex--;
-      }
-
-      sequence = sequence.subSequence(0, endIndex);
-    }
-
-    try {
-      this.childView.setText(sequence);
-
-      //If we get an error setting the formatted text,
-      //strip formatting and try again.
-
-    } catch (IndexOutOfBoundsException ie) {
-      this.childView.setText(sequence.toString());
-    }
   }
 
   private Option<CharSequence> getTextForPage(int page) {
@@ -255,13 +165,15 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     return text;
   }
 
-  @Override public void setPosition(int pos) {
-    this.storedPosition = pos;
+  @Override public void loadText(Spanned text) {
+    this.text = text;
+    this.pageNum = 0;
+    this.pageOffsets.clear();
+    this.pageOffsets.addAll(getPageOffsets(text));
   }
 
-  @Override public void setRelativePosition(double position) {
-    int intPosition = (int) (this.text.length() * position);
-    setPosition(intPosition);
+  @Override public void updateGUI() {
+    updatePosition();
   }
 
   public int getTopLeftPosition() {
@@ -284,55 +196,21 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     return getTopLeftPosition();
   }
 
-  public Option<Spanned> getText() {
-    return option(text);
+  public boolean isAtStart() {
+    return this.pageNum == 0;
   }
 
   public boolean isAtEnd() {
     return pageNum == this.pageOffsets.size() - 1;
   }
 
-  public boolean isAtStart() {
-    return this.pageNum == 0;
+  @Override public void setPosition(int pos) {
+    this.storedPosition = pos;
   }
 
-  public boolean isScrolling() {
-    return false;
-  }
-
-  @Override public Option<CharSequence> getNextPageText() {
-    if (isAtEnd()) {
-      return none();
-    }
-
-    return getTextForPage(this.pageNum + 1);
-  }
-
-  @Override public Option<CharSequence> getPreviousPageText() {
-    if (isAtStart()) {
-      return none();
-    }
-
-    return getTextForPage(this.pageNum - 1);
-  }
-
-  @Override public void pageDown() {
-    this.storedPosition = -1;
-
-    if (isAtEnd()) {
-      PageTurnerSpine spine = bookView.getSpine();
-
-      if (spine == null || !spine.navigateForward()) {
-        return;
-      }
-
-      this.clearText();
-      this.pageNum = 0;
-      bookView.loadText();
-    } else {
-      this.pageNum = Math.min(pageNum + 1, this.pageOffsets.size() - 1);
-      updatePosition();
-    }
+  @Override public void setRelativePosition(double position) {
+    int intPosition = (int) (this.text.length() * position);
+    setPosition(intPosition);
   }
 
   @Override public void pageUp() {
@@ -354,13 +232,131 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     }
   }
 
-  @Override public void loadText(Spanned text) {
-    this.text = text;
-    this.pageNum = 0;
-    this.pageOffsets = getPageOffsets(text, config.isShowPageNumbers());
+  @Override public void pageDown() {
+    this.storedPosition = -1;
+
+    if (isAtEnd()) {
+      PageTurnerSpine spine = bookView.getSpine();
+
+      if (spine == null || !spine.navigateForward()) {
+        return;
+      }
+
+      this.clearText();
+      this.pageNum = 0;
+      bookView.loadText();
+    } else {
+      this.pageNum = Math.min(pageNum + 1, this.pageOffsets.size() - 1);
+      updatePosition();
+    }
   }
 
-  @Override public void updateGUI() {
-    updatePosition();
+  public boolean isScrolling() {
+    return false;
+  }
+
+  @Override public void clearText() {
+    this.text = new SpannableStringBuilder("");
+    this.childView.setText(text);
+    this.pageOffsets.clear();
+  }
+
+  @Override public void clearStoredPosition() {
+    this.pageNum = 0;
+    this.storedPosition = 0;
+  }
+
+  @Override public void updatePosition() {
+    if (pageOffsets.isEmpty() || text.length() == 0 || this.pageNum == -1) {
+      return;
+    }
+
+    if (storedPosition != -1) {
+      updatePageNumber();
+    }
+
+    CharSequence sequence = getTextForPage(this.pageNum).getOrElse("");
+
+    if (sequence.length() > 0) {
+      // #555 Remove \n at the end of sequence which get InnerView size changed
+      int endIndex = sequence.length();
+      while (sequence.charAt(endIndex - 1) == '\n') {
+        endIndex--;
+      }
+
+      sequence = sequence.subSequence(0, endIndex);
+    }
+
+    // Remove drawable resources from childView as soon as this are out of screen (if any)
+    final CharSequence text = childView.getText();
+    if (text instanceof Spanned) {
+      final Spanned spanned = (Spanned) text;
+      final int length = text.length() - 1;
+      final ClickableImageSpan[] spans = spanned.getSpans(0, length, ClickableImageSpan.class);
+      for (ClickableImageSpan imageSpan : spans) {
+        final Drawable drawable = imageSpan.getDrawable();
+        if (drawable instanceof FastBitmapDrawable) {
+          final FastBitmapDrawable fbmp = (FastBitmapDrawable) drawable;
+          fbmp.reset();
+        }
+      }
+    }
+
+    try {
+      this.childView.setText(sequence);
+
+      //If we get an error setting the formatted text,
+      //strip formatting and try again.
+
+    } catch (IndexOutOfBoundsException ie) {
+      this.childView.setText(sequence.toString());
+    }
+  }
+
+  @Override public void reset() {
+    clearStoredPosition();
+    this.pageOffsets.clear();
+    clearText();
+  }
+
+  public Option<Spanned> getText() {
+    return option(text);
+  }
+
+  @Override public Option<CharSequence> getNextPageText() {
+    if (isAtEnd()) {
+      return none();
+    }
+
+    return getTextForPage(this.pageNum + 1);
+  }
+
+  @Override public Option<CharSequence> getPreviousPageText() {
+    if (isAtStart()) {
+      return none();
+    }
+
+    return getTextForPage(this.pageNum - 1);
+  }
+
+  @Override public void setBookView(BookView bookView) {
+    this.bookView = bookView;
+    this.childView = bookView.getInnerView();
+  }
+
+  @Override public int getSizeChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText().length();
+    } else {
+      return 0;
+    }
+  }
+
+  @Override public CharSequence getChartDisplayed() {
+    if (this.childView != null && this.childView.getText() != null) {
+      return this.childView.getText();
+    } else {
+      return "";
+    }
   }
 }

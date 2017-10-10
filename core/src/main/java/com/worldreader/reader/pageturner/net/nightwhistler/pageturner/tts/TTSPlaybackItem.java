@@ -35,8 +35,7 @@ public class TTSPlaybackItem {
 
   private String fileName;
 
-  public TTSPlaybackItem(CharSequence text, MediaPlayer mediaPlayer, int totalTextLength,
-      int offset, boolean lastElementOfPage, String fileName) {
+  public TTSPlaybackItem(CharSequence text, MediaPlayer mediaPlayer, int totalTextLength, int offset, boolean lastElementOfPage, String fileName) {
     this.text = text;
     this.mediaPlayer = mediaPlayer;
     this.totalTextLength = totalTextLength;

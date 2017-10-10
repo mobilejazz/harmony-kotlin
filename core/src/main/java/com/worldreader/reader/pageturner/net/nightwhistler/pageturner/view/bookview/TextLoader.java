@@ -3,7 +3,6 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import android.text.Spannable;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
@@ -37,12 +36,6 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
 
   void setUseColoursFromCSS(boolean useColours);
 
-  FastBitmapDrawable getCachedImage(String href);
-
-  boolean hasCachedImage(String href);
-
-  void storeImageInCache(String href, FastBitmapDrawable drawable);
-
   Option<Spannable> getCachedTextForResource(Resource resource);
 
   Spannable getText(final Resource resource, HtmlSpanner.CancellationCallback cancellationCallback) throws IOException;
@@ -54,8 +47,6 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
   Book initBook(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception;
 
   void closeCurrentBook();
-
-  void clearImageCache();
 
   void setLinkCallBack(LinkTagHandler.LinkCallBack callBack);
 

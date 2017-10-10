@@ -30,7 +30,6 @@ public class PreLoadTask extends QueueableAsyncTask<Void, Void, Void> {
     }
 
     Option<Resource> resource = spine.getNextResource();
-
     resource.forEach(new Command<Resource>() {
       @Override public void execute(Resource res) {
         resourcesLoader.loadResource(res);

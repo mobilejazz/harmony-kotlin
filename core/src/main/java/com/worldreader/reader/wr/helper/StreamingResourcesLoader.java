@@ -16,9 +16,10 @@ public class StreamingResourcesLoader implements ResourcesLoader {
   public static final String TAG = StreamingResourcesLoader.class.getSimpleName();
 
   private final BookMetadata bookMetadata;
-  private StreamingBookRepository dataSource;
-  private Logger logger;
-  private List<Holder> callbacks = new ArrayList<>();
+  private final StreamingBookRepository dataSource;
+  private final Logger logger;
+
+  private final List<Holder> callbacks = new ArrayList<>();
 
   public StreamingResourcesLoader(BookMetadata bookMetadata, StreamingBookRepository dataSource, Logger logger) {
     this.bookMetadata = bookMetadata;
@@ -49,22 +50,26 @@ public class StreamingResourcesLoader implements ResourcesLoader {
     for (Holder holder : callbacks) {
       holder.callback.onLoadImageResource(holder.href, null, dataSource, bookMetadata);
     }
-    callbacks.clear();
   }
 
   @Override public void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback) {
     this.callbacks.add(new Holder(resolvedHref, imageCallback));
   }
 
+  @Override public void clearImageResources() {
+    this.callbacks.clear();
+  }
+
   private static class Holder {
+
+    String href;
+    ImageResourceCallback callback;
 
     Holder(String href, ImageResourceCallback callback) {
       this.href = href;
       this.callback = callback;
     }
 
-    String href;
-    ImageResourceCallback callback;
   }
 
 }
