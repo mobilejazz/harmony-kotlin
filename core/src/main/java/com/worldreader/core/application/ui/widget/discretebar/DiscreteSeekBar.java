@@ -73,6 +73,21 @@ public class DiscreteSeekBar extends View {
     void onStopTrackingTouch(DiscreteSeekBar seekBar);
   }
 
+  public static abstract class SimpleOnProgressChangeListener implements OnProgressChangeListener {
+
+    @Override public void onProgressChanged(final DiscreteSeekBar seekBar, final int value, final boolean fromUser) {
+
+    }
+
+    @Override public void onStartTrackingTouch(final DiscreteSeekBar seekBar) {
+
+    }
+
+    @Override public void onStopTrackingTouch(final DiscreteSeekBar seekBar) {
+
+    }
+  }
+
   /**
    * Interface to transform the current internal value of this DiscreteSeekBar to anther one for
    * the

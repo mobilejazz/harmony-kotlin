@@ -38,7 +38,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -144,10 +143,12 @@ public abstract class AbstractReaderFragment extends Fragment
 
   private TelephonyManager telephonyManager;
   private AudioManager audioManager;
+
   private boolean ttsAvailable;
-  //private TextToSpeech textToSpeech;
+  private TextToSpeech textToSpeech;
   private TTSPlaybackQueue ttsPlaybackItemQueue;
   private Map<String, TTSPlaybackItem> ttsItemPrep = new HashMap<>();
+
   private TextLoader textLoader;
   private ProgressDialog waitDialog;
   private String bookTitle;
@@ -220,7 +221,7 @@ public abstract class AbstractReaderFragment extends Fragment
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // This block need to be called before inflating the view to avoid problems with BookView
+    // This block needs to be called before inflating the view to avoid problems with BookView
     this.textLoader = new StreamingTextLoader();
     this.textLoader.setHtmlSpanner(new HtmlSpanner());
   }
@@ -273,12 +274,79 @@ public abstract class AbstractReaderFragment extends Fragment
         }
 
         @Override public void onErrorResult(ErrorCore<?> errorCore) {
-
+          // Nothing to do
         }
       });
     }
 
-    initViews(getView());
+    final View view = getView();
+
+    this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
+    this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
+    this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
+    this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
+    this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
+    this.mediaLayout = (LinearLayout) view.findViewById(R.id.reading_fragment_media_player_layout);
+    this.playPauseButton = (ImageButton) view.findViewById(R.id.reading_fragment_play_pause_button);
+    this.mediaProgressBar = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_media_progress);
+
+    this.stopButton = (ImageButton) view.findViewById(R.id.reading_fragment_stop_button);
+    this.nextButton = (ImageButton) view.findViewById(R.id.reading_fragment_next_button);
+    this.prevButton = (ImageButton) view.findViewById(R.id.reading_fragment_prev_button);
+    this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
+    this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
+    this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
+    this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
+    this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
+    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
+    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
+
+    final String bookId = bookMetadata.getBookId();
+    final String contentOpf = bookMetadata.getContentOpfName();
+    final StreamingResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
+
+    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
+    this.bookView.addListener(this);
+    this.bookView.setTextSelectionCallback(this, this);
+
+    this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
+      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+          seekToPointInPlayback(progress);
+        }
+      }
+    });
+
+    // TODO: 10/10/2017 Review this properly (commented to avoid memory leaks)
+    //final Context applicationContext = context.getApplicationContext();
+    this.textToSpeech = null; //new TextToSpeech(applicationContext, new TTSOnInitListener(this));
+
+    // Hide the tutorial view because we need to wait that the book is loaded
+    setTutorialViewVisibility(View.INVISIBLE);
+
+    this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
+      @Override public void onClick(DefinitionView view) {
+        hideDefinitionView();
+      }
+    });
+
+    this.progressContainer.setPadding(progressContainer.getPaddingLeft(), progressContainer.getPaddingTop(), progressContainer.getPaddingRight(),
+        progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context));
+
+    this.chapterProgressDsb.setEnabled(true);
+    this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
+
+      private int seekValue;
+
+      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+        this.seekValue = value;
+      }
+
+      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+        bookView.navigateToPercentageInChapter(this.seekValue);
+        formatPageChapterProgress();
+      }
+    });
 
     AppCompatActivity activity = (AppCompatActivity) getActivity();
 
@@ -309,7 +377,7 @@ public abstract class AbstractReaderFragment extends Fragment
       this.mediaLayout.setVisibility(View.VISIBLE);
       this.ttsPlaybackItemQueue.updateSpeechCompletedCallbacks(new SpeechCompletedCallback() {
         @Override public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
-          AbstractReaderFragment.this.speechCompleted(item, mediaPlayer);
+          onSpeechCompleted(item, mediaPlayer);
         }
       });
       uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
@@ -347,23 +415,22 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public void onDestroy() {
-    //if (this.textToSpeech != null) {
-    //  this.textToSpeech.stop();
-    //  this.textToSpeech.shutdown();
-    //  this.textToSpeech = null;
-    //}
+    if (this.textToSpeech != null) {
+      this.textToSpeech.stop();
+      this.textToSpeech.shutdown();
+      this.textToSpeech = null;
+    }
     this.closeWaitDialog();
     super.onDestroy();
   }
 
   @Override public void onPrepareOptionsMenu(Menu menu) {
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
     }
 
-    MenuItem tts = menu.findItem(R.id.text_to_speech);
+    final MenuItem tts = menu.findItem(R.id.text_to_speech);
     tts.setEnabled(ttsAvailable);
   }
 
@@ -409,85 +476,6 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
-
-  private void initViews(View view) {
-    this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
-    this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
-    this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
-    this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
-    this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
-    this.mediaLayout = (LinearLayout) view.findViewById(R.id.reading_fragment_media_player_layout);
-    this.playPauseButton = (ImageButton) view.findViewById(R.id.reading_fragment_play_pause_button);
-    this.mediaProgressBar = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_media_progress);
-
-    this.stopButton = (ImageButton) view.findViewById(R.id.reading_fragment_stop_button);
-    this.nextButton = (ImageButton) view.findViewById(R.id.reading_fragment_next_button);
-    this.prevButton = (ImageButton) view.findViewById(R.id.reading_fragment_prev_button);
-    this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
-    this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
-    this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
-    this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
-    this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
-    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
-    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
-
-    final String bookId = bookMetadata.getBookId();
-    final String contentOpf = bookMetadata.getContentOpfName();
-    final StreamingResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
-
-    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
-    this.bookView.addListener(this);
-    this.bookView.setTextSelectionCallback(this, this);
-
-    this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-          seekToPointInPlayback(progress);
-        }
-      }
-
-      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
-      }
-
-      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-
-      }
-    });
-
-    final Context applicationContext = context.getApplicationContext();
-    //this.textToSpeech = new TextToSpeech(applicationContext, new TTSOnInitListener(this));
-
-    // Hide the tutorial view because we need to wait that the book is loaded
-    setTutorialViewVisibility(View.INVISIBLE);
-
-    this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
-      @Override public void onClick(DefinitionView view) {
-        hideDefinitionView();
-      }
-    });
-
-    this.progressContainer.setPadding(progressContainer.getPaddingLeft(), progressContainer.getPaddingTop(), progressContainer.getPaddingRight(),
-        progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context));
-
-    this.chapterProgressDsb.setEnabled(true);
-    this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-
-      private int seekValue;
-
-      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-        this.seekValue = value;
-      }
-
-      @Override public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-      }
-
-      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-        bookView.navigateToPercentageInChapter(this.seekValue);
-        formatPageChapterProgress();
-      }
-    });
-  }
 
   private void checkIfHasBeenSharedQuote() {
     if (hasSharedText) {
@@ -888,35 +876,35 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void streamPartToDisk(String fileName, String part, int offset, int totalLength, boolean endOfPage) throws TTSFailedException {
-    //Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
-    //
-    //if (part.trim().length() > 0 || endOfPage) {
-    //  final HashMap<String, String> params = new HashMap<>();
-    //  params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
-    //
-    //  TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
-    //  ttsItemPrep.put(fileName, item);
-    //
-    //  int result;
-    //  String errorMessage = "";
-    //
-    //  try {
-    //    result = textToSpeech.synthesizeToFile(part, params, fileName);
-    //  } catch (Exception e) {
-    //    logger.e(TAG, "Failed to start TTS", e);
-    //    result = TextToSpeech.ERROR;
-    //    errorMessage = e.getMessage();
-    //  }
-    //
-    //  if (result != TextToSpeech.SUCCESS) {
-    //    String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
-    //    logger.e(TAG, message);
-    //    showTTSFailed(message);
-    //    throw new TTSFailedException();
-    //  }
-    //} else {
-    //  Log.d(TAG, "Skipping part, since it's empty.");
-    //}
+    Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
+
+    if (part.trim().length() > 0 || endOfPage) {
+      final HashMap<String, String> params = new HashMap<>();
+      params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
+
+      TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
+      ttsItemPrep.put(fileName, item);
+
+      int result;
+      String errorMessage = "";
+
+      try {
+        result = textToSpeech.synthesizeToFile(part, params, fileName);
+      } catch (Exception e) {
+        logger.e(TAG, "Failed to start TTS", e);
+        result = TextToSpeech.ERROR;
+        errorMessage = e.getMessage();
+      }
+
+      if (result != TextToSpeech.SUCCESS) {
+        String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
+        logger.e(TAG, message);
+        showTTSFailed(message);
+        throw new TTSFailedException();
+      }
+    } else {
+      Log.d(TAG, "Skipping part, since it's empty.");
+    }
   }
 
   private void showTTSFailed(final String message) {
@@ -933,55 +921,52 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   public void onStreamingCompleted(final String wavFile) {
-    //Log.d(TAG, "TTS streaming completed for " + wavFile);
-    //
-    //if (!ttsIsRunning()) {
-    //  this.textToSpeech.stop();
-    //  return;
-    //}
-    //
-    //if (!ttsItemPrep.containsKey(wavFile)) {
-    //  logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
-    //  return;
-    //}
-    //
-    //final TTSPlaybackItem item = ttsItemPrep.remove(wavFile);
-    //
-    //try {
-    //
-    //  MediaPlayer mediaPlayer = item.getMediaPlayer();
-    //  mediaPlayer.reset();
-    //  mediaPlayer.setDataSource(wavFile);
-    //  mediaPlayer.prepare();
-    //
-    //  this.ttsPlaybackItemQueue.add(item);
-    //} catch (Exception e) {
-    //  logger.e(TAG, "Could not play", e);
-    //  showTTSFailed(e.getLocalizedMessage());
-    //  return;
-    //}
-    //
-    //this.uiHandler.post(new Runnable() {
-    //  @Override public void run() {
-    //    AbstractReaderFragment.this.closeWaitDialog();
-    //  }
-    //});
-    //
-    ////If the queue is size 1, it only contains the player we just added,
-    ////meaning this is a first playback start.
-    //if (ttsPlaybackItemQueue.size() == 1) {
-    //  startPlayback();
-    //}
+    Log.d(TAG, "TTS streaming completed for " + wavFile);
+
+    if (!ttsIsRunning()) {
+      this.textToSpeech.stop();
+      return;
+    }
+
+    if (!ttsItemPrep.containsKey(wavFile)) {
+      logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
+      return;
+    }
+
+    final TTSPlaybackItem item = ttsItemPrep.remove(wavFile);
+
+    try {
+
+      MediaPlayer mediaPlayer = item.getMediaPlayer();
+      mediaPlayer.reset();
+      mediaPlayer.setDataSource(wavFile);
+      mediaPlayer.prepare();
+
+      this.ttsPlaybackItemQueue.add(item);
+    } catch (Exception e) {
+      logger.e(TAG, "Could not play", e);
+      showTTSFailed(e.getLocalizedMessage());
+      return;
+    }
+
+    this.uiHandler.post(new Runnable() {
+      @Override public void run() {
+        AbstractReaderFragment.this.closeWaitDialog();
+      }
+    });
+
+    //If the queue is size 1, it only contains the player we just added,
+    //meaning this is a first playback start.
+    if (ttsPlaybackItemQueue.size() == 1) {
+      startPlayback();
+    }
   }
 
   private boolean ttsIsRunning() {
     return ttsPlaybackItemQueue.isActive();
   }
 
-  /**
-   * Called when a speech fragment has finished being played.
-   */
-  public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
+  public void onSpeechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
     Log.d(TAG, "Speech completed for " + item.getFileName());
 
     if (!ttsPlaybackItemQueue.isEmpty()) {
@@ -1006,27 +991,26 @@ public abstract class AbstractReaderFragment extends Fragment
 
   private void stopTextToSpeech() {
     this.ttsPlaybackItemQueue.deactivate();
-
     this.mediaLayout.setVisibility(View.GONE);
-
     //this.textToSpeech.stop();
     this.ttsItemPrep.clear();
-
     saveReadingPosition();
   }
 
-  @SuppressWarnings("deprecation") public void onTextToSpeechInit(int status) {
-    this.ttsAvailable = (status == TextToSpeech.SUCCESS);
+  public void onTextToSpeechInit(int status) {
+    this.ttsAvailable = status == TextToSpeech.SUCCESS;
 
     if (this.ttsAvailable) {
-      //this.textToSpeech.setSpeechRate(0.7f);
-      //this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-      //  @Override public void onUtteranceCompleted(String wavFile) {
-      //    AbstractReaderFragment.this.onStreamingCompleted(wavFile);
-      //  }
-      //});
+      this.textToSpeech.setSpeechRate(0.7f);
+      this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+        @Override public void onUtteranceCompleted(String wavFile) {
+          onStreamingCompleted(wavFile);
+        }
+      });
     } else {
-      Log.i(TAG, "Failed to initialize TextToSpeech. Got status " + status);
+      final FragmentActivity activity = getActivity();
+      activity.invalidateOptionsMenu();
+      Toast.makeText(context, getString(R.string.tts_failed), Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -1049,7 +1033,7 @@ public abstract class AbstractReaderFragment extends Fragment
 
     item.setOnSpeechCompletedCallback(new SpeechCompletedCallback() {
       @Override public void speechCompleted(TTSPlaybackItem item1, MediaPlayer mediaPlayer) {
-        AbstractReaderFragment.this.speechCompleted(item1, mediaPlayer);
+        onSpeechCompleted(item1, mediaPlayer);
       }
     });
     uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
@@ -1126,9 +1110,7 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
-  // TODO: 13/11/15 Handle properly an onError ocurred here!
   @Override public void errorOnBookOpening(String errorMessage) {
-    //Timber.e("ErrorOnBookOpening called: " + errorMessage);
     closeWaitDialog();
   }
 
@@ -1813,26 +1795,6 @@ public abstract class AbstractReaderFragment extends Fragment
     return none();
   }
 
-  private void prepareSlide(Animation inAnim, Animation outAnim) {
-    Option<Bitmap> bitmap = getBookViewSnapshot();
-    // TODO: is this OK? We don't set anything when we get None instead of Some.
-    bitmap.forEach(new Command<Bitmap>() {
-      @Override public void execute(Bitmap bm) {
-        dummyView.setImageBitmap(bm);
-      }
-    });
-
-    this.pageNumberView.setVisibility(View.GONE);
-
-    viewSwitcher.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
-    dummyView.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
-
-    this.viewSwitcher.showNext();
-
-    this.viewSwitcher.setInAnimation(inAnim);
-    this.viewSwitcher.setOutAnimation(outAnim);
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // ActionModeListener events
   ///////////////////////////////////////////////////////////////////////////
@@ -1939,12 +1901,6 @@ public abstract class AbstractReaderFragment extends Fragment
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS,
           String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
-
-
-      /*final CharSequence chartDisplayed = bookView.getStrategy().getChartDisplayed();
-      final Pattern sPattern = Pattern.compile("(?:<img>)", Pattern.CASE_INSENSITIVE);
-      int count = sPattern.matcher(chartDisplayed).groupCount();
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_AMOUNT_OF_IMAGES, String.valueOf(count));*/
 
       amaAttributes.put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
       amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());

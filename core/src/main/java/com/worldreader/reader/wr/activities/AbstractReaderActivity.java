@@ -36,8 +36,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
 
-  private static final String TAG = AbstractReaderActivity.class.getSimpleName();
-
   private SystemUiHelper systemUiHelper;
   private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;

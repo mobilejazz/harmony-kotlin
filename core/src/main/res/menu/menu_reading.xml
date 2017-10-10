@@ -16,7 +16,8 @@
 
   <item
     android:id="@+id/text_to_speech"
-    android:enabled="false"
+    android:enabled="true"
+    android:visible="false"
     android:title="@string/ls_text_to_speech"
     app:showAsAction="never" />
 </menu>
