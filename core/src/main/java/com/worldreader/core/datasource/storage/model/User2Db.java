@@ -21,7 +21,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   @StorIOSQLiteColumn(name = COLUMN_FONT_SIZE) public int fontSize;
   @StorIOSQLiteColumn(name = COLUMN_GENDER) public int gender;
   @StorIOSQLiteColumn(name = COLUMN_AGE) public int age;
-  @StorIOSQLiteColumn(name = COLUMN_BIRTHDATE) public long birthDate;
+  @StorIOSQLiteColumn(name = COLUMN_BIRTHDATE) public Long birthDate;
   @StorIOSQLiteColumn(name = COLUMN_CHILDREN_COUNT) public int childrenCount;
   @StorIOSQLiteColumn(name = COLUMN_MIN_CHILD_AGE) public int minChildAge;
   @StorIOSQLiteColumn(name = COLUMN_MAX_CHILD_AGE) public int maxChildAge;
@@ -38,7 +38,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   public User2Db(final String id, final int profileId, final String readToKidsId,
       final String userName, final String name, final String email, final boolean emailConfirmed,
       final int pagesPerDay, final String locale, final int fontSize, final int gender,
-      final int age, final long birthDate, final int childrenCount, final int minChildAge,
+      final int age, final Long birthDate, final int childrenCount, final int minChildAge,
       final int maxChildAge, final String picture, final long createdAt, final long updatedAt,
       final String milestones, final String favoriteCategories, final String localLibrary) {
     this.id = id;
@@ -161,11 +161,11 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.age = age;
   }
 
-  public long getBirthDate() {
+  public Long getBirthDate() {
     return birthDate;
   }
 
-  public void setBirthDate(final long birthDate) {
+  public void setBirthDate(final Long birthDate) {
     this.birthDate = birthDate;
   }
 
@@ -255,7 +255,7 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     private int fontSize;
     private int gender;
     private int age;
-    private long birthDate;
+    private Long birthDate;
     private int childrenCount;
     private int minChildAge;
     private int maxChildAge;
