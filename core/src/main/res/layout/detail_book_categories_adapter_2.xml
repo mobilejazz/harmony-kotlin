@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:divider="@drawable/detail_book_categories_adapter_divider">
+  android:divider="@drawable/detail_book_categories_adapter_divider"
+  android:orientation="horizontal">
 
   <!-- Category 1 -->
   <include
     android:id="@+id/detail_book_category_first"
     layout="@layout/detail_book_categories_adapter"
-    android:layout_height="@dimen/span_48"
     android:layout_width="0dp"
+    android:layout_height="@dimen/span_48"
     android:layout_weight="1" />
 
   <!-- Category 2 -->
   <include
     android:id="@+id/detail_book_category_second"
     layout="@layout/detail_book_categories_adapter"
-    android:layout_height="@dimen/span_48"
     android:layout_width="0dp"
+    android:layout_height="@dimen/span_48"
     android:layout_weight="1" />
 
   <!-- Category 3 -->
   <include
     android:id="@+id/detail_book_category_third"
     layout="@layout/detail_book_categories_adapter"
-    android:layout_height="@dimen/span_48"
     android:layout_width="0dp"
+    android:layout_height="@dimen/span_48"
     android:layout_weight="1" />
 
 </LinearLayout>

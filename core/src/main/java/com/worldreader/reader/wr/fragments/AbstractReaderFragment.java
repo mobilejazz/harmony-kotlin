@@ -107,20 +107,15 @@ import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.UUID;
 import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
+
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
@@ -748,7 +743,7 @@ public abstract class AbstractReaderFragment extends Fragment
         return;
       }
 
-      this.getWaitDialog().setMessage(getString(R.string.init_tts));
+      this.getWaitDialog().setMessage(getString(R.string.ls_init_tts));
       this.getWaitDialog().show();
 
       Option<File> fosOption = config.getTTSFolder();
@@ -914,7 +909,7 @@ public abstract class AbstractReaderFragment extends Fragment
         AbstractReaderFragment.this.closeWaitDialog();
 
         if (AbstractReaderFragment.this.isAdded()) {
-          Toast.makeText(context, AbstractReaderFragment.this.getString(R.string.tts_failed) + "\n" + message, Toast.LENGTH_SHORT).show();
+          Toast.makeText(context, AbstractReaderFragment.this.getString(R.string.ls_tts_failed) + "\n" + message, Toast.LENGTH_SHORT).show();
         }
       }
     });
@@ -1010,7 +1005,7 @@ public abstract class AbstractReaderFragment extends Fragment
     } else {
       final FragmentActivity activity = getActivity();
       activity.invalidateOptionsMenu();
-      Toast.makeText(context, getString(R.string.tts_failed), Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, getString(R.string.ls_tts_failed), Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -1125,7 +1120,7 @@ public abstract class AbstractReaderFragment extends Fragment
     displayPageNumber(-1); //Clear page number
 
     ProgressDialog progressDialog = getWaitDialog();
-    progressDialog.setMessage(getString(R.string.loading_wait));
+    progressDialog.setMessage(getString(R.string.ls_loading_text);
 
     progressDialog.show();
   }
@@ -1528,7 +1523,7 @@ public abstract class AbstractReaderFragment extends Fragment
     sendIntent.putExtra(Intent.EXTRA_TEXT, text);
     sendIntent.setType("text/plain");
 
-    startActivity(Intent.createChooser(sendIntent, getString(R.string.share)));
+    startActivity(Intent.createChooser(sendIntent, getString(R.string.ls_generic_share)));
     setShareFlag();
   }
 

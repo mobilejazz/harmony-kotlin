@@ -33,7 +33,6 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
@@ -62,7 +61,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
-import java.lang.ref.WeakReference;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -596,20 +594,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     if (href.length() == 0) {
       restorePosition();
     } else {
-
       this.strategy.clearText();
       this.strategy.setPosition(0);
 
       if (this.spine.navigateByHref(href)) {
         loadText();
       } else {
-
-        Resource resource = book.getResources().getByHref(href);
-
+        final Resource resource = book.getResources().getByHref(href);
         if (resource != null) {
           loadText(resource);
-        } else {
-          loadText(new SpannedString(getContext().getString(R.string.dead_link)));
         }
       }
     }

@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/home_categories_adapter_container"
-  android:orientation="horizontal"
+<RelativeLayout android:id="@+id/home_categories_adapter_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="@dimen/span_48"
-  android:clickable="true"
   android:background="?android:attr/selectableItemBackground"
+  android:clickable="true"
+  android:focusable="true"
+  android:orientation="horizontal"
   android:padding="@dimen/span_8">
 
   <TextView
     android:id="@+id/home_categories_adapter_txt_title"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:textAllCaps="true"
-    android:textColor="@color/white"
-    android:singleLine="true"
-    android:ellipsize="end"
-    android:text="Learn"
-    android:layout_toLeftOf="@+id/home_categories_adapter_img_icon"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
+    android:layout_toLeftOf="@+id/home_categories_adapter_img_icon"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:singleLine="true"
+    android:textAllCaps="true"
+    android:textColor="@color/white"
+    tools:text="Learn"
 
     />
 
@@ -28,11 +30,11 @@
     android:id="@+id/home_categories_adapter_img_icon"
     android:layout_width="@dimen/span_18"
     android:layout_height="@dimen/span_18"
-    android:layout_gravity="center_vertical"
-    android:contentDescription="@null"
+    android:layout_alignBottom="@+id/home_categories_adapter_txt_title"
     android:layout_alignParentRight="true"
-    android:layout_marginRight="@dimen/span_4"
     android:layout_alignTop="@+id/home_categories_adapter_txt_title"
-    android:layout_alignBottom="@+id/home_categories_adapter_txt_title" />
+    android:layout_gravity="center_vertical"
+    android:layout_marginRight="@dimen/span_4"
+    android:contentDescription="@null" />
 
 </RelativeLayout>

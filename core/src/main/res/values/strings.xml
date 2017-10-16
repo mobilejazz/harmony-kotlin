@@ -200,4 +200,10 @@
     </string>
   <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string>
   <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string>
+  <string name="ls_terms_and_conditions_title">Terms and Conditions</string>
+
+  <!-- Reader -->
+  <string name="ls_definition">Definition</string>
+  <string name="ls_init_tts">Initializing Text To Speech…\nPlease wait.</string>
+  <string name="ls_tts_failed">Text To Speech failed to load.</string>
 </resources>

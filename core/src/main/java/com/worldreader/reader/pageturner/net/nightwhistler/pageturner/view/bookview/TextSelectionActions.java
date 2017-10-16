@@ -84,7 +84,7 @@ import jedi.option.Option;
       menu.removeItem(android.R.id.shareText);
     }
 
-    menu.add(R.string.share).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
+    menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
       @Override public void perform() {
         callBack.share(selectedTextProvider.getSelectionStart(),
             selectedTextProvider.getSelectionEnd(),
@@ -92,7 +92,7 @@ import jedi.option.Option;
       }
     })).setIcon(R.drawable.ic_share_dark);
 
-    menu.add(R.string.definition).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
+    menu.add(R.string.ls_definition).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
       @Override public void perform() {
         selectedTextProvider.getSelectedText().forEach(new Command<String>() {
           @Override public void execute(String text) {
