@@ -65,19 +65,21 @@ import java.util.*;
         }
 
         // Compare email and update if necessary // repository threading is on the same thread so we don't have to worry to wait for it
-        //final String newEmail = userToUpdate.getEmail();
-        //final String oldEmail = user.getEmail();
-        //if (!TextUtils.isEmpty(newEmail) && !newEmail.equals(oldEmail)) {
-        //  repository.updateEmail(newEmail, new Callback<Void>() {
-        //    @Override public void onSuccess(final Void aVoid) {
-        //      // We don't care about this response
-        //    }
-        //
-        //    @Override public void onError(final Throwable e) {
-        //      future.setException(e);
-        //    }
-        //  });
-        //}
+        final String newEmail = userToUpdate.getEmail();
+        final String oldEmail = user.getEmail();
+        if (TextUtils.isEmpty(oldEmail)) { // We only want to allow users without e-mail to add one.
+          if (!TextUtils.isEmpty(newEmail) && !newEmail.equals(oldEmail)) {
+            repository.updateEmail(newEmail, new Callback<Void>() {
+              @Override public void onSuccess(final Void aVoid) {
+                // We don't care about this response
+              }
+
+              @Override public void onError(final Throwable e) {
+                future.setException(e);
+              }
+            });
+          }
+        }
 
         // Compare birthdate and update accordingly // repository threading is on the same thread so we don't have to worry to wait for it
         final Date newBirthDate = userToUpdate.getBirthDate();
