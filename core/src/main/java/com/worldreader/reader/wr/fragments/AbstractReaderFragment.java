@@ -1120,7 +1120,7 @@ public abstract class AbstractReaderFragment extends Fragment
     displayPageNumber(-1); //Clear page number
 
     ProgressDialog progressDialog = getWaitDialog();
-    progressDialog.setMessage(getString(R.string.ls_loading_text);
+    progressDialog.setMessage(getString(R.string.ls_loading_text));
 
     progressDialog.show();
   }
