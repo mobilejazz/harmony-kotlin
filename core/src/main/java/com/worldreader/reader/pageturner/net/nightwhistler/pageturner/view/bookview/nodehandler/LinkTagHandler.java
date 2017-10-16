@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
  */
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -29,11 +29,6 @@ import org.htmlcleaner.TagNode;
 
 import java.util.*;
 
-/**
- * Creates clickable links.
- *
- * @author Alex Kuiper
- */
 public class LinkTagHandler extends TagNodeHandler {
 
   private List<String> externalProtocols;
@@ -41,7 +36,6 @@ public class LinkTagHandler extends TagNodeHandler {
   private LinkCallBack callBack;
 
   public LinkTagHandler(LinkCallBack callBack) {
-
     this.callBack = callBack;
 
     this.externalProtocols = new ArrayList<>();
@@ -53,10 +47,7 @@ public class LinkTagHandler extends TagNodeHandler {
     externalProtocols.add("mailto:");
   }
 
-  @Override
-  public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-      SpanStack spanStack) {
-
+  @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
     String href = node.getAttributeByName("href");
 
     if (href == null) {
@@ -76,15 +67,14 @@ public class LinkTagHandler extends TagNodeHandler {
     // If not, consider it an internal nav link.
     ClickableSpan span = new ClickableSpan() {
       @Override public void onClick(View widget) {
-        callBack.linkClicked(linkHref);
+        callBack.onLinkClicked(linkHref);
       }
     };
-
     spanStack.pushSpan(span, start, end);
   }
 
-  public static interface LinkCallBack {
+  public interface LinkCallBack {
 
-    void linkClicked(String href);
+    void onLinkClicked(String href);
   }
 }

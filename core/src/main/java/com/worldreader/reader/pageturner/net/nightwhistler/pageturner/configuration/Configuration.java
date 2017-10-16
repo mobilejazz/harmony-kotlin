@@ -80,9 +80,6 @@ public class Configuration {
   public static final String KEY_ALLOW_STYLING = "allow_styling";
   public static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
 
-  //Which platform version to start text selection on.
-  public static final int TEXT_SELECTION_PLATFORM_VERSION = Build.VERSION_CODES.ICE_CREAM_SANDWICH;
-
   private SharedPreferences settings;
   private Context context;
   private Map<String, FontFamily> fontCache = new HashMap<>();

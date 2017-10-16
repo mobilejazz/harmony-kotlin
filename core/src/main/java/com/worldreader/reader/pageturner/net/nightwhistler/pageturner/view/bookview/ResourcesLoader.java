@@ -8,18 +8,18 @@ import java.io.*;
 
 public interface ResourcesLoader {
 
-  interface ImageResourceCallback {
-
-    void onLoadImageResource(String href, InputStream stream, StreamingBookRepository datasource, BookMetadata bookMetadata);
-  }
-
   InputStream loadResource(String path);
 
   InputStream loadResource(Resource resource);
 
-  void loadImageResources();
+  void onPrepareBitmapDrawables();
 
   void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback);
 
   void clearImageResources();
+
+  interface ImageResourceCallback {
+
+    void onPrepareFastBitmapDrawable(String resourceHref, StreamingBookRepository datasource, BookMetadata bookMetadata);
+  }
 }

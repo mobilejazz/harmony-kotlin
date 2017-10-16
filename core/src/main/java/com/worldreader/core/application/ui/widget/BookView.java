@@ -29,7 +29,6 @@ public class BookView extends FrameLayout {
   public BookView(Context context) {
     super(context);
     init();
-
   }
 
   public BookView(Context context, AttributeSet attrs) {
@@ -43,8 +42,7 @@ public class BookView extends FrameLayout {
   }
 
   private void init() {
-    View rootView =
-        LayoutInflater.from(getContext()).inflate(R.layout.global_book_layout, this, true);
+    View rootView = LayoutInflater.from(getContext()).inflate(R.layout.global_book_layout, this, true);
 
     container = rootView.findViewById(R.id.global_book_layout_container);
     imgBook = (PercentageCropImageView) rootView.findViewById(R.id.global_book_layout_img_book);
@@ -57,8 +55,7 @@ public class BookView extends FrameLayout {
     this.listener = listener;
   }
 
-  public void setBook(final Book book, final ImageLoader imageLoader,
-      final Reachability reachability, @DrawableRes final int placeholder) {
+  public void setBook(final Book book, final ImageLoader imageLoader, final Reachability reachability, @DrawableRes final int placeholder) {
     this.book = book;
 
     if (book != null) {
@@ -107,8 +104,7 @@ public class BookView extends FrameLayout {
     }
   }
 
-  public void setBook(final Book book, final ImageLoader imageLoader,
-      final Reachability reachability) {
+  public void setBook(final Book book, final ImageLoader imageLoader, final Reachability reachability) {
     setBook(book, imageLoader, reachability, R.drawable.as_book_placeholder);
   }
 

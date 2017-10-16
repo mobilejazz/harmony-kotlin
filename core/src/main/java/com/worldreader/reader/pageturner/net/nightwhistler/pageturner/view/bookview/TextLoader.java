@@ -3,6 +3,7 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import android.text.Spannable;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
@@ -19,10 +20,6 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
   void invalidateCachedText();
 
   boolean hasCachedBook(String fileName);
-
-  void setHtmlSpanner(HtmlSpanner spanner);
-
-  void setFontResolver(EpubFontResolver resolver);
 
   void setFontFamily(FontFamily family);
 

@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.SpannableStringBuilder;
 import net.nightwhistler.htmlspanner.SpanStack;

@@ -20,7 +20,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -31,29 +30,15 @@ import com.worldreader.reader.pageturner.net.nightwhistler.ui.UiUtils;
 import jedi.functional.Command;
 import jedi.option.Option;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB) public class TextSelectionActions
-    implements ActionMode.Callback {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB) public class TextSelectionActions implements ActionMode.Callback {
 
   private TextSelectionCallback callBack;
   private ActionModeListener actionModeListener;
   private SelectedTextProvider selectedTextProvider;
 
-  private Context context;
-
-  public interface SelectedTextProvider {
-
-    Option<String> getSelectedText();
-
-    int getSelectionStart();
-
-    int getSelectionEnd();
-  }
-
-  public TextSelectionActions(Context context, ActionModeListener actionModeListener,
-      TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider) {
+  public TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider) {
     this.callBack = callBack;
     this.actionModeListener = actionModeListener;
-    this.context = context;
     this.selectedTextProvider = selectedTextProvider;
   }
 
@@ -86,9 +71,7 @@ import jedi.option.Option;
 
     menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
       @Override public void perform() {
-        callBack.share(selectedTextProvider.getSelectionStart(),
-            selectedTextProvider.getSelectionEnd(),
-            selectedTextProvider.getSelectedText().getOrElse(""));
+        callBack.share(selectedTextProvider.getSelectionStart(), selectedTextProvider.getSelectionEnd(), selectedTextProvider.getSelectedText().getOrElse(""));
       }
     })).setIcon(R.drawable.ic_share_dark);
 
@@ -112,14 +95,19 @@ import jedi.option.Option;
   }
 
   @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-    if (actionModeListener != null) {
-      actionModeListener.onPrepareActionMode();
-    }
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       mode.setType(ActionMode.TYPE_PRIMARY);
     }
 
     return true;
+  }
+
+  public interface SelectedTextProvider {
+
+    Option<String> getSelectedText();
+
+    int getSelectionStart();
+
+    int getSelectionEnd();
   }
 }

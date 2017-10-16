@@ -12,9 +12,13 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResour
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.EpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
+import net.nightwhistler.htmlspanner.SystemFontResolver;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CSSCompiler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
@@ -35,8 +39,6 @@ public class StreamingTextLoader implements TextLoader {
    */
   private static final double CACHE_CLEAR_THRESHOLD = 0.75;
 
-  private static StreamingTextLoader INSTANCE;
-
   private Book currentBook;
   private Map<String, Spannable> renderedText = new HashMap<>();
   private Map<String, List<CompiledRule>> cssRules = new HashMap<>();
@@ -44,41 +46,27 @@ public class StreamingTextLoader implements TextLoader {
   private Map<String, Map<String, Integer>> anchors = new HashMap<>();
   private List<AnchorHandler> anchorHandlers = new ArrayList<>();
 
-  private HtmlSpanner htmlSpanner;
-  private EpubFontResolver fontResolver;
+  private final HtmlSpanner htmlSpanner;
 
   private LinkTagHandler.LinkCallBack linkCallBack;
   private ResourcesLoader resourcesLoader;
 
-  public StreamingTextLoader() {
-  }
-
-  public void setHtmlSpanner(HtmlSpanner spanner) {
+  public StreamingTextLoader(final HtmlSpanner spanner, final SystemFontResolver fontResolver) {
     this.htmlSpanner = spanner;
     this.htmlSpanner.setFontResolver(fontResolver);
-
-    spanner.registerHandler("a", registerAnchorHandler(new LinkTagHandler(this)));
-
-    spanner.registerHandler("h1", registerAnchorHandler(spanner.getHandlerFor("h1")));
-    spanner.registerHandler("h2", registerAnchorHandler(spanner.getHandlerFor("h2")));
-    spanner.registerHandler("h3", registerAnchorHandler(spanner.getHandlerFor("h3")));
-    spanner.registerHandler("h4", registerAnchorHandler(spanner.getHandlerFor("h4")));
-    spanner.registerHandler("h5", registerAnchorHandler(spanner.getHandlerFor("h5")));
-    spanner.registerHandler("h6", registerAnchorHandler(spanner.getHandlerFor("h6")));
-
-    spanner.registerHandler("p", registerAnchorHandler(spanner.getHandlerFor("p")));
-
-    spanner.registerHandler("link", new CSSLinkHandler(this));
+    onRegisterSpannerHandlers();
   }
 
-  public void setFontResolver(EpubFontResolver resolver) {
-    this.fontResolver = resolver;
-    this.htmlSpanner.setFontResolver(fontResolver);
-  }
-
-  public void registerCustomFont(String name, String href) {
-    Log.d(TAG, "Registering custom font " + name + " with href " + href);
-    this.fontResolver.loadEmbeddedFont(name, href);
+  private void onRegisterSpannerHandlers() {
+    htmlSpanner.registerHandler("a", registerAnchorHandler(new LinkTagHandler(this)));
+    htmlSpanner.registerHandler("h1", registerAnchorHandler(htmlSpanner.getHandlerFor("h1")));
+    htmlSpanner.registerHandler("h2", registerAnchorHandler(htmlSpanner.getHandlerFor("h2")));
+    htmlSpanner.registerHandler("h3", registerAnchorHandler(htmlSpanner.getHandlerFor("h3")));
+    htmlSpanner.registerHandler("h4", registerAnchorHandler(htmlSpanner.getHandlerFor("h4")));
+    htmlSpanner.registerHandler("h5", registerAnchorHandler(htmlSpanner.getHandlerFor("h5")));
+    htmlSpanner.registerHandler("h6", registerAnchorHandler(htmlSpanner.getHandlerFor("h6")));
+    htmlSpanner.registerHandler("p", registerAnchorHandler(htmlSpanner.getHandlerFor("p")));
+    htmlSpanner.registerHandler("link", new CSSLinkHandler(this));
   }
 
   public List<CompiledRule> getCSSRules(String href) {
@@ -175,7 +163,7 @@ public class StreamingTextLoader implements TextLoader {
       href = href.substring(4, href.length() - 1);
     }
 
-    registerCustomFont(fontName, href);
+    //fontResolver.loadEmbeddedFont(name, href);
   }
 
   private AnchorHandler registerAnchorHandler(TagNodeHandler wrapThis) {
@@ -184,9 +172,9 @@ public class StreamingTextLoader implements TextLoader {
     return handler;
   }
 
-  @Override public void linkClicked(String href) {
+  @Override public void onLinkClicked(String href) {
     if (linkCallBack != null) {
-      linkCallBack.linkClicked(href);
+      linkCallBack.onLinkClicked(href);
     }
   }
 
@@ -211,15 +199,15 @@ public class StreamingTextLoader implements TextLoader {
   }
 
   public void setFontFamily(FontFamily family) {
-    this.fontResolver.setDefaultFont(family);
+    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setDefaultFont(family);
   }
 
   public void setSerifFontFamily(FontFamily family) {
-    this.fontResolver.setSerifFont(family);
+    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSerifFont(family);
   }
 
   public void setSansSerifFontFamily(FontFamily family) {
-    this.fontResolver.setSansSerifFont(family);
+    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSansSerifFont(family);
   }
 
   public void setStripWhiteSpace(boolean stripWhiteSpace) {

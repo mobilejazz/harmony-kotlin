@@ -1,7 +1,8 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.SpannableStringBuilder;
 import android.util.Log;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
@@ -19,9 +20,7 @@ public class CSSLinkHandler extends TagNodeHandler {
     this.textLoader = textLoader;
   }
 
-  public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end,
-      SpanStack spanStack) {
-
+  public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
     //if (true && getSpanner().isAllowStyling()) {
     String type = node.getAttributeByName("type");
     String href = node.getAttributeByName("href");

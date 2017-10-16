@@ -60,6 +60,8 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageT
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
 import jedi.functional.Command;
 import jedi.functional.Command0;
@@ -69,12 +71,12 @@ import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SpanStack;
+import net.nightwhistler.htmlspanner.SystemFontResolver;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.handlers.TableHandler;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
 import org.htmlcleaner.TagNode;
 import org.javatuples.Pair;
-import org.javatuples.Triplet;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -123,8 +125,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private TextLoader textLoader;
   private ResourcesLoader resourcesLoader;
 
-  private EpubFontResolver fontResolver;
-
   private TaskQueue taskQueue;
 
   private Logger logger;
@@ -144,7 +144,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super(context, attributes);
   }
 
-  @TargetApi(Configuration.TEXT_SELECTION_PLATFORM_VERSION)
+  @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
   public void init(String bookId, String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader, final TextLoader textLoader, Logger logger) {
     this.bookId = bookId;
     this.contentOpf = contentOpf;
@@ -155,7 +155,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     this.scrollHandler = new Handler();
     this.textLoader = textLoader;
-    this.fontResolver = new EpubFontResolver(this.textLoader, context);
     this.configuration = new Configuration(context);
     this.taskQueue = new TaskQueue();
 
@@ -168,7 +167,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setFocusable(true);
     this.childView.setLinksClickable(true);
     this.childView.setTextIsSelectable(true);
-    this.childView.setMovementMethod(BookViewMovementMethod.getInstance());
+    this.childView.setMovementMethod(new BookViewMovementMethod());
 
     this.setVerticalFadingEdgeEnabled(false);
     this.setSmoothScrollingEnabled(false);
@@ -182,7 +181,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     this.textLoader.setResourcesLoader(resourcesLoader);
     this.textLoader.setLinkCallBack(new LinkTagHandler.LinkCallBack() {
-      @Override public void linkClicked(String href) {
+      @Override public void onLinkClicked(String href) {
         BookView.this.onLinkClicked(href);
       }
     });
@@ -281,9 +280,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener) {
-    if (Build.VERSION.SDK_INT >= Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
-      this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(getContext(), listener, callback, this));
-    }
+    this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(listener, callback, this));
   }
 
   public int getLineSpacing() {
@@ -766,31 +763,32 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       this.end = end;
     }
 
-    @Override public void onLoadImageResource(String href, InputStream stream, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
-      setBitmapDrawable(href, stream, dataSource, bookMetadata);
-    }
-
-    private void setBitmapDrawable(final String resource, final InputStream ignored, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
+    @Override public void onPrepareFastBitmapDrawable(String resourceHref, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
       final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.getImagesResources();
-      final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(resource) : null;
+      final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(resourceHref) : null;
 
       final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;
       final Integer height = item != null && !TextUtils.isEmpty(item.height) ? Integer.valueOf(item.height) : 800;
 
-      final Triplet<Integer, Integer, Boolean> sizes = calculateProperImageSize(width, height);
+      final Pair<Integer, Integer> sizes = calculateProperImageSize(width, height);
       final int finalWidth = sizes.getValue0();
       final int finalHeight = sizes.getValue1();
 
-      final FastBitmapDrawable drawable = new FastBitmapDrawable(resource, finalWidth, finalHeight, dataSource, bookMetadata, logger);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(resourceHref, finalWidth, finalHeight, dataSource, bookMetadata, logger);
       drawable.setCallback(callback);
 
       setImageSpan(builder, drawable, start, end);
     }
+
   }
 
-  private Triplet<Integer, Integer, Boolean> calculateProperImageSize(int originalWidth, int originalHeight) {
+  private Pair<Integer, Integer> calculateProperImageSize(int originalWidth, int originalHeight) {
     final int screenHeight = getHeight() - (verticalMargin * 2);
     final int screenWidth = getWidth() - (horizontalMargin * 2);
+
+    if (originalWidth < screenWidth && originalHeight < screenHeight) {
+      return Pair.with(originalWidth, originalHeight);
+    }
 
     final float ratio = (float) originalWidth / (float) originalHeight;
 
@@ -804,7 +802,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     Log.d(TAG, "Rescaling from " + originalWidth + "x" + originalHeight + " to " + targetWidth + "x" + targetHeight);
 
-    return Triplet.with(targetWidth, targetHeight, true);
+    return Pair.with(targetWidth, targetHeight);
   }
 
   private class StreamingImageTagHandler extends TagNodeHandler {
@@ -1183,7 +1181,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         });
 
         // Load all image resources (not true anymore as FastBitmapDrawable is in charge to do it per image).
-        resourcesLoader.loadImageResources();
+        resourcesLoader.onPrepareBitmapDrawables();
 
         //If the view isn't ready yet, wait a bit.
         while (getInnerView().getWidth() == 0) {
@@ -1194,7 +1192,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         return option((Spanned) result);
       } catch (Exception | OutOfMemoryError io) {
-        logger.sendIssue(TAG, "Exception loading streaming text with book with ID: " + bookId + " . Current exception: " + Throwables.getStackTraceAsString(io));
+        logger.sendIssue(TAG,
+            "Exception loading streaming text with book with ID: " + bookId + " . Current exception: " + Throwables.getStackTraceAsString(io));
       }
 
       return none();
@@ -1245,7 +1244,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
       final HtmlSpanner mySpanner = new HtmlSpanner();
       mySpanner.setAllowStyling(configuration.isAllowStyling());
-      mySpanner.setFontResolver(fontResolver);
+      mySpanner.setFontResolver(new SystemFontResolver());
       mySpanner.registerHandler("table", tableHandler);
       mySpanner.registerHandler("link", new CSSLinkHandler(textLoader));
 

@@ -11,15 +11,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.
 
 public class BookViewMovementMethod extends LinkMovementMethod {
 
-  private static BookViewMovementMethod INSTANCE;
-
-  public static BookViewMovementMethod getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new BookViewMovementMethod();
-    }
-    return INSTANCE;
-  }
-
   @Override public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
     final int action = event.getAction();
 

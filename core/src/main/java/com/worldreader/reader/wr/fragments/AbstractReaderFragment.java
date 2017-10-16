@@ -111,6 +111,7 @@ import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
+import net.nightwhistler.htmlspanner.SystemFontResolver;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
 import java.io.*;
@@ -122,8 +123,7 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-public abstract class AbstractReaderFragment extends Fragment
-    implements BookViewListener, TextSelectionCallback, ActionModeListener, SystemUiHelper.OnVisibilityChangeListener {
+public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
   public static final String CHANGE_FONT_KEY = "change_font_key";
   public static final String CHANGE_BACKGROUND_KEY = "change.background.key";
@@ -217,8 +217,7 @@ public abstract class AbstractReaderFragment extends Fragment
     super.onCreate(savedInstanceState);
 
     // This block needs to be called before inflating the view to avoid problems with BookView
-    this.textLoader = new StreamingTextLoader();
-    this.textLoader.setHtmlSpanner(new HtmlSpanner());
+    this.textLoader = new StreamingTextLoader(new HtmlSpanner(), new SystemFontResolver());
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -302,7 +301,77 @@ public abstract class AbstractReaderFragment extends Fragment
 
     this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
     this.bookView.addListener(this);
-    this.bookView.setTextSelectionCallback(this, this);
+    this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
+      @Override public void lookupDictionary(String text) {
+        if (reachability.isReachable()) {
+          if (text != null) {
+            text = text.trim();
+            StringTokenizer st = new StringTokenizer(text);
+
+            if (st.countTokens() == 1) {
+              definitionView.showLoading();
+              showDefinitionView();
+              getWordDefinitionInteractor.execute(text, new DomainCallback<WordDefinition, ErrorCore>(mainThread) {
+                @Override public void onSuccessResult(WordDefinition wordDefinition) {
+                  definitionView.setWordDefinition(wordDefinition);
+                  definitionView.showDefinition();
+                }
+
+                @Override public void onErrorResult(ErrorCore errorCore) {
+                  // TODO: 03/12/15 Handle properly the error
+                }
+              });
+            } else {
+              Toast.makeText(getContext(), R.string.ls_book_reading_select_one_word, Toast.LENGTH_SHORT).show();
+            }
+          }
+        } else {
+          final MaterialDialog networkErrorDialog =
+              DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_definition_not_internet,
+                  R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
+                    @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
+                    }
+                  });
+
+          networkErrorDialog.setCancelable(false);
+          networkErrorDialog.show();
+        }
+      }
+
+      @Override public void share(int from, int to, String selectedText) {
+        String author = null;
+        if (!bookView.getBook().getMetadata().getAuthors().isEmpty()) {
+          author = bookView.getBook().getMetadata().getAuthors().get(0).toString();
+        }
+
+        String text;
+        if (author == null) {
+          text = bookTitle + " \n\n" + selectedText;
+        } else {
+          text = bookTitle + ", " + author + "\n\n" + selectedText;
+        }
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType("text/plain");
+
+        startActivity(Intent.createChooser(sendIntent, getString(R.string.ls_generic_share)));
+        setShareFlag();
+      }
+    }, new ActionModeListener() {
+      @Override public void onCreateActionMode() {
+        if (getSystemUiHelper() != null && !getSystemUiHelper().isShowing()) {
+          getSystemUiHelper().show();
+        }
+      }
+
+      @Override public void onDestroyActionMode() {
+        if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
+          getSystemUiHelper().hide();
+        }
+      }
+    });
 
     this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
       @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
@@ -789,8 +858,8 @@ public abstract class AbstractReaderFragment extends Fragment
       streamTTSToDisk();
     } else {
       final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet,
-              R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
+          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet, R.string.ls_generic_accept,
+              DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
                 @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
                 }
               });
@@ -1469,64 +1538,6 @@ public abstract class AbstractReaderFragment extends Fragment
 
   protected abstract void onEventNavigateToGoalsScreen();
 
-  @Override public void lookupDictionary(String text) {
-    if (reachability.isReachable()) {
-      if (text != null) {
-        text = text.trim();
-        StringTokenizer st = new StringTokenizer(text);
-
-        if (st.countTokens() == 1) {
-          definitionView.showLoading();
-          showDefinitionView();
-          getWordDefinitionInteractor.execute(text, new DomainCallback<WordDefinition, ErrorCore>(mainThread) {
-            @Override public void onSuccessResult(WordDefinition wordDefinition) {
-              definitionView.setWordDefinition(wordDefinition);
-              definitionView.showDefinition();
-            }
-
-            @Override public void onErrorResult(ErrorCore errorCore) {
-              // TODO: 03/12/15 Handle properly the error
-            }
-          });
-        } else {
-          Toast.makeText(getContext(), R.string.ls_book_reading_select_one_word, Toast.LENGTH_SHORT).show();
-        }
-      }
-    } else {
-      final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_definition_not_internet,
-              R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
-                @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                }
-              });
-
-      networkErrorDialog.setCancelable(false);
-      networkErrorDialog.show();
-    }
-  }
-
-  public void share(int from, int to, String selectedText) {
-    String author = null;
-    if (!bookView.getBook().getMetadata().getAuthors().isEmpty()) {
-      author = bookView.getBook().getMetadata().getAuthors().get(0).toString();
-    }
-
-    String text;
-    if (author == null) {
-      text = bookTitle + " \n\n" + selectedText;
-    } else {
-      text = bookTitle + ", " + author + "\n\n" + selectedText;
-    }
-
-    Intent sendIntent = new Intent();
-    sendIntent.setAction(Intent.ACTION_SEND);
-    sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-    sendIntent.setType("text/plain");
-
-    startActivity(Intent.createChooser(sendIntent, getString(R.string.ls_generic_share)));
-    setShareFlag();
-  }
-
   private void setShareFlag() {
     hasSharedText = true;
   }
@@ -1815,26 +1826,9 @@ public abstract class AbstractReaderFragment extends Fragment
     formatPageChapterProgress();
   }
 
-  @Override public void onPrepareActionMode() {
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // AbstractReaderActivity Callbacks
   ///////////////////////////////////////////////////////////////////////////
-
-  @Override public void onCreateActionMode() {
-    if (getSystemUiHelper() != null && !getSystemUiHelper().isShowing()) {
-      getSystemUiHelper().show();
-    }
-  }
-
-  //region Private methods
-
-  @Override public void onDestroyActionMode() {
-    if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-      getSystemUiHelper().hide();
-    }
-  }
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
     this.bookView.navigateTo(tocEntry);
@@ -1846,15 +1840,14 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void displayUserNotRegisteredDialog() {
-    MaterialDialog dialog =
-        DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
-            R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
-              @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-                if (action == DialogFactory.Action.OK) {
-                  onEventNavigateToSignUpScreen();
-                }
-              }
-            });
+    MaterialDialog dialog = DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
+        R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
+          @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
+            if (action == DialogFactory.Action.OK) {
+              onEventNavigateToSignUpScreen();
+            }
+          }
+        });
 
     dialog.show();
   }
@@ -1875,9 +1868,8 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void formatPageChapterProgress() {
-    chapterProgressPagesTv.setText(bookView.getPagesForResource() < bookView.getCurrentPage() ? ""
-                                                                                              : String.format("%s / %s", bookView.getCurrentPage(),
-                                                                                                  bookView.getPagesForResource()));
+    chapterProgressPagesTv.setText(
+        bookView.getPagesForResource() < bookView.getCurrentPage() ? "" : String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
 
     Option<Spanned> text = bookView.getStrategy().getText();
     Spanned spanned = text.getOrElse(new SpannableString(""));
@@ -1894,8 +1886,7 @@ public abstract class AbstractReaderFragment extends Fragment
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(bookView.getCurrentPage()));
       amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS,
-          String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
+      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
 
       amaAttributes.put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
       amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());

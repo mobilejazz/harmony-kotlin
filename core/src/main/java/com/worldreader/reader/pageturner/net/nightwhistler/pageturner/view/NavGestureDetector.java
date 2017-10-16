@@ -19,19 +19,13 @@
 
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
 
-import android.os.Build;
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.SelectedWord;
-import jedi.functional.Command;
-import jedi.functional.Command0;
-import jedi.option.Option;
 
 import java.util.*;
 
@@ -54,8 +48,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
   private BookView bookView;
   private DisplayMetrics metrics;
 
-  public NavGestureDetector(BookView bookView, BookViewListener navListener,
-      DisplayMetrics metrics) {
+  public NavGestureDetector(BookView bookView, BookViewListener navListener, DisplayMetrics metrics) {
     this.bookView = bookView;
     this.bookViewListener = navListener;
     this.metrics = metrics;
@@ -99,8 +92,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
     return false;
   }
 
-  @Override
-  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+  @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
     bookViewListener.onPreSlide();
 
     float scrollUnitSize = SCROLL_FACTOR * metrics.density;
@@ -118,8 +110,7 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
     return super.onScroll(e1, e2, distanceX, distanceY);
   }
 
-  @Override
-  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+  @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
     float distanceX = e2.getX() - e1.getX();
     float distanceY = e2.getY() - e1.getY();
 
@@ -139,21 +130,5 @@ public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener 
   }
 
   @Override public void onLongPress(MotionEvent e) {
-    //On older platforms we generate a popup-event.
-    if (Build.VERSION.SDK_INT < Configuration.TEXT_SELECTION_PLATFORM_VERSION) {
-      Option<SelectedWord> wordOption = bookView.getWordAt(e.getX(), e.getY());
-
-      wordOption.match(new Command<SelectedWord>() {
-        @Override public void execute(SelectedWord word) {
-          bookViewListener.onWordLongPressed(word.getStartOffset(), word.getEndOffset(),
-              word.getText());
-        }
-      }, new Command0() {
-        @Override public void execute() {
-        }
-      });
-
-      super.onLongPress(e);
-    }
   }
 }
