@@ -1,128 +1,126 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: 'buildsystem/dependencies.gradle'
 
 android {
-    def globalConfiguration = project.ext;
+  def globalConfiguration = project.ext;
 
-    compileSdkVersion globalConfiguration.androidCompileSdkVersion
-    buildToolsVersion globalConfiguration.androidBuildToolsVersion
+  compileSdkVersion globalConfiguration.androidCompileSdkVersion
+  buildToolsVersion globalConfiguration.androidBuildToolsVersion
 
-    lintOptions {
-        abortOnError false
+  lintOptions {
+    abortOnError false
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  defaultConfig {
+    minSdkVersion globalConfiguration.androidMinSdkVersion
+    targetSdkVersion globalConfiguration.androidTargetSdkVersion
+
+    versionCode 1001
+
+    vectorDrawables.useSupportLibrary = true
+  }
+
+  buildTypes {
+    debug {
+      buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "1" // minutes
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "1" // minutes
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+    release {
+      buildConfigField "boolean", "DEBUG_JOB_MANAGER", "false"
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "15" // minutes
     }
+  }
 
-    defaultConfig {
-        minSdkVersion globalConfiguration.androidMinSdkVersion
-        targetSdkVersion globalConfiguration.androidTargetSdkVersion
-
-        versionCode 1001
-
-        vectorDrawables.useSupportLibrary = true
-    }
-
-    buildTypes {
-      debug {
-        buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
-        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "1" // minutes
-        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "1" // minutes
-      }
-
-      release {
-        buildConfigField "boolean", "DEBUG_JOB_MANAGER", "false"
-        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
-        buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "15" // minutes
-      }
-    }
-
-    buildTypes.all { buildType ->
-        // Common constants values
-        buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_ID", '"worldreader"'
-        buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_SECRET", '"MGQUm2oNtyaHCBhV2J6YvLFmRRWZF4ry"'
-    }
-    buildToolsVersion '25.0.0'
+  buildTypes.all { buildType ->
+    // Common constants values
+    buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_ID", '"worldreader"'
+    buildConfigField "String", "WORLDREADER_OAUTH_CLIENT_SECRET", '"MGQUm2oNtyaHCBhV2J6YvLFmRRWZF4ry"'
+  }
 }
 
 dependencies {
-    def dependencies = project.ext.dependencies
-    def testDependencies = project.ext.testDependencies
+  def dependencies = project.ext.dependencies
+  def testDependencies = project.ext.testDependencies
 
-    compile dependencies.appCompat
-    compile dependencies.supportAnnotation
-    compile dependencies.recyclerView
-    compile dependencies.cardView
-    compile dependencies.design
+  compile dependencies.appCompat
+  compile dependencies.supportAnnotation
+  compile dependencies.recyclerView
+  compile dependencies.cardView
+  compile dependencies.design
 
-    compile dependencies.picasso
-    compile dependencies.picassoOkhttp3
-    compile dependencies.simpleStorage
+  compile dependencies.picasso
+  compile dependencies.picassoOkhttp3
+  compile dependencies.simpleStorage
 
-    compile dependencies.guava
-    compile dependencies.joda
-    compile dependencies.logger
-    compile dependencies.javaxAnnotation
-    compile dependencies.javaxinject
-    compile dependencies.vastra
-    compile dependencies.storio
-    compile dependencies.storioAnnotation
-    apt dependencies.storioAnnotationProcessor
+  compile dependencies.guava
+  compile dependencies.joda
+  compile dependencies.logger
+  compile dependencies.javaxAnnotation
+  compile dependencies.javaxinject
+  compile dependencies.vastra
+  compile dependencies.storio
+  compile dependencies.storioAnnotation
+  annotationProcessor dependencies.storioAnnotationProcessor
 
-    compile(dependencies.materialDialogsCore) {
-        transitive = true
-    }
-    compile(dependencies.materialDialogsCommons) {
-        transitive = true
-    }
+  compile(dependencies.materialDialogsCore) {
+    transitive = true
+  }
+  compile(dependencies.materialDialogsCommons) {
+    transitive = true
+  }
 
-    apt dependencies.daggerCompiler
-    compile dependencies.dagger
+  compile dependencies.dagger
+  annotationProcessor dependencies.daggerCompiler
 
-    compile dependencies.retrofit2
-    compile dependencies.retrofit2Gson
-    compile(dependencies.retrofitSimpleXml) {
-        exclude module: 'stax-api'
-        exclude module: 'stax'
-        exclude module: 'xpp3'
-    }
-    compile(dependencies.simplexml) {
-        exclude module: 'stax'
-        exclude module: 'stax-api'
-        exclude module: 'xpp3'
-    }
+  compile dependencies.retrofit2
+  compile dependencies.retrofit2Gson
+  compile(dependencies.retrofitSimpleXml) {
+    exclude module: 'stax-api'
+    exclude module: 'stax'
+    exclude module: 'xpp3'
+  }
+  compile(dependencies.simplexml) {
+    exclude module: 'stax'
+    exclude module: 'stax-api'
+    exclude module: 'xpp3'
+  }
 
-    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+  compile 'com.scottyab:secure-preferences-lib:0.1.4'
 
-    compile dependencies.sqlcipher
+  compile dependencies.sqlcipher
 
-    compile 'org.javatuples:javatuples:1.2'
+  compile 'org.javatuples:javatuples:1.2'
 
-    compile dependencies.okHttp
-    compile dependencies.okHttp3LoggingInterceptor
+  compile dependencies.okHttp
+  compile dependencies.okHttp3LoggingInterceptor
 
-    compile('net.nightwhistler.htmlspanner:htmlspanner:0.5-SNAPSHOT') {
-      exclude module: 'ant'
-      exclude module: 'commons-io'
-    }
-    compile 'org.codehaus.jedi:jedi-core:3.0.5'
-    compile 'org.slf4j:slf4j-api:1.6.1'
+  compile('net.nightwhistler.htmlspanner:htmlspanner:0.5-SNAPSHOT') {
+    exclude module: 'ant'
+    exclude module: 'commons-io'
+  }
+  compile 'org.codehaus.jedi:jedi-core:3.0.5'
+  compile 'org.slf4j:slf4j-api:1.6.1'
 
-    compile project.ext.dependencies.androidjob
+  compile project.ext.dependencies.androidjob
 
-    compile dependencies.scaleImageView
+  compile dependencies.scaleImageView
 
-    compile dependencies.awsCore
-    compile dependencies.awsMobileAnalytics
+  compile dependencies.awsCore
+  compile dependencies.awsMobileAnalytics
 
-    testCompile testDependencies.hamcrest
-    testCompile(testDependencies.junit) {
-        exclude module: 'hamcrest-core'
-    }
-    testCompile testDependencies.mockito
-    testCompile testDependencies.powermock
-    testCompile testDependencies.powermockito
+  testCompile testDependencies.hamcrest
+  testCompile(testDependencies.junit) {
+    exclude module: 'hamcrest-core'
+  }
+  testCompile testDependencies.mockito
+  testCompile testDependencies.powermock
+  testCompile testDependencies.powermockito
 }

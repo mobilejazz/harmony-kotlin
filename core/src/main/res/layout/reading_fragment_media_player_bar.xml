@@ -34,7 +34,7 @@
       android:layout_height="wrap_content"
       android:minHeight="@dimen/span_96"
       android:orientation="vertical"
-      android:background="@color/colorPrimary"
+      android:background="@color/primary"
       android:gravity="center_vertical"
       android:paddingLeft="@dimen/span_16"
       android:paddingRight="@dimen/span_16"

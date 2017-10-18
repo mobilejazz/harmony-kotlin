@@ -6,12 +6,12 @@ rootProject.allprojects {
 }
 
 ext {
-    androidBuildToolsVersion = "26.0.0"
+    androidBuildToolsVersion = "26.0.2"
     androidMinSdkVersion = 16
-    androidTargetSdkVersion = 25
-    androidCompileSdkVersion = 25
+    androidTargetSdkVersion = 26
+    androidCompileSdkVersion = 26
 
-    supportLibrariesVersion = '25.1.0'
+    supportLibrariesVersion = '26.1.0'
 
   dependencies = [
       appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
@@ -27,9 +27,9 @@ ext {
       javaxAnnotation          : "javax.annotation:javax.annotation-api:1.2",
       javaxinject              : "javax.inject:javax.inject:1",
 
-      storio                   : "com.pushtorefresh.storio:sqlite:1.11.0",
-      storioAnnotation         : "com.pushtorefresh.storio:sqlite-annotations:1.11.0",
-      storioAnnotationProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:1.11.0",
+      storio                   : "com.pushtorefresh.storio:sqlite:1.13.0",
+      storioAnnotation         : "com.pushtorefresh.storio:sqlite-annotations:1.13.0",
+      storioAnnotationProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:1.13.0",
 
       sqlcipher                : "net.zetetic:android-database-sqlcipher:3.5.1",
       simpleStorage            : "com.sromku:simple-storage:1.2.0",

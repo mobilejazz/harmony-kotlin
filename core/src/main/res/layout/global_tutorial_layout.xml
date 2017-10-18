@@ -49,7 +49,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:background="@color/colorPrimary"
+          android:background="@color/primary"
           android:padding="@dimen/span_16"
           android:layout_below="@+id/global_tutorial_layout_triangule_left_img"
           android:layout_alignParentLeft="true"

@@ -79,14 +79,14 @@ public class BookDetailCategoriesAdapter extends RecyclerView.Adapter<RecyclerVi
 
   //region Private methods
   private void onBindCategory(final View view, final Category category) {
-    TextView txtTitle = (TextView) view.findViewById(R.id.home_categories_adapter_txt_title);
+    TextView txtTitle = view.findViewById(R.id.home_categories_adapter_txt_title);
 
     txtTitle.setText(category.getTitle());
-    txtTitle.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+    txtTitle.setTextColor(ContextCompat.getColor(context, R.color.primary));
 
     view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
 
-    ImageView imgIcon = (ImageView) view.findViewById(R.id.home_categories_adapter_img_icon);
+    ImageView imgIcon = view.findViewById(R.id.home_categories_adapter_img_icon);
 
     if (category.getIconRes() > 0) {
       Drawable iconDrawable = ContextCompat.getDrawable(context, category.getIconRes());
@@ -95,9 +95,7 @@ public class BookDetailCategoriesAdapter extends RecyclerView.Adapter<RecyclerVi
     }
   }
 
-  private void onBindCategoryHolder(final CategoriesViewHolder holder, final Category categoryOne,
-      final Category categoryTwo, final Category categoryThree) {
-
+  private void onBindCategoryHolder(final CategoriesViewHolder holder, final Category categoryOne, final Category categoryTwo, final Category categoryThree) {
     holder.categoryContainerFirst.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         if (listener != null) {

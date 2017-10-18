@@ -2,11 +2,11 @@
 <resources>
 
   <!-- Theme colors -->
-  <color name="colorPrimary">#0055FF</color>
-  <color name="colorPrimaryDark">#103E99</color>
-  <color name="colorAccent">#103E99</color>
-  <color name="colorSecondaryDark">#103E99</color>
-  <color name="colorControlHighlight">#103E99</color>
+  <color name="primary">#0055FF</color>
+  <color name="primary_dark">#103E99</color>
+  <color name="accent">#103E99</color>
+  <color name="secondary_dark">#103E99</color>
+  <color name="control_highlight">#103E99</color>
   <color name="background">#FAFAFA</color>
   <color name="transparent_background">#b4fafafa</color>
 
@@ -55,8 +55,8 @@
   <color name="reader_actionbar_color">#fff5f5f5</color>
   <color name="reader_statusbar_color">#ff757575</color>
   <color name="reader_actionbar_arrow_color">#ff5a595b</color>
-  <color name="reader_book_index_actionbar_color">@color/colorPrimary</color>
-  <color name="reader_book_index_statusbar_color">@color/colorSecondaryDark</color>
+  <color name="reader_book_index_actionbar_color">@color/primary</color>
+  <color name="reader_book_index_statusbar_color">@color/secondary_dark</color>
   <color name="reader_book_index_actionbar_arrow_color">@color/white</color>
   <color name="reader_settings_cream_profile">#F6F2E5</color>
   <color name="reader_settings_light_profile">@color/white</color>
@@ -66,7 +66,7 @@
   <color name="reader_settings_accept">#518B0E</color>
   <color name="reader_settings_cancel">#D0021B</color>
   <color name="reader_settings_brightness_manual">@color/font_gray</color>
-  <color name="reader_settings_brightness_automatic">@color/colorPrimary</color>
+  <color name="reader_settings_brightness_automatic">@color/primary</color>
   <color name="reader_settings_status_pressed">#664A4A4A</color>
   <color name="ic_selector">#4A90E2</color>
 

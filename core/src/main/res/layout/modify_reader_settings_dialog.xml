@@ -59,11 +59,11 @@
             android:layout_marginLeft="@dimen/span_8"
             android:layout_marginRight="@dimen/span_8"
             android:layout_weight="1"
-            app:dsb_indicatorColor="@color/colorPrimary"
+            app:dsb_indicatorColor="@color/primary"
             app:dsb_indicatorPopupEnabled="false"
             app:dsb_max="100"
             app:dsb_min="0"
-            app:dsb_progressColor="@color/colorPrimary" />
+            app:dsb_progressColor="@color/primary" />
     </LinearLayout>
 
     <LinearLayout
