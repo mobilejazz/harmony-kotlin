@@ -8,8 +8,9 @@ import com.worldreader.core.datasource.storage.datasource.oauth.OAuthBdDataSourc
 import com.worldreader.core.datasource.storage.datasource.oauth.OAuthBdDataSourceImpl;
 import com.worldreader.core.domain.model.OAuthResponse;
 import com.worldreader.core.domain.repository.OAuthRepository;
-import java.util.Date;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class OAuthDataSource implements OAuthRepository {
 
@@ -42,7 +43,7 @@ public class OAuthDataSource implements OAuthRepository {
       return mapper.transform(token);
     } else {
       // Refresh the token and return it
-      token = refreshToken(Token.USER);
+      token = refreshToken();
       return mapper.transform(token);
     }
   }
@@ -103,20 +104,17 @@ public class OAuthDataSource implements OAuthRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private OAuthNetworkResponseEntity refreshToken(Token type) throws IllegalStateException {
-    final OAuthNetworkResponseEntity token = getToken(type);
-    if (type == Token.USER) {
-      if (token == null || token.getRefreshToken() == null) {
-        throw new IllegalStateException("User token is null");
-      } else {
-        final OAuthNetworkResponseEntity newUserToken = networkDataSource.refreshToken(token.getRefreshToken());
-        bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, newUserToken);
-        return newUserToken;
-      }
+  private OAuthNetworkResponseEntity refreshToken() throws IllegalStateException {
+    final OAuthNetworkResponseEntity token = getToken(Token.USER);
+    if (token == null || token.getRefreshToken() == null) {
+      throw new IllegalStateException("User token is null");
     } else {
-      final OAuthNetworkResponseEntity newToken = networkDataSource.refreshToken(token.getRefreshToken());
-      bdDataSource.persist(OAuthBdDataSourceImpl.REFRESH_TOKEN, newToken);
-      return newToken;
+      final OAuthNetworkResponseEntity newUserToken = networkDataSource.refreshToken(token.getRefreshToken());
+      if (newUserToken == null) {
+        return token;
+      }
+      bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, newUserToken);
+      return newUserToken;
     }
   }
 
