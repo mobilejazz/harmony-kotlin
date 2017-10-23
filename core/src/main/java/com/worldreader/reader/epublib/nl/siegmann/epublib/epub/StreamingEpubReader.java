@@ -30,7 +30,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 // TODO: 25/09/2017 Check that get book cover works properly
-public class EpubReader {
+public class StreamingEpubReader {
 
   private static Serializer XML_PARSER = new Persister();
 
