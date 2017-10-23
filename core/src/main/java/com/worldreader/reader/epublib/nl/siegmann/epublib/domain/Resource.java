@@ -361,10 +361,7 @@ public class Resource implements Serializable {
    * one.
    */
   public boolean equals(Object resourceObject) {
-    if (!(resourceObject instanceof Resource)) {
-      return false;
-    }
-    return href.equals(((Resource) resourceObject).getHref());
+    return resourceObject instanceof Resource && href.equals(((Resource) resourceObject).getHref());
   }
 
   /**
