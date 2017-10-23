@@ -282,7 +282,7 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                     Bundle savedInstanceState) {
+      Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_reader, container, false);
   }
 
@@ -383,7 +383,7 @@ public abstract class AbstractReaderFragment extends Fragment
     }
   }
 
-  private void initViews(View view){
+  private void initViews(View view) {
     this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
     this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
@@ -891,16 +891,18 @@ public abstract class AbstractReaderFragment extends Fragment
 
       streamTTSToDisk();
     } else {
-      final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title,
-              R.string.ls_error_tts_not_internet, R.string.ls_generic_accept, DialogFactory.EMPTY,
-              new DialogFactory.ActionCallback() {
-                @Override
-                public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                }
-              });
-      networkErrorDialog.setCancelable(false);
-      networkErrorDialog.show();
+      if (getActivity() != null) {
+        final MaterialDialog networkErrorDialog =
+            DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title,
+                R.string.ls_error_tts_not_internet, R.string.ls_generic_accept, DialogFactory.EMPTY,
+                new DialogFactory.ActionCallback() {
+                  @Override
+                  public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
+                  }
+                });
+        networkErrorDialog.setCancelable(false);
+        networkErrorDialog.show();
+      }
     }
   }
 
@@ -1599,7 +1601,7 @@ public abstract class AbstractReaderFragment extends Fragment
       final SubsamplingScaleImageView imageScaleView =
           (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
       final Bitmap bitmap = drawable.getBitmap();
-      if(bitmap != null) {
+      if (bitmap != null) {
         imageScaleView.setImage(ImageSource.cachedBitmap(bitmap));
         imageViewContainer.setVisibility(View.VISIBLE);
       }
@@ -1703,17 +1705,19 @@ public abstract class AbstractReaderFragment extends Fragment
         }
       }
     } else {
-      final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title,
-              R.string.ls_error_definition_not_internet, R.string.ls_generic_accept,
-              DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
-                @Override
-                public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                }
-              });
+      if (getActivity() != null) {
+        final MaterialDialog networkErrorDialog =
+            DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title,
+                R.string.ls_error_definition_not_internet, R.string.ls_generic_accept,
+                DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
+                  @Override
+                  public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
+                  }
+                });
 
-      networkErrorDialog.setCancelable(false);
-      networkErrorDialog.show();
+        networkErrorDialog.setCancelable(false);
+        networkErrorDialog.show();
+      }
     }
   }
 
@@ -2266,18 +2270,20 @@ public abstract class AbstractReaderFragment extends Fragment
   }
 
   private void displayUserNotRegisteredDialog() {
-    MaterialDialog dialog =
-        DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title,
-            R.string.ls_not_registered_dialog_message, R.string.ls_generic_accept,
-            R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
-              @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-                if (action == DialogFactory.Action.OK) {
-                  onEventNavigateToSignUpScreen();
+    if (getActivity() != null) {
+      MaterialDialog dialog =
+          DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title,
+              R.string.ls_not_registered_dialog_message, R.string.ls_generic_accept,
+              R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
+                @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
+                  if (action == DialogFactory.Action.OK) {
+                    onEventNavigateToSignUpScreen();
+                  }
                 }
-              }
-            });
+              });
 
-    dialog.show();
+      dialog.show();
+    }
   }
 
   protected abstract void onEventNavigateToSignUpScreen();
