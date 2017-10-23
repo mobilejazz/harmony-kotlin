@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -49,36 +48,37 @@ import static jedi.option.Options.option;
 public class Configuration {
 
   public static final String TAG = Configuration.class.getSimpleName();
-  public static final String KEY_POS = "offset:";
-  public static final String KEY_IDX = "index:";
-  public static final String KEY_NAV_TAP_H = "nav_tap_h";
-  public static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
-  public static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
-  public static final String KEY_SCROLLING = "scrolling";
-  public static final String KEY_TEXT_SIZE = "itext_size";
-  public static final String KEY_MARGIN_H = "margin_h";
-  public static final String KEY_MARGIN_V = "margin_v";
-  public static final String KEY_LINE_SPACING = "line_spacing";
-  public static final String KEY_NIGHT_MODE = "night_mode";
-  public static final String KEY_FONT_FACE = "font_face";
-  public static final String KEY_SERIF_FONT = "serif_font";
-  public static final String KEY_SANS_SERIF_FONT = "sans_serif_font";
-  public static final String PREFIX_DAY = "day";
-  public static final String PREFIX_NIGHT = "night";
-  public static final String PREFIX_CREAM = "cream";
-  public static final String KEY_BRIGHTNESS = "bright";
-  public static final String KEY_BACKGROUND = "bg";
-  public static final String KEY_LINK = "link";
-  public static final String KEY_TEXT = "text";
-  public static final String KEY_SCROLL_STYLE = "scroll_style";
-  public static final String KEY_SCROLL_SPEED = "scroll_speed";
-  public static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
-  public static final String KEY_OFFSETS = "offsets";
-  public static final String KEY_SHOW_PAGENUM = "show_pagenum";
-  public static final String KEY_READING_DIRECTION = "reading_direction";
-  public static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
-  public static final String KEY_ALLOW_STYLING = "allow_styling";
-  public static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
+
+  private static final String KEY_POS = "offset:";
+  private static final String KEY_IDX = "index:";
+  private static final String KEY_NAV_TAP_H = "nav_tap_h";
+  private static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
+  private static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
+  private static final String KEY_SCROLLING = "scrolling";
+  private static final String KEY_TEXT_SIZE = "itext_size";
+  private static final String KEY_MARGIN_H = "margin_h";
+  private static final String KEY_MARGIN_V = "margin_v";
+  private static final String KEY_LINE_SPACING = "line_spacing";
+  private static final String KEY_NIGHT_MODE = "night_mode";
+  private static final String KEY_FONT_FACE = "font_face";
+  private static final String KEY_SERIF_FONT = "serif_font";
+  private static final String KEY_SANS_SERIF_FONT = "sans_serif_font";
+  private static final String PREFIX_DAY = "day";
+  private static final String PREFIX_NIGHT = "night";
+  private static final String PREFIX_CREAM = "cream";
+  private static final String KEY_BRIGHTNESS = "bright";
+  private static final String KEY_BACKGROUND = "bg";
+  private static final String KEY_LINK = "link";
+  private static final String KEY_TEXT = "text";
+  private static final String KEY_SCROLL_STYLE = "scroll_style";
+  private static final String KEY_SCROLL_SPEED = "scroll_speed";
+  private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
+  private static final String KEY_OFFSETS = "offsets";
+  private static final String KEY_SHOW_PAGENUM = "show_pagenum";
+  private static final String KEY_READING_DIRECTION = "reading_direction";
+  private static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
+  private static final String KEY_ALLOW_STYLING = "allow_styling";
+  private static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
 
   private SharedPreferences settings;
   private Context context;
@@ -98,15 +98,6 @@ public class Configuration {
     long used = Runtime.getRuntime().totalMemory();
 
     return (double) used / (double) max;
-  }
-
-  /*
-      Returns the available bitmap memory.
-      On newer Android versions this is the same as the normaL
-      heap memory.
-   */
-  public static double getBitmapMemoryUsage() {
-    return getMemoryUsage();
   }
 
   public boolean isHorizontalTappingEnabled() {

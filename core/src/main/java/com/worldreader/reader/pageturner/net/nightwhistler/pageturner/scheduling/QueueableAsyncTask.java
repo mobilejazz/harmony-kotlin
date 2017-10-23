@@ -20,7 +20,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
 
 import android.os.AsyncTask;
-import com.worldreader.reader.pageturner.net.nightwhistler.ui.UiUtils;
 import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
@@ -33,7 +32,7 @@ import static jedi.option.Options.none;
  */
 public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Option<Result>> {
 
-  private UiUtils.Action onPreExecutionOperation;
+  private Action onPreExecutionOperation;
   private Command<Option<Result>> onPostExecuteOperation;
   private Command<Option<Result>> onCancelledOperation;
   private Command<Progress[]> onProgressUpdateOperation;
@@ -58,7 +57,7 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
 
   /**
    * Called when a cancellation is requested.
-   *
+   * <p>
    * Default simply sets a flag and calls cancel()
    */
   public void requestCancellation() {
@@ -82,7 +81,7 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
 
   /**
    * Gets executed on the UI thread.
-   *
+   * <p>
    * Override this to implement your on post-processing operations.
    */
   public void doOnPostExecute(Option<Result> result) {
@@ -105,7 +104,7 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
 
   /**
    * Overridden and made final to implement notification.
-   *
+   * <p>
    * Subclasses should override doOnPostExecute() instead.
    */
   @Override protected final void onPostExecute(Option<Result> result) {
@@ -139,5 +138,10 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
   public interface QueueCallback {
 
     void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled);
+  }
+
+  public interface Action {
+
+    void perform();
   }
 }

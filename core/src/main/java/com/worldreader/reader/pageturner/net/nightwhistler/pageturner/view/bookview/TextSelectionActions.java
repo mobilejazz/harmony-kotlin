@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import com.worldreader.core.R;
-import com.worldreader.reader.pageturner.net.nightwhistler.ui.UiUtils;
 import jedi.functional.Command;
 import jedi.option.Option;
 
@@ -47,7 +46,7 @@ import jedi.option.Option;
     return true;
   }
 
-  private static OnMenuItemClickListener react(final ActionMode mode, final UiUtils.Action action) {
+  private static OnMenuItemClickListener react(final ActionMode mode, final Action action) {
     return new OnMenuItemClickListener() {
       @Override public boolean onMenuItemClick(MenuItem item) {
         action.perform();
@@ -69,13 +68,13 @@ import jedi.option.Option;
       menu.removeItem(android.R.id.shareText);
     }
 
-    menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
+    menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new Action() {
       @Override public void perform() {
         callBack.share(selectedTextProvider.getSelectionStart(), selectedTextProvider.getSelectionEnd(), selectedTextProvider.getSelectedText().getOrElse(""));
       }
     })).setIcon(R.drawable.ic_share_dark);
 
-    menu.add(R.string.ls_definition).setOnMenuItemClickListener(react(mode, new UiUtils.Action() {
+    menu.add(R.string.ls_definition).setOnMenuItemClickListener(react(mode, new Action() {
       @Override public void perform() {
         selectedTextProvider.getSelectedText().forEach(new Command<String>() {
           @Override public void execute(String text) {
@@ -109,5 +108,10 @@ import jedi.option.Option;
     int getSelectionStart();
 
     int getSelectionEnd();
+  }
+
+  public interface Action {
+
+    void perform();
   }
 }

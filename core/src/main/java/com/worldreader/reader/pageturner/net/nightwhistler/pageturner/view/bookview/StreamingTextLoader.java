@@ -253,13 +253,11 @@ public class StreamingTextLoader implements TextLoader {
     }
 
     final double memoryUsage = Configuration.getMemoryUsage();
-    final double bitmapUsage = Configuration.getBitmapMemoryUsage();
 
     Log.d(TAG, "Current memory usage is " + (int) (memoryUsage * 100) + "%");
-    Log.d(TAG, "Current bitmap memory usage is " + (int) (bitmapUsage * 100) + "%");
 
     //If memory usage gets over the threshold, try to free up memory
-    if (memoryUsage > CACHE_CLEAR_THRESHOLD || bitmapUsage > CACHE_CLEAR_THRESHOLD) {
+    if (memoryUsage > CACHE_CLEAR_THRESHOLD) {
       Log.d(TAG, "Clearing cached resources.");
       clearCachedText();
       closeLazyLoadedResources();
