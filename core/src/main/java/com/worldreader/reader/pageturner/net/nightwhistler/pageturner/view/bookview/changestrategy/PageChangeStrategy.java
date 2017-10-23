@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
  */
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy;
 
 import android.text.Spanned;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import jedi.option.Option;
 
 public interface PageChangeStrategy {

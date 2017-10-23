@@ -25,7 +25,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.InlineResource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import jedi.option.Option;
 
 import java.io.*;

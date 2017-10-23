@@ -2,7 +2,7 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 
 import android.text.SpannableStringBuilder;
 import android.util.Log;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;

@@ -62,7 +62,12 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.PageChangeStrategy;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadTask;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -368,7 +373,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     loadText();
   }
 
-  void loadText() {
+  public void loadText() {
     if (spine == null && !textLoader.hasCachedBook(this.fileName)) {
       taskQueue.executeTask(new OpenStreamingBookTask());
     } else {
@@ -453,11 +458,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  TextView getInnerView() {
+  public TextView getInnerView() {
     return childView;
   }
 
-  PageTurnerSpine getSpine() {
+  public PageTurnerSpine getSpine() {
     return this.spine;
   }
 
@@ -476,8 +481,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   /**
    * Returns the full word containing the character at the selected location.
    */
-  public Option<SelectedWord> getWordAt(float x, float y) {
-
+  public Option<String> getWordAt(float x, float y) {
     if (childView == null) {
       return none();
     }
@@ -528,13 +532,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     if (isBoundaryCharacter(word.charAt(word.length() - 1))) {
       end = word.length() - 1;
-      right--;
     }
 
     if (start > 0 && start < word.length() && end < word.length()) {
       word = word.subSequence(start, end);
 
-      return some(new SelectedWord(left, right, word));
+      return some(word.toString());
     }
 
     return none();

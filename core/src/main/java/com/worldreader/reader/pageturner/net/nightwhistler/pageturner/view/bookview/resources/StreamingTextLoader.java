@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -188,10 +188,6 @@ public class StreamingTextLoader implements TextLoader {
 
   public boolean hasCachedBook(String fileName) {
     return false;
-  }
-
-  public Book getCurrentBook() {
-    return this.currentBook;
   }
 
   @Override public void setResourcesLoader(ResourcesLoader resourcesLoader) {

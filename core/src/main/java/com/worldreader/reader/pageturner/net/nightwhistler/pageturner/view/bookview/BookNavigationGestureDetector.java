@@ -1,54 +1,26 @@
-/*
- * Copyright (C) 2012 Alex Kuiper
- * 
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
-
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 
 import java.util.*;
 
-/**
- * Translates low-level touch and gesture events into more high-level
- * navigation events.
- *
- * @author Alex Kuiper
- */
-public class NavGestureDetector extends GestureDetector.SimpleOnGestureListener {
+public class BookNavigationGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
-  private static final String TAG = NavGestureDetector.class.getSimpleName();
+  private static final String TAG = BookNavigationGestureDetector.class.getSimpleName();
 
   //Distance to scroll 1 unit on edge slide.
   private static final int SCROLL_FACTOR = 50;
-
   private static final int BOOKVIEW_BLOCK_TIME = 1500;
 
   private BookViewListener bookViewListener;
   private BookView bookView;
   private DisplayMetrics metrics;
 
-  public NavGestureDetector(BookView bookView, BookViewListener navListener, DisplayMetrics metrics) {
+  public BookNavigationGestureDetector(BookView bookView, BookViewListener navListener, DisplayMetrics metrics) {
     this.bookView = bookView;
     this.bookViewListener = navListener;
     this.metrics = metrics;

@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;

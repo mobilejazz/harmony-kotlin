@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
 import android.text.Spannable;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
@@ -46,8 +46,6 @@ public interface TextLoader extends LinkTagHandler.LinkCallBack {
   void closeCurrentBook();
 
   void setLinkCallBack(LinkTagHandler.LinkCallBack callBack);
-
-  Book getCurrentBook();
 
   void setResourcesLoader(ResourcesLoader resourcesLoader);
 

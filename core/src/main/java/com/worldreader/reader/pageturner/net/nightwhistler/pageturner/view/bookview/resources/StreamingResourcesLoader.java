@@ -1,11 +1,10 @@
-package com.worldreader.reader.wr.helper;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ResourcesLoader;
 
 import java.io.*;
 import java.net.URLDecoder;

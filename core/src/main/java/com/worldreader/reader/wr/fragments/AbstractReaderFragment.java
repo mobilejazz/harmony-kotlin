@@ -95,16 +95,16 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPla
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.NavGestureDetector;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StreamingTextLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingTextLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
-import com.worldreader.reader.wr.helper.StreamingResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.functional.Command;
@@ -416,7 +416,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     DisplayMetrics metrics = new DisplayMetrics();
     activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-    final GestureDetector gestureDetector = new GestureDetector(context, new NavGestureDetector(bookView, this, metrics));
+    final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, this, metrics));
 
     displayPageNumber(-1); // Initializes the pagenumber view properly
 

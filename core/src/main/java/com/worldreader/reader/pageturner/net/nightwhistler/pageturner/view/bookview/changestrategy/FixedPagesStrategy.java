@@ -17,7 +17,7 @@
  * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
  */
 
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -29,7 +29,9 @@ import android.util.Log;
 import android.widget.TextView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StaticLayoutFactory;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import jedi.option.Option;
 
 import java.util.*;
