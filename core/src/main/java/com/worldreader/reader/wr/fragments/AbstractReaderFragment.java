@@ -99,8 +99,8 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.FileEpubResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
@@ -289,11 +289,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     final String bookId = bookMetadata.getBookId();
     final String contentOpf = bookMetadata.getContentOpfName();
-    final ResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);//new FileEpubResourcesLoader(bookMetadata, logger);
+    final ResourcesLoader resourcesLoader = new FileEpubResourcesLoader(logger);// new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
 
     this.textLoader = new TextLoader(new HtmlSpanner(), new SystemFontResolver(), resourcesLoader);
 
-    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
+    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, bookMetadata, streamingBookDataSource, logger);
     this.bookView.addListener(this);
     this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
       @Override public void lookupDictionary(String text) {
@@ -1886,7 +1886,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());
 
       analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
-
     }
   }
 

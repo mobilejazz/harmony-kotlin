@@ -88,9 +88,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return this.entries.iterator();
   }
 
-  /**
-   * Adds a new resource.
-   */
   private void addResource(Resource resource) {
     SpineEntry newEntry = new SpineEntry();
     newEntry.title = resource.getTitle();
@@ -257,16 +254,13 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   /**
    * Navigates to a specific point in the spine.
-   *
-   * @return false if the point did not exist.
    */
-  public boolean navigateByIndex(int index) {
+  public void navigateByIndex(int index) {
     if (index < 0 || index >= size()) {
-      return false;
+      return;
     }
 
     this.position = index;
-    return true;
   }
 
   /**
@@ -282,7 +276,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if that point did not exist.
    */
   public boolean navigateByHref(String href) {
-
     String encodedHref = encode(href);
 
     for (int i = 0; i < size(); i++) {

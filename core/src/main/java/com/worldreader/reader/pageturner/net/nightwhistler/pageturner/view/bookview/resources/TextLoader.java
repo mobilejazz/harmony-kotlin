@@ -293,8 +293,8 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
     closeCurrentBook();
     clearAnchors();
 
-    final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
-    final InputStream tocResourcesIs = resourcesLoader.loadResource(tocResourcePath);
+    final InputStream contentOpfIs = resourcesLoader.loadResource(new Resource(contentOpf));
+    final InputStream tocResourcesIs = resourcesLoader.loadResource(new Resource(tocResourcePath));
 
     final Book newBook = StreamingEpubReader.readStreamingEpub(contentOpfIs, tocResourcesIs);
     this.currentBook = newBook;

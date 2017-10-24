@@ -1,30 +1,11 @@
-/*
- * Copyright (C) 2008 Romain Guy
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.os.Handler;
@@ -45,15 +26,11 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.concurrent.*;
 
-@Deprecated
-public class FastBitmapDrawable extends Drawable {
+public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
 
-  private static final String TAG = FastBitmapDrawable.class.getSimpleName();
+  private static final String TAG = StreamingFastBitmapDrawable.class.getSimpleName();
 
-  private final String resource;
-  private final StreamingBookRepository dataSource;
-  private final BookMetadata metadata;
-  private final Logger logger;
+  private static final String BACKGROUND_COLOR = "#fbf3ea";
 
   private final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -61,20 +38,19 @@ public class FastBitmapDrawable extends Drawable {
   private final Shape shape;
   private final Paint paint;
 
-  private final int width;
-  private final int height;
-
-  private Bitmap bitmap;
   private boolean isLoaded;
   private boolean isProcessing;
+  private final StreamingBookRepository dataSource;
+  private final BookMetadata metadata;
+  private final String resource;
+  private final Logger logger;
 
-  public FastBitmapDrawable(final String resource, final int width, final int height, final StreamingBookRepository dataSource, final BookMetadata metadata, final Logger logger) {
-    this.resource = resource;
-    this.dataSource = dataSource;
+  public StreamingFastBitmapDrawable(int width, int height, StreamingBookRepository repository, BookMetadata metadata, String resource, Logger logger) {
+    super(width, height);
+
+    this.dataSource = repository;
     this.metadata = metadata;
-
-    this.width = width;
-    this.height = height;
+    this.resource = resource;
     this.logger = logger;
 
     this.r = new Rect(0, 0, width, height);
@@ -83,7 +59,7 @@ public class FastBitmapDrawable extends Drawable {
     shape.resize(width, height);
 
     this.paint = new Paint();
-    paint.setColor(Color.parseColor("#fbf3ea"));
+    paint.setColor(Color.parseColor(BACKGROUND_COLOR));
 
     setBounds(0, 0, width - 1, height - 1);
   }
@@ -97,8 +73,8 @@ public class FastBitmapDrawable extends Drawable {
 
       if (!isLoaded && !isProcessing) {
         isProcessing = true;
-        ListenableFuture<StreamingResource> getBookResourceFuture = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
-        Futures.addCallback(getBookResourceFuture, new FutureCallback<StreamingResource>() {
+        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
+        Futures.addCallback(future, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {
             final InputStream inputStream = result.getInputStream();
             handler.post(new Runnable() {
@@ -113,7 +89,6 @@ public class FastBitmapDrawable extends Drawable {
             if (t instanceof CancellationException) {
               return;
             }
-
             handler.post(new Runnable() {
               @Override public void run() {
                 isProcessing = false;
@@ -123,36 +98,9 @@ public class FastBitmapDrawable extends Drawable {
           }
         }, MoreExecutors.directExecutor());
       }
-
     } else {
       canvas.drawBitmap(bitmap, 0.0f, 0.0f, null);
     }
-  }
-
-  @Override public void setAlpha(int alpha) {
-  }
-
-  @Override public void setColorFilter(ColorFilter cf) {
-  }
-
-  @Override public int getOpacity() {
-    return PixelFormat.TRANSLUCENT;
-  }
-
-  @Override public int getIntrinsicWidth() {
-    return width;
-  }
-
-  @Override public int getIntrinsicHeight() {
-    return height;
-  }
-
-  @Override public int getMinimumWidth() {
-    return width;
-  }
-
-  @Override public int getMinimumHeight() {
-    return height;
   }
 
   private void generateDrawable(final InputStream inputStream) {
@@ -172,11 +120,7 @@ public class FastBitmapDrawable extends Drawable {
     }
   }
 
-  @Nullable public Bitmap getBitmap() {
-    return bitmap;
-  }
-
-  private void recycle() {
+  public void recycle() {
     if (this.bitmap != null) {
       this.bitmap.recycle();
     }
@@ -184,14 +128,8 @@ public class FastBitmapDrawable extends Drawable {
     this.bitmap = null;
   }
 
-  public void reset() {
-    recycle();
-    isLoaded = false;
-  }
-
   @Nullable private Bitmap decodeBitmap(InputStream is) throws IOException {
     final Bitmap originalBitmap = BitmapFactory.decodeStream(is);
     return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
   }
-
 }

@@ -1,5 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
+import com.google.common.base.Throwables;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
@@ -26,23 +27,14 @@ public class StreamingResourcesLoader implements ResourcesLoader {
     this.logger = logger;
   }
 
-  @Override public InputStream loadResource(String path) {
-    StreamingResource bookResource;
-    try {
-      bookResource = dataSource.getBookResource(bookMetadata.getBookId(), bookMetadata, URLDecoder.decode(path));
-    } catch (Throwable throwable) {
-      bookResource = StreamingResource.create(null);
-    }
-
-    if (bookResource.getInputStream() == null) {
-      logger.d(TAG, "Book resource is null with path: " + path);
-    }
-
-    return bookResource.getInputStream();
-  }
-
   @Override public InputStream loadResource(Resource resource) {
-    return this.loadResource(resource.getHref());
+    try {
+      final StreamingResource r = dataSource.getBookResource(bookMetadata.getBookId(), bookMetadata, URLDecoder.decode(resource.getHref()));
+      return r.getInputStream();
+    } catch (Throwable throwable) {
+      logger.e(TAG, "Couldn't load the image resource: " + resource.getHref() + " | Reason: " + Throwables.getStackTraceAsString(throwable));
+      return null;
+    }
   }
 
   @Override public void onPrepareBitmapDrawables() {

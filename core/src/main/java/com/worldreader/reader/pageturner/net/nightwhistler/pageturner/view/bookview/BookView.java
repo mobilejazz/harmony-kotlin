@@ -105,18 +105,16 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private TableHandler tableHandler;
 
-  private PageTurnerSpine spine;
-
   private String fileName;
+  private PageTurnerSpine spine;
   private Book book;
   private String bookId;
   private String contentOpf;
   private String tocResourcePath;
+  private PageChangeStrategy strategy;
 
   private int prevIndex = -1;
   private int prevPos = -1;
-
-  private PageChangeStrategy strategy;
 
   private int horizontalMargin = 0;
   private int verticalMargin = 0;
@@ -130,6 +128,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private ResourcesLoader resourcesLoader;
 
   private TaskQueue taskQueue;
+
+  private StreamingBookRepository repository;
+  private BookMetadata bookMetadata;
 
   private Logger logger;
 
@@ -149,7 +150,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-  public void init(String bookId, String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader, final TextLoader textLoader, Logger logger) {
+  public void init(String bookId, String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader, TextLoader textLoader, BookMetadata bookMetadata,
+      StreamingBookRepository repository, Logger logger) {
     this.bookId = bookId;
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
@@ -188,6 +190,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         BookView.this.onLinkClicked(href);
       }
     });
+
+    this.bookMetadata = bookMetadata;
+    this.repository = repository;
 
     this.logger = logger;
   }
@@ -764,7 +769,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       this.end = end;
     }
 
-    @Override public void onPrepareFastBitmapDrawable(String resourceHref, StreamingBookRepository dataSource, BookMetadata bookMetadata) {
+    @Override public void onPrepareFastBitmapDrawable(String resourceHref) {
       final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.getImagesResources();
       final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(resourceHref) : null;
 
@@ -775,7 +780,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       final int finalWidth = sizes.getValue0();
       final int finalHeight = sizes.getValue1();
 
-      final FastBitmapDrawable drawable = new FastBitmapDrawable(resourceHref, finalWidth, finalHeight, dataSource, bookMetadata, logger);
+      final FastBitmapDrawable drawable = new FastBitmapDrawable(resourceHref, finalWidth, finalHeight, repository, bookMetadata, logger);
       drawable.setCallback(callback);
 
       setImageSpan(builder, drawable, start, end);
@@ -808,12 +813,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class StreamingImageTagHandler extends TagNodeHandler {
 
-    protected void registerCallback(String resolvedHref, ResourcesLoader.ImageResourceCallback callback) {
-      resourcesLoader.registerImageCallback(resolvedHref, callback);
-    }
-
-    @TargetApi(Build.VERSION_CODES.FROYO) @Override
-    public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack span) {
+    @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack span) {
       String src = node.getAttributeByName("src");
 
       if (src == null) {
@@ -844,6 +844,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         registerCallback(resolvedHref, new StreamingResourceCallback(builder, start, builder.length()));
       }
     }
+
+    private void registerCallback(String resolvedHref, ResourcesLoader.ImageResourceCallback callback) {
+      resourcesLoader.registerImageCallback(resolvedHref, callback);
+    }
+
   }
 
   public void setTextColor(int color) {
@@ -873,9 +878,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  private void errorOnBookOpening(String errorMessage) {
+  private void errorOnBookOpening() {
     for (BookViewListener listener : this.listeners) {
-      listener.errorOnBookOpening(errorMessage);
+      listener.errorOnBookOpening("");
     }
   }
 
@@ -1056,34 +1061,34 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(None... nones) {
       try {
         // TODO: 24/10/2017 Old code bookview
-        final Book book = textLoader.initBook(contentOpf, tocResourcePath);
-
-        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
-        spine.navigateByIndex(storedIndex);
-
-        //final Context context = getContext();
-        //final File f = new File(context.getCacheDir() + "/alice.epub");
-        //
-        //if (!f.exists()) {
-        //  try {
-        //    final InputStream is = context.getAssets().open("alice.epub");
-        //    int size = is.available();
-        //    byte[] buffer = new byte[size];
-        //    is.read(buffer);
-        //    is.close();
-        //
-        //    final FileOutputStream fos = new FileOutputStream(f);
-        //    fos.write(buffer);
-        //    fos.close();
-        //  } catch (Exception e) {
-        //    throw new RuntimeException(e);
-        //  }
-        //}
-        //
-        //final Book book = textLoader.initBook(f);
+        //final Book book = textLoader.initBook(contentOpf, tocResourcePath);
         //
         //final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
         //spine.navigateByIndex(storedIndex);
+
+        final Context context = getContext();
+        final File f = new File(context.getCacheDir() + "/alice.epub");
+
+        if (!f.exists()) {
+          try {
+            final InputStream is = context.getAssets().open("alice.epub");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            final FileOutputStream fos = new FileOutputStream(f);
+            fos.write(buffer);
+            fos.close();
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        final Book book = textLoader.initBook(f);
+
+        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
+        spine.navigateByIndex(storedIndex);
 
         return some(Pair.with(book, spine));
       } catch (Exception e) {
@@ -1105,7 +1110,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         }
       }, new Command0() {
         @Override public void execute() {
-          errorOnBookOpening("");
+          errorOnBookOpening();
         }
       });
 
@@ -1137,7 +1142,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           }
         });
 
-        // Load all image resources (not true anymore as FastBitmapDrawable is in charge to do it per image).
+        // Load all image resources (not true anymore as AbstractFastBitmapDrawable is in charge to do it per image).
         resourcesLoader.onPrepareBitmapDrawables();
 
         //If the view isn't ready yet, wait a bit.
