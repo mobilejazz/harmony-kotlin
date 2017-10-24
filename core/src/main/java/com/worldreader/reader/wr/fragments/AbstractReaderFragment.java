@@ -478,6 +478,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       this.textToSpeech.shutdown();
       this.textToSpeech = null;
     }
+    this.bookView.releaseResources();
     this.closeWaitDialog();
     super.onDestroy();
   }

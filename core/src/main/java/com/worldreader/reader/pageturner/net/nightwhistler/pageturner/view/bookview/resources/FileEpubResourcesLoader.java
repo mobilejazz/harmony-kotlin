@@ -30,7 +30,7 @@ public class FileEpubResourcesLoader implements ResourcesLoader {
 
   @Override public void onPrepareBitmapDrawables() {
     for (Holder holder : callbacks) {
-      holder.callback.onPrepareFastBitmapDrawable(holder.href, null, bookMetadata);
+      holder.callback.onPrepareFastBitmapDrawable(holder.href);
     }
   }
 

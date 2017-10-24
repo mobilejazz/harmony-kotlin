@@ -1,7 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,7 +10,6 @@ import android.graphics.drawable.shapes.Shape;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -128,8 +126,4 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
     this.bitmap = null;
   }
 
-  @Nullable private Bitmap decodeBitmap(InputStream is) throws IOException {
-    final Bitmap originalBitmap = BitmapFactory.decodeStream(is);
-    return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
-  }
 }

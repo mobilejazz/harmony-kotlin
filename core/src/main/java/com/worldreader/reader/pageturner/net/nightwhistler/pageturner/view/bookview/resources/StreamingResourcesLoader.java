@@ -39,7 +39,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
 
   @Override public void onPrepareBitmapDrawables() {
     for (Holder holder : callbacks) {
-      holder.callback.onPrepareFastBitmapDrawable(holder.href, dataSource, bookMetadata);
+      holder.callback.onPrepareFastBitmapDrawable(holder.href);
     }
   }
 
