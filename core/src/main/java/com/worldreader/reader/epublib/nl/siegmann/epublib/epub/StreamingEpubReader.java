@@ -10,6 +10,7 @@ import com.worldreader.core.datasource.model.NCXEntity;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Guide;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.MediaType;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
@@ -38,16 +39,22 @@ public class StreamingEpubReader {
     final ContentOpfEntity contentOpf = XML_PARSER.read(ContentOpfEntity.class, contentOpfIs, false);
     final NCXEntity NCXEntity = XML_PARSER.read(NCXEntity.class, tocResourceIs, false);
 
-    final Book book = new Book();
+    final Resource opfResource = toOpfResource(contentOpfIs);
+    final Resources resources = toBookResources(contentOpf);
+    final Metadata metadata = toBookMetadata(contentOpf);
+    final Spine spine = toSpine(contentOpf, resources);
+    final TableOfContents tableOfContents = toTableOfContents(contentOpf, NCXEntity, resources);
+    final Resource ncxResource = toNcxResource(contentOpf, spine, resources, tocResourceIs);
 
-    book.setOpfResource(toOpfResource(contentOpfIs));
-    book.setResources(toBookResources(contentOpf));
-    book.setMetadata(toBookMetadata(contentOpf));
-    book.setSpine(toSpine(contentOpf, book.getResources()));
-    book.setTableOfContents(toTableOfContents(contentOpf, NCXEntity, book));
-    book.setNcxResource(toNcxResource(contentOpf, book, tocResourceIs));
-
-    return book;
+    return Book.builder()
+        .withOpfResource(opfResource)
+        .withResources(resources)
+        .withMetadata(metadata)
+        .withSpine(spine)
+        .withTableOfContents(tableOfContents)
+        .withNcxResource(ncxResource)
+        .withGuide(new Guide())
+        .build();
   }
 
   private static Resource toOpfResource(InputStream contentOpfIs) throws IOException {
@@ -110,9 +117,7 @@ public class StreamingEpubReader {
     return new Spine(spineReferences);
   }
 
-  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Book book, final InputStream ncx) throws IOException {
-    final Spine spine = book.getSpine();
-
+  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Spine spine, final Resources resources, final InputStream ncx) throws IOException {
     if (spine == null) {
       return null; // Epub doesn't contain what we are looking for
     }
@@ -120,7 +125,7 @@ public class StreamingEpubReader {
     ncx.reset();
 
     final String tocId = contentOpfEntity.spine.toc;
-    final Resource tocResource = book.getResources().getById(tocId);
+    final Resource tocResource = resources.getById(tocId);
     tocResource.setData(ncx);
 
     spine.setTocResource(tocResource);
@@ -128,13 +133,13 @@ public class StreamingEpubReader {
     return tocResource;
   }
 
-  private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Book book) throws Exception {
-    final List<TOCReference> references = getTocReferences(contentOpfEntity, ncxEntity.navPoints, book);
+  private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Resources resources) throws Exception {
+    final List<TOCReference> references = getTocReferences(contentOpfEntity, ncxEntity.navPoints, resources);
     return new TableOfContents(references);
   }
 
   @NonNull
-  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book) throws Exception {
+  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Resources resources) throws Exception {
     if (navPoints == null) {
       return new ArrayList<>();
     }
@@ -150,7 +155,7 @@ public class StreamingEpubReader {
 
     // Navigate through ordered navPoints
     for (NCXEntity.NavPoint navPoint : navPoints) {
-      final TOCReference tocReference = toTOCReference(contentOpfEntity, navPoint, book);
+      final TOCReference tocReference = toTOCReference(contentOpfEntity, navPoint, resources);
       if (tocReference != null) {
         references.add(tocReference);
       }
@@ -159,7 +164,7 @@ public class StreamingEpubReader {
     return references;
   }
 
-  @Nullable private static TOCReference toTOCReference(final ContentOpfEntity contentOpfEntity, final NCXEntity.NavPoint navPoint, final Book book)
+  @Nullable private static TOCReference toTOCReference(final ContentOpfEntity contentOpfEntity, final NCXEntity.NavPoint navPoint, final Resources resources)
       throws Exception {
     // Retrieve values from XML
     final String label = navPoint.navLabel.text;
@@ -170,7 +175,7 @@ public class StreamingEpubReader {
 
     // Create reference
     final String tocResourceId = contentOpfEntity.spine.toc;
-    final Resource tocResource = book.getResources().getById(tocResourceId);
+    final Resource tocResource = resources.getById(tocResourceId);
     final String tocResourceHref = tocResource.getHref();
 
     final String reference = FilenameUtils.getPath(tocResourceHref) + src;
@@ -180,7 +185,7 @@ public class StreamingEpubReader {
 
     // Retrieve from resources
     final String href = StringUtil.substringBefore(reference, Constants.FRAGMENT_SEPARATOR_CHAR);
-    final Resource resource = book.getResources().getByHref(href);
+    final Resource resource = resources.getByHref(href);
 
     final TOCReference result;
     if (resource != null) {
@@ -196,7 +201,7 @@ public class StreamingEpubReader {
         }));
 
         // Call recursively until last element inside has been consumed
-        result.setChildren(getTocReferences(contentOpfEntity, newNavPoints, book));
+        result.setChildren(getTocReferences(contentOpfEntity, newNavPoints, resources));
       }
     } else {
       result = null;

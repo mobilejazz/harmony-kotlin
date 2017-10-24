@@ -44,19 +44,29 @@ public class Book implements Serializable {
   private Resource ncxResource;
   private Resource coverImage;
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  private Book() {
+  }
+
+  private Book(Builder builder) {
+    this.resources = builder.resources;
+    this.metadata = builder.metadata;
+    this.spine = builder.spine;
+    this.tableOfContents = builder.tableOfContents;
+    this.guide = builder.guide;
+    this.opfResource = builder.opfResource;
+    this.ncxResource = builder.ncxResource;
+    setCoverImage(builder.coverImage);
+  }
+
   /**
    * The Book's metadata (titles, authors, etc)
    */
   public Metadata getMetadata() {
     return metadata;
-  }
-
-  public void setMetadata(Metadata metadata) {
-    this.metadata = metadata;
-  }
-
-  public void setResources(Resources resources) {
-    this.resources = resources;
   }
 
   /**
@@ -74,19 +84,11 @@ public class Book implements Serializable {
     return spine;
   }
 
-  public void setSpine(Spine spine) {
-    this.spine = spine;
-  }
-
   /**
    * The Table of Contents of the book.
    */
   public TableOfContents getTableOfContents() {
     return tableOfContents;
-  }
-
-  public void setTableOfContents(TableOfContents tableOfContents) {
-    this.tableOfContents = tableOfContents;
   }
 
   /**
@@ -99,16 +101,6 @@ public class Book implements Serializable {
       coverPage = spine.getResource(0);
     }
     return coverPage;
-  }
-
-  public void setCoverPage(Resource coverPage) {
-    if (coverPage == null) {
-      return;
-    }
-    if (!resources.containsByHref(coverPage.getHref())) {
-      resources.add(coverPage);
-    }
-    guide.setCoverPage(coverPage);
   }
 
   /**
@@ -147,7 +139,7 @@ public class Book implements Serializable {
     }
   }
 
-  public void setCoverImage(Resource coverImage) {
+  private void setCoverImage(Resource coverImage) {
     if (coverImage == null) {
       return;
     }
@@ -175,11 +167,9 @@ public class Book implements Serializable {
    * <li>The resources of the Guide that are not already in the result</li>
    * </ul>
    * To get all html files that make up the epub file use
-   *
-   * @see getResources().getAll()
    */
   public List<Resource> getContents() {
-    Map<String, Resource> result = new LinkedHashMap<String, Resource>();
+    Map<String, Resource> result = new LinkedHashMap<>();
     addToContentsResult(getCoverPage(), result);
 
     for (SpineReference spineReference : getSpine().getSpineReferences()) {
@@ -211,12 +201,68 @@ public class Book implements Serializable {
     this.opfResource = opfResource;
   }
 
-  public void setNcxResource(Resource ncxResource) {
-    this.ncxResource = ncxResource;
-  }
-
   public Resource getNcxResource() {
     return ncxResource;
   }
+
+  public static final class Builder {
+
+    private Resources resources;
+    private Metadata metadata;
+    private Spine spine;
+    private TableOfContents tableOfContents;
+    private Guide guide;
+    private Resource opfResource;
+    private Resource ncxResource;
+    private Resource coverImage;
+
+    private Builder() {
+    }
+
+    public Builder withResources(Resources val) {
+      resources = val;
+      return this;
+    }
+
+    public Builder withMetadata(Metadata val) {
+      metadata = val;
+      return this;
+    }
+
+    public Builder withSpine(Spine val) {
+      spine = val;
+      return this;
+    }
+
+    public Builder withTableOfContents(TableOfContents val) {
+      tableOfContents = val;
+      return this;
+    }
+
+    public Builder withGuide(Guide val) {
+      guide = val;
+      return this;
+    }
+
+    public Builder withOpfResource(Resource val) {
+      opfResource = val;
+      return this;
+    }
+
+    public Builder withNcxResource(Resource val) {
+      ncxResource = val;
+      return this;
+    }
+
+    public Builder withCoverImage(Resource val) {
+      coverImage = val;
+      return this;
+    }
+
+    public Book build() {
+      return new Book(this);
+    }
+  }
+
 }
 

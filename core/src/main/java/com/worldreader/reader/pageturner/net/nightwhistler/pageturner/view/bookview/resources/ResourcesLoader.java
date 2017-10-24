@@ -22,4 +22,15 @@ public interface ResourcesLoader {
 
     void onPrepareFastBitmapDrawable(String resourceHref, StreamingBookRepository datasource, BookMetadata bookMetadata);
   }
+
+  class Holder {
+
+    String href;
+    ImageResourceCallback callback;
+
+    Holder(String href, ImageResourceCallback callback) {
+      this.href = href;
+      this.callback = callback;
+    }
+  }
 }

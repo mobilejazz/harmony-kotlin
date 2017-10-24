@@ -207,7 +207,6 @@ public class Resource implements Serializable {
    * @return The contents of the resource
    */
   public byte[] getData() throws IOException {
-
     if (data == null) {
       Log.e("epublib", "Initializing lazy resource " + fileName + "#" + this.href);
 
@@ -225,8 +224,8 @@ public class Resource implements Serializable {
     return data;
   }
 
-  private InputStream getResourceStream() throws FileNotFoundException, IOException {
-    ZipFile zipResource = new ZipFile(fileName);
+  private InputStream getResourceStream() throws IOException {
+    final ZipFile zipResource = new ZipFile(fileName);
     ZipEntry zipEntry = zipResource.getEntry(originalHref);
     if (zipEntry == null) {
       zipResource.close();

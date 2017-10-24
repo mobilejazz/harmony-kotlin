@@ -59,16 +59,4 @@ public class StreamingResourcesLoader implements ResourcesLoader {
     this.callbacks.clear();
   }
 
-  private static class Holder {
-
-    String href;
-    ImageResourceCallback callback;
-
-    Holder(String href, ImageResourceCallback callback) {
-      this.href = href;
-      this.callback = callback;
-    }
-
-  }
-
 }

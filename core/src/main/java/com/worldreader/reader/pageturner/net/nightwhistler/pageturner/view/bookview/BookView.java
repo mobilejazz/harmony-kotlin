@@ -60,14 +60,14 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageT
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.PageChangeStrategy;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadTask;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -89,7 +89,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import static java.util.Arrays.*;
-import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.*;
 
@@ -184,7 +183,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.textLoader.registerTagNodeHandler("img", imgHandler);
     this.textLoader.registerTagNodeHandler("image", imgHandler);
 
-    this.textLoader.setResourcesLoader(resourcesLoader);
     this.textLoader.setLinkCallBack(new LinkTagHandler.LinkCallBack() {
       @Override public void onLinkClicked(String href) {
         BookView.this.onLinkClicked(href);
@@ -374,7 +372,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void loadText() {
-    if (spine == null && !textLoader.hasCachedBook(this.fileName)) {
+    if (spine == null) {
       taskQueue.executeTask(new OpenStreamingBookTask());
     } else {
       //TODO: what if the resource is None?
@@ -907,14 +905,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  public int getPercentageFor(int index, int offset) {
-    if (spine != null) {
-      return spine.getProgressPercentage(index, offset);
-    }
-
-    return -1;
-  }
-
   private void progressUpdate() {
     if (this.spine == null) {
       return;
@@ -938,14 +928,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     });
   }
 
-  public int getTotalNumberOfPages() {
-    if (spine != null) {
-      return spine.getTotalNumberOfPages();
-    }
-
-    return -1;
-  }
-
   public int getPagesForResource() {
     if (spine != null) {
       return ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
@@ -960,56 +942,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     return -1;
-  }
-
-  public int getPageNumberFor(int index, int position) {
-    if (spine == null) {
-      return -1;
-    }
-
-    Log.d(TAG, "Looking for pageNumber for index=" + index + ", position=" + position);
-
-    int pageNum = -1;
-
-    List<List<Integer>> pageOffsets = spine.getPageOffsets();
-
-    if (pageOffsets == null || index >= pageOffsets.size()) {
-      return -1;
-    }
-
-    for (int i = 0; i < index; i++) {
-      int pages = pageOffsets.get(i).size();
-      pageNum += pages;
-      Log.d(TAG, "Index " + i + ": pages=" + pages);
-    }
-
-    final List<Integer> offsets = pageOffsets.get(index);
-
-    Log.d(TAG, "Pages before this index: " + pageNum);
-    Log.d(TAG, "Offsets according to spine: " + asString(offsets));
-
-    if (this.strategy instanceof FixedPagesStrategy) {
-      final List<Integer> strategyOffsets = ((FixedPagesStrategy) this.strategy).getPageOffsets();
-      Log.d(TAG, "Offsets according to strategy: " + asString(strategyOffsets));
-    }
-
-    for (int i = 0; i < offsets.size() && offsets.get(i) <= position; i++) {
-      pageNum++;
-    }
-
-    Log.d(TAG, "Calculated pageNumber=" + pageNum);
-    return pageNum;
-  }
-
-  private static String asString(List<Integer> offsets) {
-    final StringBuilder stringBuilder = new StringBuilder("[ ");
-    forEach(offsets, new Command<Integer>() {
-      @Override public void execute(Integer o) {
-        stringBuilder.append(o).append(" ");
-      }
-    });
-    stringBuilder.append(" ]");
-    return stringBuilder.toString();
   }
 
   private boolean needsPageNumberCalculation() {
@@ -1123,13 +1055,35 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(None... nones) {
       try {
-        final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
-        final InputStream tocResourcesIs = resourcesLoader.loadResource(tocResourcePath);
-
-        final Book book = textLoader.initBook(contentOpfIs, tocResourcesIs);
+        // TODO: 24/10/2017 Old code bookview
+        final Book book = textLoader.initBook(contentOpf, tocResourcePath);
 
         final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
         spine.navigateByIndex(storedIndex);
+
+        //final Context context = getContext();
+        //final File f = new File(context.getCacheDir() + "/alice.epub");
+        //
+        //if (!f.exists()) {
+        //  try {
+        //    final InputStream is = context.getAssets().open("alice.epub");
+        //    int size = is.available();
+        //    byte[] buffer = new byte[size];
+        //    is.read(buffer);
+        //    is.close();
+        //
+        //    final FileOutputStream fos = new FileOutputStream(f);
+        //    fos.write(buffer);
+        //    fos.close();
+        //  } catch (Exception e) {
+        //    throw new RuntimeException(e);
+        //  }
+        //}
+        //
+        //final Book book = textLoader.initBook(f);
+        //
+        //final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
+        //spine.navigateByIndex(storedIndex);
 
         return some(Pair.with(book, spine));
       } catch (Exception e) {
@@ -1322,7 +1276,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         }
       }).forEach(new Command<List<List<Integer>>>() {
         @Override public void execute(List<List<Integer>> r) {
-          spine.setPageOffsets(r);
           progressUpdate();
         }
       });

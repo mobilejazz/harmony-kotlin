@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -95,16 +94,16 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPla
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingTextLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.functional.Command;
@@ -213,13 +212,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    // This block needs to be called before inflating the view to avoid problems with BookView
-    this.textLoader = new StreamingTextLoader(new HtmlSpanner(), new SystemFontResolver());
-  }
-
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_reader, container, false);
   }
@@ -297,7 +289,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     final String bookId = bookMetadata.getBookId();
     final String contentOpf = bookMetadata.getContentOpfName();
-    final StreamingResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
+    final ResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);//new FileEpubResourcesLoader(bookMetadata, logger);
+
+    this.textLoader = new TextLoader(new HtmlSpanner(), new SystemFontResolver(), resourcesLoader);
 
     this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, logger);
     this.bookView.addListener(this);
