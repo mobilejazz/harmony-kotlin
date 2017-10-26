@@ -29,12 +29,9 @@ public class GeolocationStorageDataSourceImpl implements GeolocationStorageDataS
       throw new InvalidCacheException();
     }
 
-    GeolocationInfoEntity geolocationInfoEntity = getEntity(cacheObject);
-    if (!validationService.isValid(geolocationInfoEntity)) {
-      throw new InvalidCacheException();
-    }
+    // Not using cache validation to obtain the data, if the data exist will be returned
 
-    return geolocationInfoEntity;
+    return getEntity(cacheObject);
   }
 
   @Override
