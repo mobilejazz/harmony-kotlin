@@ -32,7 +32,7 @@ public class StreamingResourcesLoader implements ResourcesLoader {
       final StreamingResource r = dataSource.getBookResource(bookMetadata.getBookId(), bookMetadata, URLDecoder.decode(resource.getHref()));
       return r.getInputStream();
     } catch (Throwable throwable) {
-      logger.e(TAG, "Couldn't load the image resource: " + resource.getHref() + " | Reason: " + Throwables.getStackTraceAsString(throwable));
+      logger.e(TAG, "Couldn't load the resource: " + resource.getHref() + " | Reason: " + Throwables.getStackTraceAsString(throwable));
       return null;
     }
   }

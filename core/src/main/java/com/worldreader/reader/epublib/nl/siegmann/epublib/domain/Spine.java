@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * The spine sections are the sections of the book in the order in which the book should be read.
- *
+ * <p>
  * This contrasts with the Table of Contents sections which is an index into the Book's sections.
  *
  * @author paul
@@ -15,10 +15,8 @@ import java.util.*;
  */
 public class Spine implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 3878483958947357246L;
+
   private Resource tocResource;
   private List<SpineReference> spineReferences;
 
@@ -66,7 +64,7 @@ public class Spine implements Serializable {
 
   /**
    * Finds the first resource that has the given resourceId.
-   *
+   * <p>
    * Null if not found.
    */
   public int findFirstResourceById(String resourceId) {
@@ -88,7 +86,7 @@ public class Spine implements Serializable {
    */
   public SpineReference addSpineReference(SpineReference spineReference) {
     if (spineReferences == null) {
-      this.spineReferences = new ArrayList<SpineReference>();
+      this.spineReferences = new ArrayList<>();
     }
     spineReferences.add(spineReference);
     return spineReference;

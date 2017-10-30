@@ -20,8 +20,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
 
 import android.os.AsyncTask;
-import jedi.functional.Command;
-import jedi.functional.Functor;
 import jedi.option.Option;
 
 import static java.lang.Integer.toHexString;
@@ -32,103 +30,48 @@ import static jedi.option.Options.none;
  */
 public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Option<Result>> {
 
-  private Action onPreExecutionOperation;
-  private Command<Option<Result>> onPostExecuteOperation;
-  private Command<Option<Result>> onCancelledOperation;
-  private Command<Progress[]> onProgressUpdateOperation;
-  private Functor<Params[], Option<Result>> doInBackgroundFunction;
   private QueueCallback callback;
   private boolean cancelRequested = false;
 
-  /**
-   * Called before execution.
-   */
-  public void doOnPreExecute() {
-    if (this.onPostExecuteOperation != null) {
-      this.onPreExecutionOperation.perform();
-    }
-  }
-
-  public void doOnProgressUpdate(Progress... values) {
-    if (this.onProgressUpdateOperation != null) {
-      this.onProgressUpdateOperation.execute(values);
-    }
-  }
-
-  /**
-   * Called when a cancellation is requested.
-   * <p>
-   * Default simply sets a flag and calls cancel()
-   */
-  public void requestCancellation() {
-    this.cancelRequested = true;
-    this.cancel(true);
-  }
-
-  public boolean isCancelRequested() {
-    return cancelRequested;
-  }
-
   public void doOnCancelled(Option<Result> result) {
-    if (this.onCancelledOperation != null) {
-      this.onCancelledOperation.execute(result);
-    }
   }
 
-  public void setCallback(QueueCallback callback) {
-    this.callback = callback;
-  }
-
-  /**
-   * Gets executed on the UI thread.
-   * <p>
-   * Override this to implement your on post-processing operations.
-   */
   public void doOnPostExecute(Option<Result> result) {
-    if (this.onPostExecuteOperation != null) {
-      this.onPostExecuteOperation.execute(result);
-    }
   }
 
-  @Override public Option<Result> doInBackground(Params... paramses) {
-    if (this.doInBackgroundFunction != null) {
-      return this.doInBackgroundFunction.execute(paramses);
-    }
-
+  @Override public Option<Result> doInBackground(Params... params) {
     return none();
   }
 
-  @Override protected final void onPreExecute() {
-    this.doOnPreExecute();
-  }
-
-  /**
-   * Overridden and made final to implement notification.
-   * <p>
-   * Subclasses should override doOnPostExecute() instead.
-   */
   @Override protected final void onPostExecute(Option<Result> result) {
     if (callback != null) {
-      callback.taskCompleted(this, this.cancelRequested);
+      callback.onTaskCompleted(this, cancelRequested, result);
     }
-
     doOnPostExecute(result);
   }
 
-  @SafeVarargs @Override protected final void onProgressUpdate(Progress... values) {
-    this.doOnProgressUpdate(values);
+  public void setOnCompletedCallback(QueueCallback callback) {
+    this.callback = callback;
+  }
+
+  public QueueCallback getCallback() {
+    return callback;
   }
 
   @Override protected final void onCancelled(Option<Result> result) {
     if (callback != null) {
-      callback.taskCompleted(this, this.cancelRequested);
+      callback.onTaskCompleted(this, this.cancelRequested, result);
     }
-
     doOnCancelled(result);
   }
 
   @Override protected final void onCancelled() {
     onCancelled(null);
+  }
+
+  public void requestCancellation() {
+    this.cancelRequested = true;
+    this.cancel(true);
   }
 
   @Override public String toString() {
@@ -137,7 +80,7 @@ public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Para
 
   public interface QueueCallback {
 
-    void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled);
+    void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result);
   }
 
   public interface Action {

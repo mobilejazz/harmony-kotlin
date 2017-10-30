@@ -70,21 +70,20 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
   }
 
   public List<CompiledRule> getCSSRules(String href) {
-    if (this.cssRules.containsKey(href)) {
+    if (cssRules.containsKey(href)) {
       return Collections.unmodifiableList(cssRules.get(href));
     }
 
-    List<CompiledRule> result = new ArrayList<>();
+    final List<CompiledRule> result = new ArrayList<>();
 
     if (currentBook == null) {
       return result;
     }
 
-    String strippedHref = href.substring(href.lastIndexOf('/') + 1);
+    final String strippedHref = href.substring(href.lastIndexOf('/') + 1);
 
     Resource res = null;
-
-    for (Resource resource : this.currentBook.getResources().getAll()) {
+    for (Resource resource : currentBook.getResources().getAll()) {
       if (resource.getHref().endsWith(strippedHref)) {
         res = resource;
         break;
@@ -96,7 +95,7 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
       return new ArrayList<>();
     }
 
-    StringWriter writer = new StringWriter();
+    final StringWriter writer = new StringWriter();
     try {
       if (res instanceof StreamingResource && !res.isInitialized()) {
         res.setData(resourcesLoader.loadResource(res));
@@ -110,7 +109,6 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
       Log.d(TAG, "Parsed " + rules.size() + " raw rules.");
 
       for (Rule rule : rules) {
-
         if (rule.getSelectors().size() == 1 && rule.getSelectors().get(0).toString().equals("@font-face")) {
           handleFontLoadingRule(rule);
         } else {
@@ -166,8 +164,8 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
     //fontResolver.loadEmbeddedFont(name, href);
   }
 
-  private AnchorHandler registerAnchorHandler(TagNodeHandler wrapThis) {
-    final AnchorHandler handler = new AnchorHandler(wrapThis);
+  private AnchorHandler registerAnchorHandler(TagNodeHandler wrap) {
+    final AnchorHandler handler = new AnchorHandler(wrap);
     anchorHandlers.add(handler);
     return handler;
   }
@@ -200,10 +198,6 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
 
   public void setStripWhiteSpace(boolean stripWhiteSpace) {
     this.htmlSpanner.setStripExtraWhiteSpace(stripWhiteSpace);
-  }
-
-  public void setAllowStyling(boolean allowStyling) {
-    this.htmlSpanner.setAllowStyling(allowStyling);
   }
 
   public void setUseColoursFromCSS(boolean useColours) {
@@ -326,5 +320,10 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
     renderedText.clear();
     anchors.clear();
   }
+
+  public HtmlSpanner getHtmlSpanner() {
+    return htmlSpanner;
+  }
+
 }
 

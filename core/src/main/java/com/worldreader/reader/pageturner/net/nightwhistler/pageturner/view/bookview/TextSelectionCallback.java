@@ -23,5 +23,5 @@ public interface TextSelectionCallback {
 
   void lookupDictionary(String text);
 
-  void share(int from, int to, String text);
+  void share(String text);
 }

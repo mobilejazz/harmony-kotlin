@@ -34,7 +34,7 @@ import java.util.concurrent.*;
  */
 public class QueuedTask<A, B, C> {
 
-  public static final ThreadFactory READER_THREAD_FACTORY = new ThreadFactory() {
+  private static final ThreadFactory READER_THREAD_FACTORY = new ThreadFactory() {
     @Override public Thread newThread(@NonNull Runnable r) {
       final Thread t = new Thread(r);
       t.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
@@ -54,8 +54,8 @@ public class QueuedTask<A, B, C> {
         }
       });
 
-  private QueueableAsyncTask<A, B, C> task;
-  private A[] parameters;
+  private final QueueableAsyncTask<A, B, C> task;
+  private final A[] parameters;
 
   private boolean executing = false;
 
@@ -68,9 +68,7 @@ public class QueuedTask<A, B, C> {
     if (executing) {
       throw new IllegalStateException("Already executed, cannot execute twice.");
     }
-
     executing = true;
-
     task.executeOnExecutor(READER_THREAD_EXECUTOR, parameters);
   }
 

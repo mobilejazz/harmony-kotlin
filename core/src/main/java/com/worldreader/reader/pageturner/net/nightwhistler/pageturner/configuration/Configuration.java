@@ -51,8 +51,6 @@ public class Configuration {
 
   private static final String KEY_POS = "offset:";
   private static final String KEY_IDX = "index:";
-  private static final String KEY_NAV_TAP_H = "nav_tap_h";
-  private static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
   private static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
   private static final String KEY_SCROLLING = "scrolling";
   private static final String KEY_TEXT_SIZE = "itext_size";
@@ -74,10 +72,8 @@ public class Configuration {
   private static final String KEY_SCROLL_SPEED = "scroll_speed";
   private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
   private static final String KEY_OFFSETS = "offsets";
-  private static final String KEY_SHOW_PAGENUM = "show_pagenum";
   private static final String KEY_READING_DIRECTION = "reading_direction";
   private static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
-  private static final String KEY_ALLOW_STYLING = "allow_styling";
   private static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
 
   private SharedPreferences settings;
@@ -98,18 +94,6 @@ public class Configuration {
     long used = Runtime.getRuntime().totalMemory();
 
     return (double) used / (double) max;
-  }
-
-  public boolean isHorizontalTappingEnabled() {
-    return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_TAP_H, true);
-  }
-
-  public boolean isHorizontalSwipeEnabled() {
-    return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_SWIPE_H, true);
-  }
-
-  public boolean isAllowStyling() {
-    return settings.getBoolean(KEY_ALLOW_STYLING, false);
   }
 
   public int getLastPosition(String fileName) {
@@ -162,12 +146,10 @@ public class Configuration {
     }
 
     try {
-      PageOffsets offsets = PageOffsets.fromJSON(data);
-
+      final PageOffsets offsets = PageOffsets.fromJSON(data);
       if (offsets == null || !offsets.isValid(this)) {
         return none();
       }
-
       return option(offsets.getOffsets());
     } catch (JSONException js) {
       Log.e(TAG, "Could not retrieve page offsets: " + js.getMessage());
@@ -211,10 +193,6 @@ public class Configuration {
   public void setLastIndex(String fileName, int index) {
     SharedPreferences bookPrefs = getPrefsForBook(fileName);
     updateValue(bookPrefs, KEY_IDX, index);
-  }
-
-  public boolean isShowPageNumbers() {
-    return settings.getBoolean(KEY_SHOW_PAGENUM, true);
   }
 
   public boolean isDimSystemUI() {

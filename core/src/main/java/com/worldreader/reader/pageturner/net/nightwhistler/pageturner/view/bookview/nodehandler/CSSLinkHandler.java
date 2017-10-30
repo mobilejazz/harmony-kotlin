@@ -21,9 +21,8 @@ public class CSSLinkHandler extends TagNodeHandler {
   }
 
   public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
-    //if (true && getSpanner().isAllowStyling()) {
-    String type = node.getAttributeByName("type");
-    String href = node.getAttributeByName("href");
+    final String type = node.getAttributeByName("type");
+    final String href = node.getAttributeByName("href");
 
     Log.d(TAG, "Found link tag: type=" + type + " and href=" + href);
 
@@ -31,11 +30,10 @@ public class CSSLinkHandler extends TagNodeHandler {
       Log.d(TAG, "Ignoring link of type " + type);
     }
 
-    List<CompiledRule> rules = this.textLoader.getCSSRules(href);
+    final List<CompiledRule> rules = textLoader.getCSSRules(href);
 
     for (CompiledRule rule : rules) {
       spanStack.registerCompiledRule(rule);
     }
-    //}
   }
 }

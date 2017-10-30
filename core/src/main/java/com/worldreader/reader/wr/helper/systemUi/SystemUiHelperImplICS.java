@@ -21,11 +21,9 @@ import android.app.Activity;
 import android.os.Build;
 import android.view.View;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) class SystemUiHelperImplICS
-    extends SystemUiHelperImplHC {
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) class SystemUiHelperImplICS extends SystemUiHelperImplHC {
 
-  SystemUiHelperImplICS(Activity activity, int level, int flags,
-      SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
+  SystemUiHelperImplICS(Activity activity, int level, int flags, SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
     super(activity, level, flags, onVisibilityChangeListener);
   }
 

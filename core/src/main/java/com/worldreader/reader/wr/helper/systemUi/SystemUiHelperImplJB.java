@@ -22,11 +22,9 @@ import android.app.Activity;
 import android.os.Build;
 import android.view.View;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN) class SystemUiHelperImplJB
-    extends SystemUiHelperImplICS {
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN) class SystemUiHelperImplJB extends SystemUiHelperImplICS {
 
-  SystemUiHelperImplJB(Activity activity, int level, int flags,
-      SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
+  SystemUiHelperImplJB(Activity activity, int level, int flags, SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
     super(activity, level, flags, onVisibilityChangeListener);
   }
 
@@ -48,9 +46,7 @@ import android.view.View;
     int flag = super.createHideFlags();
 
     if (mLevel >= SystemUiHelper.LEVEL_HIDE_STATUS_BAR) {
-      flag |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-          | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-          | View.SYSTEM_UI_FLAG_FULLSCREEN;
+      flag |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_FULLSCREEN;
 
       if (mLevel >= SystemUiHelper.LEVEL_LEAN_BACK) {
         flag |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;

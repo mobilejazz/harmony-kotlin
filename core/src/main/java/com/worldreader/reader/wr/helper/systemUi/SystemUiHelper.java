@@ -27,7 +27,7 @@ import android.view.WindowManager;
  * this API, instantiate an instance of this class with the required level. The level specifies the
  * extent to which the System UI's visibility is changed when you call {@link #hide()}
  * or {@link #toggle()}.
- *
+ * <p>
  * Also can manage other related things like managing screen on/off and low profile mode.
  */
 public final class SystemUiHelper {
@@ -35,27 +35,27 @@ public final class SystemUiHelper {
   /**
    * In this level, the helper will toggle low profile mode.
    */
-  public static final int LEVEL_LOW_PROFILE = 0;
+  static final int LEVEL_LOW_PROFILE = 0;
 
   /**
    * In this level, the helper will toggle the visibility of the status bar.
    * If there is a navigation bar, it will toggle low profile mode.
    */
-  public static final int LEVEL_HIDE_STATUS_BAR = 1;
+  static final int LEVEL_HIDE_STATUS_BAR = 1;
 
   /**
    * In this level, the helper will toggle the visibility of the navigation bar
    * (if present and if possible) and status bar. In cases where the navigation
    * bar is present but cannot be hidden, it will toggle low profile mode.
    */
-  public static final int LEVEL_LEAN_BACK = 2;
+  static final int LEVEL_LEAN_BACK = 2;
 
   /**
    * In this level, the helper will toggle the visibility of the navigation bar
    * (if present and if possible) and status bar, in an immersive mode. This means that the app
    * will continue to receive all touch events. The user can reveal the system bars with an
    * inward swipe along the region where the system bars normally appear.
-   *
+   * <p>
    * <p>The {@link #FLAG_IMMERSIVE_STICKY} flag can be used to control how the system bars are
    * displayed.
    */
@@ -73,7 +73,7 @@ public final class SystemUiHelper {
    * bar</a>, the most important structural element of an Android app, should
    * be visible and not obscured by the system UI.
    */
-  public static final int FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES = 0x1;
+  static final int FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES = 0x1;
 
   /**
    * Used with {@link #LEVEL_IMMERSIVE}. When this flag is set, an inward swipe in the system
@@ -82,7 +82,7 @@ public final class SystemUiHelper {
    * The bars automatically hide again after a short delay, or if the user interacts with the
    * middle of the screen.
    */
-  public static final int FLAG_IMMERSIVE_STICKY = 0x2;
+  static final int FLAG_IMMERSIVE_STICKY = 0x2;
 
   public static final long SHORT_DELAY = 300; // ms
 
@@ -104,25 +104,9 @@ public final class SystemUiHelper {
    * {@link #LEVEL_IMMERSIVE}
    * @param flags Additional options. See {@link #FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES} and
    * {@link #FLAG_IMMERSIVE_STICKY}
-   */
-  public SystemUiHelper(Activity activity, int level, int flags) {
-    this(activity, level, flags, null);
-  }
-
-  /**
-   * Construct a new SystemUiHelper.
-   *
-   * @param activity The Activity who's system UI should be changed
-   * @param level The level of hiding. Should be either {@link #LEVEL_LOW_PROFILE},
-   * {@link #LEVEL_HIDE_STATUS_BAR}, {@link #LEVEL_LEAN_BACK} or
-   * {@link #LEVEL_IMMERSIVE}
-   * @param flags Additional options. See {@link #FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES} and
-   * {@link #FLAG_IMMERSIVE_STICKY}
    * @param listener A listener which is called when the system visibility is changed
    */
-  public SystemUiHelper(Activity activity, int level, int flags,
-      OnVisibilityChangeListener listener) {
-
+  public SystemUiHelper(Activity activity, int level, int flags, OnVisibilityChangeListener listener) {
     mHandler = new Handler(Looper.getMainLooper());
     mHideRunnable = new HideRunnable();
 
@@ -152,7 +136,7 @@ public final class SystemUiHelper {
    * Show the system UI. What this means depends on the mode this {@link
    * android.example.android.systemuivis.SystemUiHelper} was
    * instantiated with.
-   *
+   * <p>
    * <p>Any currently queued delayed hide requests will be removed.
    */
   public void show() {
@@ -166,7 +150,7 @@ public final class SystemUiHelper {
    * Hide the system UI. What this means depends on the mode this {@link
    * android.example.android.systemuivis.SystemUiHelper} was
    * instantiated with.
-   *
+   * <p>
    * <p>Any currently queued delayed hide requests will be removed.
    */
   public void hide() {
@@ -178,7 +162,7 @@ public final class SystemUiHelper {
 
   /**
    * Request that the system UI is hidden after a delay.
-   *
+   * <p>
    * <p>Any currently queued delayed hide requests will be removed.
    *
    * @param delayMillis The delay (in milliseconds) until the Runnable
@@ -211,7 +195,9 @@ public final class SystemUiHelper {
     mImpl.keepScreenOn();
   }
 
-  /** Makes the screen to turn off by itself. */
+  /**
+   * Makes the screen to turn off by itself.
+   */
   public void keepScreenOff() {
     mImpl.keepScreenOff();
   }
@@ -238,8 +224,7 @@ public final class SystemUiHelper {
 
     boolean mIsShowing = true;
 
-    SystemUiHelperImpl(Activity activity, int level, int flags,
-        OnVisibilityChangeListener onVisibilityChangeListener) {
+    SystemUiHelperImpl(Activity activity, int level, int flags, OnVisibilityChangeListener onVisibilityChangeListener) {
       mActivity = activity;
       mLevel = level;
       mFlags = flags;
@@ -262,11 +247,11 @@ public final class SystemUiHelper {
       }
     }
 
-    public void keepScreenOff() {
+    void keepScreenOff() {
       mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    public void keepScreenOn() {
+    void keepScreenOn() {
       mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
   }
@@ -276,14 +261,11 @@ public final class SystemUiHelper {
    */
   static class SystemUiHelperImplBase extends SystemUiHelperImpl {
 
-    SystemUiHelperImplBase(Activity activity, int level, int flags,
-        OnVisibilityChangeListener onVisibilityChangeListener) {
+    SystemUiHelperImplBase(Activity activity, int level, int flags, OnVisibilityChangeListener onVisibilityChangeListener) {
       super(activity, level, flags, onVisibilityChangeListener);
 
       if ((mFlags & SystemUiHelper.FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES) != 0) {
-        mActivity.getWindow()
-            .addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
       }
     }
 

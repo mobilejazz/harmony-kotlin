@@ -32,20 +32,18 @@ public class AnimatedImageView extends android.support.v7.widget.AppCompatImageV
     super(context, attributes);
   }
 
+  @Override protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    if (animator != null) {
+      animator.draw(canvas);
+    }
+  }
+
   public void setAnimator(Animator animator) {
     this.animator = animator;
   }
 
   public Animator getAnimator() {
     return animator;
-  }
-
-  @Override
-  protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-
-    if (this.animator != null) {
-      animator.draw(canvas);
-    }
   }
 }

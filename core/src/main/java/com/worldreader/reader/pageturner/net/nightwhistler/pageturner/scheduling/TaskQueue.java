@@ -23,48 +23,39 @@ public class TaskQueue {
 
   private final LinkedList<QueuedTask<?, ?, ?>> taskQueue = new LinkedList<>();
 
+  @SafeVarargs public final <A, B, C> void executeTask(QueueableAsyncTask<A, B, C> task, A... parameters) {
+    final QueueableAsyncTask.QueueCallback originalCallback = task.getCallback();
+    task.setOnCompletedCallback(new InnerQueueCallback(originalCallback));
+    taskQueue.add(new QueuedTask<>(task, parameters));
+    Log.d(TAG, "Scheduled task of type " + task + " total tasks scheduled now: " + taskQueue.size());
+    if (taskQueue.size() == 1) {
+      Log.d(TAG, "Starting task " + taskQueue.peek() + " since task queue is 1.");
+      taskQueue.peek().execute();
+    }
+  }
+
   public boolean isEmpty() {
     return taskQueue.isEmpty();
   }
 
-  @SafeVarargs public final <A, B, C> void executeTask(QueueableAsyncTask<A, B, C> task, A... parameters) {
-    task.setCallback(new QueueableAsyncTask.QueueCallback() {
-      @Override public void taskCompleted(QueueableAsyncTask<?, ?, ?> task1, boolean wasCancelled) {
-        TaskQueue.this.taskCompleted(task1, wasCancelled);
-      }
-    });
-
-    this.taskQueue.add(new QueuedTask<>(task, parameters));
-
-    Log.d(TAG, "Scheduled task of type " + task + " total tasks scheduled now: " + this.taskQueue.size());
-
-    if (this.taskQueue.size() == 1) {
-      Log.d(TAG, "Starting task " + taskQueue.peek() + " since task queue is 1.");
-      this.taskQueue.peek().execute();
-    }
-  }
-
   public void clear() {
     Log.d(TAG, "Clearing task queue.");
-
-    if (!this.taskQueue.isEmpty()) {
-      QueuedTask front = taskQueue.peek();
+    if (!taskQueue.isEmpty()) {
+      final QueuedTask front = taskQueue.peek();
       Log.d(TAG, "Canceling task of type: " + front);
-
       front.cancel();
-      this.taskQueue.clear();
+      taskQueue.clear();
     } else {
       Log.d(TAG, "Nothing to do, since queue was already empty.");
     }
   }
 
   private String getQueueAsString() {
-    StringBuilder builder = new StringBuilder("[");
+    final StringBuilder builder = new StringBuilder("[");
 
-    for (int i = 0; i < this.taskQueue.size(); i++) {
-      builder.append(this.taskQueue.get(i));
-
-      if (i < this.taskQueue.size() - 1) {
+    for (int i = 0; i < taskQueue.size(); i++) {
+      builder.append(taskQueue.get(i));
+      if (i < taskQueue.size() - 1) {
         builder.append(", ");
       }
     }
@@ -74,48 +65,59 @@ public class TaskQueue {
     return builder.toString();
   }
 
-  private Option<? extends QueuedTask<?, ?, ?>> findQueuedTaskFor(QueueableAsyncTask<?, ?, ?> task) {
-    for (QueuedTask<?, ?, ?> wrapper : this.taskQueue) {
-      if (wrapper.getTask() == task) {
-        return some(wrapper);
-      }
-    }
-
-    return none();
-  }
-
-  public void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled) {
-    if (!wasCancelled) {
-      Log.d(TAG, "Completion of task of type " + task);
-
-      QueuedTask queuedTask = this.taskQueue.remove();
-
-      if (queuedTask.getTask() != task) {
-
-        String errorMsg = "Tasks out of sync! Expected " + queuedTask.getTask() + " but got " + task + " with queue: " + getQueueAsString();
-        Log.e(TAG, errorMsg);
-
-        throw new RuntimeException(errorMsg);
-      }
-    } else {
-      Log.d(TAG, "Got taskCompleted for task " + task + " which was cancelled.");
-
+  private void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean cancelled) {
+    if (cancelled) {
+      Log.d(TAG, "Got onTaskCompleted for task " + task + " which was cancelled.");
       findQueuedTaskFor(task).forEach(new Command<QueuedTask<?, ?, ?>>() {
         @Override public void execute(QueuedTask<?, ?, ?> object) {
-          TaskQueue.this.taskQueue.remove(object);
+          taskQueue.remove(object);
         }
       });
+    } else {
+      Log.d(TAG, "Completion of task of type " + task);
+      final QueuedTask queuedTask = taskQueue.remove();
+      if (queuedTask.getTask() != task) {
+        final String errorMsg = "Tasks out of sync! Expected " + queuedTask.getTask() + " but got " + task + " with queue: " + getQueueAsString();
+        Log.e(TAG, errorMsg);
+        throw new RuntimeException(errorMsg);
+      }
     }
 
     Log.d(TAG, "Total tasks scheduled now: " + this.taskQueue.size() + " with queue: " + getQueueAsString());
 
-    if (!this.taskQueue.isEmpty()) {
-      if (!this.taskQueue.peek().isExecuting()) {
-        Log.d(TAG, "Executing task " + this.taskQueue.peek());
-        this.taskQueue.peek().execute();
+    if (!taskQueue.isEmpty()) {
+      final QueuedTask<?, ?, ?> peek = taskQueue.peek();
+      if (!peek.isExecuting()) {
+        Log.d(TAG, "Executing task " + peek);
+        peek.execute();
       } else {
         Log.d(TAG, "Task at the head of queue is already running.");
       }
+    }
+  }
+
+  private Option<? extends QueuedTask<?, ?, ?>> findQueuedTaskFor(QueueableAsyncTask<?, ?, ?> task) {
+    for (QueuedTask<?, ?, ?> wrapper : taskQueue) {
+      if (wrapper.getTask() == task) {
+        return some(wrapper);
+      }
+    }
+    return none();
+  }
+
+  private class InnerQueueCallback implements QueueableAsyncTask.QueueCallback {
+
+    private final QueueableAsyncTask.QueueCallback delegate;
+
+    InnerQueueCallback(QueueableAsyncTask.QueueCallback delegate) {
+      this.delegate = delegate;
+    }
+
+    @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
+      if (delegate != null) {
+        delegate.onTaskCompleted(task, canceled, result);
+      }
+      taskCompleted(task, canceled);
     }
   }
 }

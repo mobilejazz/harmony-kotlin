@@ -23,13 +23,12 @@ import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB) class SystemUiHelperImplHC
-    extends SystemUiHelper.SystemUiHelperImpl implements View.OnSystemUiVisibilityChangeListener {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB) class SystemUiHelperImplHC extends SystemUiHelper.SystemUiHelperImpl
+    implements View.OnSystemUiVisibilityChangeListener {
 
   final View mDecorView;
 
-  SystemUiHelperImplHC(Activity activity, int level, int flags,
-      SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
+  SystemUiHelperImplHC(Activity activity, int level, int flags, SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
     super(activity, level, flags, onVisibilityChangeListener);
 
     mDecorView = activity.getWindow().getDecorView();

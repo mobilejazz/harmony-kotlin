@@ -27,7 +27,7 @@ import java.util.*;
 
 /**
  * This class allows page-offsets to be read from and stored as JSON.
- *
+ * <p>
  * Page-offsets are only valid under the circumstances they were
  * calculated with: if text-size, page-margins, etc. change, they
  * must be re-calculated. This class allows checks for this.
@@ -55,20 +55,18 @@ public class PageOffsets {
   private List<List<Integer>> offsets;
 
   private enum Fields {
-    fontSize, fontFamily, vMargin, hMargin, lineSpacing, fullScreen, offsets,
-    allowStyling, algorithmVersion
+    fontSize, fontFamily, vMargin, hMargin, lineSpacing, fullScreen, offsets, allowStyling, algorithmVersion
   }
 
   private PageOffsets() {
   }
 
   public boolean isValid(Configuration config) {
-
     return this.fontFamily.equals(config.getDefaultFontFamily().getName())
-        && this.fontSize == config.getTextSize() && this.vMargin == config.getVerticalMargin()
+        && this.fontSize == config.getTextSize()
+        && this.vMargin == config.getVerticalMargin()
         && this.hMargin == config.getHorizontalMargin()
         && this.lineSpacing == config.getLineSpacing()
-        && this.allowStyling == config.isAllowStyling()
         && this.algorithmVersion == ALGORITHM_VERSION;
   }
 
@@ -77,25 +75,21 @@ public class PageOffsets {
   }
 
   public static PageOffsets fromValues(Configuration config, List<List<Integer>> offsets) {
-    PageOffsets result = new PageOffsets();
+    final PageOffsets result = new PageOffsets();
     result.fontFamily = config.getDefaultFontFamily().getName();
     result.fontSize = config.getTextSize();
     result.hMargin = config.getHorizontalMargin();
     result.vMargin = config.getVerticalMargin();
     result.lineSpacing = config.getLineSpacing();
-    result.allowStyling = config.isAllowStyling();
-
+    result.allowStyling = false;
     result.algorithmVersion = ALGORITHM_VERSION;
-
     result.offsets = offsets;
-
     return result;
   }
 
   public static PageOffsets fromJSON(String json) throws JSONException {
-    JSONObject offsetsObject = new JSONObject(json);
+    final JSONObject offsetsObject = new JSONObject(json);
     PageOffsets result = new PageOffsets();
-
     result.fontFamily = offsetsObject.getString(Fields.fontFamily.name());
     result.fontSize = offsetsObject.getInt(Fields.fontSize.name());
     result.vMargin = offsetsObject.getInt(Fields.vMargin.name());
@@ -104,9 +98,7 @@ public class PageOffsets {
     result.fullScreen = offsetsObject.getBoolean(Fields.fullScreen.name());
     result.algorithmVersion = offsetsObject.optInt(Fields.algorithmVersion.name(), -1);
     result.allowStyling = offsetsObject.optBoolean(Fields.allowStyling.name(), true);
-
     result.offsets = readOffsets(offsetsObject.getJSONArray(Fields.offsets.name()));
-
     return result;
   }
 
@@ -128,19 +120,15 @@ public class PageOffsets {
   }
 
   private static List<List<Integer>> readOffsets(JSONArray jsonArray) throws JSONException {
-
-    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    final List<List<Integer>> result = new ArrayList<>();
 
     for (int i = 0; i < jsonArray.length(); i++) {
-      List<Integer> sublist = new ArrayList<>();
-
-      JSONArray subArray = new JSONArray(jsonArray.getString(i));
-
+      final List<Integer> sublist = new ArrayList<>();
+      final JSONArray subArray = new JSONArray(jsonArray.getString(i));
       for (int j = 0; j < subArray.length(); j++) {
         int val = subArray.getInt(j);
         sublist.add(val);
       }
-
       result.add(sublist);
     }
 

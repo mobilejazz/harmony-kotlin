@@ -1,6 +1,5 @@
 package com.worldreader.reader.wr.fragments;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,13 +12,16 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
@@ -99,8 +101,8 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.FileEpubResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
@@ -144,7 +146,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private Map<String, TTSPlaybackItem> ttsItemPrep = new HashMap<>();
 
   private TextLoader textLoader;
-  private ProgressDialog waitDialog;
+  private ProgressDialog progressDialog;
   private String bookTitle;
   private String author;
   private List<TocEntry> tableOfContents;
@@ -289,12 +291,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     final String bookId = bookMetadata.getBookId();
     final String contentOpf = bookMetadata.getContentOpfName();
-    final ResourcesLoader resourcesLoader = new FileEpubResourcesLoader(logger);// new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger);
+    final ResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger); //new FileEpubResourcesLoader(logger);
 
     this.textLoader = new TextLoader(new HtmlSpanner(), new SystemFontResolver(), resourcesLoader);
 
     this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, bookMetadata, streamingBookDataSource, logger);
-    this.bookView.addListener(this);
+    this.bookView.setListener(this);
     this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
       @Override public void lookupDictionary(String text) {
         if (reachability.isReachable()) {
@@ -332,8 +334,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         }
       }
 
-      @Override public void share(int from, int to, String selectedText) {
+      @Override public void share(String selectedText) {
         String author = null;
+
         if (!bookView.getBook().getMetadata().getAuthors().isEmpty()) {
           author = bookView.getBook().getMetadata().getAuthors().get(0).toString();
         }
@@ -345,7 +348,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           text = bookTitle + ", " + author + "\n\n" + selectedText;
         }
 
-        Intent sendIntent = new Intent();
+        final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, text);
         sendIntent.setType("text/plain");
@@ -359,7 +362,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           getSystemUiHelper().show();
         }
       }
-
       @Override public void onDestroyActionMode() {
         if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
           getSystemUiHelper().hide();
@@ -408,21 +410,21 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-    DisplayMetrics metrics = new DisplayMetrics();
+    final DisplayMetrics metrics = new DisplayMetrics();
     activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-    final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, this, metrics));
+    final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, metrics, this));
 
     displayPageNumber(-1); // Initializes the pagenumber view properly
 
-    View.OnTouchListener gestureListener = new View.OnTouchListener() {
+    final View.OnTouchListener gestureListener = new View.OnTouchListener() {
       @Override public boolean onTouch(View v, MotionEvent event) {
-        return !AbstractReaderFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
+        return !ttsIsRunning() && gestureDetector.onTouchEvent(event);
       }
     };
 
-    this.viewSwitcher.setOnTouchListener(gestureListener);
-    this.bookView.setOnTouchListener(gestureListener);
-    this.dummyView.setOnTouchListener(gestureListener);
+    viewSwitcher.setOnTouchListener(gestureListener);
+    bookView.setOnTouchListener(gestureListener);
+    dummyView.setOnTouchListener(gestureListener);
 
     registerForContextMenu(bookView);
     saveConfigState();
@@ -464,7 +466,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   @Override public void onStop() {
     super.onStop();
     Log.d(TAG, "onStop() called.");
-    closeWaitDialog();
+    dismissProgressDialog();
   }
 
   @Override public void onLowMemory() {
@@ -479,7 +481,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       this.textToSpeech = null;
     }
     this.bookView.releaseResources();
-    this.closeWaitDialog();
+    this.dismissProgressDialog();
     super.onDestroy();
   }
 
@@ -549,7 +551,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   protected abstract void onGamificationEventSharedQuote();
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB) private void updateFromPrefs() {
+  private void updateFromPrefs() {
     AppCompatActivity activity = (AppCompatActivity) getActivity();
 
     if (activity == null) {
@@ -561,11 +563,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     int marginH = config.getHorizontalMargin();
     int marginV = config.getVerticalMargin();
 
-    this.bookView.setFontFamily(config.getSerifFontFamily());
+    bookView.setFontFamily(config.getSerifFontFamily());
 
-    this.textLoader.setFontFamily(config.getSerifFontFamily());
-    this.textLoader.setSansSerifFontFamily(config.getSansSerifFontFamily());
-    this.textLoader.setSerifFontFamily(config.getSerifFontFamily());
+    textLoader.setFontFamily(config.getSerifFontFamily());
+    textLoader.setSansSerifFontFamily(config.getSansSerifFontFamily());
+    textLoader.setSerifFontFamily(config.getSerifFontFamily());
 
     bookView.setHorizontalMargin(marginH);
     bookView.setVerticalMargin(marginV);
@@ -575,26 +577,25 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     textLoader.setStripWhiteSpace(config.isStripWhiteSpaceEnabled());
-    textLoader.setAllowStyling(config.isAllowStyling());
     textLoader.setUseColoursFromCSS(config.isUseColoursFromCSS());
 
     bookView.setLineSpacing(config.getLineSpacing());
 
-    activity.getSupportActionBar().setHomeButtonEnabled(true);
-    activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    activity.getSupportActionBar().setTitle("");
+    final ActionBar actionBar = activity.getSupportActionBar();
+    actionBar.setHomeButtonEnabled(true);
+    actionBar.setDisplayHomeAsUpEnabled(true);
+    actionBar.setTitle("");
 
     if (config.isDimSystemUI()) {
       activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
     }
 
-    if (config.isKeepScreenOn()) {
-      if (getSystemUiHelper() != null) {
-        getSystemUiHelper().keepScreenOn();
-      }
-    } else {
-      if (getSystemUiHelper() != null) {
-        getSystemUiHelper().keepScreenOff();
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (systemUiHelper != null) {
+      if (config.isKeepScreenOn()) {
+        systemUiHelper.keepScreenOn();
+      } else {
+        systemUiHelper.keepScreenOff();
       }
     }
 
@@ -604,7 +605,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     boolean isBackgroundChanged = config.getColourProfile() != savedConfigState.colorProfile;
 
     // Check if we need a restart
-    if (config.isShowPageNumbers() != savedConfigState.usePageNum
+    if (!savedConfigState.usePageNum
         || config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace
         || !config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName)
         || isFontChanged
@@ -613,7 +614,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         || config.getVerticalMargin() != savedConfigState.vMargin
         || config.getTextSize() != savedConfigState.textSize
         || config.isScrollingEnabled() != savedConfigState.scrolling
-        || config.isAllowStyling() != savedConfigState.allowStyling
         || config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
 
       textLoader.invalidateCachedText();
@@ -621,7 +621,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       restartActivity(isFontChanged, isBackgroundChanged);
     }
 
-    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
   }
 
   private boolean isAnimating() {
@@ -629,7 +629,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return anim != null && !anim.isFinished();
   }
 
-  private SystemUiHelper getSystemUiHelper() {
+  @Nullable private SystemUiHelper getSystemUiHelper() {
     if (getActivity() != null) {
       return ((AbstractReaderActivity) getActivity()).getSystemUiHelper();
     }
@@ -654,7 +654,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     textLoader.closeCurrentBook();
 
     final Intent intent = getActivity().getIntent();
-    intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, this.bookMetadata);
+    intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, bookMetadata);
     intent.putExtra(CHANGE_FONT_KEY, isChangedFont);
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
@@ -666,10 +666,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  private void closeWaitDialog() {
-    if (waitDialog != null) {
-      this.waitDialog.dismiss();
-      this.waitDialog = null;
+  private void dismissProgressDialog() {
+    if (progressDialog != null) {
+      this.progressDialog.dismiss();
+      this.progressDialog = null;
     }
   }
 
@@ -784,7 +784,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Cache old settings to check if we'll need a restart later
     savedConfigState.stripWhiteSpace = config.isStripWhiteSpaceEnabled();
 
-    savedConfigState.usePageNum = config.isShowPageNumbers();
+    savedConfigState.usePageNum = true;
 
     savedConfigState.hMargin = config.getHorizontalMargin();
     savedConfigState.vMargin = config.getVerticalMargin();
@@ -795,7 +795,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     savedConfigState.sansSerifFontName = config.getSansSerifFontFamily().getName();
 
     savedConfigState.scrolling = config.isScrollingEnabled();
-    savedConfigState.allowStyling = config.isAllowStyling();
     savedConfigState.allowColoursFromCSS = config.isUseColoursFromCSS();
 
     savedConfigState.colorProfile = config.getColourProfile();
@@ -807,8 +806,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         return;
       }
 
-      this.getWaitDialog().setMessage(getString(R.string.ls_init_tts));
-      this.getWaitDialog().show();
+      final ProgressDialog progressDialog = this.getProgressDialog(R.string.ls_init_tts);
+      progressDialog.show();
 
       Option<File> fosOption = config.getTTSFolder();
 
@@ -970,7 +969,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     uiHandler.post(new Runnable() {
       @Override public void run() {
         AbstractReaderFragment.this.stopTextToSpeech();
-        AbstractReaderFragment.this.closeWaitDialog();
+        AbstractReaderFragment.this.dismissProgressDialog();
 
         if (AbstractReaderFragment.this.isAdded()) {
           Toast.makeText(context, AbstractReaderFragment.this.getString(R.string.ls_tts_failed) + "\n" + message, Toast.LENGTH_SHORT).show();
@@ -1010,7 +1009,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     this.uiHandler.post(new Runnable() {
       @Override public void run() {
-        AbstractReaderFragment.this.closeWaitDialog();
+        AbstractReaderFragment.this.dismissProgressDialog();
       }
     });
 
@@ -1101,15 +1100,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void updateFileName(Bundle savedInstanceState) {
-    int lastPos = config.getLastPosition(this.bookMetadata.getBookId());
-    int lastIndex = config.getLastIndex(this.bookMetadata.getBookId());
+    int lastPos = config.getLastPosition(bookMetadata.getBookId());
+    int lastIndex = config.getLastIndex(bookMetadata.getBookId());
 
     if (savedInstanceState != null) {
       lastPos = savedInstanceState.getInt(POS_KEY, lastPos);
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    this.bookView.setFileName(this.bookMetadata.getBookId());
+    this.bookView.setFileName(bookMetadata.getBookId());
     this.bookView.setPosition(lastPos);
     this.bookView.setIndex(lastIndex);
 
@@ -1131,7 +1130,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return bookView.onTouchEvent(event);
   }
 
-  @Override public void bookOpened(final Book book) {
+  @Override public void onBookOpened(final Book book) {
     AppCompatActivity activity = (AppCompatActivity) getActivity();
 
     if (activity == null) {
@@ -1154,7 +1153,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     activity.invalidateOptionsMenu();
 
     if (bookTocEntryListener != null) {
-      final Option<List<TocEntry>> optionableToc = this.bookView.getTableOfContents();
+      final Option<List<TocEntry>> optionableToc = bookView.getTableOfContents();
       tableOfContents = optionableToc.unsafeGet();
       bookTocEntryListener.onBookTableOfContentsLoaded(optionableToc);
     }
@@ -1162,34 +1161,33 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     updateFromPrefs();
   }
 
-  @Override public void renderingText() {
+  @Override public void onStartRenderingText() {
     if (isAdded()) {
-      this.getWaitDialog().setMessage(getString(R.string.ls_loading_text));
-      this.getWaitDialog().show();
+      final ProgressDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
+      progressDialog.show();
     }
   }
 
-  @Override public void errorOnBookOpening(String errorMessage) {
-    closeWaitDialog();
+  @Override public void onErrorOnBookOpening() {
+    dismissProgressDialog();
   }
 
-  @Override public void parseEntryStart(int entry) {
+  @Override public void onParseEntryStart(int entry) {
     if (!isAdded() || getActivity() == null) {
       return;
     }
 
     this.viewSwitcher.clearAnimation();
-    this.viewSwitcher.setBackgroundDrawable(null);
+    this.viewSwitcher.setBackground(null);
+
     restoreColorProfile();
-    displayPageNumber(-1); //Clear page number
+    displayPageNumber(-1);
 
-    ProgressDialog progressDialog = getWaitDialog();
-    progressDialog.setMessage(getString(R.string.ls_loading_text));
-
+    final ProgressDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
     progressDialog.show();
   }
 
-  @Override public void parseEntryComplete(String name, Resource resource) {
+  @Override public void onParseEntryComplete(final Resource resource) {
     final Activity activity = getActivity();
 
     if (activity != null) {
@@ -1197,19 +1195,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         streamTTSToDisk();
       }
 
-      closeWaitDialog();
+      dismissProgressDialog();
     }
 
     // Set chapter
     String currentChapter = null;
     if (resource != null && resource.getHref() != null && tableOfContents != null) {
       for (TocEntry content : tableOfContents) {
-        String contentHref = content.getHref();
-        if (contentHref != null) {
-          if (contentHref.equals(resource.getHref())) {
-            currentChapter = content.getTitle();
-            break;
-          }
+        final String contentHref = content.getHref();
+        if (resource.getHref().equals(contentHref)) {
+          currentChapter = content.getTitle();
+          break;
         }
       }
     }
@@ -1217,16 +1213,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Pages remaining for chapter
     formatPageChapterProgress();
 
-    if (currentChapter != null) {
-      readingTitleProgressTv.setText(currentChapter);
-    } else {
-      readingTitleProgressTv.setText(this.bookTitle);
-    }
+    readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookTitle);
 
     // Tutorial feature
     userFlowTutorial.get(UserFlow.Type.READER, new CompletionCallback<List<TutorialModel>>() {
       @Override public void onSuccess(final List<TutorialModel> tutorials) {
-
         if (tutorials.isEmpty()) {
           tutorialView.setVisibility(View.GONE);
         } else {
@@ -1272,99 +1263,76 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     });
   }
 
-  @Override public void progressUpdate(int progressPercentage, int pageNumber, int totalPages) {
+  @Override public void onProgressUpdate(int progressPercentage) {
     chapterProgressDsb.setProgress(progressPercentage);
   }
 
-  @Override public void onWordLongPressed(int startOffset, int endOffset, CharSequence word) {
-    final Activity activity = getActivity();
-    if (activity != null) {
-      activity.openContextMenu(bookView);
-    }
-  }
-
   @Override public boolean onSwipeLeft() {
-    if (config.isHorizontalSwipeEnabled()) {
-
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().hide();
-      }
-
-      if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-        pageDown(Orientation.HORIZONTAL);
-      } else {
-        pageUp(Orientation.HORIZONTAL);
-      }
-
-      if (bookView.isAtEnd()) {
-        notifyFinishedBookEventInteractor();
-      }
-
-      return true;
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (systemUiHelper != null && systemUiHelper.isShowing()) {
+      systemUiHelper.hide();
     }
 
-    return false;
+    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+      pageDown(Orientation.HORIZONTAL);
+    } else {
+      pageUp(Orientation.HORIZONTAL);
+    }
+
+    if (bookView.isAtEnd()) {
+      notifyFinishedBookEventInteractor();
+    }
+
+    return true;
   }
 
   @Override public boolean onSwipeRight() {
-    if (config.isHorizontalSwipeEnabled()) {
-
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().hide();
-      }
-
-      if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-        pageUp(Orientation.HORIZONTAL);
-      } else {
-        pageDown(Orientation.HORIZONTAL);
-      }
-
-      return true;
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (systemUiHelper != null && systemUiHelper.isShowing()) {
+      systemUiHelper.hide();
     }
 
-    return false;
+    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+      pageUp(Orientation.HORIZONTAL);
+    } else {
+      pageDown(Orientation.HORIZONTAL);
+    }
+
+    return true;
   }
 
   @Override public boolean onTapLeftEdge() {
-    if (config.isHorizontalTappingEnabled()) {
-
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().hide();
-      }
-
-      if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-        pageUp(Orientation.HORIZONTAL);
-      } else {
-        pageDown(Orientation.HORIZONTAL);
-      }
-
-      return true;
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (systemUiHelper != null && systemUiHelper.isShowing()) {
+      systemUiHelper.hide();
     }
 
-    return false;
+    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+      pageUp(Orientation.HORIZONTAL);
+    } else {
+      pageDown(Orientation.HORIZONTAL);
+    }
+
+    return true;
   }
 
   @Override public boolean onTapRightEdge() {
-    if (config.isHorizontalTappingEnabled()) {
-
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().hide();
-      }
-
-      if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-        pageDown(Orientation.HORIZONTAL);
-      } else {
-        pageUp(Orientation.HORIZONTAL);
-      }
-
-      if (bookView.isAtEnd()) {
-        notifyFinishedBookEventInteractor();
-      }
-
-      return true;
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (systemUiHelper != null && systemUiHelper.isShowing()) {
+      systemUiHelper.hide();
     }
 
-    return false;
+    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+      pageDown(Orientation.HORIZONTAL);
+    } else {
+      pageUp(Orientation.HORIZONTAL);
+    }
+
+    if (bookView.isAtEnd()) {
+      notifyFinishedBookEventInteractor();
+    }
+
+    return true;
   }
 
   @Override public boolean onPreSlide() {
@@ -1398,12 +1366,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
     stopAnimating();
     getSystemUiHelper().toggle();
-  }
-
-  @Override public void onStartCalculatePageNumbers() {
-  }
-
-  @Override public void onCalculatePageNumbersComplete() {
   }
 
   @Override public void onPageDown() {
@@ -1516,19 +1478,20 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     definitionView.setVisibility(View.GONE);
   }
 
-  private ProgressDialog getWaitDialog() {
-    if (this.waitDialog == null) {
-      this.waitDialog = new ProgressDialog(context);
-      this.waitDialog.setOwnerActivity(getActivity());
-      this.waitDialog.setCancelable(false);
-      this.waitDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+  private ProgressDialog getProgressDialog(@StringRes int message) {
+    if (this.progressDialog == null) {
+      this.progressDialog = new ProgressDialog(context);
+      this.progressDialog.setOwnerActivity(getActivity());
+      this.progressDialog.setCancelable(false);
+      this.progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
         @Override public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
           return true;
         }
       });
+      this.progressDialog.setMessage(getString(message));
     }
 
-    return this.waitDialog;
+    return this.progressDialog;
   }
 
   protected abstract void onEventNavigateToGoalsScreen();
@@ -1762,31 +1725,22 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private Option<Bitmap> getBookViewSnapshot() {
     try {
-      Bitmap bitmap = Bitmap.createBitmap(viewSwitcher.getWidth(), viewSwitcher.getHeight(), Bitmap.Config.ARGB_8888);
-      Canvas canvas = new Canvas(bitmap);
+      final Bitmap bitmap = Bitmap.createBitmap(viewSwitcher.getWidth(), viewSwitcher.getHeight(), Bitmap.Config.ARGB_8888);
+      final Canvas canvas = new Canvas(bitmap);
 
       bookView.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
-
       bookView.draw(canvas);
 
-      if (config.isShowPageNumbers()) {
+      // FIXME: creating an intermediate bitmap here because I can't figure out how to draw the pageNumberView directly on the canvas and have it show up in the right place.
+      final Bitmap pageNumberBitmap = Bitmap.createBitmap(pageNumberView.getWidth(), pageNumberView.getHeight(), Bitmap.Config.ARGB_8888);
+      final Canvas pageNumberCanvas = new Canvas(pageNumberBitmap);
 
-        /*
-          FIXME: creating an intermediate bitmap here because I can't
-          figure out how to draw the pageNumberView directly on the
-          canvas and have it show up in the right place.
-         */
+      pageNumberView.layout(0, 0, pageNumberView.getWidth(), pageNumberView.getHeight());
+      pageNumberView.draw(pageNumberCanvas);
 
-        Bitmap pageNumberBitmap = Bitmap.createBitmap(pageNumberView.getWidth(), pageNumberView.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas pageNumberCanvas = new Canvas(pageNumberBitmap);
+      canvas.drawBitmap(pageNumberBitmap, 0, viewSwitcher.getHeight() - pageNumberView.getHeight(), new Paint());
 
-        pageNumberView.layout(0, 0, pageNumberView.getWidth(), pageNumberView.getHeight());
-        pageNumberView.draw(pageNumberCanvas);
-
-        canvas.drawBitmap(pageNumberBitmap, 0, viewSwitcher.getHeight() - pageNumberView.getHeight(), new Paint());
-
-        pageNumberBitmap.recycle();
-      }
+      pageNumberBitmap.recycle();
 
       return option(bitmap);
     } catch (OutOfMemoryError out) {
@@ -1856,7 +1810,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         // Ignored result
       }
 
-      @Override public void onFailure(final Throwable t) {
+      @Override public void onFailure(@NonNull final Throwable t) {
         // Ignored result
       }
     }, MoreExecutors.directExecutor());
@@ -1961,7 +1915,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     private int hMargin;
     private int textSize;
     private boolean scrolling;
-    private boolean allowStyling;
     private boolean allowColoursFromCSS;
     private ColorProfile colorProfile;
   }
