@@ -20,6 +20,7 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
@@ -40,15 +41,18 @@ public class LinkTagHandler extends TagNodeHandler {
     add("mailto:");
   }};
 
-  private LinkCallBack callBack;
+  private LinkTagCallBack callBack;
 
-  public LinkTagHandler(LinkCallBack callBack) {
+  public LinkTagHandler() {
+  }
+
+  public LinkTagHandler(LinkTagCallBack callBack) {
     this.callBack = callBack;
   }
 
   @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
     final String href = node.getAttributeByName("href");
-    if (href == null) {
+    if (TextUtils.isEmpty(href)) {
       return;
     }
 
@@ -63,13 +67,19 @@ public class LinkTagHandler extends TagNodeHandler {
     // If not, consider it an internal nav link.
     final ClickableSpan span = new ClickableSpan() {
       @Override public void onClick(View widget) {
-        callBack.onLinkClicked(href);
+        if (callBack != null) {
+          callBack.onLinkClicked(href);
+        }
       }
     };
     spanStack.pushSpan(span, start, end);
   }
 
-  public interface LinkCallBack {
+  public void setCallBack(final LinkTagCallBack callBack) {
+    this.callBack = callBack;
+  }
+
+  public interface LinkTagCallBack {
 
     void onLinkClicked(String href);
   }

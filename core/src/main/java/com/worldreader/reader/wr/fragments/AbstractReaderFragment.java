@@ -104,6 +104,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
@@ -112,7 +113,6 @@ import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
-import net.nightwhistler.htmlspanner.SystemFontResolver;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
 import java.io.*;
@@ -293,7 +293,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final String contentOpf = bookMetadata.getContentOpfName();
     final ResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger); //new FileEpubResourcesLoader(logger);
 
-    this.textLoader = new TextLoader(new HtmlSpanner(), new SystemFontResolver(), resourcesLoader);
+    this.textLoader = new TextLoader(HtmlSpannerFactory.create(config), resourcesLoader);
 
     this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, bookMetadata, streamingBookDataSource, logger);
     this.bookView.setListener(this);
@@ -362,6 +362,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           getSystemUiHelper().show();
         }
       }
+
       @Override public void onDestroyActionMode() {
         if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
           getSystemUiHelper().hide();
@@ -390,8 +391,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
-    this.progressContainer.setPadding(progressContainer.getPaddingLeft(), progressContainer.getPaddingTop(), progressContainer.getPaddingRight(),
-        progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context));
+    final int pl = progressContainer.getPaddingLeft();
+    final int pt = progressContainer.getPaddingTop();
+    final int pr = progressContainer.getPaddingRight();
+    final int pb = progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context);
+    this.progressContainer.setPadding(pl, pt, pr, pb);
 
     this.chapterProgressDsb.setEnabled(true);
     this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
@@ -565,9 +569,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     bookView.setFontFamily(config.getSerifFontFamily());
 
-    textLoader.setFontFamily(config.getSerifFontFamily());
-    textLoader.setSansSerifFontFamily(config.getSansSerifFontFamily());
-    textLoader.setSerifFontFamily(config.getSerifFontFamily());
+    textLoader.fromConfiguration(config);
 
     bookView.setHorizontalMargin(marginH);
     bookView.setVerticalMargin(marginV);
@@ -575,9 +577,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     if (!isAnimating()) {
       bookView.setEnableScrolling(config.isScrollingEnabled());
     }
-
-    textLoader.setStripWhiteSpace(config.isStripWhiteSpaceEnabled());
-    textLoader.setUseColoursFromCSS(config.isUseColoursFromCSS());
 
     bookView.setLineSpacing(config.getLineSpacing());
 
@@ -607,9 +606,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Check if we need a restart
     if (!savedConfigState.usePageNum
         || config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace
-        || !config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName)
+        || !config.getDefaultFontFamily()
+        .getName()
+        .equalsIgnoreCase(savedConfigState.fontName)
         || isFontChanged
-        || !config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName)
+        || !config.getSansSerifFontFamily()
+        .getName()
+        .equalsIgnoreCase(savedConfigState.sansSerifFontName)
         || config.getHorizontalMargin() != savedConfigState.hMargin
         || config.getVerticalMargin() != savedConfigState.vMargin
         || config.getTextSize() != savedConfigState.textSize

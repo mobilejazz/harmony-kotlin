@@ -16,6 +16,9 @@ public class CSSLinkHandler extends TagNodeHandler {
 
   private TextLoader textLoader;
 
+  public CSSLinkHandler() {
+  }
+
   public CSSLinkHandler(TextLoader textLoader) {
     this.textLoader = textLoader;
   }
@@ -30,10 +33,16 @@ public class CSSLinkHandler extends TagNodeHandler {
       Log.d(TAG, "Ignoring link of type " + type);
     }
 
-    final List<CompiledRule> rules = textLoader.getCSSRules(href);
+    if (textLoader != null) {
+      final List<CompiledRule> rules = textLoader.getCSSRules(href);
 
-    for (CompiledRule rule : rules) {
-      spanStack.registerCompiledRule(rule);
+      for (CompiledRule rule : rules) {
+        spanStack.registerCompiledRule(rule);
+      }
     }
+  }
+
+  public void setTextLoader(TextLoader textLoader) {
+    this.textLoader = textLoader;
   }
 }

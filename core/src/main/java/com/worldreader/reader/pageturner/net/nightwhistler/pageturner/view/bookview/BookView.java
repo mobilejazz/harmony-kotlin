@@ -170,7 +170,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.textLoader.registerTagNodeHandler("img", imgHandler);
     this.textLoader.registerTagNodeHandler("image", imgHandler);
 
-    this.textLoader.setLinkCallBack(new LinkTagHandler.LinkCallBack() {
+    this.textLoader.setLinkTagCallBack(new LinkTagHandler.LinkTagCallBack() {
       @Override public void onLinkClicked(String href) {
         navigateTo(spine.resolveHref(href));
       }
@@ -184,13 +184,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   void onInnerViewResize() {
     restorePosition();
-    final HtmlSpanner htmlSpanner = textLoader.getHtmlSpanner();
-    if (htmlSpanner != null) {
-      final TableHandler tableHandler = ((TableHandler) htmlSpanner.getHandlerFor("table"));
-      if (tableHandler != null) {
-        final int tableWidth = (int) (childView.getWidth() * 0.9);
-        tableHandler.setTableWidth(tableWidth);
-      }
+    final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
+    if (tableNodeHandler != null) {
+      final int tableWidth = (int) (childView.getWidth() * 0.9);
+      tableNodeHandler.setTableWidth(tableWidth);
     }
   }
 
@@ -453,12 +450,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public void setFontFamily(FontFamily family) {
     this.childView.setTypeface(family.getDefaultTypeface());
-    final HtmlSpanner htmlSpanner = textLoader.getHtmlSpanner();
-    if (htmlSpanner != null) {
-      final TableHandler tableHandler = ((TableHandler) htmlSpanner.getHandlerFor("table"));
-      if (tableHandler != null) {
-        tableHandler.setTypeFace(family.getDefaultTypeface());
-      }
+    final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
+    if (tableNodeHandler != null) {
+      tableNodeHandler.setTypeFace(family.getDefaultTypeface());
     }
   }
 
@@ -818,23 +812,18 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       this.childView.setTextColor(color);
     }
 
-    final HtmlSpanner htmlSpanner = textLoader.getHtmlSpanner();
-    if (htmlSpanner != null) {
-      final TableHandler tableHandler = ((TableHandler) htmlSpanner.getHandlerFor("table"));
-      if (tableHandler != null) {
-        tableHandler.setTextColor(color);
-      }
+    final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
+    if (tableNodeHandler != null) {
+      tableNodeHandler.setTextColor(color);
     }
   }
 
   public void setTextSize(float textSize) {
     this.childView.setTextSize(textSize);
-    final HtmlSpanner htmlSpanner = textLoader.getHtmlSpanner();
-    if (htmlSpanner != null) {
-      final TableHandler tableHandler = ((TableHandler) htmlSpanner.getHandlerFor("table"));
-      if (tableHandler != null) {
-        tableHandler.setTextSize(textSize);
-      }
+
+    final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
+    if (tableNodeHandler != null) {
+      tableNodeHandler.setTextSize(textSize);
     }
   }
 

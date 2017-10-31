@@ -1,5 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
@@ -31,7 +32,7 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-public class TextLoader implements LinkTagHandler.LinkCallBack {
+public class TextLoader implements LinkTagHandler.LinkTagCallBack {
 
   public static final String TAG = TextLoader.class.getSimpleName();
 
@@ -47,26 +48,17 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
   private final HtmlSpanner htmlSpanner;
   private final ResourcesLoader resourcesLoader;
 
-  private LinkTagHandler.LinkCallBack linkCallBack;
+  private LinkTagHandler.LinkTagCallBack linkTagCallBack;
 
-  public TextLoader(final HtmlSpanner spanner, final SystemFontResolver fontResolver, final ResourcesLoader resourcesLoader) {
+  public TextLoader(final HtmlSpanner spanner, final ResourcesLoader resourcesLoader) {
     this.htmlSpanner = spanner;
     this.resourcesLoader = resourcesLoader;
-
-    this.htmlSpanner.setFontResolver(fontResolver);
-    onRegisterSpannerHandlers();
+    registerCallbacksSpannerHandlers();
   }
 
-  private void onRegisterSpannerHandlers() {
-    htmlSpanner.registerHandler("a", registerAnchorHandler(new LinkTagHandler(this)));
-    htmlSpanner.registerHandler("h1", registerAnchorHandler(htmlSpanner.getHandlerFor("h1")));
-    htmlSpanner.registerHandler("h2", registerAnchorHandler(htmlSpanner.getHandlerFor("h2")));
-    htmlSpanner.registerHandler("h3", registerAnchorHandler(htmlSpanner.getHandlerFor("h3")));
-    htmlSpanner.registerHandler("h4", registerAnchorHandler(htmlSpanner.getHandlerFor("h4")));
-    htmlSpanner.registerHandler("h5", registerAnchorHandler(htmlSpanner.getHandlerFor("h5")));
-    htmlSpanner.registerHandler("h6", registerAnchorHandler(htmlSpanner.getHandlerFor("h6")));
-    htmlSpanner.registerHandler("p", registerAnchorHandler(htmlSpanner.getHandlerFor("p")));
-    htmlSpanner.registerHandler("link", new CSSLinkHandler(this));
+  private void registerCallbacksSpannerHandlers() {
+    ((LinkTagHandler) getHtmlTagHandler("a")).setCallBack(this);
+    ((CSSLinkHandler) getHtmlTagHandler("img")).setTextLoader(this);
   }
 
   public List<CompiledRule> getCSSRules(String href) {
@@ -164,43 +156,37 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
     //fontResolver.loadEmbeddedFont(name, href);
   }
 
-  private AnchorHandler registerAnchorHandler(TagNodeHandler wrap) {
-    final AnchorHandler handler = new AnchorHandler(wrap);
-    anchorHandlers.add(handler);
-    return handler;
-  }
-
   @Override public void onLinkClicked(String href) {
-    if (linkCallBack != null) {
-      linkCallBack.onLinkClicked(href);
+    if (linkTagCallBack != null) {
+      linkTagCallBack.onLinkClicked(href);
     }
   }
 
-  public void setLinkCallBack(LinkTagHandler.LinkCallBack callBack) {
-    this.linkCallBack = callBack;
+  public void setLinkTagCallBack(LinkTagHandler.LinkTagCallBack callBack) {
+    this.linkTagCallBack = callBack;
   }
 
   public void registerTagNodeHandler(String tag, TagNodeHandler handler) {
     this.htmlSpanner.registerHandler(tag, handler);
   }
 
-  public void setFontFamily(FontFamily family) {
+  private void setFontFamily(FontFamily family) {
     ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setDefaultFont(family);
   }
 
-  public void setSerifFontFamily(FontFamily family) {
+  private void setSerifFontFamily(FontFamily family) {
     ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSerifFont(family);
   }
 
-  public void setSansSerifFontFamily(FontFamily family) {
+  private void setSansSerifFontFamily(FontFamily family) {
     ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSansSerifFont(family);
   }
 
-  public void setStripWhiteSpace(boolean stripWhiteSpace) {
+  private void setStripWhiteSpace(boolean stripWhiteSpace) {
     this.htmlSpanner.setStripExtraWhiteSpace(stripWhiteSpace);
   }
 
-  public void setUseColoursFromCSS(boolean useColours) {
+  private void setUseColoursFromCSS(boolean useColours) {
     this.htmlSpanner.setUseColoursFromStyle(useColours);
   }
 
@@ -321,9 +307,17 @@ public class TextLoader implements LinkTagHandler.LinkCallBack {
     anchors.clear();
   }
 
-  public HtmlSpanner getHtmlSpanner() {
-    return htmlSpanner;
+  @Nullable public <T extends TagNodeHandler> T getHtmlTagHandler(final String tag) {
+    final TagNodeHandler handlerFor = htmlSpanner.getHandlerFor(tag);
+    return handlerFor instanceof AnchorHandler ? (T) ((AnchorHandler) handlerFor).getWrappedHandler() : (T) handlerFor;
   }
 
+  public void fromConfiguration(Configuration config) {
+    setFontFamily(config.getSerifFontFamily());
+    setSansSerifFontFamily(config.getSansSerifFontFamily());
+    setSerifFontFamily(config.getSerifFontFamily());
+    setStripWhiteSpace(config.isStripWhiteSpaceEnabled());
+    setUseColoursFromCSS(config.isUseColoursFromCSS());
+  }
 }
 
