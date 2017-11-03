@@ -62,20 +62,6 @@ public final class SystemUiHelper {
   public static final int LEVEL_IMMERSIVE = 3;
 
   /**
-   * When this flag is set, the
-   * {@link WindowManager.LayoutParams#FLAG_LAYOUT_IN_SCREEN}
-   * flag will be set on older devices, making the status bar "float" on top
-   * of the activity layout. This is most useful when there are no controls at
-   * the top of the activity layout.
-   * <p>
-   * This flag isn't used on newer devices because the <a
-   * href="http://developer.android.com/design/patterns/actionbar.html">action
-   * bar</a>, the most important structural element of an Android app, should
-   * be visible and not obscured by the system UI.
-   */
-  public static final int FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES = 0x1;
-
-  /**
    * Used with {@link #LEVEL_IMMERSIVE}. When this flag is set, an inward swipe in the system
    * bars areas will cause the system bars to temporarily appear in a semi-transparent state,
    * but no flags are cleared, and your system UI visibility change listeners are not triggered.
@@ -87,8 +73,6 @@ public final class SystemUiHelper {
   public static final long SHORT_DELAY = 300; // ms
 
   public static final long NORMAL_DELAY = 500; // ms
-
-  private static final String LOG_TAG = SystemUiHelper.class.getSimpleName();
 
   private final SystemUiHelperImpl mImpl;
 
@@ -102,22 +86,7 @@ public final class SystemUiHelper {
    * @param level The level of hiding. Should be either {@link #LEVEL_LOW_PROFILE},
    * {@link #LEVEL_HIDE_STATUS_BAR}, {@link #LEVEL_LEAN_BACK} or
    * {@link #LEVEL_IMMERSIVE}
-   * @param flags Additional options. See {@link #FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES} and
-   * {@link #FLAG_IMMERSIVE_STICKY}
-   */
-  public SystemUiHelper(Activity activity, int level, int flags) {
-    this(activity, level, flags, null);
-  }
-
-  /**
-   * Construct a new SystemUiHelper.
-   *
-   * @param activity The Activity who's system UI should be changed
-   * @param level The level of hiding. Should be either {@link #LEVEL_LOW_PROFILE},
-   * {@link #LEVEL_HIDE_STATUS_BAR}, {@link #LEVEL_LEAN_BACK} or
-   * {@link #LEVEL_IMMERSIVE}
-   * @param flags Additional options. See {@link #FLAG_LAYOUT_IN_SCREEN_OLDER_DEVICES} and
-   * {@link #FLAG_IMMERSIVE_STICKY}
+   * @param flags Additional options. See {@link #FLAG_IMMERSIVE_STICKY}
    * @param listener A listener which is called when the system visibility is changed
    */
   public SystemUiHelper(Activity activity, int level, int flags, OnVisibilityChangeListener listener) {
