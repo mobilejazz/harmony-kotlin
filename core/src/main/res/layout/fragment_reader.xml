@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/reading_fragment_parent_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:id="@+id/reading_fragment_parent_container">
+  android:orientation="vertical">
 
   <ViewSwitcher
     android:id="@+id/reading_fragment_main_container"
@@ -17,8 +17,8 @@
       android:layout_height="match_parent">
 
       <view
-        class="com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView$InnerView"
         android:id="@id/bookview_inner"
+        class="com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView$InnerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -27,9 +27,9 @@
     </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
 
     <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView
+      android:id="@+id/reading_fragment_dummy_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/reading_fragment_dummy_view" />
+      android:layout_height="match_parent" />
 
   </ViewSwitcher>
 
@@ -43,11 +43,11 @@
 
   <include
     android:id="@+id/reading_fragment_chapter_progress_container"
-    android:layout_alignParentBottom="true"
-    android:layout_height="wrap_content"
+    layout="@layout/reading_fragment_chapter_progress"
     android:layout_width="match_parent"
-    android:visibility="gone"
-    layout="@layout/reading_fragment_chapter_progress" />
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:visibility="gone" />
 
   <com.worldreader.reader.wr.widget.DefinitionView
     android:id="@+id/reading_fragment_word_definition_dv"
@@ -57,18 +57,18 @@
     android:visibility="gone" />
 
   <RelativeLayout
+    android:id="@+id/reading_fragment_container_tutorial_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:id="@+id/reading_fragment_container_tutorial_view">
+    android:gravity="center">
 
     <com.worldreader.core.application.ui.widget.TutorialView
+      android:id="@+id/reading_fragment_tutorial_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:id="@+id/reading_fragment_tutorial_view"
+      android:layout_centerInParent="true"
       android:clickable="true"
-      android:layout_centerInParent="true" />
+      android:focusable="true" />
 
   </RelativeLayout>
-
 </RelativeLayout>

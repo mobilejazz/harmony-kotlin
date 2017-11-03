@@ -25,7 +25,6 @@
       class="com.worldreader.reader.wr.fragments.BookIndexFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
-
   </FrameLayout>
 
   <FrameLayout
@@ -34,6 +33,7 @@
     android:layout_height="match_parent"
     android:background="#CC000000"
     android:clickable="true"
+    android:focusable="true"
     android:visibility="gone">
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -51,17 +51,15 @@
       android:background="#96000000">
 
       <TextView
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/ls_generic_close"
-        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/white" />
 
     </FrameLayout>
-
   </FrameLayout>
-
 </FrameLayout>
 

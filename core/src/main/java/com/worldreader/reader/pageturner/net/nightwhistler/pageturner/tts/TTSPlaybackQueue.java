@@ -20,14 +20,15 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts;
 
 import android.media.MediaPlayer;
-import java.io.File;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-/*
-Playback queue which is thread-safe, so it can be a singleton.
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 
-It only accepts items when it has first been activated.
+/**
+ * Playback queue which is thread-safe, so it can be a singleton.
+ * <p>
+ * It only accepts items when it has first been activated.
  */
 public class TTSPlaybackQueue {
 

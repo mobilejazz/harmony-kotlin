@@ -95,16 +95,16 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPla
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingTextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.functional.Command;
@@ -344,12 +344,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           author = bookView.getBook().getMetadata().getAuthors().get(0).toString();
         }
 
-        String text;
-        if (author == null) {
-          text = bookTitle + " \n\n" + selectedText;
-        } else {
-          text = bookTitle + ", " + author + "\n\n" + selectedText;
-        }
+        final String text = author == null ? bookTitle + " \n\n" + selectedText : bookTitle + ", " + author + "\n\n" + selectedText;
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -420,7 +415,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     displayPageNumber(-1); // Initializes the pagenumber view properly
 
-    View.OnTouchListener gestureListener = new View.OnTouchListener() {
+    final View.OnTouchListener gestureListener = new View.OnTouchListener() {
       @Override public boolean onTouch(View v, MotionEvent event) {
         return !AbstractReaderFragment.this.ttsIsRunning() && gestureDetector.onTouchEvent(event);
       }
@@ -453,13 +448,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     checkIfHasBeenSharedQuote();
   }
 
-  @Override public void onSaveInstanceState(final Bundle outState) {
-    if (this.bookView != null) {
-      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
-      outState.putInt(IDX_KEY, this.bookView.getIndex());
-    }
-  }
-
   @Override public void onPause() {
     Log.d(TAG, "onPause() called.");
     saveReadingPosition();
@@ -473,11 +461,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     closeWaitDialog();
   }
 
-  @Override public void onLowMemory() {
-    super.onLowMemory();
-    this.textLoader.clearCachedText();
-  }
-
   @Override public void onDestroy() {
     if (this.textToSpeech != null) {
       this.textToSpeech.stop();
@@ -486,6 +469,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
     this.closeWaitDialog();
     super.onDestroy();
+  }
+
+  @Override public void onLowMemory() {
+    super.onLowMemory();
+    this.textLoader.clearCachedText();
+  }
+
+  @Override public void onSaveInstanceState(final Bundle outState) {
+    if (this.bookView != null) {
+      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
+      outState.putInt(IDX_KEY, this.bookView.getIndex());
+    }
   }
 
   @Override public void onPrepareOptionsMenu(Menu menu) {
@@ -555,8 +550,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected abstract void onGamificationEventSharedQuote();
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) private void updateFromPrefs() {
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
     }
@@ -605,8 +599,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     restoreColorProfile();
 
-    boolean isFontChanged = !config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
-    boolean isBackgroundChanged = config.getColourProfile() != savedConfigState.colorProfile;
+    final boolean isFontChanged = !config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
+    final boolean isBackgroundChanged = config.getColourProfile() != savedConfigState.colorProfile;
 
     // Check if we need a restart
     if (config.isShowPageNumbers() != savedConfigState.usePageNum
@@ -630,7 +624,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private boolean isAnimating() {
-    Animator anim = dummyView.getAnimator();
+    final Animator anim = dummyView.getAnimator();
     return anim != null && !anim.isFinished();
   }
 
@@ -664,8 +658,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
 
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity != null) {
       activity.finish();
     }
