@@ -5,11 +5,10 @@ import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 
 public interface GeolocationStorageDataSource {
 
-  GeolocationInfoEntity obtains(String key) throws InvalidCacheException;
+  GeolocationInfoEntity obtains() throws InvalidCacheException;
 
-  boolean isValid(String key);
+  boolean isValid();
 
-  void persist(String key, GeolocationInfoEntity geolocationInfoEntity);
-
+  void persist(GeolocationInfoEntity geolocationInfoEntity);
 
 }

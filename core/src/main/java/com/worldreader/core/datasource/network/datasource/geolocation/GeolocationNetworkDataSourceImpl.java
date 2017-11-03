@@ -11,10 +11,10 @@ import retrofit2.Response;
 
 import java.util.*;
 
-public class GeolocationNetworkDataSourceImpl implements GeolocationNetworkDataSource {
+public final class GeolocationNetworkDataSourceImpl implements GeolocationNetworkDataSource {
 
   private final GeocodingService geocodingService;
-  private String token;
+  private final String token;
   private final ErrorAdapter<Throwable> errorAdapter;
 
   public GeolocationNetworkDataSourceImpl(GeocodingService geocodingService, String token, ErrorAdapter<Throwable> errorAdapter) {
@@ -38,6 +38,5 @@ public class GeolocationNetworkDataSourceImpl implements GeolocationNetworkDataS
       return Futures.immediateFailedFuture(errorAdapter.of(e).getCause());
     }
   }
-
 
 }

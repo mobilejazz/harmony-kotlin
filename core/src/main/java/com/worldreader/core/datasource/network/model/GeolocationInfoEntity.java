@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class GeolocationInfoEntity implements TimestampValidationStrategyDataSource {
+public final class GeolocationInfoEntity implements TimestampValidationStrategyDataSource {
 
   private String street;
   private String streetNumber;
@@ -26,6 +26,7 @@ public class GeolocationInfoEntity implements TimestampValidationStrategyDataSou
 
   private GeolocationInfoEntity() {
     this.administrativeAreas = new ArrayList<>();
+    this.lastUpdate = new Date();
   }
 
   public static List<GeolocationInfoEntity> parseFromNetworkResponse(String rawResponse) throws JSONException {

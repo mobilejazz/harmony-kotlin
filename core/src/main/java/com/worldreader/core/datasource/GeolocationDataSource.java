@@ -16,13 +16,11 @@ import com.worldreader.core.domain.repository.GeolocationRepository;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-public class GeolocationDataSource implements GeolocationRepository {
+public final class GeolocationDataSource implements GeolocationRepository {
 
-  private static final String CACHE_KEY = "GeolocationInfo";
-
-  private GeolocationNetworkDataSource network;
-  private GeolocationStorageDataSource storage;
-  private Mapper<GeolocationInfoEntity, GeolocationInfo> mapper;
+  private final GeolocationNetworkDataSource network;
+  private final GeolocationStorageDataSource storage;
+  private final Mapper<GeolocationInfoEntity, GeolocationInfo> mapper;
 
   @Inject
   public GeolocationDataSource(GeolocationNetworkDataSource network,
@@ -34,12 +32,12 @@ public class GeolocationDataSource implements GeolocationRepository {
   }
 
   @Override public ListenableFuture<Boolean> update(final double latitude, final double longitude) {
-    if (!storage.isValid(CACHE_KEY)) {
+    if (!storage.isValid()) {
       return FluentFuture.from(network.getGeocodeInformation(latitude, longitude))
           .transform(new Function<Optional<GeolocationInfoEntity>, Boolean>() {
             @Nullable @Override public Boolean apply(Optional<GeolocationInfoEntity> input) {
               if (input.isPresent()) {
-                storage.persist(CACHE_KEY, input.get());
+                storage.persist(input.get());
                 return true;
               } else {
                 return false;
@@ -53,7 +51,7 @@ public class GeolocationDataSource implements GeolocationRepository {
 
   @Override public ListenableFuture<Optional<GeolocationInfo>> get() {
     try {
-      return Futures.immediateFuture(Optional.of(mapper.transform(storage.obtains(CACHE_KEY))));
+      return Futures.immediateFuture(Optional.of(mapper.transform(storage.obtains())));
     } catch (InvalidCacheException e) {
       return Futures.immediateFuture(Optional.<GeolocationInfo>absent());
     }

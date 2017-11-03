@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource.storage.datasource.geolocation;
 
+import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 import com.mobilejazz.vastra.ValidationService;
 import com.worldreader.core.datasource.network.model.GeolocationInfoEntity;
@@ -8,46 +9,66 @@ import com.worldreader.core.datasource.storage.datasource.cache.manager.entity.C
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 
 import javax.inject.Inject;
+import java.util.concurrent.atomic.*;
 
-public class GeolocationStorageDataSourceImpl implements GeolocationStorageDataSource {
+public final class GeolocationStorageDataSourceImpl implements GeolocationStorageDataSource {
+
+  private static final String CACHE_KEY = "GeolocationInfo";
 
   private final CacheBddDataSource cacheBddDataSource;
   private final Gson gson;
   private final ValidationService validationService;
+
+  private final AtomicReference<GeolocationInfoEntity> geolocationInfoEntityMemCache;
 
   @Inject
   public GeolocationStorageDataSourceImpl(CacheBddDataSource cacheBddDataSource, Gson gson, ValidationService validationService) {
     this.cacheBddDataSource = cacheBddDataSource;
     this.gson = gson;
     this.validationService = validationService;
+    this.geolocationInfoEntityMemCache = new AtomicReference<>();
+
+    // Warming mem cache
+    refreshMemCacheFromDb();
   }
 
-  @Override public GeolocationInfoEntity obtains(String key) throws InvalidCacheException {
-    CacheObject cacheObject = cacheBddDataSource.get(key);
-
-    if (cacheObject == null) {
-      throw new InvalidCacheException();
+  private synchronized void refreshMemCacheFromDb() {
+    final CacheObject cacheObject = getCacheObjectFromDb();
+    if (cacheObject != null) {
+      geolocationInfoEntityMemCache.set(getEntity(cacheObject));
     }
-
-    // Not using cache validation to obtain the data, if the data exist will be returned
-
-    return getEntity(cacheObject);
   }
 
-  @Override
-  public boolean isValid(String key) {
-    CacheObject cacheObject = cacheBddDataSource.get(key);
-
-    return cacheObject != null && validationService.isValid(getEntity(cacheObject));
+  private @Nullable CacheObject getCacheObjectFromDb() {
+    return cacheBddDataSource.get(CACHE_KEY);
   }
 
   private GeolocationInfoEntity getEntity(CacheObject cacheObject) {
     return gson.fromJson(cacheObject.getValue(), GeolocationInfoEntity.class);
   }
 
-  @Override public void persist(String key, GeolocationInfoEntity geolocationInfoEntity) {
+  // Not using cache validation to obtain the data, if the data exist will be returned
+  @Override public GeolocationInfoEntity obtains() throws InvalidCacheException {
+    final GeolocationInfoEntity geolocationInfoEntity = geolocationInfoEntityMemCache.get();
+    if (geolocationInfoEntity == null) {
+      throw new InvalidCacheException();
+    }
+    return geolocationInfoEntity;
+  }
+
+  @Override
+  public boolean isValid() {
+    CacheObject cacheObject = getCacheObjectFromDb();
+
+    return cacheObject != null && validationService.isValid(getEntity(cacheObject));
+  }
+
+  @Override public void persist(GeolocationInfoEntity geolocationInfoEntity) {
     String json = gson.toJson(geolocationInfoEntity);
-    CacheObject cacheObject = CacheObject.newCacheObject(key, json, System.currentTimeMillis());
+    CacheObject cacheObject = CacheObject.newCacheObject(CACHE_KEY, json, System.currentTimeMillis());
     cacheBddDataSource.persist(cacheObject);
+
+    // Refreshing mem cache
+    refreshMemCacheFromDb();
   }
 }
