@@ -18,12 +18,19 @@ import java.util.*;
 public class LocaleCountryCodeProvider implements CountryCodeProvider {
 
   private final Context context;
-  private final GetGeolocationInfoInteractor getGeolocationInfoInteractor;
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private final Optional<GetGeolocationInfoInteractor> getGeolocationInfoInteractor;
+
+  // If support for location implemented in main library deprecate this constructor
+  public LocaleCountryCodeProvider(Context context) {
+    this.context = context;
+    this.getGeolocationInfoInteractor = Optional.absent();
+  }
 
   @Inject public LocaleCountryCodeProvider(Context context,
       GetGeolocationInfoInteractor getGeolocationInfoInteractor) {
     this.context = context;
-    this.getGeolocationInfoInteractor = getGeolocationInfoInteractor;
+    this.getGeolocationInfoInteractor = Optional.of(getGeolocationInfoInteractor);
   }
 
   @Override public String getCountryCode() {
@@ -43,8 +50,12 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
   }
 
   private Optional<String> getGeolocationCountryIsoCode() {
+    if (!getGeolocationInfoInteractor.isPresent()) {
+      return Optional.absent();
+    }
+
     try {
-      return getGeolocationInfoInteractor.execute(MoreExecutors.newDirectExecutorService()).get()
+      return getGeolocationInfoInteractor.get().execute(MoreExecutors.newDirectExecutorService()).get()
           .transform(new Function<GeolocationInfo, String>() {
             @Nullable @Override public String apply(GeolocationInfo input) {
               return input.getCountryCode();

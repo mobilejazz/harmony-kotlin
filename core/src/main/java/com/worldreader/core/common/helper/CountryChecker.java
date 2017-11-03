@@ -35,7 +35,7 @@ import java.util.*;
         || isKeyboardFromCountry(countryIso2Code);
   }
 
-  public boolean isLocaleFromCountry(String countryIso2Code) {
+  private boolean isLocaleFromCountry(String countryIso2Code) {
     final List<Locale> locales = getLocales();
     boolean countryFound = false;
     for (Locale locale : locales) {
@@ -61,19 +61,19 @@ import java.util.*;
     return locales;
   }
 
-  public boolean isSimFromCountry(String countryIso2Code) {
+  private boolean isSimFromCountry(String countryIso2Code) {
     String simCountry = countryCodeProvider.getSimCountryIsoCode();
     logger.d(TAG, "Current SIM country code: " + simCountry);
     return countryIso2Code.equalsIgnoreCase(simCountry);
   }
 
-  public boolean isNetworkFromCountry(String countryIso2Code) {
+  private boolean isNetworkFromCountry(String countryIso2Code) {
     String networkCountry = countryCodeProvider.getNetworkCountryIsoCode();
     logger.d(TAG, "Current Network country code: " + networkCountry);
     return countryIso2Code.equalsIgnoreCase(networkCountry);
   }
 
-  public boolean isKeyboardFromCountry(String countryIso2Code) {
+  private boolean isKeyboardFromCountry(String countryIso2Code) {
     List<String> keyboardLocales = getKeyboardLocales();
     boolean found = false;
     for (String keyboardLocale : keyboardLocales) {
