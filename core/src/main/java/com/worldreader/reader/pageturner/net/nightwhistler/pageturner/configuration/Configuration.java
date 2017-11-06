@@ -195,10 +195,6 @@ public class Configuration {
     updateValue(bookPrefs, KEY_IDX, index);
   }
 
-  public boolean isDimSystemUI() {
-    return settings.getBoolean(KEY_DIM_SYSTEM_UI, false);
-  }
-
   public boolean isStripWhiteSpaceEnabled() {
     return settings.getBoolean(KEY_STRIP_WHITESPACE, false);
   }

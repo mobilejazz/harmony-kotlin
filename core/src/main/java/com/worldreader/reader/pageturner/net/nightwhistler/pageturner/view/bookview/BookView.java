@@ -63,7 +63,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.OpenStreamingBookTask;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.OpenFileEpubBookTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadNextResourceTask;
 import jedi.functional.Command;
 import jedi.functional.Command0;
@@ -139,7 +139,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super(context, attributes);
   }
 
-  public void init(String bookId, String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader, TextLoader textLoader, BookMetadata bookMetadata, StreamingBookRepository repository, Logger logger) {
+  public void init(String bookId, String contentOpf, String tocResourcePath, ResourcesLoader resourcesLoader, TextLoader textLoader, BookMetadata bookMetadata,
+      StreamingBookRepository repository, Logger logger) {
     this.bookId = bookId;
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
@@ -154,11 +155,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     this.childView = (BookTextView) this.findViewById(R.id.bookview_inner);
     this.childView.setBookView(this);
-    this.childView.setCursorVisible(false);
-    this.childView.setLongClickable(true);
-    this.childView.setFocusable(true);
-    this.childView.setLinksClickable(true);
-    this.childView.setTextIsSelectable(true);
     this.childView.setMovementMethod(new BookViewMovementMethod());
 
     this.setVerticalFadingEdgeEnabled(false);
@@ -358,32 +354,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     if (spine == null) {
       final Context context = getContext();
 
-      //final OpenFileEpubBookTask task = new OpenFileEpubBookTask(context, textLoader, resourcesLoader, storedIndex, logger);
-      //task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
-      //  @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
-      //    result.match(new Command<Object>() {
-      //      @Override public void execute(Object value) {
-      //        @SuppressWarnings("unchecked") final Pair<Book, PageTurnerSpine> result = (Pair<Book, PageTurnerSpine>) value;
-      //        final Book book = result.getValue0();
-      //        final PageTurnerSpine pageTurnerSpine = result.getValue1();
-      //
-      //        BookView.this.book = book;
-      //        BookView.this.spine = pageTurnerSpine;
-      //
-      //        notifyOnBookOpened(book);
-      //      }
-      //    }, new Command0() {
-      //      @Override public void execute() {
-      //        errorOnBookOpening();
-      //      }
-      //    });
-      //
-      //    // Once initialization is done, let's proceed to load the text properly
-      //    taskQueue.executeTask(new LoadStreamingTextTask());
-      //  }
-      //});
-
-      final OpenStreamingBookTask task = new OpenStreamingBookTask(textLoader, resourcesLoader, storedIndex, contentOpf, tocResourcePath, logger);
+      final OpenFileEpubBookTask task = new OpenFileEpubBookTask(context, textLoader, resourcesLoader, storedIndex, logger);
       task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
         @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
           result.match(new Command<Object>() {
@@ -397,8 +368,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
               notifyOnBookOpened(book);
 
-              // Once initialization is done, let's proceed to load the text properly
-              taskQueue.executeTask(new LoadStreamingTextTask());
+          // Once initialization is done, let's proceed to load the text properly
+             taskQueue.executeTask(new LoadStreamingTextTask());
             }
           }, new Command0() {
             @Override public void execute() {
@@ -407,6 +378,31 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           });
         }
       });
+
+      //final OpenStreamingBookTask task = new OpenStreamingBookTask(textLoader, resourcesLoader, storedIndex, contentOpf, tocResourcePath, logger);
+      //task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
+      //  @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
+      //    result.match(new Command<Object>() {
+      //      @Override public void execute(Object value) {
+      //        @SuppressWarnings("unchecked") final Pair<Book, PageTurnerSpine> result = (Pair<Book, PageTurnerSpine>) value;
+      //        final Book book = result.getValue0();
+      //        final PageTurnerSpine pageTurnerSpine = result.getValue1();
+      //
+      //        BookView.this.book = book;
+      //        BookView.this.spine = pageTurnerSpine;
+      //
+      //        notifyOnBookOpened(book);
+      //
+      //        // Once initialization is done, let's proceed to load the text properly
+      //        taskQueue.executeTask(new LoadStreamingTextTask());
+      //      }
+      //    }, new Command0() {
+      //      @Override public void execute() {
+      //        errorOnBookOpening();
+      //      }
+      //    });
+      //  }
+      //});
 
       taskQueue.executeTask(task);
     } else {
@@ -942,7 +938,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class LoadStreamingTextTask extends QueueableAsyncTask<Resource, Void, Spanned> {
 
-    public Option<Spanned> doInBackground(Resource... resources) {
+    @Override protected void onPreExecute() {
+      notifyOnParseEntryStart(getIndex());
+      notifyOnStartRenderingText();
+    }
+
+    @Override public Option<Spanned> doInBackground(Resource... resources) {
       try {
         final Resource resource = resources != null && resources.length > 0 ? resources[0] : spine.getCurrentResource().getOrElse(new Resource(""));
 
@@ -971,11 +972,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
 
       return none();
-    }
-
-    @Override protected void onPreExecute() {
-      notifyOnParseEntryStart(getIndex());
-      notifyOnStartRenderingText();
     }
 
     @Override public void doOnPostExecute(Option<Spanned> result) {

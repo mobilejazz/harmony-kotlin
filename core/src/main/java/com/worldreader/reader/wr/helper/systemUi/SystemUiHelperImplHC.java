@@ -26,21 +26,21 @@ import android.view.WindowManager;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB) class SystemUiHelperImplHC extends SystemUiHelper.SystemUiHelperImpl
     implements View.OnSystemUiVisibilityChangeListener {
 
-  final View mDecorView;
+  private final View decorView;
 
   SystemUiHelperImplHC(Activity activity, int level, int flags, SystemUiHelper.OnVisibilityChangeListener onVisibilityChangeListener) {
     super(activity, level, flags, onVisibilityChangeListener);
 
-    mDecorView = activity.getWindow().getDecorView();
-    mDecorView.setOnSystemUiVisibilityChangeListener(this);
+    decorView = activity.getWindow().getDecorView();
+    decorView.setOnSystemUiVisibilityChangeListener(this);
   }
 
   @Override void show() {
-    mDecorView.setSystemUiVisibility(createShowFlags());
+    decorView.setSystemUiVisibility(createShowFlags());
   }
 
   @Override void hide() {
-    mDecorView.setSystemUiVisibility(createHideFlags());
+    decorView.setSystemUiVisibility(createHideFlags());
   }
 
   @Override public final void onSystemUiVisibilityChange(int visibility) {
@@ -52,7 +52,7 @@ import android.view.WindowManager;
   }
 
   protected void onSystemUiShown() {
-    ActionBar ab = mActivity.getActionBar();
+    final ActionBar ab = mActivity.getActionBar();
     if (ab != null) {
       ab.show();
     }

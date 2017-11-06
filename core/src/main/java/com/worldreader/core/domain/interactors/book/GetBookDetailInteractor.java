@@ -15,8 +15,7 @@ public interface GetBookDetailInteractor {
 
   void execute(String bookId, boolean forceUpdate, DomainCallback<Book, ErrorCore<?>> callback);
 
-  void execute(String bookId, boolean forceUpdate,
-      DomainBackgroundCallback<Book, ErrorCore<?>> callback);
+  void execute(String bookId, boolean forceUpdate, DomainBackgroundCallback<Book, ErrorCore<?>> callback);
 
   ListenableFuture<Optional<Book>> execute(String bookId);
 

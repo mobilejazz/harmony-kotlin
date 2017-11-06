@@ -11,7 +11,6 @@ public interface InteractorHandler {
 
   <T> void addCallback(ListenableFuture<T> listenableFuture, FutureCallback<T> callback);
 
-  <T> void addCallback(ListenableFuture<T> listenableFuture, FutureCallback<T> callback,
-      Executor executor);
+  <T> void addCallback(ListenableFuture<T> listenableFuture, FutureCallback<T> callback, Executor executor);
 
 }

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: 'buildsystem/dependencies.gradle'
 
 android {
@@ -69,7 +68,7 @@ dependencies {
   compile dependencies.vastra
   compile dependencies.storio
   compile dependencies.storioAnnotation
-  apt dependencies.storioAnnotationProcessor
+  annotationProcessor dependencies.storioAnnotationProcessor
 
   compile(dependencies.materialDialogsCore) {
     transitive = true
@@ -78,7 +77,7 @@ dependencies {
     transitive = true
   }
 
-  apt dependencies.daggerCompiler
+  annotationProcessor dependencies.daggerCompiler
   compile dependencies.dagger
 
   compile dependencies.retrofit2
