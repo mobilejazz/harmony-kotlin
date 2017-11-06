@@ -5,14 +5,14 @@
   android:layout_height="match_parent">
 
   <ProgressBar
-    android:id="@+id/progress_dialog_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@android:color/transparent"
-    android:indeterminateTint="@color/colorAccent"
-    android:indeterminateTintMode="src_in"
-    tools:visibility="visible" />
+      android:id="@+id/progress_dialog_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:background="@android:color/transparent"
+      android:indeterminateTint="@color/accent"
+      android:indeterminateTintMode="src_in"
+      tools:visibility="visible" />
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/book_reading_index_fragment_book_index_rv"

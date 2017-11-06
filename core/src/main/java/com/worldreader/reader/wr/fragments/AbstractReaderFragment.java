@@ -850,14 +850,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       streamTTSToDisk();
     } else {
-      final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet, R.string.ls_generic_accept,
-              DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
-                @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                }
-              });
-      networkErrorDialog.setCancelable(false);
-      networkErrorDialog.show();
+      if (getActivity() != null) {
+        final MaterialDialog networkErrorDialog =
+            DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title,
+                R.string.ls_error_tts_not_internet, R.string.ls_generic_accept, DialogFactory.EMPTY,
+                new DialogFactory.ActionCallback() {
+                  @Override
+                  public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
+                  }
+                });
+        networkErrorDialog.setCancelable(false);
+        networkErrorDialog.show();
+      }
     }
   }
 
@@ -1833,16 +1837,20 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void displayUserNotRegisteredDialog() {
-    MaterialDialog dialog = DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
-        R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
-          @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-            if (action == DialogFactory.Action.OK) {
-              onEventNavigateToSignUpScreen();
-            }
-          }
-        });
+    if (getActivity() != null) {
+      MaterialDialog dialog =
+          DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title,
+              R.string.ls_not_registered_dialog_message, R.string.ls_generic_accept,
+              R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
+                @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
+                  if (action == DialogFactory.Action.OK) {
+                    onEventNavigateToSignUpScreen();
+                  }
+                }
+              });
 
-    dialog.show();
+      dialog.show();
+    }
   }
 
   protected abstract void onEventNavigateToSignUpScreen();

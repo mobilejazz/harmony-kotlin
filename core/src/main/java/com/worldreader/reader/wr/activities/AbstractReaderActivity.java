@@ -175,9 +175,8 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private Drawable getColoredArrow(int color) {
-    final Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow);
-    final Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
-
+    final Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
+    Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
     if (arrowDrawable != null && wrapped != null) {
       arrowDrawable.mutate();
       DrawableCompat.setTint(wrapped, getResources().getColor(color));

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import java.util.concurrent.*;
 
+@Deprecated
 public class AndroidMainThread implements MainThread {
 
   private final Executor executor;

@@ -20,28 +20,29 @@
     android:background="?android:colorBackground">
 
     <TextView
-      android:id="@+id/reading_fragment_progress_chapter_title_tv"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/span_32"
-      android:gravity="center"
-      android:textStyle="bold"
-      android:textColor="@color/colorPrimary"
-      android:singleLine="true"
-      android:ellipsize="end"
-      tools:text="Once upon a time" />
+        android:id="@+id/reading_fragment_progress_chapter_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/span_32"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:text="Once upon a time"/>
 
     <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
-      android:id="@+id/reading_fragment_chapter_progress_dsb"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:clickable="false"
-      android:focusable="false"
-      app:dsb_min="0"
-      app:dsb_max="100"
-      app:dsb_indicatorPopupEnabled="false"
-      app:dsb_indicatorColor="@color/colorPrimary"
-      app:dsb_progressColor="@color/colorPrimary" />
+        android:id="@+id/reading_fragment_chapter_progress_dsb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        app:dsb_min="0"
+        app:dsb_max="100"
+        app:dsb_indicatorPopupEnabled="false"
+        app:dsb_indicatorColor="@color/primary"
+        app:dsb_progressColor="@color/primary"
+        />
 
     <TextView
       android:id="@+id/reading_fragment_chapter_progress_pages_tv"

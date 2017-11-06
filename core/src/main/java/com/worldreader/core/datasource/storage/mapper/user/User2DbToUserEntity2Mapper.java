@@ -37,7 +37,7 @@ import java.util.*;
           .setFontSize(raw.getFontSize())
           .setGender(raw.getGender())
           .setAge(raw.getAge())
-          .setBirthDate(new Date(raw.getBirthDate()))
+          .setBirthDate(raw.getBirthDate() != null ? new Date(raw.getBirthDate()) : null)
           .setChildrenCount(raw.getChildrenCount())
           .setMinChildAge(raw.getMinChildAge())
           .setMaxChildAge(raw.getMaxChildAge())

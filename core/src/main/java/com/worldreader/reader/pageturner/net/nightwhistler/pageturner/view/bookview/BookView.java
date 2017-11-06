@@ -110,7 +110,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private String fileName;
   private Book book;
-  private String bookId;
   private String contentOpf;
   private String tocResourcePath;
 
@@ -1051,6 +1050,17 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public static class InnerView extends android.support.v7.widget.AppCompatTextView {
+  @Override public boolean dispatchTouchEvent(MotionEvent event) {
+    // Simple workaround to https://code.google.com/p/android/issues/detail?id=191430
+    if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+      final CharSequence text = getInnerView().getText();
+      getInnerView().setText(null);
+      getInnerView().setText(text);
+    }
+    return super.dispatchTouchEvent(event);
+  }
+
+  public static class InnerView extends AppCompatTextView {
 
     private BookView bookView;
 
@@ -1072,23 +1082,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
       super.onSizeChanged(w, h, oldw, oldh);
       bookView.onInnerViewResize();
-    }
-
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-      // Workaround to https://code.google.com/p/android/issues/detail?id=191430
-      if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-        int startSelection = getSelectionStart();
-        int endSelection = getSelectionEnd();
-        if (startSelection != endSelection) {
-          if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            final CharSequence text = getText();
-            setText(null);
-            setText(text);
-          }
-        }
-      }
-
-      return super.dispatchTouchEvent(event);
     }
 
     @Override public void onWindowFocusChanged(boolean hasWindowFocus) {

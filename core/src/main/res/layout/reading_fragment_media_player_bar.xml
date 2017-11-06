@@ -26,14 +26,15 @@
     tools:text="Now hands are wanted here, and then again hands are wanted there." />
 
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:gravity="center_vertical"
-    android:minHeight="@dimen/span_96"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/span_16"
-    android:paddingRight="@dimen/span_16">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/span_96"
+      android:orientation="vertical"
+      android:background="@color/primary"
+      android:gravity="center_vertical"
+      android:paddingLeft="@dimen/span_16"
+      android:paddingRight="@dimen/span_16"
+      >
 
     <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
       android:id="@+id/reading_fragment_media_progress"
@@ -96,4 +97,6 @@
 
     </LinearLayout>
   </LinearLayout>
+
+
 </LinearLayout>
