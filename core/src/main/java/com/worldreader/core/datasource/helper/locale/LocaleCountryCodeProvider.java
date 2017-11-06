@@ -49,7 +49,8 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
     return countryISO;
   }
 
-  private Optional<String> getGeolocationCountryIsoCode() {
+  @Override
+  public Optional<String> getGeolocationCountryIsoCode() {
     if (!getGeolocationInfoInteractor.isPresent()) {
       return Optional.absent();
     }

@@ -6,6 +6,8 @@ import android.os.LocaleList;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
@@ -28,11 +30,43 @@ import java.util.*;
   }
 
   public boolean isLocatedInCountry(String countryIso2Code) {
-    return countryCodeProvider.getCountryCode().equals(countryIso2Code)
+    final Optional<Boolean> isGeolocationFromCountryResult = isGeolocationFromCountry(countryIso2Code);
+    if (isGeolocationFromCountryResult.isPresent()) {
+      return isGeolocationFromCountryResult.get();
+    }
+
+    final Optional<Boolean> isSimFromCountryResult = isSimFromCountry(countryIso2Code);
+    if (isSimFromCountryResult.isPresent()) {
+      return isSimFromCountryResult.get();
+    }
+
+    return isNetworkFromCountry(countryIso2Code)
         || isLocaleFromCountry(countryIso2Code)
-        || isSimFromCountry(countryIso2Code)
-        || isNetworkFromCountry(countryIso2Code)
         || isKeyboardFromCountry(countryIso2Code);
+  }
+
+  private Optional<Boolean> isGeolocationFromCountry(final String countryIso2Code) {
+    final Optional<String> geolocationCountryIsoCodeResult = countryCodeProvider.getGeolocationCountryIsoCode();
+    if (!geolocationCountryIsoCodeResult.isPresent()) {
+      return Optional.absent();
+    }
+
+    return geolocationCountryIsoCodeResult.transform(new Function<String, Boolean>() {
+      @Override public Boolean apply(String geolocationCountryIso2Code) {
+        return geolocationCountryIso2Code.equalsIgnoreCase(countryIso2Code);
+      }
+    });
+  }
+
+  private Optional<Boolean> isSimFromCountry(String countryIso2Code) {
+    String simCountry = countryCodeProvider.getSimCountryIsoCode();
+    logger.d(TAG, "Current SIM country code: " + simCountry);
+
+    if (simCountry == null || simCountry.isEmpty()) {
+      return Optional.absent();
+    }
+
+    return Optional.of(countryIso2Code.equalsIgnoreCase(simCountry));
   }
 
   private boolean isLocaleFromCountry(String countryIso2Code) {
@@ -59,12 +93,6 @@ import java.util.*;
       locales.add(Locale.getDefault());
     }
     return locales;
-  }
-
-  private boolean isSimFromCountry(String countryIso2Code) {
-    String simCountry = countryCodeProvider.getSimCountryIsoCode();
-    logger.d(TAG, "Current SIM country code: " + simCountry);
-    return countryIso2Code.equalsIgnoreCase(simCountry);
   }
 
   private boolean isNetworkFromCountry(String countryIso2Code) {
@@ -105,6 +133,5 @@ import java.util.*;
     return locales;
 
   }
-
 
 }
