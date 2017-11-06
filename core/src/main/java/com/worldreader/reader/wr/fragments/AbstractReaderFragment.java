@@ -653,7 +653,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     textLoader.closeCurrentBook();
 
     final Intent intent = getActivity().getIntent();
-    intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, this.bookMetadata);
+    intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, bookMetadata);
     intent.putExtra(CHANGE_FONT_KEY, isChangedFont);
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
@@ -672,16 +672,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void saveReadingPosition() {
-    if (this.bookView != null) {
-      int index = this.bookView.getIndex();
-      int position = this.bookView.getProgressPosition();
+    if (bookView != null) {
+      int index = bookView.getIndex();
+      int position = bookView.getProgressPosition();
 
       if (index != -1 && position != -1 && !bookView.isAtEnd()) {
-        config.setLastPosition(this.bookMetadata.getBookId(), position);
-        config.setLastIndex(this.bookMetadata.getBookId(), index);
+        config.setLastPosition(bookMetadata.getBookId(), position);
+        config.setLastIndex(bookMetadata.getBookId(), index);
       } else if (bookView.isAtEnd()) {
-        config.setLastPosition(this.bookMetadata.getBookId(), -1);
-        config.setLastIndex(this.bookMetadata.getBookId(), -1);
+        config.setLastPosition(bookMetadata.getBookId(), -1);
+        config.setLastIndex(bookMetadata.getBookId(), -1);
       }
     }
   }
