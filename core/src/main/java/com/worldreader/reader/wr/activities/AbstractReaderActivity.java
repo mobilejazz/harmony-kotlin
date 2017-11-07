@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -20,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
@@ -30,7 +32,8 @@ import jedi.option.Option;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public abstract class AbstractReaderActivity extends AppCompatActivity implements AbstractReaderFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {
+public abstract class AbstractReaderActivity extends AppCompatActivity
+    implements AbstractReaderFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {
 
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
@@ -49,10 +52,22 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
   }
 
   private void onPostCreate() {
-    onCreateInjector();
-    onCreateSystemUiHelper();
-    onCreateReadingFragment();
-    onCreateBindViews();
+    final boolean isCorrect = onCheckIfIntentProvidedIsGood();
+    if (isCorrect) {
+      onCreateInjector();
+      onCreateSystemUiHelper();
+      onCreateReadingFragment();
+      onCreateBookIndexFragment();
+      onCreateBindViews();
+    } else {
+      Toast.makeText(this, R.string.ls_error_fatal_error_message, Toast.LENGTH_SHORT).show();
+      finish();
+    }
+  }
+
+  private boolean onCheckIfIntentProvidedIsGood() {
+    final Intent intent = getIntent();
+    return intent != null && intent.hasExtra(AbstractReaderActivity.BOOK_METADATA_KEY) && intent.hasExtra(AbstractReaderActivity.READING_FRAGMENT_CLASS_KEY);
   }
 
   protected void onCreateInjector() {
@@ -82,6 +97,12 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
     }
   }
 
+  private void onCreateBookIndexFragment() {
+    final Fragment fragment = BookIndexFragment.instantiate(this, BookIndexFragment.TAG);
+    final FragmentManager fm = getSupportFragmentManager();
+    fm.beginTransaction().replace(R.id.fragment_book_index, fragment).commitNow();
+  }
+
   private void onCreateBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
     abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
@@ -92,7 +113,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
   }
 
   private boolean isVisibleReadingFragment() {
-    return readingContainer.getVisibility() == View.VISIBLE;
+    return readingContainer != null && readingContainer.getVisibility() == View.VISIBLE;
   }
 
   @Override public boolean dispatchKeyEvent(KeyEvent event) {
@@ -113,7 +134,9 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
   }
 
   private void showBookReadingFragment() {
-    updateActionBarForBookReading();
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setTitle("");
+    }
 
     readingContainer.setVisibility(View.VISIBLE);
     bookIndexContainer.setVisibility(View.GONE);
@@ -125,12 +148,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
     invalidateOptionsMenu();
-  }
-
-  private void updateActionBarForBookReading() {
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setTitle("");
-    }
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
@@ -183,6 +200,10 @@ public abstract class AbstractReaderActivity extends AppCompatActivity implement
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    if (abstractReaderFragment == null || bookIndexFragment == null) {
+      return false;
+    }
+
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onPrepareOptionsMenu(menu);
     } else {

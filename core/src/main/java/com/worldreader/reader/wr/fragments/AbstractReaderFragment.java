@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -40,7 +41,6 @@ import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -60,8 +60,6 @@ import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.StreamingBookDataSource;
-import com.worldreader.core.domain.interactors.book.GetBookDetailInteractor;
-import com.worldreader.core.domain.interactors.book.SaveBookCurrentlyReadingInteractor;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
 import com.worldreader.core.domain.interactors.user.FinishBookInteractor;
 import com.worldreader.core.domain.interactors.user.SendReadPagesInteractor;
@@ -98,6 +96,8 @@ import jedi.option.Option;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
 import javax.inject.Inject;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
@@ -117,18 +117,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private Context context;
 
   private TextLoader textLoader;
-  private ProgressDialog progressDialog;
   private String bookTitle;
   private String author;
+  protected BookMetadata bookMetadata;
   private List<TocEntry> tableOfContents;
-  private boolean hasSharedText;
+
+  private ProgressDialog progressDialog;
   private OnBookTocEntryListener bookTocEntryListener;
 
   private ViewSwitcher viewSwitcher;
   private BookView bookView;
   private AnimatedImageView dummyView;
   private TextView pageNumberView;
-
   private TextView readingTitleProgressTv;
   private DiscreteSeekBar chapterProgressDsb;
   private TextView chapterProgressPagesTv;
@@ -139,8 +139,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   protected DICompanion di;
 
-  protected BookMetadata bookMetadata;
   protected int currentScrolledPages = 0;
+  private boolean hasSharedText;
 
   private enum Orientation {
     HORIZONTAL, VERTICAL
@@ -161,42 +161,27 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    onInitializeInjectors();
 
     this.context = getActivity();
 
-    // Load metadata
+    di = onProvideDICompanionObject();
+
+    // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
     final Intent intent = getActivity().getIntent();
-    if (intent != null) {
-      this.bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
-      onGamificationInitialize();
+    this.bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
 
-      if (bookMetadata.getCollectionId() > 0) {
-        onGamificationEventStartBookFromCollection();
-      }
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
 
-      final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
-      final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
-      executeGamification(isFontChanged, isBackgroundChanged);
-
-      onGamificationEventReadOnXContinousDays();
-
-      // Save the book that the user is currently reading
-      if (di.getBookDetailInteractor != null) { // TODO: Remove this once DI is already setup
-        final ListenableFuture<Optional<com.worldreader.core.domain.model.Book>> getBookDetailFuture = di.getBookDetailInteractor.execute(bookMetadata.getBookId());
-        AndroidFutures.addCallbackMainThread(getBookDetailFuture, new FutureCallback<Optional<com.worldreader.core.domain.model.Book>>() {
-          @Override public void onSuccess(@Nullable Optional<com.worldreader.core.domain.model.Book> book) {
-            if (book.isPresent()) {
-              di.saveBookCurrentlyReadingInteractor.execute(book.get());
-            }
-          }
-
-          @Override public void onFailure(@NonNull Throwable t) {
-            // Nothing to do
-          }
-        });
-      }
+    if (bookMetadata.getCollectionId() > 0) {
+      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT);
     }
+
+    final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
+    final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
+
+    onNotifyGamificationFontOrBackgroundReaderEvents(isFontChanged, isBackgroundChanged);
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT);
+    onReaderFragmentEvent(BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT);
 
     final View view = getView();
 
@@ -362,7 +347,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   @Override public void onPause() {
     Log.d(TAG, "onPause() called.");
     saveReadingPosition();
-    onNotifyReadPagesAnalytics();
+    onReaderFragmentEvent(BookReaderEvents.READ_PAGE_ANALYTICS_EVENT);
     super.onPause();
   }
 
@@ -420,7 +405,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       d.show(fm, ModifyReaderSettingsDialog.TAG);
       return true;
     } else if (itemId == R.id.text_to_speech) {
-      //onGamificationEventTextToSpeechActivated();
+      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
       return true;
     } else if (itemId == android.R.id.home) {
       if (isPhotoViewerDisplayed()) {
@@ -445,13 +430,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       hasSharedText = false;
       handler.postDelayed(new Runnable() {
         @Override public void run() {
-          onGamificationEventSharedQuote();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_SHARED_QUOTE_EVENT);
         }
       }, 500);
     }
   }
-
-  protected abstract void onGamificationEventSharedQuote();
 
   private void updateFromPrefs() {
     final AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -582,34 +565,21 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  protected abstract void onNotifyReadPagesAnalytics();
+  protected abstract DICompanion onProvideDICompanionObject();
 
-  protected void onInitializeInjectors() {
-  }
-
-  protected abstract void onGamificationInitialize();
-
-  protected abstract void onGamificationEventStartBookFromCollection();
-
-  private void executeGamification(final boolean isFontChanged, final boolean isBackgroundChanged) {
+  private void onNotifyGamificationFontOrBackgroundReaderEvents(final boolean isFontChanged, final boolean isBackgroundChanged) {
     handler.postDelayed(new Runnable() {
       @Override public void run() {
         if (isFontChanged) {
-          onGamificationEventFontSizeChanged();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_FONT_SIZE_CHANGED_EVENT);
         } else if (isBackgroundChanged) {
-          onGamificationEventBackgroundChanged();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_BACKGROUND_CHANGED_EVENT);
         }
       }
     }, 500);
   }
 
-  protected abstract void onGamificationEventReadOnXContinousDays();
-
-  protected abstract void onGamificationEventFontSizeChanged();
-
-  protected abstract void onGamificationEventBackgroundChanged();
-
-  protected abstract void onGamificationEventTextToSpeechActivated();
+  protected abstract void onReaderFragmentEvent(@BookReaderFragmentEvent int event);
 
   public void saveConfigState() {
     // Cache old settings to check if we'll need a restart later
@@ -648,13 +618,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void onWindowFocusChanged(boolean hasFocus) {
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
     if (hasFocus) {
       updateFromPrefs();
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().delayHide(SystemUiHelper.SHORT_DELAY);
+      if (systemUiHelper != null && systemUiHelper.isShowing()) {
+        systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
       }
     } else {
-      getSystemUiHelper().keepScreenOff();
+      if (systemUiHelper != null) {
+        systemUiHelper.keepScreenOff();
+      }
     }
   }
 
@@ -782,7 +755,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                   MaterialDialog setYourGoalsDialog = DialogFactory.createSetYourGoalsDialog(getActivity(), new DialogFactory.ActionCallback() {
                     @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
                       if (action == DialogFactory.Action.OK) {
-                        onEventNavigateToGoalsScreen();
+                        onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT);
                       }
                     }
                   });
@@ -912,7 +885,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onPageDown() {
     currentScrolledPages += 1;
-    onGamificationEventPageDown();
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT);
   }
 
   @Override public void onPageDownFirstPage() {
@@ -923,7 +896,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Update book metadata with author and title
     bookMetadata.setTitle(bookTitle);
     bookMetadata.setAuthor(author);
-    onEventNavigateToBookFinishedScreen();
+    onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT);
   }
 
   @Override public void onBookImageClicked(final Drawable drawable) {
@@ -942,8 +915,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     pageNumberView.setText(builder);
     pageNumberView.invalidate();
   }
-
-  protected abstract void onGamificationEventPageDown();
 
   private void displayPhotoViewer(final FastBitmapDrawable drawable) {
     final FragmentActivity activity = getActivity();
@@ -992,8 +963,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  protected abstract void onEventNavigateToBookFinishedScreen();
-
   private void stopAnimating() {
     if (dummyView.getAnimator() != null) {
       dummyView.getAnimator().stop();
@@ -1035,8 +1004,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     return this.progressDialog;
   }
-
-  protected abstract void onEventNavigateToGoalsScreen();
 
   private void setShareFlag() {
     hasSharedText = true;
@@ -1130,15 +1097,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
           @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
             if (action == DialogFactory.Action.OK) {
-              onEventNavigateToSignUpScreen();
+              onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT);
             }
           }
         });
 
     dialog.show();
   }
-
-  protected abstract void onEventNavigateToSignUpScreen();
 
   private void notifyFinishedBookEventInteractor() {
     final ListenableFuture<Boolean> finishBookFuture = di.finishBookInteractor.execute(bookMetadata.getBookId());
@@ -1212,12 +1177,38 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     @Inject public SendReadPagesInteractor sendReadPagesInteractor;
     @Inject public UserFlowTutorial userFlowTutorial;
     @Inject public BrightnessManager brightnessManager;
-    @Inject public SaveBookCurrentlyReadingInteractor saveBookCurrentlyReadingInteractor;
-    @Inject public GetBookDetailInteractor getBookDetailInteractor;
     @Inject public Dates dateUtils;
     @Inject public Reachability reachability;
     @Inject public Analytics analytics;
     @Inject public Logger logger;
+  }
+
+  public static class BookReaderEvents {
+
+    public static final int GAMIFICATION_INITIALIZE_EVENT = 0;
+    public static final int GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT = 1;
+    public static final int GAMIFICATION_SHARED_QUOTE_EVENT = 2;
+    public static final int GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT = 3;
+    public static final int GAMIFICATION_FONT_SIZE_CHANGED_EVENT = 4;
+    public static final int GAMIFICATION_BACKGROUND_CHANGED_EVENT = 5;
+    public static final int GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT = 6;
+    public static final int GAMIFICATION_PAGE_DOWN_EVENT = 7;
+    public static final int NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT = 8;
+    public static final int NAVIGATION_TO_GOALS_SCREEN_EVENT = 9;
+    public static final int NAVIGATION_TO_SIGNUP_SCREEN_EVENT = 10;
+    public static final int READ_PAGE_ANALYTICS_EVENT = 11;
+    public static final int SAVE_CURRENTLY_BOOK_READING_EVENT = 12;
+  }
+
+  @IntDef({
+      BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT, BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT,
+      BookReaderEvents.GAMIFICATION_SHARED_QUOTE_EVENT, BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT,
+      BookReaderEvents.GAMIFICATION_FONT_SIZE_CHANGED_EVENT, BookReaderEvents.GAMIFICATION_BACKGROUND_CHANGED_EVENT,
+      BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT, BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT,
+      BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT, BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT,
+      BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT, BookReaderEvents.READ_PAGE_ANALYTICS_EVENT, BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT
+  }) @Retention(RetentionPolicy.SOURCE) @interface BookReaderFragmentEvent {
+
   }
 }
 

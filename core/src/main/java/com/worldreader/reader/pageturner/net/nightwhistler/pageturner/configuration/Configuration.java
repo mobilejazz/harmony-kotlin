@@ -118,8 +118,8 @@ public class Configuration {
     return settings.getInt(KEY_POS + fileName, -1);
   }
 
-  private SharedPreferences getPrefsForBook(String fileName) {
-    String bookHash = Integer.toHexString(fileName.hashCode());
+  private SharedPreferences getPrefsForBook(final String fileName) {
+    final String bookHash = Integer.toHexString(fileName.hashCode());
     return context.getSharedPreferences(bookHash, 0);
   }
 
@@ -169,10 +169,9 @@ public class Configuration {
   }
 
   public int getLastIndex(String fileName) {
-    SharedPreferences bookPrefs = getPrefsForBook(fileName);
+    final SharedPreferences bookPrefs = getPrefsForBook(fileName);
 
     int pos = bookPrefs.getInt(KEY_IDX, -1);
-
     if (pos != -1) {
       return pos;
     }

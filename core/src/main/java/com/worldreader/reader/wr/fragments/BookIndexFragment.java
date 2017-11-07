@@ -22,6 +22,8 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 
 public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
 
+  public static final String TAG = BookIndexFragment.class.getSimpleName();
+
   private BookIndexListener listener;
 
   private View progressContainer;
@@ -33,6 +35,9 @@ public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnC
     void onBookSectionSelected(TocEntry tocEntry);
 
     void onClickBackButton();
+  }
+
+  public BookIndexFragment() {
   }
 
   @Override public void onAttach(Context context) {

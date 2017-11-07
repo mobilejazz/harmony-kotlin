@@ -20,9 +20,8 @@
     android:fitsSystemWindows="true"
     android:visibility="gone">
 
-    <fragment
+    <FrameLayout
       android:id="@+id/fragment_book_index"
-      class="com.worldreader.reader.wr.fragments.BookIndexFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
   </FrameLayout>
