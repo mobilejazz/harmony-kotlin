@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -42,6 +45,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;
 
+  private Toolbar toolbar;
   private View readingContainer;
   private View bookIndexContainer;
 
@@ -54,11 +58,12 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   private void onPostCreate() {
     final boolean isCorrect = onCheckIfIntentProvidedIsGood();
     if (isCorrect) {
-      onCreateInjector();
-      onCreateSystemUiHelper();
-      onCreateReadingFragment();
-      onCreateBookIndexFragment();
-      onCreateBindViews();
+      onSetupInjector();
+      onSetupActionBar();
+      onSetupSystemUiHelper();
+      onSetupReadingFragment();
+      onSetupBookIndexFragment();
+      onSetupBindViews();
     } else {
       Toast.makeText(this, R.string.ls_error_fatal_error_message, Toast.LENGTH_SHORT).show();
       finish();
@@ -70,20 +75,30 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     return intent != null && intent.hasExtra(AbstractReaderActivity.BOOK_METADATA_KEY) && intent.hasExtra(AbstractReaderActivity.READING_FRAGMENT_CLASS_KEY);
   }
 
-  protected void onCreateInjector() {
+  protected void onSetupInjector() {
   }
 
-  private void onCreateSystemUiHelper() {
+  private void onSetupActionBar() {
+    this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+  }
+
+  private void onSetupSystemUiHelper() {
     this.systemUiHelper = new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
       @Override public void onVisibilityChange(boolean visible) {
         if (abstractReaderFragment != null && isVisibleReadingFragment()) {
+          if (visible) {
+            toolbar.animate().alpha(1).translationY(0).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).start();
+          } else {
+            toolbar.animate().alpha(0).translationY(-toolbar.getBottom()).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).start();
+          }
           abstractReaderFragment.onVisibilityChange(visible);
         }
       }
     });
   }
 
-  private void onCreateReadingFragment() {
+  private void onSetupReadingFragment() {
     final Intent intent = getIntent();
     final String fragmentClass = intent.getStringExtra(READING_FRAGMENT_CLASS_KEY);
     try {
@@ -97,13 +112,13 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     }
   }
 
-  private void onCreateBookIndexFragment() {
-    final Fragment fragment = BookIndexFragment.instantiate(this, BookIndexFragment.TAG);
+  private void onSetupBookIndexFragment() {
+    final Fragment fragment = new BookIndexFragment();
     final FragmentManager fm = getSupportFragmentManager();
-    fm.beginTransaction().replace(R.id.fragment_book_index, fragment).commitNow();
+    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, BookIndexFragment.TAG).commitNow();
   }
 
-  private void onCreateBindViews() {
+  private void onSetupBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
     abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
     bookIndexFragment = (BookIndexFragment) fm.findFragmentById(R.id.fragment_book_index);
@@ -167,7 +182,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
       menuInflater.inflate(R.menu.menu_reading, menu);
       changeActionBarColor(R.color.reader_actionbar_color, R.color.reader_statusbar_color, R.color.reader_actionbar_arrow_color);
     } else {
-      //menuInflater.inflate(R.menu.menu_book_contents_index, menu);
       changeActionBarColor(R.color.reader_book_index_actionbar_color, R.color.reader_book_index_statusbar_color,
           R.color.reader_book_index_actionbar_arrow_color);
     }
@@ -175,12 +189,13 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void changeActionBarColor(int color, int colorStatus, int arrowColor) {
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
-      getSupportActionBar().setHomeAsUpIndicator(getColoredArrow(arrowColor));
+    final ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
+      actionBar.setHomeAsUpIndicator(getColoredArrow(arrowColor));
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getWindow();
+      final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       window.setStatusBarColor(ContextCompat.getColor(this, colorStatus));
@@ -238,10 +253,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   @Override public void displayBookTableOfContents() {
-    showTableOfContentsFragment();
-  }
-
-  private void showTableOfContentsFragment() {
     updateActionBarForTableOfContents();
 
     readingContainer.setVisibility(View.GONE);

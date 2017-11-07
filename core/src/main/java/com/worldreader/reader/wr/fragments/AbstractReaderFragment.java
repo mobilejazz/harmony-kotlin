@@ -1,5 +1,6 @@
 package com.worldreader.reader.wr.fragments;
 
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,6 +19,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -379,8 +381,32 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  @Override public void onVisibilityChange(boolean visible) {
-    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+  @Override public void onVisibilityChange(final boolean visible) {
+    if (visible) {
+      progressContainer.animate()
+          .alpha(1)
+          .translationY(0)
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .setListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationStart(android.animation.Animator animation) {
+              progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+          })
+          .start();
+    } else {
+      progressContainer.animate()
+          .alpha(0)
+          .translationY(progressContainer.getBottom())
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .setListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(android.animation.Animator animation) {
+              progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+          })
+          .start();
+    }
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
