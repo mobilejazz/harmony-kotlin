@@ -6,12 +6,14 @@ import android.os.LocaleList;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import com.google.common.base.Function;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 
 import javax.inject.Inject;
 import java.util.*;
+import com.google.common.base.Optional;
 
 @PerActivity public class CountryChecker {
 

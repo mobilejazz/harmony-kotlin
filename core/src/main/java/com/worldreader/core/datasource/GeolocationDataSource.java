@@ -1,10 +1,8 @@
 package com.worldreader.core.datasource;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.worldreader.core.concurrency.FluentFuture;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.GeolocationInfo;
 import com.worldreader.core.datasource.network.datasource.geolocation.GeolocationNetworkDataSource;
@@ -13,8 +11,8 @@ import com.worldreader.core.datasource.storage.datasource.geolocation.Geolocatio
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
 import com.worldreader.core.domain.repository.GeolocationRepository;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 public final class GeolocationDataSource implements GeolocationRepository {
 
@@ -33,17 +31,15 @@ public final class GeolocationDataSource implements GeolocationRepository {
 
   @Override public ListenableFuture<Boolean> update(final double latitude, final double longitude) {
     if (!storage.isValid()) {
-      return FluentFuture.from(network.getGeocodeInformation(latitude, longitude))
-          .transform(new Function<Optional<GeolocationInfoEntity>, Boolean>() {
-            @Nullable @Override public Boolean apply(Optional<GeolocationInfoEntity> input) {
-              if (input.isPresent()) {
-                storage.persist(input.get());
-                return true;
-              } else {
-                return false;
-              }
-            }
-          });
+      try {
+        final Optional<GeolocationInfoEntity> input = network.getGeocodeInformation(latitude, longitude).get();
+        if (input.isPresent()) {
+          storage.persist(input.get());
+        }
+        return Futures.immediateFuture(input.isPresent());
+      } catch (InterruptedException | ExecutionException e) {
+        return Futures.immediateFailedFuture(e);
+      }
     } else {
       return Futures.immediateFuture(true);
     }
