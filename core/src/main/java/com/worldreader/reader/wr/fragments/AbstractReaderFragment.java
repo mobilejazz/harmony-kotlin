@@ -1,6 +1,8 @@
 package com.worldreader.reader.wr.fragments;
 
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,6 +18,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -41,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
@@ -86,8 +90,8 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.FileEpubResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
@@ -200,14 +204,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
-    final String bookId = bookMetadata.getBookId();
-    final String contentOpf = bookMetadata.getContentOpfName();
     final ResourcesLoader resourcesLoader =
-        new StreamingResourcesLoader(bookMetadata, di.streamingBookDataSource, di.logger); //new FileEpubResourcesLoader(logger);
+        new FileEpubResourcesLoader(di.logger); //new StreamingResourcesLoader(bookMetadata, di.streamingBookDataSource, di.logger);
 
     this.textLoader = new TextLoader(HtmlSpannerFactory.create(di.config), resourcesLoader);
 
-    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, bookMetadata, di.streamingBookDataSource, di.logger);
+    this.bookView.init(bookMetadata, resourcesLoader, textLoader, di.streamingBookDataSource, di.logger);
     this.bookView.setListener(this);
     this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
       @Override public void lookupDictionary(String text) {
@@ -382,31 +384,52 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onVisibilityChange(final boolean visible) {
+    final AbstractReaderActivity activity = ((AbstractReaderActivity) getActivity());
+    if (activity == null) {
+      return;
+    }
+
+    final AppBarLayout toolbarLayout = activity.getToolbarLayout();
+    final AnimatorSet set = new AnimatorSet();
+    final ObjectAnimator progressViewAnimator;
+    final ObjectAnimator toolbarViewAnimator;
+
     if (visible) {
-      progressContainer.animate()
+      progressViewAnimator = ViewPropertyObjectAnimator.animate(progressContainer)
           .alpha(1)
           .translationY(0)
           .setDuration(300)
           .setInterpolator(new FastOutSlowInInterpolator())
-          .setListener(new AnimatorListenerAdapter() {
+          .addListener(new AnimatorListenerAdapter() {
             @Override public void onAnimationStart(android.animation.Animator animation) {
               progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
           })
-          .start();
+          .get();
+      toolbarViewAnimator =
+          ViewPropertyObjectAnimator.animate(toolbarLayout).alpha(1).translationY(0).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).get();
     } else {
-      progressContainer.animate()
+      progressViewAnimator = ViewPropertyObjectAnimator.animate(progressContainer)
           .alpha(0)
           .translationY(progressContainer.getBottom())
           .setDuration(300)
           .setInterpolator(new FastOutSlowInInterpolator())
-          .setListener(new AnimatorListenerAdapter() {
+          .addListener(new AnimatorListenerAdapter() {
             @Override public void onAnimationEnd(android.animation.Animator animation) {
               progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
           })
-          .start();
+          .get();
+      toolbarViewAnimator = ViewPropertyObjectAnimator.animate(toolbarLayout)
+          .alpha(0)
+          .translationY(-toolbarLayout.getBottom())
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .get();
     }
+
+    set.playTogether(progressViewAnimator, toolbarViewAnimator);
+    set.start();
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -502,19 +525,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     restoreColorProfile();
 
+    // Check if we need a restart
+
     final boolean isFontChanged = !di.config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
     final boolean isBackgroundChanged = di.config.getColourProfile() != savedConfigState.colorProfile;
-
-    // Check if we need a restart
+    final boolean isStripWhiteSpaceEnabled = di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
+    final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
+    final boolean isSansSerifFontNameEqual = di.config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
     if (!savedConfigState.usePageNum
-        || di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace
-        || !di.config.getDefaultFontFamily()
-        .getName()
-        .equalsIgnoreCase(savedConfigState.fontName)
+        || isStripWhiteSpaceEnabled
+        || !fontNameChanged
         || isFontChanged
-        || !di.config.getSansSerifFontFamily()
-        .getName()
-        .equalsIgnoreCase(savedConfigState.sansSerifFontName)
+        || !isSansSerifFontNameEqual
         || di.config.getHorizontalMargin() != savedConfigState.hMargin
         || di.config.getVerticalMargin() != savedConfigState.vMargin
         || di.config.getTextSize() != savedConfigState.textSize
@@ -522,7 +544,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         || di.config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
 
       textLoader.invalidateCachedText();
-
       restartActivity(isFontChanged, isBackgroundChanged);
     }
   }
@@ -644,17 +665,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void onWindowFocusChanged(boolean hasFocus) {
-    final SystemUiHelper systemUiHelper = getSystemUiHelper();
-    if (hasFocus) {
-      updateFromPrefs();
-      if (systemUiHelper != null && systemUiHelper.isShowing()) {
-        systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
-      }
-    } else {
-      if (systemUiHelper != null) {
-        systemUiHelper.keepScreenOff();
-      }
-    }
+    //final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    //if (hasFocus) {
+    //  updateFromPrefs();
+    //  if (systemUiHelper != null && systemUiHelper.isShowing()) {
+    //    systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
+    //  }
+    //} else {
+    //  if (systemUiHelper != null) {
+    //    systemUiHelper.keepScreenOff();
+    //  }
+    //}
   }
 
   public boolean onTouchEvent(MotionEvent event) {

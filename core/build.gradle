@@ -118,6 +118,8 @@ dependencies {
 
   compile dependencies.networkConnectionClass
 
+  compile 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
+
   testCompile testDependencies.hamcrest
   testCompile(testDependencies.junit) {
     exclude module: 'hamcrest-core'

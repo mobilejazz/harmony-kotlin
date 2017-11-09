@@ -10,23 +10,7 @@ public interface ResourcesLoader {
 
   void onPrepareBitmapDrawables();
 
-  void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback);
+  void registerImageCallback(ImageResourceCallback callback);
 
   void clearImageResources();
-
-  interface ImageResourceCallback {
-
-    void onPrepareFastBitmapDrawable(String resourceHref);
-  }
-
-  class Holder {
-
-    String href;
-    ImageResourceCallback callback;
-
-    Holder(String href, ImageResourceCallback callback) {
-      this.href = href;
-      this.callback = callback;
-    }
-  }
 }

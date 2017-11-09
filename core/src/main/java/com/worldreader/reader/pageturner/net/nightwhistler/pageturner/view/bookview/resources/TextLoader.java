@@ -239,7 +239,7 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
       return result;
     } catch (Exception e) {
       Log.e(TAG, "Caught exception while rendering text", e);
-      return new SpannableString(e.getClass().getSimpleName() + ": " + e.getMessage());
+      return new SpannableString("");
     }
   }
 

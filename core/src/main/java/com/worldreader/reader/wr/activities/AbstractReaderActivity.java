@@ -5,11 +5,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -45,12 +47,14 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;
 
+  private AppBarLayout toolbarLayout;
   private Toolbar toolbar;
   private View readingContainer;
   private View bookIndexContainer;
 
   @Override protected final void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onSetupSystemUiHelper();
     setContentView(R.layout.activity_reader);
     onPostCreate();
   }
@@ -60,7 +64,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     if (isCorrect) {
       onSetupInjector();
       onSetupActionBar();
-      onSetupSystemUiHelper();
       onSetupReadingFragment();
       onSetupBookIndexFragment();
       onSetupBindViews();
@@ -79,23 +82,30 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void onSetupActionBar() {
+    this.toolbarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
     this.toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    // Obtain size of the status bar and add it as margin to toolbar
+    int height = 0;
+    final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+    if (resourceId > 0) {
+      height = getResources().getDimensionPixelSize(resourceId);
+    }
+
+    final CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams) toolbarLayout.getLayoutParams());
+    params.setMargins(params.leftMargin, height, params.rightMargin, params.bottomMargin);
   }
 
   private void onSetupSystemUiHelper() {
-    this.systemUiHelper = new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
-      @Override public void onVisibilityChange(boolean visible) {
-        if (abstractReaderFragment != null && isVisibleReadingFragment()) {
-          if (visible) {
-            toolbar.animate().alpha(1).translationY(0).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).start();
-          } else {
-            toolbar.animate().alpha(0).translationY(-toolbar.getBottom()).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).start();
+    this.systemUiHelper =
+        new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, SystemUiHelper.FLAG_IMMERSIVE_STICKY, new SystemUiHelper.OnVisibilityChangeListener() {
+          @Override public void onVisibilityChange(boolean visible) {
+            if (abstractReaderFragment != null && isVisibleReadingFragment()) {
+              abstractReaderFragment.onVisibilityChange(visible);
+            }
           }
-          abstractReaderFragment.onVisibilityChange(visible);
-        }
-      }
-    });
+        });
   }
 
   private void onSetupReadingFragment() {
@@ -289,4 +299,11 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     return this.systemUiHelper;
   }
 
+  public AppBarLayout getToolbarLayout() {
+    return toolbarLayout;
+  }
+
+  public Toolbar getToolbar() {
+    return toolbar;
+  }
 }

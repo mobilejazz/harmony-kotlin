@@ -28,7 +28,7 @@ public class AnchorHandler extends TagNodeHandler {
 
   @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
     final String id = node.getAttributeByName("id");
-    if (id != null) {
+    if (id != null && callback != null) {
       callback.registerAnchor(id, start);
     }
 
