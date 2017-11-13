@@ -36,14 +36,6 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.streamingBookRepository = streamingBookRepository;
   }
 
-  @Override public void execute(final String bookId, final String version, final DomainCallback<BookMetadata, ErrorCore<?>> callback) {
-    this.bookId = bookId;
-    this.version = version;
-    this.forceBookMetadataRefresh = false;
-    this.callback = callback;
-    executor.run(this);
-  }
-
   @Override public void execute(final String bookId, final String version, final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
     this.bookId = bookId;
     this.version = version;
