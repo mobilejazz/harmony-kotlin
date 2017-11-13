@@ -10,9 +10,9 @@ import org.joda.time.format.DateTimeFormatter;
 import javax.inject.Inject;
 import java.util.*;
 
-public class DatesJoda implements Dates {
+public class JodaDates implements Dates {
 
-  @Inject public DatesJoda() {
+  @Inject public JodaDates() {
   }
 
   @Override public Date addMinutes(Date date, int minutes) {

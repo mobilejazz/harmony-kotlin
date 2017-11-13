@@ -11,9 +11,8 @@ public class FileEpubResourcesLoader implements ResourcesLoader {
 
   public static final String TAG = FileEpubResourcesLoader.class.getSimpleName();
 
+  private final List<ImageResourceCallback> callbacks = new ArrayList<>();
   private final Logger logger;
-
-  private final List<StreamingResourcesLoader.Holder> callbacks = new ArrayList<>();
 
   public FileEpubResourcesLoader(final Logger logger) {
     this.logger = logger;
@@ -29,13 +28,13 @@ public class FileEpubResourcesLoader implements ResourcesLoader {
   }
 
   @Override public void onPrepareBitmapDrawables() {
-    for (Holder holder : callbacks) {
-      holder.callback.onPrepareFastBitmapDrawable(holder.href);
+    for (ImageResourceCallback holder : callbacks) {
+      holder.onPrepareFastBitmapDrawable();
     }
   }
 
-  @Override public void registerImageCallback(String resolvedHref, ImageResourceCallback imageCallback) {
-    this.callbacks.add(new Holder(resolvedHref, imageCallback));
+  @Override public void registerImageCallback(ImageResourceCallback callback) {
+    this.callbacks.add(callback);
   }
 
   @Override public void clearImageResources() {

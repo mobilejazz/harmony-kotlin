@@ -5,7 +5,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import com.osbcp.cssparser.CSSParser;
-import com.osbcp.cssparser.PropertyValue;
 import com.osbcp.cssparser.Rule;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
@@ -58,7 +57,7 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
 
   private void registerCallbacksSpannerHandlers() {
     ((LinkTagHandler) getHtmlTagHandler("a")).setCallBack(this);
-    ((CSSLinkHandler) getHtmlTagHandler("img")).setTextLoader(this);
+    ((CSSLinkHandler) getHtmlTagHandler("link")).setTextLoader(this);
   }
 
   public List<CompiledRule> getCSSRules(String href) {
@@ -128,30 +127,30 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
   }
 
   private void handleFontLoadingRule(Rule rule) {
-    String href = null;
-    String fontName = null;
-
-    for (PropertyValue prop : rule.getPropertyValues()) {
-      if (prop.getProperty().equals("font-family")) {
-        fontName = prop.getValue();
-      }
-
-      if (prop.getProperty().equals("src")) {
-        href = prop.getValue();
-      }
-    }
-
-    if (fontName.startsWith("\"") && fontName.endsWith("\"")) {
-      fontName = fontName.substring(1, fontName.length() - 1);
-    }
-
-    if (fontName.startsWith("\'") && fontName.endsWith("\'")) {
-      fontName = fontName.substring(1, fontName.length() - 1);
-    }
-
-    if (href.startsWith("url(")) {
-      href = href.substring(4, href.length() - 1);
-    }
+    //String href = null;
+    //String fontName = null;
+    //
+    //for (PropertyValue prop : rule.getPropertyValues()) {
+    //  if (prop.getProperty().equals("font-family")) {
+    //    fontName = prop.getValue();
+    //  }
+    //
+    //  if (prop.getProperty().equals("src")) {
+    //    href = prop.getValue();
+    //  }
+    //}
+    //
+    //if (fontName.startsWith("\"") && fontName.endsWith("\"")) {
+    //  fontName = fontName.substring(1, fontName.length() - 1);
+    //}
+    //
+    //if (fontName.startsWith("\'") && fontName.endsWith("\'")) {
+    //  fontName = fontName.substring(1, fontName.length() - 1);
+    //}
+    //
+    //if (href.startsWith("url(")) {
+    //  href = href.substring(4, href.length() - 1);
+    //}
 
     //fontResolver.loadEmbeddedFont(name, href);
   }
@@ -234,17 +233,14 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
       resource.setData(resourcesLoader.loadResource(resource));
     }
 
-    Spannable result;
-
     try {
-      result = htmlSpanner.fromHtml(new InputStreamReader(resource.getInputStream()), cancellationCallback);
+      final Spannable result = htmlSpanner.fromHtml(new InputStreamReader(resource.getInputStream()), cancellationCallback);
       renderedText.put(resource.getHref(), result);
+      return result;
     } catch (Exception e) {
       Log.e(TAG, "Caught exception while rendering text", e);
-      result = new SpannableString(e.getClass().getSimpleName() + ": " + e.getMessage());
+      return new SpannableString("");
     }
-
-    return result;
   }
 
   private void closeLazyLoadedResources() {

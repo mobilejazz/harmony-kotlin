@@ -8,14 +8,14 @@ import com.mobilejazz.logger.library.Logger;
 
 import java.io.*;
 
-public class FileEpubFastBitmapDrawable extends AbstractFastBitmapDrawable {
+public class InlineFastBitmapDrawable extends AbstractFastBitmapDrawable {
 
-  private static final String TAG = FileEpubFastBitmapDrawable.class.getSimpleName();
+  private static final String TAG = InlineFastBitmapDrawable.class.getSimpleName();
 
   private final InputStream is;
   private final Logger logger;
 
-  public FileEpubFastBitmapDrawable(InputStream is, int width, int height, Logger logger) {
+  public InlineFastBitmapDrawable(InputStream is, int width, int height, Logger logger) {
     super(width, height);
     this.is = is;
     this.logger = logger;

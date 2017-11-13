@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +22,8 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 
 public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
 
+  public static final String TAG = BookIndexFragment.class.getSimpleName();
+
   private BookIndexListener listener;
 
   private View progressContainer;
@@ -35,6 +35,9 @@ public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnC
     void onBookSectionSelected(TocEntry tocEntry);
 
     void onClickBackButton();
+  }
+
+  public BookIndexFragment() {
   }
 
   @Override public void onAttach(Context context) {
@@ -58,9 +61,6 @@ public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnC
     bookIndexRv.setHasFixedSize(true);
     bookIndexRv.setLayoutManager(new LinearLayoutManager(getContext()));
     bookIndexRv.addItemDecoration(new ItemDividerDecoration(getContext()));
-  }
-
-  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {

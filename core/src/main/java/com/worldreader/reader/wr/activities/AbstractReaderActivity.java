@@ -5,10 +5,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -18,8 +23,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
@@ -40,35 +47,68 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;
 
+  private AppBarLayout toolbarLayout;
+  private Toolbar toolbar;
   private View readingContainer;
   private View bookIndexContainer;
 
   @Override protected final void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onSetupSystemUiHelper();
     setContentView(R.layout.activity_reader);
     onPostCreate();
   }
 
   private void onPostCreate() {
-    onCreateInjector();
-    onCreateSystemUiHelper();
-    onCreateReadingFragment();
-    onCreateBindViews();
+    final boolean isCorrect = onCheckIfIntentProvidedIsGood();
+    if (isCorrect) {
+      onSetupInjector();
+      onSetupActionBar();
+      onSetupReadingFragment();
+      onSetupBookIndexFragment();
+      onSetupBindViews();
+    } else {
+      Toast.makeText(this, R.string.ls_error_fatal_error_message, Toast.LENGTH_SHORT).show();
+      finish();
+    }
   }
 
-  protected abstract void onCreateInjector();
-
-  private void onCreateSystemUiHelper() {
-    this.systemUiHelper = new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
-      @Override public void onVisibilityChange(boolean visible) {
-        if (abstractReaderFragment != null && isVisibleReadingFragment()) {
-          abstractReaderFragment.onVisibilityChange(visible);
-        }
-      }
-    });
+  private boolean onCheckIfIntentProvidedIsGood() {
+    final Intent intent = getIntent();
+    return intent != null && intent.hasExtra(AbstractReaderActivity.BOOK_METADATA_KEY) && intent.hasExtra(AbstractReaderActivity.READING_FRAGMENT_CLASS_KEY);
   }
 
-  private void onCreateReadingFragment() {
+  protected void onSetupInjector() {
+  }
+
+  private void onSetupActionBar() {
+    this.toolbarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+    this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+
+    // Obtain size of the status bar and add it as margin to toolbar
+    int height = 0;
+    final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+    if (resourceId > 0) {
+      height = getResources().getDimensionPixelSize(resourceId);
+    }
+
+    final CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams) toolbarLayout.getLayoutParams());
+    params.setMargins(params.leftMargin, height, params.rightMargin, params.bottomMargin);
+  }
+
+  private void onSetupSystemUiHelper() {
+    this.systemUiHelper =
+        new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, SystemUiHelper.FLAG_IMMERSIVE_STICKY, new SystemUiHelper.OnVisibilityChangeListener() {
+          @Override public void onVisibilityChange(boolean visible) {
+            if (abstractReaderFragment != null && isVisibleReadingFragment()) {
+              abstractReaderFragment.onVisibilityChange(visible);
+            }
+          }
+        });
+  }
+
+  private void onSetupReadingFragment() {
     final Intent intent = getIntent();
     final String fragmentClass = intent.getStringExtra(READING_FRAGMENT_CLASS_KEY);
     try {
@@ -82,7 +122,13 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     }
   }
 
-  private void onCreateBindViews() {
+  private void onSetupBookIndexFragment() {
+    final Fragment fragment = new BookIndexFragment();
+    final FragmentManager fm = getSupportFragmentManager();
+    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, BookIndexFragment.TAG).commitNow();
+  }
+
+  private void onSetupBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
     abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
     bookIndexFragment = (BookIndexFragment) fm.findFragmentById(R.id.fragment_book_index);
@@ -92,7 +138,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private boolean isVisibleReadingFragment() {
-    return readingContainer.getVisibility() == View.VISIBLE;
+    return readingContainer != null && readingContainer.getVisibility() == View.VISIBLE;
   }
 
   @Override public boolean dispatchKeyEvent(KeyEvent event) {
@@ -113,28 +159,20 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void showBookReadingFragment() {
-    updateActionBarForBookReading();
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setTitle("");
+    }
 
     readingContainer.setVisibility(View.VISIBLE);
     bookIndexContainer.setVisibility(View.GONE);
 
-    View decorView = getWindow().getDecorView();
+    final View decorView = getWindow().getDecorView();
     decorView.setSystemUiVisibility(decorView.getSystemUiVisibility()
         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
     invalidateOptionsMenu();
-  }
-
-  private void updateActionBarForBookReading() {
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setTitle("");
-    }
-  }
-
-  public void onMediaButtonEvent(View view) {
-    this.abstractReaderFragment.onMediaButtonEvent(view.getId());
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
@@ -154,7 +192,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
       menuInflater.inflate(R.menu.menu_reading, menu);
       changeActionBarColor(R.color.reader_actionbar_color, R.color.reader_statusbar_color, R.color.reader_actionbar_arrow_color);
     } else {
-      //menuInflater.inflate(R.menu.menu_book_contents_index, menu);
       changeActionBarColor(R.color.reader_book_index_actionbar_color, R.color.reader_book_index_statusbar_color,
           R.color.reader_book_index_actionbar_arrow_color);
     }
@@ -162,12 +199,13 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void changeActionBarColor(int color, int colorStatus, int arrowColor) {
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
-      getSupportActionBar().setHomeAsUpIndicator(getColoredArrow(arrowColor));
+    final ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
+      actionBar.setHomeAsUpIndicator(getColoredArrow(arrowColor));
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getWindow();
+      final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       window.setStatusBarColor(ContextCompat.getColor(this, colorStatus));
@@ -176,7 +214,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
 
   private Drawable getColoredArrow(int color) {
     final Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow);
-    Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
+    final Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
 
     if (arrowDrawable != null && wrapped != null) {
       arrowDrawable.mutate();
@@ -187,6 +225,10 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    if (abstractReaderFragment == null || bookIndexFragment == null) {
+      return false;
+    }
+
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onPrepareOptionsMenu(menu);
     } else {
@@ -216,37 +258,29 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  @Override public boolean onSearchRequested() {
-    //abstractReaderFragment.onSearchRequested();
-    return true;
-  }
-
   @Override public void onBookTableOfContentsLoaded(Option<List<TocEntry>> tocEntries) {
     this.bookIndexFragment.onBookTableOfContentsLoaded(tocEntries);
   }
 
   @Override public void displayBookTableOfContents() {
-    showTableOfContentsFragment();
-  }
-
-  private void showTableOfContentsFragment() {
     updateActionBarForTableOfContents();
 
     readingContainer.setVisibility(View.GONE);
     bookIndexContainer.setVisibility(View.VISIBLE);
 
-    Window window = getWindow();
+    final Window window = getWindow();
     window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
-    View decorView = getWindow().getDecorView();
+    final View decorView = getWindow().getDecorView();
     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+
     invalidateOptionsMenu();
   }
 
   private void updateActionBarForTableOfContents() {
     if (getSupportActionBar() != null) {
-      Spannable title = new SpannableString(getString(R.string.ls_book_reading_book_index));
+      final Spannable title = new SpannableString(getString(R.string.ls_book_reading_book_index));
       title.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.font_white)), 0, title.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
       getSupportActionBar().setTitle(title);
     }
@@ -265,4 +299,11 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     return this.systemUiHelper;
   }
 
+  public AppBarLayout getToolbarLayout() {
+    return toolbarLayout;
+  }
+
+  public Toolbar getToolbar() {
+    return toolbar;
+  }
 }

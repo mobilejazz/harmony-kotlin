@@ -1,29 +1,30 @@
 package com.worldreader.reader.wr.fragments;
 
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
+import android.os.Looper;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -39,12 +40,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
@@ -56,6 +56,7 @@ import com.worldreader.core.R;
 import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
+import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.application.helper.ui.Dimens;
 import com.worldreader.core.application.ui.dialog.DialogFactory;
@@ -65,16 +66,12 @@ import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.StreamingBookDataSource;
-import com.worldreader.core.domain.deprecated.DomainCallback;
-import com.worldreader.core.domain.interactors.book.GetBookDetailInteractor;
-import com.worldreader.core.domain.interactors.book.SaveBookCurrentlyReadingInteractor;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
 import com.worldreader.core.domain.interactors.user.FinishBookInteractor;
 import com.worldreader.core.domain.interactors.user.SendReadPagesInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.model.WordDefinition;
-import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.userflow.UserFlowTutorial;
 import com.worldreader.core.userflow.model.TutorialModel;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
@@ -82,18 +79,10 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.PageTimer;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.RollingBlindAnimator;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ColorProfile;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ReadingDirection;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ScrollStyle;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper.TextUtil;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.SpeechCompletedCallback;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSFailedException;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackItem;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.tts.TTSPlaybackQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
@@ -101,28 +90,23 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.FileEpubResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.StreamingResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
-import jedi.functional.Command;
-import jedi.functional.Functor;
 import jedi.option.Option;
-import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
-import java.io.*;
-import java.lang.ref.WeakReference;
+import javax.inject.Inject;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.firstOption;
-import static jedi.functional.FunctionalPrimitives.isEmpty;
-import static jedi.option.Options.none;
-import static jedi.option.Options.option;
 
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
@@ -133,40 +117,24 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private static final String POS_KEY = "offset:";
   private static final String IDX_KEY = "index:";
 
-  private final Object lock = new Object();
+  private final Handler handler = new Handler(Looper.getMainLooper());
+  private final SavedConfigState savedConfigState = new SavedConfigState();
 
   private Context context;
 
-  private TelephonyManager telephonyManager;
-  private AudioManager audioManager;
-
-  private boolean ttsAvailable;
-  private TextToSpeech textToSpeech;
-  private TTSPlaybackQueue ttsPlaybackItemQueue;
-  private Map<String, TTSPlaybackItem> ttsItemPrep = new HashMap<>();
-
   private TextLoader textLoader;
-  private ProgressDialog progressDialog;
   private String bookTitle;
   private String author;
+  protected BookMetadata bookMetadata;
   private List<TocEntry> tableOfContents;
-  private boolean hasSharedText;
-  private SavedConfigState savedConfigState = new SavedConfigState();
-  private Handler uiHandler;
+
+  private ProgressDialog progressDialog;
   private OnBookTocEntryListener bookTocEntryListener;
 
   private ViewSwitcher viewSwitcher;
   private BookView bookView;
-  private TextView wordView;
   private AnimatedImageView dummyView;
   private TextView pageNumberView;
-  private LinearLayout mediaLayout;
-  private ImageButton playPauseButton;
-  private DiscreteSeekBar mediaProgressBar;
-
-  private ImageButton stopButton;
-  private ImageButton nextButton;
-  private ImageButton prevButton;
   private TextView readingTitleProgressTv;
   private DiscreteSeekBar chapterProgressDsb;
   private TextView chapterProgressPagesTv;
@@ -174,35 +142,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private TutorialView tutorialView;
   private View containerTutorialView;
   private View progressContainer;
-  private Runnable mediaPlayerSeekBarUpdaterRunnable = new TTSSeekBarUpdaterRunnable();
 
-  protected Configuration config;
-  protected StreamingBookDataSource streamingBookDataSource;
-  protected Logger logger;
-  protected GetWordDefinitionInteractor getWordDefinitionInteractor;
-  protected FinishBookInteractor finishBookInteractor;
-  protected SendReadPagesInteractor sendReadPagesInteractor;
-  protected MainThread mainThread;
-  protected UserFlowTutorial userFlowTutorial;
-  protected BrightnessManager brightnessManager;
-  protected SaveBookCurrentlyReadingInteractor saveBookCurrentlyReadingInteractor;
-  protected GetBookDetailInteractor getBookDetailInteractor;
-  protected Dates dateUtils;
-  protected Reachability reachability;
+  protected DICompanion di;
+
   protected int currentScrolledPages = 0;
-  protected BookMetadata bookMetadata;
-  protected Analytics analytics;
+  private boolean hasSharedText;
 
   private enum Orientation {
     HORIZONTAL, VERTICAL
-  }
-
-  @Override public void onVisibilityChange(boolean visible) {
-    progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
-  }
-
-  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    onFragmentActivityResult(requestCode, resultCode, data);
   }
 
   @Override public void onAttach(Context context) {
@@ -221,66 +168,34 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
 
-    onInitializeInjectors();
-
     this.context = getActivity();
-    this.telephonyManager = (TelephonyManager) this.context.getSystemService(Context.TELEPHONY_SERVICE);
-    this.audioManager = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
 
-    this.ttsPlaybackItemQueue = new TTSPlaybackQueue();
+    di = onProvideDICompanionObject();
 
-    this.uiHandler = new Handler();
-
-    // Load metadata
+    // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
     final Intent intent = getActivity().getIntent();
-    if (intent != null) {
-      bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
-      onGamificationInitialize();
+    this.bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
 
-      if (bookMetadata.getCollectionId() > 0) {
-        onGamificationEventStartBookFromCollection();
-      }
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
 
-      final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
-      final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
-      executeGamification(isFontChanged, isBackgroundChanged);
-
-      onGamificationEventReadOnXContinousDays();
-
-      // Save the book that the user is currently reading
-      getBookDetailInteractor.execute(bookMetadata.getBookId(), new DomainCallback<com.worldreader.core.domain.model.Book, ErrorCore<?>>(mainThread) {
-        @Override public void onSuccessResult(com.worldreader.core.domain.model.Book book) {
-          saveBookCurrentlyReadingInteractor.execute(book, new DomainCallback<Boolean, ErrorCore<?>>(mainThread) {
-            @Override public void onSuccessResult(Boolean aBoolean) {
-              // Nothing to do
-            }
-
-            @Override public void onErrorResult(ErrorCore<?> errorCore) {
-              // Nothing to do
-            }
-          });
-        }
-
-        @Override public void onErrorResult(ErrorCore<?> errorCore) {
-          // Nothing to do
-        }
-      });
+    if (bookMetadata.getCollectionId() > 0) {
+      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT);
     }
+
+    final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
+    final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
+
+    onNotifyGamificationFontOrBackgroundReaderEvents(isFontChanged, isBackgroundChanged);
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT);
+    onReaderFragmentEvent(BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT);
 
     final View view = getView();
 
     this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
-    this.wordView = (TextView) view.findViewById(R.id.reading_fragment_word_view);
     this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
     this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
-    this.mediaLayout = (LinearLayout) view.findViewById(R.id.reading_fragment_media_player_layout);
-    this.playPauseButton = (ImageButton) view.findViewById(R.id.reading_fragment_play_pause_button);
-    this.mediaProgressBar = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_media_progress);
 
-    this.stopButton = (ImageButton) view.findViewById(R.id.reading_fragment_stop_button);
-    this.nextButton = (ImageButton) view.findViewById(R.id.reading_fragment_next_button);
-    this.prevButton = (ImageButton) view.findViewById(R.id.reading_fragment_prev_button);
     this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
     this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
     this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
@@ -289,32 +204,34 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
-    final String bookId = bookMetadata.getBookId();
-    final String contentOpf = bookMetadata.getContentOpfName();
-    final ResourcesLoader resourcesLoader = new StreamingResourcesLoader(bookMetadata, streamingBookDataSource, logger); //new FileEpubResourcesLoader(logger);
+    final ResourcesLoader resourcesLoader =
+        new FileEpubResourcesLoader(di.logger); //new StreamingResourcesLoader(bookMetadata, di.streamingBookDataSource, di.logger);
 
-    this.textLoader = new TextLoader(HtmlSpannerFactory.create(config), resourcesLoader);
+    this.textLoader = new TextLoader(HtmlSpannerFactory.create(di.config), resourcesLoader);
 
-    this.bookView.init(bookId, contentOpf, bookMetadata.getTocResource(), resourcesLoader, textLoader, bookMetadata, streamingBookDataSource, logger);
+    this.bookView.init(bookMetadata, resourcesLoader, textLoader, di.streamingBookDataSource, di.logger);
     this.bookView.setListener(this);
     this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
       @Override public void lookupDictionary(String text) {
-        if (reachability.isReachable()) {
+        if (di.reachability.isReachable()) {
           if (text != null) {
             text = text.trim();
-            StringTokenizer st = new StringTokenizer(text);
 
+            final StringTokenizer st = new StringTokenizer(text);
             if (st.countTokens() == 1) {
               definitionView.showLoading();
               showDefinitionView();
-              getWordDefinitionInteractor.execute(text, new DomainCallback<WordDefinition, ErrorCore>(mainThread) {
-                @Override public void onSuccessResult(WordDefinition wordDefinition) {
-                  definitionView.setWordDefinition(wordDefinition);
-                  definitionView.showDefinition();
+              final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
+              AndroidFutures.addCallbackMainThread(getWordDefinitionFuture, new FutureCallback<WordDefinition>() {
+                @Override public void onSuccess(@Nullable WordDefinition result) {
+                  if (isAdded()) {
+                    definitionView.setWordDefinition(result);
+                    definitionView.showDefinition();
+                  }
                 }
 
-                @Override public void onErrorResult(ErrorCore errorCore) {
-                  // TODO: 03/12/15 Handle properly the error
+                @Override public void onFailure(@NonNull Throwable t) {
+                  // Ignore error
                 }
               });
             } else {
@@ -370,18 +287,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
-    this.mediaProgressBar.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
-      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-          seekToPointInPlayback(progress);
-        }
-      }
-    });
-
-    // TODO: 10/10/2017 Review this properly (commented to avoid memory leaks)
-    //final Context applicationContext = context.getApplicationContext();
-    this.textToSpeech = null; //new TextToSpeech(applicationContext, new TTSOnInitListener(this));
-
     // Hide the tutorial view because we need to wait that the book is loaded
     setTutorialViewVisibility(View.INVISIBLE);
 
@@ -412,7 +317,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
     final DisplayMetrics metrics = new DisplayMetrics();
     activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -421,8 +326,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     displayPageNumber(-1); // Initializes the pagenumber view properly
 
     final View.OnTouchListener gestureListener = new View.OnTouchListener() {
-      @Override public boolean onTouch(View v, MotionEvent event) {
-        return !ttsIsRunning() && gestureDetector.onTouchEvent(event);
+      @SuppressLint("ClickableViewAccessibility") @Override public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
       }
     };
 
@@ -436,16 +341,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     updateFileName(savedInstanceState);
 
     bookView.restore();
-
-    if (ttsIsRunning()) {
-      this.mediaLayout.setVisibility(View.VISIBLE);
-      this.ttsPlaybackItemQueue.updateSpeechCompletedCallbacks(new SpeechCompletedCallback() {
-        @Override public void speechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
-          onSpeechCompleted(item, mediaPlayer);
-        }
-      });
-      uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-    }
   }
 
   @Override public void onResume() {
@@ -453,17 +348,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     checkIfHasBeenSharedQuote();
   }
 
-  @Override public void onSaveInstanceState(final Bundle outState) {
-    if (this.bookView != null) {
-      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
-      outState.putInt(IDX_KEY, this.bookView.getIndex());
-    }
-  }
-
   @Override public void onPause() {
     Log.d(TAG, "onPause() called.");
     saveReadingPosition();
-    onNotifyReadPagesAnalytics();
+    onReaderFragmentEvent(BookReaderEvents.READ_PAGE_ANALYTICS_EVENT);
     super.onPause();
   }
 
@@ -473,30 +361,75 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     dismissProgressDialog();
   }
 
-  @Override public void onLowMemory() {
-    super.onLowMemory();
-    this.textLoader.clearCachedText();
-  }
-
   @Override public void onDestroy() {
-    if (this.textToSpeech != null) {
-      this.textToSpeech.stop();
-      this.textToSpeech.shutdown();
-      this.textToSpeech = null;
-    }
     this.bookView.releaseResources();
     this.dismissProgressDialog();
     super.onDestroy();
   }
 
-  @Override public void onPrepareOptionsMenu(Menu menu) {
-    final AppCompatActivity activity = (AppCompatActivity) getActivity();
+  @Override public void onLowMemory() {
+    super.onLowMemory();
+    this.textLoader.clearCachedText();
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    onFragmentActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override public void onSaveInstanceState(final Bundle outState) {
+    if (this.bookView != null) {
+      outState.putInt(POS_KEY, this.bookView.getProgressPosition());
+      outState.putInt(IDX_KEY, this.bookView.getIndex());
+    }
+  }
+
+  @Override public void onVisibilityChange(final boolean visible) {
+    final AbstractReaderActivity activity = ((AbstractReaderActivity) getActivity());
     if (activity == null) {
       return;
     }
 
-    final MenuItem tts = menu.findItem(R.id.text_to_speech);
-    tts.setEnabled(ttsAvailable);
+    final AppBarLayout toolbarLayout = activity.getToolbarLayout();
+    final AnimatorSet set = new AnimatorSet();
+    final ObjectAnimator progressViewAnimator;
+    final ObjectAnimator toolbarViewAnimator;
+
+    if (visible) {
+      progressViewAnimator = ViewPropertyObjectAnimator.animate(progressContainer)
+          .alpha(1)
+          .translationY(0)
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationStart(android.animation.Animator animation) {
+              progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+          })
+          .get();
+      toolbarViewAnimator =
+          ViewPropertyObjectAnimator.animate(toolbarLayout).alpha(1).translationY(0).setDuration(300).setInterpolator(new FastOutSlowInInterpolator()).get();
+    } else {
+      progressViewAnimator = ViewPropertyObjectAnimator.animate(progressContainer)
+          .alpha(0)
+          .translationY(progressContainer.getBottom())
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(android.animation.Animator animation) {
+              progressContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+          })
+          .get();
+      toolbarViewAnimator = ViewPropertyObjectAnimator.animate(toolbarLayout)
+          .alpha(0)
+          .translationY(-toolbarLayout.getBottom())
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .get();
+    }
+
+    set.playTogether(progressViewAnimator, toolbarViewAnimator);
+    set.start();
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -506,8 +439,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return true;
     } else if (itemId == R.id.display_options) {
       final ModifyReaderSettingsDialog d = new ModifyReaderSettingsDialog();
-      d.setBrightnessManager(brightnessManager);
-      d.setConfiguration(config);
+      d.setBrightnessManager(di.brightnessManager);
+      d.setConfiguration(di.config);
       d.setOnModifyReaderSettingsListener(new ModifyReaderSettingsDialog.ModifyReaderSettingsListener() {
         @Override public void onReaderSettingsModified(ModifyReaderSettingsDialog.Action action) {
           switch (action) {
@@ -521,8 +454,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       d.show(fm, ModifyReaderSettingsDialog.TAG);
       return true;
     } else if (itemId == R.id.text_to_speech) {
-      startTextToSpeech();
-      onGamificationEventTextToSpeechActivated();
+      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
       return true;
     } else if (itemId == android.R.id.home) {
       if (isPhotoViewerDisplayed()) {
@@ -545,53 +477,46 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private void checkIfHasBeenSharedQuote() {
     if (hasSharedText) {
       hasSharedText = false;
-      uiHandler.postDelayed(new Runnable() {
+      handler.postDelayed(new Runnable() {
         @Override public void run() {
-          onGamificationEventSharedQuote();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_SHARED_QUOTE_EVENT);
         }
       }, 500);
     }
   }
 
-  protected abstract void onGamificationEventSharedQuote();
-
   private void updateFromPrefs() {
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
     }
 
-    bookView.setTextSize(config.getTextSize());
+    bookView.setTextSize(di.config.getTextSize());
 
-    int marginH = config.getHorizontalMargin();
-    int marginV = config.getVerticalMargin();
+    int marginH = di.config.getHorizontalMargin();
+    int marginV = di.config.getVerticalMargin();
 
-    bookView.setFontFamily(config.getSerifFontFamily());
+    bookView.setFontFamily(di.config.getSerifFontFamily());
 
-    textLoader.fromConfiguration(config);
+    textLoader.fromConfiguration(di.config);
 
     bookView.setHorizontalMargin(marginH);
     bookView.setVerticalMargin(marginV);
 
     if (!isAnimating()) {
-      bookView.setEnableScrolling(config.isScrollingEnabled());
+      bookView.setEnableScrolling(di.config.isScrollingEnabled());
     }
 
-    bookView.setLineSpacing(config.getLineSpacing());
+    bookView.setLineSpacing(di.config.getLineSpacing());
 
     final ActionBar actionBar = activity.getSupportActionBar();
     actionBar.setHomeButtonEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setTitle("");
 
-    if (config.isDimSystemUI()) {
-      activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-    }
-
     final SystemUiHelper systemUiHelper = getSystemUiHelper();
     if (systemUiHelper != null) {
-      if (config.isKeepScreenOn()) {
+      if (di.config.isKeepScreenOn()) {
         systemUiHelper.keepScreenOn();
       } else {
         systemUiHelper.keepScreenOff();
@@ -600,35 +525,31 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     restoreColorProfile();
 
-    boolean isFontChanged = !config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
-    boolean isBackgroundChanged = config.getColourProfile() != savedConfigState.colorProfile;
-
     // Check if we need a restart
+
+    final boolean isFontChanged = !di.config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
+    final boolean isBackgroundChanged = di.config.getColourProfile() != savedConfigState.colorProfile;
+    final boolean isStripWhiteSpaceEnabled = di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
+    final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
+    final boolean isSansSerifFontNameEqual = di.config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
     if (!savedConfigState.usePageNum
-        || config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace
-        || !config.getDefaultFontFamily()
-        .getName()
-        .equalsIgnoreCase(savedConfigState.fontName)
+        || isStripWhiteSpaceEnabled
+        || !fontNameChanged
         || isFontChanged
-        || !config.getSansSerifFontFamily()
-        .getName()
-        .equalsIgnoreCase(savedConfigState.sansSerifFontName)
-        || config.getHorizontalMargin() != savedConfigState.hMargin
-        || config.getVerticalMargin() != savedConfigState.vMargin
-        || config.getTextSize() != savedConfigState.textSize
-        || config.isScrollingEnabled() != savedConfigState.scrolling
-        || config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
+        || !isSansSerifFontNameEqual
+        || di.config.getHorizontalMargin() != savedConfigState.hMargin
+        || di.config.getVerticalMargin() != savedConfigState.vMargin
+        || di.config.getTextSize() != savedConfigState.textSize
+        || di.config.isScrollingEnabled() != savedConfigState.scrolling
+        || di.config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
 
       textLoader.invalidateCachedText();
-
       restartActivity(isFontChanged, isBackgroundChanged);
     }
-
-    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
   }
 
   private boolean isAnimating() {
-    Animator anim = dummyView.getAnimator();
+    final Animator anim = dummyView.getAnimator();
     return anim != null && !anim.isFinished();
   }
 
@@ -640,14 +561,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void restoreColorProfile() {
-    this.bookView.setBackgroundColor(config.getBackgroundColor());
-    this.viewSwitcher.setBackgroundColor(config.getBackgroundColor());
+    this.bookView.setBackgroundColor(di.config.getBackgroundColor());
+    this.viewSwitcher.setBackgroundColor(di.config.getBackgroundColor());
 
-    this.bookView.setTextColor(config.getTextColor());
-    this.bookView.setLinkColor(config.getLinkColor());
+    this.bookView.setTextColor(di.config.getTextColor());
+    this.bookView.setLinkColor(di.config.getLinkColor());
 
-    int brightness = config.getBrightness();
-    brightnessManager.setBrightness(getActivity().getWindow(), brightness);
+    int brightness = di.config.getBrightness();
+    di.brightnessManager.setBrightness(getActivity().getWindow(), brightness);
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
@@ -682,429 +603,54 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       int position = this.bookView.getProgressPosition();
 
       if (index != -1 && position != -1 && !bookView.isAtEnd()) {
-        config.setLastPosition(this.bookMetadata.getBookId(), position);
-        config.setLastIndex(this.bookMetadata.getBookId(), index);
+        di.config.setLastPosition(this.bookMetadata.getBookId(), position);
+        di.config.setLastIndex(this.bookMetadata.getBookId(), index);
       } else if (bookView.isAtEnd()) {
-        config.setLastPosition(this.bookMetadata.getBookId(), -1);
-        config.setLastIndex(this.bookMetadata.getBookId(), -1);
+        di.config.setLastPosition(this.bookMetadata.getBookId(), -1);
+        di.config.setLastIndex(this.bookMetadata.getBookId(), -1);
       }
     }
   }
 
-  protected abstract void onNotifyReadPagesAnalytics();
+  protected abstract DICompanion onProvideDICompanionObject();
 
-  protected abstract void onInitializeInjectors();
-
-  protected abstract void onGamificationInitialize();
-
-  protected abstract void onGamificationEventStartBookFromCollection();
-
-  private void executeGamification(final boolean isFontChanged, final boolean isBackgroundChanged) {
-    uiHandler.postDelayed(new Runnable() {
+  private void onNotifyGamificationFontOrBackgroundReaderEvents(final boolean isFontChanged, final boolean isBackgroundChanged) {
+    handler.postDelayed(new Runnable() {
       @Override public void run() {
         if (isFontChanged) {
-          onGamificationEventFontSizeChanged();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_FONT_SIZE_CHANGED_EVENT);
         } else if (isBackgroundChanged) {
-          onGamificationEventBackgroundChanged();
+          onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_BACKGROUND_CHANGED_EVENT);
         }
       }
     }, 500);
   }
 
-  protected abstract void onGamificationEventReadOnXContinousDays();
-
-  protected abstract void onGamificationEventFontSizeChanged();
-
-  protected abstract void onGamificationEventBackgroundChanged();
-
-  protected abstract void onGamificationEventTextToSpeechActivated();
-
-  private void seekToPointInPlayback(int position) {
-    TTSPlaybackItem item = this.ttsPlaybackItemQueue.peek();
-
-    if (item != null) {
-      item.getMediaPlayer().seekTo(position);
-    }
-  }
-
-  public void onMediaButtonEvent(int buttonId) {
-    if (buttonId == R.id.reading_fragment_play_pause_button && !ttsIsRunning()) {
-      startTextToSpeech();
-      playPauseButton.setImageResource(R.drawable.ic_reader_pause);
-      return;
-    }
-
-    TTSPlaybackItem item = this.ttsPlaybackItemQueue.peek();
-
-    if (item == null) {
-      stopTextToSpeech();
-      playPauseButton.setImageResource(R.drawable.ic_reader_play);
-      return;
-    }
-
-    MediaPlayer mediaPlayer = item.getMediaPlayer();
-    uiHandler.removeCallbacks(mediaPlayerSeekBarUpdaterRunnable);
-
-    if (buttonId == R.id.reading_fragment_stop_button) {
-      stopTextToSpeech();
-    } else if (buttonId == R.id.reading_fragment_next_button) {
-      performSkip(true);
-      uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-    } else if (buttonId == R.id.reading_fragment_prev_button) {
-      performSkip(false);
-      uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-    } else if (buttonId == R.id.reading_fragment_play_pause_button) {
-      if (mediaPlayer.isPlaying()) {
-        playPauseButton.setImageResource(R.drawable.ic_reader_play);
-        mediaPlayer.pause();
-      } else {
-        playPauseButton.setImageResource(R.drawable.ic_reader_pause);
-        mediaPlayer.start();
-        uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-      }
-    }
-  }
-
-  private void performSkip(boolean toEnd) {
-    if (!ttsIsRunning()) {
-      return;
-    }
-
-    TTSPlaybackItem item = this.ttsPlaybackItemQueue.peek();
-
-    if (item != null) {
-      MediaPlayer player = item.getMediaPlayer();
-
-      if (toEnd) {
-        player.seekTo(player.getDuration());
-      } else {
-        player.seekTo(0);
-      }
-    }
-  }
+  protected abstract void onReaderFragmentEvent(@BookReaderFragmentEvent int event);
 
   public void saveConfigState() {
     // Cache old settings to check if we'll need a restart later
-    savedConfigState.stripWhiteSpace = config.isStripWhiteSpaceEnabled();
+    savedConfigState.stripWhiteSpace = di.config.isStripWhiteSpaceEnabled();
 
     savedConfigState.usePageNum = true;
 
-    savedConfigState.hMargin = config.getHorizontalMargin();
-    savedConfigState.vMargin = config.getVerticalMargin();
+    savedConfigState.hMargin = di.config.getHorizontalMargin();
+    savedConfigState.vMargin = di.config.getVerticalMargin();
 
-    savedConfigState.textSize = config.getTextSize();
-    savedConfigState.fontName = config.getDefaultFontFamily().getName();
-    savedConfigState.serifFontName = config.getSerifFontFamily().getName();
-    savedConfigState.sansSerifFontName = config.getSansSerifFontFamily().getName();
+    savedConfigState.textSize = di.config.getTextSize();
+    savedConfigState.fontName = di.config.getDefaultFontFamily().getName();
+    savedConfigState.serifFontName = di.config.getSerifFontFamily().getName();
+    savedConfigState.sansSerifFontName = di.config.getSansSerifFontFamily().getName();
 
-    savedConfigState.scrolling = config.isScrollingEnabled();
-    savedConfigState.allowColoursFromCSS = config.isUseColoursFromCSS();
+    savedConfigState.scrolling = di.config.isScrollingEnabled();
+    savedConfigState.allowColoursFromCSS = di.config.isUseColoursFromCSS();
 
-    savedConfigState.colorProfile = config.getColourProfile();
-  }
-
-  private void startTextToSpeech() {
-    if (reachability.isReachable()) {
-      if (audioManager.isMusicActive()) {
-        return;
-      }
-
-      final ProgressDialog progressDialog = this.getProgressDialog(R.string.ls_init_tts);
-      progressDialog.show();
-
-      Option<File> fosOption = config.getTTSFolder();
-
-      if (isEmpty(fosOption)) {
-        logger.e(TAG, "Could not get base folder for TTS");
-        showTTSFailed("Could not get base folder for TTS");
-      }
-
-      File fos = fosOption.unsafeGet();
-
-      if (fos.exists() && !fos.isDirectory()) {
-        fos.delete();
-      }
-
-      fos.mkdirs();
-
-      if (!(fos.exists() && fos.isDirectory())) {
-        logger.e(TAG, "Failed to build folder " + fos.getAbsolutePath());
-        showTTSFailed("Failed to build folder " + fos.getAbsolutePath());
-        return;
-      }
-
-      saveReadingPosition();
-      //Delete any old TTS files still present.
-      for (File f : fos.listFiles()) {
-        f.delete();
-      }
-
-      ttsItemPrep.clear();
-
-      if (!ttsAvailable) {
-        return;
-      }
-
-      this.wordView.setTextColor(config.getTextColor());
-      this.wordView.setBackgroundColor(config.getBackgroundColor());
-
-      this.ttsPlaybackItemQueue.activate();
-      this.mediaLayout.setVisibility(View.VISIBLE);
-      this.playPauseButton.setImageResource(R.drawable.ic_reader_pause);
-
-      streamTTSToDisk();
-    } else {
-      final MaterialDialog networkErrorDialog =
-          DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_tts_not_internet, R.string.ls_generic_accept,
-              DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
-                @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                }
-              });
-      networkErrorDialog.setCancelable(false);
-      networkErrorDialog.show();
-    }
-  }
-
-  private void streamTTSToDisk() {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        AbstractReaderFragment.this.doStreamTTSToDisk();
-      }
-    }).start();
-  }
-
-  /**
-   * Splits the text to be spoken into chunks and streams
-   * them to disk. This method should NOT be called on the
-   * UI thread!
-   */
-  private void doStreamTTSToDisk() {
-    Option<Spanned> text = bookView.getStrategy().getText();
-
-    if (isEmpty(text) || !ttsIsRunning()) {
-      return;
-    }
-
-    String textToSpeak = text.map(new Functor<Spanned, String>() {
-      @Override public String execute(Spanned c) {
-        return c.toString().substring(bookView.getStartOfCurrentPage());
-      }
-    }).getOrElse("");
-
-    List<String> parts = TextUtil.splitOnPunctuation(textToSpeak);
-
-    int offset = bookView.getStartOfCurrentPage();
-
-    try {
-
-      Option<File> ttsFolderOption = config.getTTSFolder();
-
-      if (isEmpty(ttsFolderOption)) {
-        throw new TTSFailedException();
-      }
-
-      File ttsFolder = ttsFolderOption.unsafeGet();
-
-      for (int i = 0; i < parts.size() && ttsIsRunning(); i++) {
-        Log.d(TAG, "Streaming part " + i + " to disk.");
-
-        String part = parts.get(i);
-
-        boolean lastPart = i == parts.size() - 1;
-
-        //Utterance ID doubles as the filename
-        String pageName = "";
-
-        try {
-          File pageFile = new File(ttsFolder, "tts_" + UUID.randomUUID().getLeastSignificantBits() + ".wav");
-          pageName = pageFile.getAbsolutePath();
-          pageFile.createNewFile();
-        } catch (IOException io) {
-          String message = "Can't write to file \n" + pageName + " because of onError\n" + io.getMessage();
-          logger.e(TAG, message);
-          showTTSFailed(message);
-        }
-
-        streamPartToDisk(pageName, part, offset, textToSpeak.length(), lastPart);
-
-        offset += part.length() + 1;
-
-        Thread.yield();
-      }
-    } catch (TTSFailedException e) {
-      //Just stop streaming
-    }
-  }
-
-  private void streamPartToDisk(String fileName, String part, int offset, int totalLength, boolean endOfPage) throws TTSFailedException {
-    Log.d(TAG, "Request to stream text to file " + fileName + " with text " + part);
-
-    if (part.trim().length() > 0 || endOfPage) {
-      final HashMap<String, String> params = new HashMap<>();
-      params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, fileName);
-
-      TTSPlaybackItem item = new TTSPlaybackItem(part, new MediaPlayer(), totalLength, offset, endOfPage, fileName);
-      ttsItemPrep.put(fileName, item);
-
-      int result;
-      String errorMessage = "";
-
-      try {
-        result = textToSpeech.synthesizeToFile(part, params, fileName);
-      } catch (Exception e) {
-        logger.e(TAG, "Failed to start TTS", e);
-        result = TextToSpeech.ERROR;
-        errorMessage = e.getMessage();
-      }
-
-      if (result != TextToSpeech.SUCCESS) {
-        String message = "Can't write to file \n" + fileName + " because of onError\n" + errorMessage;
-        logger.e(TAG, message);
-        showTTSFailed(message);
-        throw new TTSFailedException();
-      }
-    } else {
-      Log.d(TAG, "Skipping part, since it's empty.");
-    }
-  }
-
-  private void showTTSFailed(final String message) {
-    uiHandler.post(new Runnable() {
-      @Override public void run() {
-        AbstractReaderFragment.this.stopTextToSpeech();
-        AbstractReaderFragment.this.dismissProgressDialog();
-
-        if (AbstractReaderFragment.this.isAdded()) {
-          Toast.makeText(context, AbstractReaderFragment.this.getString(R.string.ls_tts_failed) + "\n" + message, Toast.LENGTH_SHORT).show();
-        }
-      }
-    });
-  }
-
-  public void onStreamingCompleted(final String wavFile) {
-    Log.d(TAG, "TTS streaming completed for " + wavFile);
-
-    if (!ttsIsRunning()) {
-      this.textToSpeech.stop();
-      return;
-    }
-
-    if (!ttsItemPrep.containsKey(wavFile)) {
-      logger.e(TAG, "Got onStreamingCompleted for " + wavFile + " but there is no corresponding TTSPlaybackItem!");
-      return;
-    }
-
-    final TTSPlaybackItem item = ttsItemPrep.remove(wavFile);
-
-    try {
-
-      MediaPlayer mediaPlayer = item.getMediaPlayer();
-      mediaPlayer.reset();
-      mediaPlayer.setDataSource(wavFile);
-      mediaPlayer.prepare();
-
-      this.ttsPlaybackItemQueue.add(item);
-    } catch (Exception e) {
-      logger.e(TAG, "Could not play", e);
-      showTTSFailed(e.getLocalizedMessage());
-      return;
-    }
-
-    this.uiHandler.post(new Runnable() {
-      @Override public void run() {
-        AbstractReaderFragment.this.dismissProgressDialog();
-      }
-    });
-
-    //If the queue is size 1, it only contains the player we just added,
-    //meaning this is a first playback start.
-    if (ttsPlaybackItemQueue.size() == 1) {
-      startPlayback();
-    }
-  }
-
-  private boolean ttsIsRunning() {
-    return ttsPlaybackItemQueue.isActive();
-  }
-
-  public void onSpeechCompleted(TTSPlaybackItem item, MediaPlayer mediaPlayer) {
-    Log.d(TAG, "Speech completed for " + item.getFileName());
-
-    if (!ttsPlaybackItemQueue.isEmpty()) {
-      this.ttsPlaybackItemQueue.remove();
-    }
-
-    if (ttsIsRunning()) {
-      startPlayback();
-
-      if (item.isLastElementOfPage()) {
-        this.uiHandler.post(new Runnable() {
-          @Override public void run() {
-            AbstractReaderFragment.this.pageDown(Orientation.VERTICAL);
-          }
-        });
-      }
-    }
-
-    mediaPlayer.release();
-    new File(item.getFileName()).delete();
-  }
-
-  private void stopTextToSpeech() {
-    this.ttsPlaybackItemQueue.deactivate();
-    this.mediaLayout.setVisibility(View.GONE);
-    //this.textToSpeech.stop();
-    this.ttsItemPrep.clear();
-    saveReadingPosition();
-  }
-
-  public void onTextToSpeechInit(int status) {
-    this.ttsAvailable = status == TextToSpeech.SUCCESS;
-
-    if (this.ttsAvailable) {
-      this.textToSpeech.setSpeechRate(0.7f);
-      this.textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-        @Override public void onUtteranceCompleted(String wavFile) {
-          onStreamingCompleted(wavFile);
-        }
-      });
-    } else {
-      final FragmentActivity activity = getActivity();
-      activity.invalidateOptionsMenu();
-      Toast.makeText(context, getString(R.string.ls_tts_failed), Toast.LENGTH_SHORT).show();
-    }
-  }
-
-  private void startPlayback() {
-    Log.d(TAG, "startPlayback() - doing peek()");
-
-    final TTSPlaybackItem item = this.ttsPlaybackItemQueue.peek();
-
-    if (item == null) {
-      Log.d(TAG, "Got null item, bailing out.");
-      return;
-    }
-
-    Log.d(TAG, "Start playback for item " + item.getFileName());
-    Log.d(TAG, "Text: '" + item.getText() + "'");
-
-    if (item.getMediaPlayer().isPlaying()) {
-      return;
-    }
-
-    item.setOnSpeechCompletedCallback(new SpeechCompletedCallback() {
-      @Override public void speechCompleted(TTSPlaybackItem item1, MediaPlayer mediaPlayer) {
-        onSpeechCompleted(item1, mediaPlayer);
-      }
-    });
-    uiHandler.post(mediaPlayerSeekBarUpdaterRunnable);
-
-    item.getMediaPlayer().start();
+    savedConfigState.colorProfile = di.config.getColourProfile();
   }
 
   private void updateFileName(Bundle savedInstanceState) {
-    int lastPos = config.getLastPosition(bookMetadata.getBookId());
-    int lastIndex = config.getLastIndex(bookMetadata.getBookId());
+    int lastPos = di.config.getLastPosition(bookMetadata.getBookId());
+    int lastIndex = di.config.getLastIndex(bookMetadata.getBookId());
 
     if (savedInstanceState != null) {
       lastPos = savedInstanceState.getInt(POS_KEY, lastPos);
@@ -1119,14 +665,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void onWindowFocusChanged(boolean hasFocus) {
-    if (hasFocus) {
-      updateFromPrefs();
-      if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-        getSystemUiHelper().delayHide(SystemUiHelper.SHORT_DELAY);
-      }
-    } else {
-      getSystemUiHelper().keepScreenOff();
-    }
+    //final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    //if (hasFocus) {
+    //  updateFromPrefs();
+    //  if (systemUiHelper != null && systemUiHelper.isShowing()) {
+    //    systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
+    //  }
+    //} else {
+    //  if (systemUiHelper != null) {
+    //    systemUiHelper.keepScreenOff();
+    //  }
+    //}
   }
 
   public boolean onTouchEvent(MotionEvent event) {
@@ -1134,8 +683,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onBookOpened(final Book book) {
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
     }
@@ -1192,14 +740,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onParseEntryComplete(final Resource resource) {
     final Activity activity = getActivity();
-
-    if (activity != null) {
-      if (this.ttsPlaybackItemQueue.isActive() && this.ttsPlaybackItemQueue.isEmpty()) {
-        streamTTSToDisk();
-      }
-
-      dismissProgressDialog();
+    if (activity == null) {
+      return;
     }
+
+    dismissProgressDialog();
 
     // Set chapter
     String currentChapter = null;
@@ -1219,51 +764,65 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookTitle);
 
     // Tutorial feature
-    userFlowTutorial.get(UserFlow.Type.READER, new CompletionCallback<List<TutorialModel>>() {
-      @Override public void onSuccess(final List<TutorialModel> tutorials) {
-        if (tutorials.isEmpty()) {
-          tutorialView.setVisibility(View.GONE);
-        } else {
-          boolean isTutorial = isTutorial(tutorials);
+    if (di.userFlowTutorial != null) { // TODO: Remove this check
+      di.userFlowTutorial.get(UserFlow.Type.READER, new CompletionCallback<List<TutorialModel>>() {
+        private boolean isTutorial(List<TutorialModel> tutorials) {
+          boolean isTutorial = false;
 
-          if (isTutorial) {
-            setTutorialViewVisibility(View.VISIBLE);
-            tutorialView.setTutorialListener(new TutorialView.TutorialListener() {
-              @Override public void onCompleted() {
-                tutorialView.setVisibility(View.GONE);
-              }
-            });
-            tutorialView.setIsTrianglesDisabled(true);
-            tutorialView.setTutorials(tutorials);
+          for (TutorialModel tutorialModel : tutorials) {
+            if (tutorialModel.getType() == TutorialModel.Type.TUTORIAL) {
+              isTutorial = true;
+              break;
+            }
+          }
+          return isTutorial;
+        }
+
+        @Override public void onSuccess(final List<TutorialModel> tutorials) {
+          if (tutorials.isEmpty()) {
+            tutorialView.setVisibility(View.GONE);
           } else {
-            setTutorialViewVisibility(View.GONE);
+            boolean isTutorial = isTutorial(tutorials);
 
-            TutorialModel tutorialModel = tutorials.get(0);
-            if (tutorialModel.getType() == TutorialModel.Type.SET_YOUR_GOALS) {
-              if (getActivity() != null) {
-                MaterialDialog setYourGoalsDialog = DialogFactory.createSetYourGoalsDialog(getActivity(), new DialogFactory.ActionCallback() {
-                  @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-                    if (action == DialogFactory.Action.OK) {
-                      onEventNavigateToGoalsScreen();
-                    }
-                  }
-                });
-
-                if (getActivity().hasWindowFocus()) {
-                  setYourGoalsDialog.show();
+            if (isTutorial) {
+              setTutorialViewVisibility(View.VISIBLE);
+              tutorialView.setTutorialListener(new TutorialView.TutorialListener() {
+                @Override public void onCompleted() {
+                  tutorialView.setVisibility(View.GONE);
                 }
+              });
+              tutorialView.setIsTrianglesDisabled(true);
+              tutorialView.setTutorials(tutorials);
+            } else {
+              setTutorialViewVisibility(View.GONE);
+
+              TutorialModel tutorialModel = tutorials.get(0);
+              if (tutorialModel.getType() == TutorialModel.Type.SET_YOUR_GOALS) {
+                if (getActivity() != null) {
+                  MaterialDialog setYourGoalsDialog = DialogFactory.createSetYourGoalsDialog(getActivity(), new DialogFactory.ActionCallback() {
+                    @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
+                      if (action == DialogFactory.Action.OK) {
+                        onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT);
+                      }
+                    }
+                  });
+
+                  if (getActivity().hasWindowFocus()) {
+                    setYourGoalsDialog.show();
+                  }
+                }
+              } else if (tutorialModel.getType() == TutorialModel.Type.BECOME_WORLDREADER) {
+                displayUserNotRegisteredDialog();
               }
-            } else if (tutorialModel.getType() == TutorialModel.Type.BECOME_WORLDREADER) {
-              displayUserNotRegisteredDialog();
             }
           }
         }
-      }
 
-      @Override public void onError(ErrorCore errorCore) {
-        tutorialView.setVisibility(View.GONE);
-      }
-    });
+        @Override public void onError(ErrorCore errorCore) {
+          tutorialView.setVisibility(View.GONE);
+        }
+      });
+    }
   }
 
   @Override public void onProgressUpdate(int progressPercentage) {
@@ -1276,7 +835,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
       pageDown(Orientation.HORIZONTAL);
     } else {
       pageUp(Orientation.HORIZONTAL);
@@ -1295,7 +854,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
       pageUp(Orientation.HORIZONTAL);
     } else {
       pageDown(Orientation.HORIZONTAL);
@@ -1310,7 +869,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
       pageUp(Orientation.HORIZONTAL);
     } else {
       pageDown(Orientation.HORIZONTAL);
@@ -1325,7 +884,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
       pageDown(Orientation.HORIZONTAL);
     } else {
       pageUp(Orientation.HORIZONTAL);
@@ -1373,7 +932,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onPageDown() {
     currentScrolledPages += 1;
-    onGamificationEventPageDown();
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT);
   }
 
   @Override public void onPageDownFirstPage() {
@@ -1384,7 +943,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Update book metadata with author and title
     bookMetadata.setTitle(bookTitle);
     bookMetadata.setAuthor(author);
-    onEventNavigateToBookFinishedScreen();
+    onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT);
   }
 
   @Override public void onBookImageClicked(final Drawable drawable) {
@@ -1392,19 +951,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void displayPageNumber(int pageNumber) {
-    final String pageString = !config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
+    final String pageString = !di.config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
 
     final SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
     builder.setSpan(new CenterSpan(), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-    pageNumberView.setTextColor(config.getTextColor());
-    pageNumberView.setTextSize(config.getTextSize());
-    pageNumberView.setTypeface(config.getDefaultFontFamily().getDefaultTypeface());
+    pageNumberView.setTextColor(di.config.getTextColor());
+    pageNumberView.setTextSize(di.config.getTextSize());
+    pageNumberView.setTypeface(di.config.getDefaultFontFamily().getDefaultTypeface());
     pageNumberView.setText(builder);
     pageNumberView.invalidate();
   }
-
-  protected abstract void onGamificationEventPageDown();
 
   private void displayPhotoViewer(final FastBitmapDrawable drawable) {
     final FragmentActivity activity = getActivity();
@@ -1453,8 +1010,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  protected abstract void onEventNavigateToBookFinishedScreen();
-
   private void stopAnimating() {
     if (dummyView.getAnimator() != null) {
       dummyView.getAnimator().stop();
@@ -1497,66 +1052,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return this.progressDialog;
   }
 
-  protected abstract void onEventNavigateToGoalsScreen();
-
   private void setShareFlag() {
     hasSharedText = true;
   }
 
   private void showDefinitionView() {
     definitionView.setVisibility(View.VISIBLE);
-  }
-
-  private boolean isTutorial(List<TutorialModel> tutorials) {
-    boolean isTutorial = false;
-
-    for (TutorialModel tutorialModel : tutorials) {
-      if (tutorialModel.getType() == TutorialModel.Type.TUTORIAL) {
-        isTutorial = true;
-        break;
-      }
-    }
-    return isTutorial;
-  }
-
-  public boolean dispatchMediaKeyEvent(KeyEvent event) {
-    int action = event.getAction();
-    int keyCode = event.getKeyCode();
-
-    if (audioManager.isMusicActive() && !ttsIsRunning()) {
-      return false;
-    }
-
-    switch (keyCode) {
-
-      case KeyEvent.KEYCODE_MEDIA_PLAY:
-      case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-      case KeyEvent.KEYCODE_MEDIA_PAUSE:
-        return simulateButtonPress(action, R.id.reading_fragment_play_pause_button, playPauseButton);
-
-      case KeyEvent.KEYCODE_MEDIA_STOP:
-        return simulateButtonPress(action, R.id.reading_fragment_stop_button, stopButton);
-
-      case KeyEvent.KEYCODE_MEDIA_NEXT:
-        return simulateButtonPress(action, R.id.reading_fragment_next_button, nextButton);
-
-      case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-        return simulateButtonPress(action, R.id.reading_fragment_prev_button, prevButton);
-    }
-
-    return false;
-  }
-
-  private boolean simulateButtonPress(int action, int idToSend, ImageButton buttonToClick) {
-    if (action == KeyEvent.ACTION_DOWN) {
-      onMediaButtonEvent(idToSend);
-      buttonToClick.setPressed(true);
-    } else {
-      buttonToClick.setPressed(false);
-    }
-
-    buttonToClick.invalidate();
-    return true;
   }
 
   public boolean dispatchKeyEvent(KeyEvent event) {
@@ -1567,19 +1068,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     if (isAnimating() && action == KeyEvent.ACTION_DOWN) {
       stopAnimating();
-      return true;
-    }
-
-		/*
-     * Tricky bit of code here: if we are NOT running TTS,
-		 * we want to be able to start it using the play/pause button.
-		 *
-		 * When we ARE running TTS, we'll get every media event twice:
-		 * once through the receiver and once here if focused.
-		 *
-		 * So, we only try to read media events here if tts is running.
-		 */
-    if (!ttsIsRunning() && dispatchMediaKeyEvent(event)) {
       return true;
     }
 
@@ -1605,11 +1093,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
             return true;
           }
 
-          if (ttsIsRunning()) {
-            stopTextToSpeech();
-            return true;
-          }
-
           if (isPhotoViewerDisplayed()) {
             hidePhotoViewer();
             return true;
@@ -1625,137 +1108,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     Log.d(TAG, "Not handling key event: returning false.");
     return false;
   }
-
-  private void startAutoScroll() {
-    if (viewSwitcher.getCurrentView() == this.dummyView) {
-      viewSwitcher.showNext();
-    }
-
-    this.viewSwitcher.setInAnimation(null);
-    this.viewSwitcher.setOutAnimation(null);
-
-    bookView.setKeepScreenOn(true);
-
-    ScrollStyle style = config.getAutoScrollStyle();
-
-    try {
-      if (style == ScrollStyle.ROLLING_BLIND) {
-        prepareRollingBlind();
-      } else {
-        preparePageTimer();
-      }
-
-      viewSwitcher.showNext();
-
-      uiHandler.post(new Runnable() {
-        @Override public void run() {
-          AbstractReaderFragment.this.doAutoScroll();
-        }
-      });
-    } catch (IllegalStateException is) {
-      logger.e(TAG, "Failed to start autoscroll: " + is.getMessage());
-    }
-  }
-
-  private void doAutoScroll() {
-    if (dummyView.getAnimator() == null) {
-      Log.d(TAG, "BookView no longer has an animator. Aborting rolling blind.");
-      stopAnimating();
-    } else {
-
-      Animator anim = dummyView.getAnimator();
-
-      if (anim.isFinished()) {
-        startAutoScroll();
-      } else {
-        anim.advanceOneFrame();
-        dummyView.invalidate();
-
-        uiHandler.postDelayed(new Runnable() {
-          @Override public void run() {
-            AbstractReaderFragment.this.doAutoScroll();
-          }
-        }, anim.getAnimationSpeed() * 2);
-      }
-    }
-  }
-
-  private void prepareRollingBlind() {
-    Option<Bitmap> before = getBookViewSnapshot();
-
-    bookView.pageDown();
-    Option<Bitmap> after = getBookViewSnapshot();
-
-    if (isEmpty(before) || isEmpty(after)) {
-      throw new IllegalStateException("Could not initialize images");
-    }
-
-    final RollingBlindAnimator anim = new RollingBlindAnimator();
-    anim.setAnimationSpeed(config.getScrollSpeed());
-
-    before.forEach(new Command<Bitmap>() {
-      @Override public void execute(Bitmap backgroundBitmap) {
-        anim.setBackgroundBitmap(backgroundBitmap);
-      }
-    });
-    after.forEach(new Command<Bitmap>() {
-      @Override public void execute(Bitmap foregroundBitmap) {
-        anim.setForegroundBitmap(foregroundBitmap);
-      }
-    });
-
-    dummyView.setAnimator(anim);
-  }
-
-  private void preparePageTimer() {
-    bookView.pageDown();
-    Option<Bitmap> after = getBookViewSnapshot();
-
-    if (isEmpty(after)) {
-      throw new IllegalStateException("Could not initialize view");
-    }
-
-    after.forEach(new Command<Bitmap>() {
-      @Override public void execute(Bitmap img) {
-        PageTimer timer = new PageTimer(img, pageNumberView.getHeight());
-
-        timer.setSpeed(config.getScrollSpeed());
-
-        dummyView.setAnimator(timer);
-      }
-    });
-  }
-
-  private Option<Bitmap> getBookViewSnapshot() {
-    try {
-      final Bitmap bitmap = Bitmap.createBitmap(viewSwitcher.getWidth(), viewSwitcher.getHeight(), Bitmap.Config.ARGB_8888);
-      final Canvas canvas = new Canvas(bitmap);
-
-      bookView.layout(0, 0, viewSwitcher.getWidth(), viewSwitcher.getHeight());
-      bookView.draw(canvas);
-
-      // FIXME: creating an intermediate bitmap here because I can't figure out how to draw the pageNumberView directly on the canvas and have it show up in the right place.
-      final Bitmap pageNumberBitmap = Bitmap.createBitmap(pageNumberView.getWidth(), pageNumberView.getHeight(), Bitmap.Config.ARGB_8888);
-      final Canvas pageNumberCanvas = new Canvas(pageNumberBitmap);
-
-      pageNumberView.layout(0, 0, pageNumberView.getWidth(), pageNumberView.getHeight());
-      pageNumberView.draw(pageNumberCanvas);
-
-      canvas.drawBitmap(pageNumberBitmap, 0, viewSwitcher.getHeight() - pageNumberView.getHeight(), new Paint());
-
-      pageNumberBitmap.recycle();
-
-      return option(bitmap);
-    } catch (OutOfMemoryError out) {
-      viewSwitcher.setBackgroundColor(config.getBackgroundColor());
-    }
-
-    return none();
-  }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // ActionModeListener events
-  ///////////////////////////////////////////////////////////////////////////
 
   private void pageDown(Orientation o) {
     if (bookView.isAtEnd()) {
@@ -1778,10 +1130,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     formatPageChapterProgress();
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  // AbstractReaderActivity Callbacks
-  ///////////////////////////////////////////////////////////////////////////
-
   public void onNavigateToTocEntry(TocEntry tocEntry) {
     this.bookView.navigateTo(tocEntry);
   }
@@ -1796,7 +1144,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
           @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
             if (action == DialogFactory.Action.OK) {
-              onEventNavigateToSignUpScreen();
+              onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT);
             }
           }
         });
@@ -1804,10 +1152,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     dialog.show();
   }
 
-  protected abstract void onEventNavigateToSignUpScreen();
-
   private void notifyFinishedBookEventInteractor() {
-    final ListenableFuture<Boolean> finishBookFuture = finishBookInteractor.execute(bookMetadata.getBookId());
+    final ListenableFuture<Boolean> finishBookFuture = di.finishBookInteractor.execute(bookMetadata.getBookId());
     Futures.addCallback(finishBookFuture, new FutureCallback<Boolean>() {
       @Override public void onSuccess(final Boolean result) {
         // Ignored result
@@ -1823,80 +1169,27 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     chapterProgressPagesTv.setText(
         bookView.getPagesForResource() < bookView.getCurrentPage() ? "" : String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
 
-    Option<Spanned> text = bookView.getStrategy().getText();
-    Spanned spanned = text.getOrElse(new SpannableString(""));
+    final Option<Spanned> text = bookView.getStrategy().getText();
+    final Spanned spanned = text.getOrElse(new SpannableString(""));
     if (bookView.getPagesForResource() > 0) {
-      final Map<String, String> amaAttributes = new HashMap<>();
-      //Book toc size
-      amaAttributes.put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES,
-          String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
-      //Book spine size
-      amaAttributes.put(AnalyticsEventConstants.BOOK_SPINE_SIZE, String.valueOf(bookView.getSpineSize()));
+      final Map<String, String> amaAttributes = new HashMap<String, String>() {{
+        //Book toc size
+        put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES, String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
 
-      //Currently reading toc entry number
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION, String.valueOf(bookView.getIndex()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(bookView.getCurrentPage()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
-      amaAttributes.put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
+        // Book spine size
+        put(AnalyticsEventConstants.BOOK_SPINE_SIZE, String.valueOf(bookView.getSpineSize()));
 
-      amaAttributes.put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
-      amaAttributes.put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());
+        //Currently reading toc entry number
+        put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION, String.valueOf(bookView.getIndex()));
+        put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
+        put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(bookView.getCurrentPage()));
+        put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
+        put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
+        put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
+        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());
+      }};
 
-      analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
-    }
-  }
-
-  private class TTSSeekBarUpdaterRunnable implements Runnable {
-
-    private boolean pausedBecauseOfCall = false;
-
-    public void run() {
-      if (!ttsIsRunning()) {
-        return;
-      }
-
-      long delay = 1000;
-
-      synchronized (lock) {
-        final TTSPlaybackItem item = ttsPlaybackItemQueue.peek();
-
-        if (item != null) {
-          MediaPlayer mediaPlayer = item.getMediaPlayer();
-          int phoneState = telephonyManager.getCallState();
-
-          if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            if (phoneState == TelephonyManager.CALL_STATE_RINGING || phoneState == TelephonyManager.CALL_STATE_OFFHOOK) {
-              Log.d(TAG, "Detected call, pausing TTS.");
-              mediaPlayer.pause();
-              this.pausedBecauseOfCall = true;
-            } else {
-              double percentage = (double) mediaPlayer.getCurrentPosition() / (double) mediaPlayer.getDuration();
-
-              mediaProgressBar.setMax(mediaPlayer.getDuration());
-              mediaProgressBar.setProgress(mediaPlayer.getCurrentPosition());
-
-              int currentDuration = item.getOffset() + (int) (percentage * item.getText().length());
-
-              bookView.navigateTo(bookView.getIndex(), currentDuration);
-              wordView.setText(item.getText());
-
-              delay = 100;
-            }
-          } else if (mediaPlayer != null && phoneState == TelephonyManager.CALL_STATE_IDLE && pausedBecauseOfCall) {
-            Log.d(TAG, "Call over, resuming TTS.");
-
-            //We reset to the start of the current section before resuming playback.
-            mediaPlayer.seekTo(0);
-            mediaPlayer.start();
-            pausedBecauseOfCall = false;
-            delay = 100;
-          }
-        }
-      }
-
-      // Running this thread after 100 milliseconds
-      uiHandler.postDelayed(this, delay);
+      di.analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
     }
   }
 
@@ -1922,22 +1215,47 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     private ColorProfile colorProfile;
   }
 
-  private static class TTSOnInitListener implements TextToSpeech.OnInitListener {
+  public static class DICompanion {
 
-    private final WeakReference<AbstractReaderFragment> fragmentWeakReference;
-
-    public TTSOnInitListener(AbstractReaderFragment fragment) {
-      this.fragmentWeakReference = new WeakReference<>(fragment);
-    }
-
-    @Override public void onInit(int status) {
-      final AbstractReaderFragment fragment = fragmentWeakReference.get();
-      if (fragment != null) {
-        fragment.onTextToSpeechInit(status);
-      }
-    }
+    @Inject public Configuration config;
+    @Inject public StreamingBookDataSource streamingBookDataSource;
+    @Inject public GetWordDefinitionInteractor getWordDefinitionInteractor;
+    @Inject public FinishBookInteractor finishBookInteractor;
+    @Inject public SendReadPagesInteractor sendReadPagesInteractor;
+    @Inject public UserFlowTutorial userFlowTutorial;
+    @Inject public BrightnessManager brightnessManager;
+    @Inject public Dates dateUtils;
+    @Inject public Reachability reachability;
+    @Inject public Analytics analytics;
+    @Inject public Logger logger;
   }
 
-  //endregion
+  public static class BookReaderEvents {
+
+    public static final int GAMIFICATION_INITIALIZE_EVENT = 0;
+    public static final int GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT = 1;
+    public static final int GAMIFICATION_SHARED_QUOTE_EVENT = 2;
+    public static final int GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT = 3;
+    public static final int GAMIFICATION_FONT_SIZE_CHANGED_EVENT = 4;
+    public static final int GAMIFICATION_BACKGROUND_CHANGED_EVENT = 5;
+    public static final int GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT = 6;
+    public static final int GAMIFICATION_PAGE_DOWN_EVENT = 7;
+    public static final int NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT = 8;
+    public static final int NAVIGATION_TO_GOALS_SCREEN_EVENT = 9;
+    public static final int NAVIGATION_TO_SIGNUP_SCREEN_EVENT = 10;
+    public static final int READ_PAGE_ANALYTICS_EVENT = 11;
+    public static final int SAVE_CURRENTLY_BOOK_READING_EVENT = 12;
+  }
+
+  @IntDef({
+      BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT, BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT,
+      BookReaderEvents.GAMIFICATION_SHARED_QUOTE_EVENT, BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT,
+      BookReaderEvents.GAMIFICATION_FONT_SIZE_CHANGED_EVENT, BookReaderEvents.GAMIFICATION_BACKGROUND_CHANGED_EVENT,
+      BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT, BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT,
+      BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT, BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT,
+      BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT, BookReaderEvents.READ_PAGE_ANALYTICS_EVENT, BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT
+  }) @Retention(RetentionPolicy.SOURCE) @interface BookReaderFragmentEvent {
+
+  }
 }
 

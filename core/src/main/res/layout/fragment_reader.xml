@@ -21,7 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:textColorHighlight="@color/gray_profile_screen" />
+        android:cursorVisible="false"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:longClickable="true"
+        android:textColorHighlight="@color/gray_profile_screen"
+        android:textIsSelectable="true" />
 
     </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
 
@@ -37,8 +42,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignBottom="@id/reading_fragment_main_container" />
-
-  <include layout="@layout/reading_fragment_media_player_bar" />
 
   <include
     android:id="@+id/reading_fragment_chapter_progress_container"
@@ -66,7 +69,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:clickable="true" />
+      android:clickable="true"
+      android:focusable="true" />
 
   </RelativeLayout>
 
