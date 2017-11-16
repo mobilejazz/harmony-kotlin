@@ -338,7 +338,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     if (spine == null) {
       final Context context = getContext();
 
-      final OpenFileEpubBookTask task = new OpenFileEpubBookTask(context, textLoader, resourcesLoader, storedIndex, logger);
+      final OpenFileEpubBookTask task = new OpenFileEpubBookTask(context, textLoader, storedIndex, logger);
       task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
         @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
           result.match(new Command<Object>() {
@@ -592,13 +592,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     loadText();
   }
 
-  public void navigateTo(int index, int position) {
-    this.prevPos = this.getProgressPosition();
-    this.strategy.setPosition(position);
-
-    doNavigation(index);
-  }
-
   public Option<List<TocEntry>> getTableOfContents() {
     if (book != null) {
       final List<TocEntry> result = new ArrayList<>();
@@ -642,10 +635,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public void setIndex(int index) {
     this.storedIndex = index;
-  }
-
-  public int getStartOfCurrentPage() {
-    return strategy.getTopLeftPosition();
   }
 
   public int getProgressPosition() {

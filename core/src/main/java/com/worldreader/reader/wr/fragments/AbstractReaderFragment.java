@@ -25,9 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -35,14 +33,12 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -78,12 +74,10 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.animation.Animator;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ColorProfile;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ReadingDirection;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
@@ -99,7 +93,6 @@ import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
-import net.nightwhistler.htmlspanner.spans.CenterSpan;
 
 import javax.inject.Inject;
 import java.lang.annotation.Retention;
@@ -131,10 +124,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private ProgressDialog progressDialog;
   private OnBookTocEntryListener bookTocEntryListener;
 
-  private ViewSwitcher viewSwitcher;
   private BookView bookView;
-  private AnimatedImageView dummyView;
-  private TextView pageNumberView;
   private TextView readingTitleProgressTv;
   private DiscreteSeekBar chapterProgressDsb;
   private TextView chapterProgressPagesTv;
@@ -191,10 +181,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     final View view = getView();
 
-    this.viewSwitcher = (ViewSwitcher) view.findViewById(R.id.reading_fragment_main_container);
     this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
-    this.dummyView = (AnimatedImageView) view.findViewById(R.id.reading_fragment_dummy_view);
-    this.pageNumberView = (TextView) view.findViewById(R.id.reading_fragment_page_number_view);
 
     this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
     this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
@@ -323,17 +310,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
     final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, metrics, this));
 
-    displayPageNumber(-1); // Initializes the pagenumber view properly
-
     final View.OnTouchListener gestureListener = new View.OnTouchListener() {
       @SuppressLint("ClickableViewAccessibility") @Override public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
       }
     };
 
-    viewSwitcher.setOnTouchListener(gestureListener);
     bookView.setOnTouchListener(gestureListener);
-    dummyView.setOnTouchListener(gestureListener);
 
     registerForContextMenu(bookView);
     saveConfigState();
@@ -468,10 +451,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  @Override public void onOptionsMenuClosed(Menu menu) {
-    updateFromPrefs();
-  }
-
   protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
 
   private void checkIfHasBeenSharedQuote() {
@@ -502,11 +481,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     bookView.setHorizontalMargin(marginH);
     bookView.setVerticalMargin(marginV);
-
-    if (!isAnimating()) {
-      bookView.setEnableScrolling(di.config.isScrollingEnabled());
-    }
-
+    bookView.setEnableScrolling(di.config.isScrollingEnabled());
     bookView.setLineSpacing(di.config.getLineSpacing());
 
     final ActionBar actionBar = activity.getSupportActionBar();
@@ -548,11 +523,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  private boolean isAnimating() {
-    final Animator anim = dummyView.getAnimator();
-    return anim != null && !anim.isFinished();
-  }
-
   @Nullable private SystemUiHelper getSystemUiHelper() {
     if (getActivity() != null) {
       return ((AbstractReaderActivity) getActivity()).getSystemUiHelper();
@@ -562,8 +532,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private void restoreColorProfile() {
     this.bookView.setBackgroundColor(di.config.getBackgroundColor());
-    this.viewSwitcher.setBackgroundColor(di.config.getBackgroundColor());
-
     this.bookView.setTextColor(di.config.getTextColor());
     this.bookView.setLinkColor(di.config.getLinkColor());
 
@@ -701,12 +669,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       this.author = getString(R.string.ls_book_reading_unknown_author);
     }
 
-    activity.invalidateOptionsMenu();
-
     if (bookTocEntryListener != null) {
-      final Option<List<TocEntry>> optionableToc = bookView.getTableOfContents();
-      tableOfContents = optionableToc.unsafeGet();
-      bookTocEntryListener.onBookTableOfContentsLoaded(optionableToc);
+      final Option<List<TocEntry>> optionalToc = bookView.getTableOfContents();
+      tableOfContents = optionalToc.unsafeGet();
+      bookTocEntryListener.onBookTableOfContentsLoaded(optionalToc);
     }
 
     updateFromPrefs();
@@ -728,11 +694,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    this.viewSwitcher.clearAnimation();
-    this.viewSwitcher.setBackground(null);
-
     restoreColorProfile();
-    displayPageNumber(-1);
 
     final ProgressDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
     progressDialog.show();
@@ -926,7 +888,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     if (activity == null) {
       return;
     }
-    stopAnimating();
     getSystemUiHelper().toggle();
   }
 
@@ -948,19 +909,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onBookImageClicked(final Drawable drawable) {
     displayPhotoViewer((FastBitmapDrawable) drawable);
-  }
-
-  private void displayPageNumber(int pageNumber) {
-    final String pageString = !di.config.isScrollingEnabled() && pageNumber > 0 ? Integer.toString(pageNumber) + "\n" : "\n";
-
-    final SpannableStringBuilder builder = new SpannableStringBuilder(pageString);
-    builder.setSpan(new CenterSpan(), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    pageNumberView.setTextColor(di.config.getTextColor());
-    pageNumberView.setTextSize(di.config.getTextSize());
-    pageNumberView.setTypeface(di.config.getDefaultFontFamily().getDefaultTypeface());
-    pageNumberView.setText(builder);
-    pageNumberView.invalidate();
   }
 
   private void displayPhotoViewer(final FastBitmapDrawable drawable) {
@@ -1010,20 +958,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  private void stopAnimating() {
-    if (dummyView.getAnimator() != null) {
-      dummyView.getAnimator().stop();
-      this.dummyView.setAnimator(null);
-    }
-
-    if (viewSwitcher.getCurrentView() == this.dummyView) {
-      viewSwitcher.showNext();
-    }
-
-    this.pageNumberView.setVisibility(View.VISIBLE);
-    bookView.setKeepScreenOn(false);
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // BookViewListener Callbacks
   ///////////////////////////////////////////////////////////////////////////
@@ -1065,11 +999,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     int keyCode = event.getKeyCode();
 
     Log.d(TAG, "Got key event: " + keyCode + " with action " + action);
-
-    if (isAnimating() && action == KeyEvent.ACTION_DOWN) {
-      stopAnimating();
-      return true;
-    }
 
     Log.d(TAG, "Key event is NOT a media key event.");
 
@@ -1115,7 +1044,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    stopAnimating();
     bookView.pageDown();
     formatPageChapterProgress();
   }
@@ -1125,7 +1053,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    stopAnimating();
     bookView.pageUp();
     formatPageChapterProgress();
   }

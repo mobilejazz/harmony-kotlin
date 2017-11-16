@@ -5,11 +5,10 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <ViewSwitcher
+  <FrameLayout
     android:id="@+id/reading_fragment_main_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView
       android:id="@+id/reading_fragment_bookView"
@@ -30,18 +29,7 @@
 
     </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
 
-    <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView
-      android:id="@+id/reading_fragment_dummy_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-  </ViewSwitcher>
-
-  <TextView
-    android:id="@+id/reading_fragment_page_number_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignBottom="@id/reading_fragment_main_container" />
+  </FrameLayout>
 
   <include
     android:id="@+id/reading_fragment_chapter_progress_container"

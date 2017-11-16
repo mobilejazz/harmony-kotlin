@@ -31,7 +31,7 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-public class TextLoader implements LinkTagHandler.LinkTagCallBack {
+public class TextLoader {
 
   public static final String TAG = TextLoader.class.getSimpleName();
 
@@ -56,7 +56,13 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
   }
 
   private void registerCallbacksSpannerHandlers() {
-    ((LinkTagHandler) getHtmlTagHandler("a")).setCallBack(this);
+    ((LinkTagHandler) getHtmlTagHandler("a")).setCallBack(new LinkTagHandler.LinkTagCallBack() {
+      @Override public void onLinkClicked(String href) {
+        if (linkTagCallBack != null) {
+          linkTagCallBack.onLinkClicked(href);
+        }
+      }
+    });
     ((CSSLinkHandler) getHtmlTagHandler("link")).setTextLoader(this);
   }
 
@@ -96,7 +102,7 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
 
       IOUtil.copy(inputStreamReader, writer);
 
-      List<Rule> rules = CSSParser.parse(writer.toString());
+      final List<Rule> rules = CSSParser.parse(writer.toString());
       Log.d(TAG, "Parsed " + rules.size() + " raw rules.");
 
       for (Rule rule : rules) {
@@ -153,12 +159,6 @@ public class TextLoader implements LinkTagHandler.LinkTagCallBack {
     //}
 
     //fontResolver.loadEmbeddedFont(name, href);
-  }
-
-  @Override public void onLinkClicked(String href) {
-    if (linkTagCallBack != null) {
-      linkTagCallBack.onLinkClicked(href);
-    }
   }
 
   public void setLinkTagCallBack(LinkTagHandler.LinkTagCallBack callBack) {
