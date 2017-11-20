@@ -11,6 +11,7 @@ import com.worldreader.core.datasource.model.StreamingResourceEntity;
 import com.worldreader.core.datasource.network.datasource.book.StreamingBookNetworkDataSource;
 import com.worldreader.core.datasource.storage.datasource.book.StreamingBookBdDataSource;
 import com.worldreader.core.datasource.storage.exceptions.InvalidCacheException;
+import com.worldreader.core.domain.model.BookImageQuality;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
@@ -77,12 +78,17 @@ public class StreamingBookDataSource implements StreamingBookRepository {
   }
 
   @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource) throws Exception {
+    return getBookResource(id, bookMetadata, resource, BookImageQuality.NETWORK_QUALITY_DEPENDANT);
+  }
+
+  @Override public StreamingResource getBookResource(String id, BookMetadata bookMetadata, String resource, final BookImageQuality bookImageQuality) throws
+      Exception {
     final String key = id + resource;
 
     StreamingResourceEntity streamingResourceEntity = bddDataSource.obtainStreamingResource(key);
 
     if (streamingResourceEntity == null) {
-      streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource);
+      streamingResourceEntity = networkDataSource.getBookResource(id, transformInverse(bookMetadata), resource, bookImageQuality);
 
       try {
         final StreamingResourceEntity savedStreamingResourceEntity = StreamingResourceEntity.create(bddDataSource.persist(key, streamingResourceEntity));

@@ -11,6 +11,7 @@ import com.worldreader.core.application.di.qualifiers.WorldReaderServer;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
+import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.BookMetadataEntity;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.datasource.model.ContentOpfLocationEntity;
@@ -18,7 +19,8 @@ import com.worldreader.core.datasource.model.ResourcesCredentialsEntity;
 import com.worldreader.core.datasource.model.StreamingResourceEntity;
 import com.worldreader.core.datasource.network.general.retrofit.adapter.Retrofit2ErrorAdapter;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
-import com.worldreader.core.datasource.network.quality.ImageResourceQualityProvider;
+import com.worldreader.core.datasource.network.quality.ImageResourceQuality;
+import com.worldreader.core.domain.model.BookImageQuality;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -49,18 +51,18 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
   private final OkHttpClient httpClient;
   private final Gson gson;
   private final Serializer xmlSerializer;
-  private final ImageResourceQualityProvider imageResourceQualityProvider;
+  private final Mapper<BookImageQuality, ImageResourceQuality> toImageResourceQualityMapper;
   private final ErrorAdapter<Throwable> errorAdapter = new Retrofit2ErrorAdapter();
 
   private final Cache<String, ResourcesCredentialsEntity> cache;
 
   @Inject public StreamingBookNetworkDataSourceImpl(HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient, Gson gson,
-      Serializer xmlSerializer, ImageResourceQualityProvider imageResourceQualityProvider) {
+      Serializer xmlSerializer, Mapper<BookImageQuality, ImageResourceQuality> toImageResourceQualityMapper) {
     this.resourceEndpointUrl = resourceEndpointUrl;
     this.httpClient = httpClient;
     this.gson = gson;
     this.xmlSerializer = xmlSerializer;
-    this.imageResourceQualityProvider = imageResourceQualityProvider;
+    this.toImageResourceQualityMapper = toImageResourceQualityMapper;
     this.cache = CacheBuilder.newBuilder().maximumSize(1).expireAfterAccess(60, TimeUnit.MINUTES).build();
   }
 
@@ -232,12 +234,15 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     return entity;
   }
 
-  @Override public StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata, final String resource) throws Exception {
+  @Override public StreamingResourceEntity getBookResource(final String id, final BookMetadataEntity bookMetadata, final String resource, final
+  BookImageQuality bookImageQuality) throws
+      Exception {
     // Create resource url
     final String resourcePath = bookMetadata.getRelativeContentUrl() != null ? bookMetadata.getRelativeContentUrl() + resource : "" + resource;
     final String resourceUrl = String.format(GET_BOOK_RESOURCE_URL, id, resourcePath);
 
-    final HttpUrl url = buildBookResourceUrl(id, bookMetadata.getVersion(), resourceUrl, resourcePath);
+    final HttpUrl url =
+        buildBookResourceUrl(id, bookMetadata.getVersion(), resourceUrl, resourcePath, toImageResourceQualityMapper.transform(bookImageQuality));
     final Request request = new Request.Builder().url(url).build();
 
     // Perform the network call
@@ -252,14 +257,15 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     }
   }
 
-  private HttpUrl buildBookResourceUrl(final String id, final String version, final String resourceUrl, final String resourcePath) {
+  private HttpUrl buildBookResourceUrl(final String id, final String version, final String resourceUrl, final String resourcePath, ImageResourceQuality
+      imageResourceQuality) {
     final boolean isImageRequest = isImageRequest(resourceUrl);
 
     // Perform a fix for the urls related to images
     final String finalResourcePath;
     if (isImageRequest) {
       finalResourcePath =
-          resourcePath.substring(0, resourcePath.lastIndexOf(".")) + imageResourceQualityProvider.provideQuality().getUrlQualifier() + ".jpg";
+          resourcePath.substring(0, resourcePath.lastIndexOf(".")) + imageResourceQuality.getUrlQualifier() + ".jpg";
     } else {
       finalResourcePath = resourcePath;
     }
