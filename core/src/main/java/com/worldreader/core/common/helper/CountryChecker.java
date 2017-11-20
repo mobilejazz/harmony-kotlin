@@ -7,13 +7,13 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 
 import javax.inject.Inject;
 import java.util.*;
-import com.google.common.base.Optional;
 
 @PerActivity public class CountryChecker {
 
@@ -27,6 +27,17 @@ import com.google.common.base.Optional;
     this.context = context;
     this.countryCodeProvider = countryCodeProvider;
     this.logger = logger;
+  }
+
+  public boolean isLocatedInAnyCountry(String... countryIso2Codes) {
+    boolean isLocatedInAnyCountry = false;
+    for (String countryIso2Code : countryIso2Codes) {
+      isLocatedInAnyCountry = isLocatedInCountry(countryIso2Code);
+      if (isLocatedInAnyCountry) {
+        break;
+      }
+    }
+    return isLocatedInAnyCountry;
   }
 
   public boolean isLocatedInCountry(String countryIso2Code) {
