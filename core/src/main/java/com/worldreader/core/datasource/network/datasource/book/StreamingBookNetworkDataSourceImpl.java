@@ -8,6 +8,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
 import com.worldreader.core.application.di.qualifiers.WorldReaderServer;
+import com.worldreader.core.application.di.qualifiers.WorldreaderApiEndpoint;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.common.helper.HttpStatus;
@@ -56,7 +57,8 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
 
   private final Cache<String, ResourcesCredentialsEntity> cache;
 
-  @Inject public StreamingBookNetworkDataSourceImpl(HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient, Gson gson,
+  @Inject public StreamingBookNetworkDataSourceImpl(@WorldreaderApiEndpoint HttpUrl resourceEndpointUrl, @WorldReaderServer final OkHttpClient httpClient,
+      Gson gson,
       Serializer xmlSerializer, Mapper<BookImageQuality, ImageResourceQuality> toImageResourceQualityMapper) {
     this.resourceEndpointUrl = resourceEndpointUrl;
     this.httpClient = httpClient;

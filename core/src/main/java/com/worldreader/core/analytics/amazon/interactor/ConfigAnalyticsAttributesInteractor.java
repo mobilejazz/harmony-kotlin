@@ -1,5 +1,6 @@
 package com.worldreader.core.analytics.amazon.interactor;
 
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -49,8 +50,15 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("deviceId", analyticsInfoModel.getDeviceId());
         attributes.put("clientId", analyticsInfoModel.getClientId());
         attributes.put(AnalyticsEventConstants.APP_IN_OFFLINE, String.valueOf((reachability.isReachable()) ? 0 : 1));
-        attributes.put("countryCode", countryCodeProvider.getCountryCode()); //When generating logs for Opera, I use only this attribute and
-        // disable the following 5 ones.
+        attributes.put("countryCode", countryCodeProvider.getCountryCode());//This is the logic to get this value: tries to get geo, if not available  ->
+        // SIM, if not available -> default:US
+        attributes.put("geolocationCountryCode", countryCodeProvider.getGeolocationCountryIsoCode().isPresent() ? countryCodeProvider
+            .getGeolocationCountryIsoCode()
+            .get()
+            : "");//this value is the actual country code obtained using Google API with obtained lat,long from GPS. If we couldn't obtain that info, empty
+        // value
+        //When generating logs for Opera, I use only this attribute and
+          // disable the following 5 ones.
 
         attributes.put("simCountryCode", countryCodeProvider.getSimCountryIsoCode());
         attributes.put("networkCountryCode", countryCodeProvider.getNetworkCountryIsoCode());
