@@ -34,8 +34,9 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   private DomainCallback<Integer, ErrorCore<?>> callback;
   private DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback;
 
-  @Inject public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor, MainThread mainThread,
-      GetBookMetadataInteractor getBookMetadataInteractor, StreamingBookRepository streamingBookRepository) {
+  @Inject
+  public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor, MainThread mainThread, GetBookMetadataInteractor getBookMetadataInteractor,
+      StreamingBookRepository streamingBookRepository) {
     super(executor, mainThread);
     this.logger = logger;
     this.getBookMetadataInteractor = getBookMetadataInteractor;
@@ -104,17 +105,17 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   }
 
   private void downloadBookResources(BookMetadata bookMetadata, boolean shouldNotifyResponses) throws Throwable {
-    if (bookMetadata != null && bookMetadata.getResources() != null) {
-      List<String> resources = bookMetadata.getResources();
+    if (bookMetadata != null && bookMetadata.resources != null) {
+      final List<String> resources = bookMetadata.resources;
 
       int numberOfResources = resources.size() + 2/*content opf && toc*/;
       int count = 0;
 
-      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.getContentOpfName());
+      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.contentOpfName);
 
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
 
-      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.getTocResource());
+      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.tocResourceName);
 
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
 
@@ -126,7 +127,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
         try {
           streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
         } catch (Exception e) {
-          if (e instanceof UnknownHostException){
+          if (e instanceof UnknownHostException) {
             // If we have problems with the network we rethrow the exception (causing the download to stop)
             throw e;
           } else {

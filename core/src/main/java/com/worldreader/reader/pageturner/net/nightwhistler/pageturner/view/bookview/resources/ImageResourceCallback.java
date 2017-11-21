@@ -66,7 +66,7 @@ public class ImageResourceCallback {
   }
 
   private void onPrepareBitmapDrawableFromResource() {
-    final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.getImagesResources();
+    final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.imagesResources;
     final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(data) : null;
 
     final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;

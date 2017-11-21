@@ -70,9 +70,7 @@ import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.core.userflow.UserFlowTutorial;
 import com.worldreader.core.userflow.model.TutorialModel;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ColorProfile;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
@@ -99,14 +97,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
-import static jedi.functional.FunctionalPrimitives.firstOption;
-
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
   public static final String CHANGE_FONT_KEY = "change_font_key";
   public static final String CHANGE_BACKGROUND_KEY = "change.background.key";
 
   private static final String TAG = AbstractReaderFragment.class.getSimpleName();
+
   private static final String POS_KEY = "offset:";
   private static final String IDX_KEY = "index:";
 
@@ -115,13 +112,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private Context context;
 
-  private TextLoader textLoader;
-  private String bookTitle;
-  private String author;
   protected BookMetadata bookMetadata;
+
+  private TextLoader textLoader;
   private List<TocEntry> tableOfContents;
 
-  private ProgressDialog progressDialog;
   private OnBookTocEntryListener bookTocEntryListener;
 
   private BookView bookView;
@@ -132,15 +127,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private TutorialView tutorialView;
   private View containerTutorialView;
   private View progressContainer;
+  private ProgressDialog progressDialog;
 
   protected DICompanion di;
 
   protected int currentScrolledPages = 0;
   private boolean hasSharedText;
-
-  private enum Orientation {
-    HORIZONTAL, VERTICAL
-  }
 
   @Override public void onAttach(Context context) {
     super.onAttach(context);
@@ -155,11 +147,23 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return inflater.inflate(R.layout.fragment_reader, container, false);
   }
 
-  @Override public void onActivityCreated(Bundle savedInstanceState) {
+  @SuppressLint("ClickableViewAccessibility") @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
 
     this.context = getActivity();
 
+    // Inject views
+    final View view = getView();
+    this.bookView = view.findViewById(R.id.reading_fragment_bookView);
+    this.readingTitleProgressTv = view.findViewById(R.id.title_chapter_tv);
+    this.chapterProgressDsb = view.findViewById(R.id.chapter_progress_dsb);
+    this.chapterProgressPagesTv = view.findViewById(R.id.chapter_progress_pages_tv);
+    this.definitionView = view.findViewById(R.id.reading_fragment_word_definition_dv);
+    this.tutorialView = view.findViewById(R.id.reading_fragment_tutorial_view);
+    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
+    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
+
+    // Call injector
     di = onProvideDICompanionObject();
 
     // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
@@ -168,7 +172,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
 
-    if (bookMetadata.getCollectionId() > 0) {
+    if (bookMetadata.collectionId > 0) {
       onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT);
     }
 
@@ -178,18 +182,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     onNotifyGamificationFontOrBackgroundReaderEvents(isFontChanged, isBackgroundChanged);
     onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT);
     onReaderFragmentEvent(BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT);
-
-    final View view = getView();
-
-    this.bookView = (BookView) view.findViewById(R.id.reading_fragment_bookView);
-
-    this.readingTitleProgressTv = (TextView) view.findViewById(R.id.reading_fragment_progress_chapter_title_tv);
-    this.chapterProgressDsb = (DiscreteSeekBar) view.findViewById(R.id.reading_fragment_chapter_progress_dsb);
-    this.chapterProgressPagesTv = (TextView) view.findViewById(R.id.reading_fragment_chapter_progress_pages_tv);
-    this.definitionView = (DefinitionView) view.findViewById(R.id.reading_fragment_word_definition_dv);
-    this.tutorialView = (TutorialView) view.findViewById(R.id.reading_fragment_tutorial_view);
-    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
-    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
 
     final ResourcesLoader resourcesLoader =
         new FileEpubResourcesLoader(di.logger); //new StreamingResourcesLoader(bookMetadata, di.streamingBookDataSource, di.logger);
@@ -239,18 +231,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
 
       @Override public void share(String selectedText) {
-        String author = null;
-
-        if (!bookView.getBook().getMetadata().getAuthors().isEmpty()) {
-          author = bookView.getBook().getMetadata().getAuthors().get(0).toString();
-        }
-
-        String text;
-        if (author == null) {
-          text = bookTitle + " \n\n" + selectedText;
-        } else {
-          text = bookTitle + ", " + author + "\n\n" + selectedText;
-        }
+        final String text = TextUtils.isEmpty(bookMetadata.author) ? bookMetadata.title + " \n\n" + selectedText
+                                                                   : bookMetadata.title + ", " + bookMetadata.author + "\n\n" + selectedText;
 
         final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -262,14 +244,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     }, new ActionModeListener() {
       @Override public void onCreateActionMode() {
-        if (getSystemUiHelper() != null && !getSystemUiHelper().isShowing()) {
-          getSystemUiHelper().show();
+        final SystemUiHelper uiHelper = getSystemUiHelper();
+        if (uiHelper != null && !uiHelper.isShowing()) {
+          uiHelper.show();
         }
       }
 
       @Override public void onDestroyActionMode() {
-        if (getSystemUiHelper() != null && getSystemUiHelper().isShowing()) {
-          getSystemUiHelper().hide();
+        final SystemUiHelper uiHelper = getSystemUiHelper();
+        if (uiHelper != null && uiHelper.isShowing()) {
+          uiHelper.hide();
         }
       }
     });
@@ -416,7 +400,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
-    int itemId = item.getItemId();
+    final int itemId = item.getItemId();
+    
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
       return true;
@@ -571,11 +556,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       int position = this.bookView.getProgressPosition();
 
       if (index != -1 && position != -1 && !bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.getBookId(), position);
-        di.config.setLastIndex(this.bookMetadata.getBookId(), index);
+        di.config.setLastPosition(this.bookMetadata.bookId, position);
+        di.config.setLastIndex(this.bookMetadata.bookId, index);
       } else if (bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.getBookId(), -1);
-        di.config.setLastIndex(this.bookMetadata.getBookId(), -1);
+        di.config.setLastPosition(this.bookMetadata.bookId, -1);
+        di.config.setLastIndex(this.bookMetadata.bookId, -1);
       }
     }
   }
@@ -617,15 +602,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void updateFileName(Bundle savedInstanceState) {
-    int lastPos = di.config.getLastPosition(bookMetadata.getBookId());
-    int lastIndex = di.config.getLastIndex(bookMetadata.getBookId());
+    int lastPos = di.config.getLastPosition(bookMetadata.bookId);
+    int lastIndex = di.config.getLastIndex(bookMetadata.bookId);
 
     if (savedInstanceState != null) {
       lastPos = savedInstanceState.getInt(POS_KEY, lastPos);
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    this.bookView.setFileName(bookMetadata.getBookId());
+    this.bookView.setFileName(bookMetadata.bookId);
     this.bookView.setPosition(lastPos);
     this.bookView.setIndex(lastIndex);
 
@@ -654,19 +639,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
-    }
-
-    this.bookTitle = book.getTitle();
-
-    final Metadata metadata = book.getMetadata();
-
-    if (metadata != null) {
-      // Author
-      final Author authorsOption = firstOption(metadata.getAuthors()).getOrElse(new Author(getString(R.string.ls_book_reading_unknown_author)));
-      this.author = TextUtils.isEmpty(authorsOption.getLastname()) ? getString(R.string.ls_book_reading_unknown_author) : authorsOption.getLastname();
-    } else {
-      // Assuming defaults
-      this.author = getString(R.string.ls_book_reading_unknown_author);
     }
 
     if (bookTocEntryListener != null) {
@@ -723,7 +695,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Pages remaining for chapter
     formatPageChapterProgress();
 
-    readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookTitle);
+    readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookMetadata.title);
 
     // Tutorial feature
     if (di.userFlowTutorial != null) { // TODO: Remove this check
@@ -798,9 +770,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-      pageDown(Orientation.HORIZONTAL);
+      pageDown();
     } else {
-      pageUp(Orientation.HORIZONTAL);
+      pageUp();
     }
 
     if (bookView.isAtEnd()) {
@@ -817,9 +789,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-      pageUp(Orientation.HORIZONTAL);
+      pageUp();
     } else {
-      pageDown(Orientation.HORIZONTAL);
+      pageDown();
     }
 
     return true;
@@ -832,9 +804,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-      pageUp(Orientation.HORIZONTAL);
+      pageUp();
     } else {
-      pageDown(Orientation.HORIZONTAL);
+      pageDown();
     }
 
     return true;
@@ -847,9 +819,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
-      pageDown(Orientation.HORIZONTAL);
+      pageDown();
     } else {
-      pageUp(Orientation.HORIZONTAL);
+      pageUp();
     }
 
     if (bookView.isAtEnd()) {
@@ -901,9 +873,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onLastScreenPageDown() {
     currentScrolledPages += 1;
-    // Update book metadata with author and title
-    bookMetadata.setTitle(bookTitle);
-    bookMetadata.setAuthor(author);
     onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT);
   }
 
@@ -926,7 +895,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       if (bitmap != null) {
         final ImageSource imageSource = ImageSource.cachedBitmap(bitmap);
-        final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
+        final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
         imageScaleView.setImage(imageSource);
         imageScaleView.setMaxScale(3);
         imageViewContainer.setVisibility(View.VISIBLE);
@@ -943,7 +912,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
       closeButton.setOnClickListener(null);
 
-      final SubsamplingScaleImageView imageScaleView = (SubsamplingScaleImageView) activity.findViewById(R.id.photo_viewer_iv);
+      final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
       imageScaleView.recycle();
     }
   }
@@ -1000,18 +969,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     Log.d(TAG, "Got key event: " + keyCode + " with action " + action);
 
-    Log.d(TAG, "Key event is NOT a media key event.");
-
     switch (keyCode) {
       case KeyEvent.KEYCODE_DPAD_RIGHT:
         if (action == KeyEvent.ACTION_DOWN) {
-          pageDown(Orientation.HORIZONTAL);
+          pageDown();
         }
         return true;
 
       case KeyEvent.KEYCODE_DPAD_LEFT:
         if (action == KeyEvent.ACTION_DOWN) {
-          pageUp(Orientation.HORIZONTAL);
+          pageUp();
         }
         return true;
 
@@ -1038,7 +1005,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return false;
   }
 
-  private void pageDown(Orientation o) {
+  private void pageDown() {
     if (bookView.isAtEnd()) {
       bookView.lastPageDown();
       return;
@@ -1048,7 +1015,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     formatPageChapterProgress();
   }
 
-  private void pageUp(Orientation o) {
+  private void pageUp() {
     if (bookView.isAtStart()) {
       return;
     }
@@ -1080,7 +1047,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void notifyFinishedBookEventInteractor() {
-    final ListenableFuture<Boolean> finishBookFuture = di.finishBookInteractor.execute(bookMetadata.getBookId());
+    final ListenableFuture<Boolean> finishBookFuture = di.finishBookInteractor.execute(bookMetadata.bookId);
     Futures.addCallback(finishBookFuture, new FutureCallback<Boolean>() {
       @Override public void onSuccess(final Boolean result) {
         // Ignored result
@@ -1093,12 +1060,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void formatPageChapterProgress() {
-    chapterProgressPagesTv.setText(
-        bookView.getPagesForResource() < bookView.getCurrentPage() ? "" : String.format("%s / %s", bookView.getCurrentPage(), bookView.getPagesForResource()));
+    final int pagesForResource = bookView.getPagesForResource();
+    final int currentPage = bookView.getCurrentPage();
+
+    chapterProgressPagesTv.setText(pagesForResource < currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource));
 
     final Option<Spanned> text = bookView.getStrategy().getText();
     final Spanned spanned = text.getOrElse(new SpannableString(""));
-    if (bookView.getPagesForResource() > 0) {
+
+    if (pagesForResource > 0) {
+      // TODO: 21/11/2017 Move this to event
       final Map<String, String> amaAttributes = new HashMap<String, String>() {{
         //Book toc size
         put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES, String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
@@ -1109,11 +1080,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         //Currently reading toc entry number
         put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION, String.valueOf(bookView.getIndex()));
         put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
-        put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(bookView.getCurrentPage()));
-        put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(bookView.getPagesForResource()));
+        put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(currentPage));
+        put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(pagesForResource));
         put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
-        put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.getBookId());
-        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.getTitle());
+        put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.bookId);
+        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.bookId);
       }};
 
       di.analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));

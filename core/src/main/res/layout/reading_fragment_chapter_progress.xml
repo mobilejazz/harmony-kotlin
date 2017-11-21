@@ -21,7 +21,7 @@
     android:padding="@dimen/span_16">
 
     <TextView
-      android:id="@+id/reading_fragment_progress_chapter_title_tv"
+      android:id="@+id/title_chapter_tv"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:ellipsize="end"
@@ -33,7 +33,7 @@
       tools:text="Once upon a time" />
 
     <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
-      android:id="@+id/reading_fragment_chapter_progress_dsb"
+      android:id="@+id/chapter_progress_dsb"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:clickable="false"
@@ -45,7 +45,7 @@
       app:dsb_progressColor="@color/colorPrimary" />
 
     <TextView
-      android:id="@+id/reading_fragment_chapter_progress_pages_tv"
+      android:id="@+id/chapter_progress_pages_tv"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:ellipsize="end"

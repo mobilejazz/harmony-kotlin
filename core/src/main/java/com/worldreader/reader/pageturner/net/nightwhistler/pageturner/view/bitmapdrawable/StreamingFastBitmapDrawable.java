@@ -71,7 +71,7 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
 
       if (!isLoaded && !isProcessing) {
         isProcessing = true;
-        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
+        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.bookId, metadata, URLDecoder.decode(resource));
         Futures.addCallback(future, new FutureCallback<StreamingResource>() {
           @Override public void onSuccess(final StreamingResource result) {
             final InputStream inputStream = result.getInputStream();
