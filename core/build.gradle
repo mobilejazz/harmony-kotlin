@@ -2,10 +2,8 @@ apply plugin: 'com.android.library'
 apply from: 'buildsystem/dependencies.gradle'
 
 android {
-  def globalConfiguration = project.ext;
-
-  compileSdkVersion globalConfiguration.androidCompileSdkVersion
-  buildToolsVersion globalConfiguration.androidBuildToolsVersion
+  compileSdkVersion rootProject.ext.androidCompileSdkVersion
+  buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
   lintOptions {
     abortOnError false
@@ -17,8 +15,8 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion globalConfiguration.androidMinSdkVersion
-    targetSdkVersion globalConfiguration.androidTargetSdkVersion
+    minSdkVersion rootProject.ext.androidMinSdkVersion
+    targetSdkVersion rootProject.ext.androidTargetSdkVersion
 
     versionCode 1001
 
@@ -48,7 +46,6 @@ android {
 
 dependencies {
   def dependencies = project.ext.dependencies
-  def testDependencies = project.ext.testDependencies
 
   compile dependencies.appCompat
   compile dependencies.supportAnnotation
@@ -119,12 +116,4 @@ dependencies {
   compile dependencies.networkConnectionClass
 
   compile 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
-
-  testCompile testDependencies.hamcrest
-  testCompile(testDependencies.junit) {
-    exclude module: 'hamcrest-core'
-  }
-  testCompile testDependencies.mockito
-  testCompile testDependencies.powermock
-  testCompile testDependencies.powermockito
 }

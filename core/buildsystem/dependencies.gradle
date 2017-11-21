@@ -6,19 +6,12 @@ rootProject.allprojects {
 }
 
 ext {
-  androidBuildToolsVersion = "26.0.2"
-  androidMinSdkVersion = 16
-  androidTargetSdkVersion = 25
-  androidCompileSdkVersion = 25
-
-  supportLibrariesVersion = '25.1.0'
-
   dependencies = [
-      appCompat                : "com.android.support:appcompat-v7:$supportLibrariesVersion",
-      recyclerView             : "com.android.support:recyclerview-v7:$supportLibrariesVersion",
-      cardView                 : "com.android.support:cardview-v7:$supportLibrariesVersion",
-      design                   : "com.android.support:design:$supportLibrariesVersion",
-      supportAnnotation        : "com.android.support:support-annotations:$supportLibrariesVersion",
+      appCompat                : "com.android.support:appcompat-v7:$rootProject.ext.supportLibrariesVersion",
+      recyclerView             : "com.android.support:recyclerview-v7:$rootProject.ext.supportLibrariesVersion",
+      cardView                 : "com.android.support:cardview-v7:$rootProject.ext.supportLibrariesVersion",
+      design                   : "com.android.support:design:$rootProject.ext.supportLibrariesVersion",
+      supportAnnotation        : "com.android.support:support-annotations:$rootProject.ext.supportLibrariesVersion",
 
       logger                   : "com.mobilejazz.logger:library:0.2-SNAPSHOT",
 
@@ -63,35 +56,5 @@ ext {
       awsCore                  : "com.amazonaws:aws-android-sdk-core:2.2.+",
       awsMobileAnalytics       : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
       networkConnectionClass   : "com.facebook.network.connectionclass:connectionclass:1.0.1"
-
   ]
-
-  jUnitVersion = '4.12'
-  mockitoVersion = '1.10.19'
-  dexmakerVersion = '1.0'
-  espressoVersion = '2.2.2'
-  testingSupportLibVersion = '0.1'
-  powermockVersion = '1.6.2'
-  hamcrestVersion = '1.3'
-  androidRunnerVersion = '0.5'
-  espressoVersion = '2.2.2'
-  dexmakerVersion = '1.4'
-
-
-  testDependencies = [
-      runner         : "com.android.support.test:runner:${androidRunnerVersion}",
-      rules          : "com.android.support.test:rules:${androidRunnerVersion}",
-      espressoCore   : "com.android.support.test.espresso:espresso-core:$espressoVersion",
-      espressoContrib: "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
-      espressoIntents: "com.android.support.test.espresso:espresso-intents:$espressoVersion",
-      junit          : "junit:junit:${jUnitVersion}",
-      mockito        : "org.mockito:mockito-core:${mockitoVersion}",
-      hamcrest       : "org.hamcrest:hamcrest-library:${hamcrestVersion}",
-      powermock      : "org.powermock:powermock-module-junit4:${powermockVersion}",
-      powermockito   : "org.powermock:powermock-api-mockito:${powermockVersion}",
-      dexmaker       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
-      dexmakerDx     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
-      dexmakerMockito: "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion"
-  ]
-
 }
