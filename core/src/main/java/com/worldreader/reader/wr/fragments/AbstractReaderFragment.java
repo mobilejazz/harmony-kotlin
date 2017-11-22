@@ -72,9 +72,7 @@ import com.worldreader.core.userflow.UserFlowTutorial;
 import com.worldreader.core.userflow.model.TutorialModel;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ColorProfile;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.ReadingDirection;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
@@ -82,8 +80,8 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.FileEpubResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoaderFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
@@ -170,103 +168,38 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final Intent intent = getActivity().getIntent();
     this.bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
 
-    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
-
-    if (bookMetadata.collectionId > 0) {
-      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT);
-    }
-
+    // Gather status variables for the reader
     final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
     final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
 
+    // Call gamification events
+    onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
+    if (bookMetadata.collectionId > 0) {
+      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_START_BOOK_FROM_COLLECTION_EVENT);
+    }
     onNotifyGamificationFontOrBackgroundReaderEvents(isFontChanged, isBackgroundChanged);
     onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_READ_ON_X_CONTINOUS_DAYS_EVENT);
     onReaderFragmentEvent(BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT);
 
-    final ResourcesLoader resourcesLoader =
-        new FileEpubResourcesLoader(di.logger); //new StreamingResourcesLoader(bookMetadata, di.streamingBookDataSource, di.logger);
+    // Prepare resources loader from BookMetadata
+    final ResourcesLoader resourcesLoader = ResourcesLoaderFactory.create(bookMetadata, di);
 
+    // Prepare resources loader
     this.textLoader = new TextLoader(HtmlSpannerFactory.create(di.config), resourcesLoader);
 
-    this.bookView.init(bookMetadata, resourcesLoader, textLoader, di.streamingBookDataSource, di.logger);
+    // Initialize BookView
+    this.bookView.init(bookMetadata, resourcesLoader, textLoader, di.logger);
     this.bookView.setListener(this);
-    this.bookView.setTextSelectionCallback(new TextSelectionCallback() {
-      @Override public void lookupDictionary(String text) {
-        if (di.reachability.isReachable()) {
-          if (text != null) {
-            text = text.trim();
+    this.bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener());
 
-            final StringTokenizer st = new StringTokenizer(text);
-            if (st.countTokens() == 1) {
-              definitionView.showLoading();
-              showDefinitionView();
-              final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
-              AndroidFutures.addCallbackMainThread(getWordDefinitionFuture, new FutureCallback<WordDefinition>() {
-                @Override public void onSuccess(@Nullable WordDefinition result) {
-                  if (isAdded()) {
-                    definitionView.setWordDefinition(result);
-                    definitionView.showDefinition();
-                  }
-                }
-
-                @Override public void onFailure(@NonNull Throwable t) {
-                  // Ignore error
-                }
-              });
-            } else {
-              Toast.makeText(getContext(), R.string.ls_book_reading_select_one_word, Toast.LENGTH_SHORT).show();
-            }
-          }
-        } else {
-          final MaterialDialog networkErrorDialog =
-              DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_definition_not_internet,
-                  R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
-                    @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
-                    }
-                  });
-
-          networkErrorDialog.setCancelable(false);
-          networkErrorDialog.show();
-        }
-      }
-
-      @Override public void share(String selectedText) {
-        final String text = TextUtils.isEmpty(bookMetadata.author) ? bookMetadata.title + " \n\n" + selectedText
-                                                                   : bookMetadata.title + ", " + bookMetadata.author + "\n\n" + selectedText;
-
-        final Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-        sendIntent.setType("text/plain");
-
-        startActivity(Intent.createChooser(sendIntent, getString(R.string.ls_generic_share)));
-        setShareFlag();
-      }
-    }, new ActionModeListener() {
-      @Override public void onCreateActionMode() {
-        final SystemUiHelper uiHelper = getSystemUiHelper();
-        if (uiHelper != null && !uiHelper.isShowing()) {
-          uiHelper.show();
-        }
-      }
-
-      @Override public void onDestroyActionMode() {
-        final SystemUiHelper uiHelper = getSystemUiHelper();
-        if (uiHelper != null && uiHelper.isShowing()) {
-          uiHelper.hide();
-        }
-      }
-    });
-
-    // Hide the tutorial view because we need to wait that the book is loaded
-    setTutorialViewVisibility(View.INVISIBLE);
-
+    // Setup definitionView listener
     this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
       @Override public void onClick(DefinitionView view) {
         hideDefinitionView();
       }
     });
 
+    // Calculate dimensions for progress container with navigation bar height
     final int pl = progressContainer.getPaddingLeft();
     final int pt = progressContainer.getPaddingTop();
     final int pr = progressContainer.getPaddingRight();
@@ -288,26 +221,32 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
-    final AppCompatActivity activity = (AppCompatActivity) getActivity();
-
     final DisplayMetrics metrics = new DisplayMetrics();
-    activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+    // Setup our special gesture detector to be aware of user movements in the reader
     final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, metrics, this));
 
-    final View.OnTouchListener gestureListener = new View.OnTouchListener() {
+    bookView.setOnTouchListener(new View.OnTouchListener() {
       @SuppressLint("ClickableViewAccessibility") @Override public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
       }
-    };
+    });
 
-    bookView.setOnTouchListener(gestureListener);
-
+    // Prepare registration for menu in BookView
     registerForContextMenu(bookView);
-    saveConfigState();
-    updateFromPrefs();
-    updateFileName(savedInstanceState);
 
-    bookView.restore();
+    // Save current state
+    saveConfigState();
+
+    // Load state in reader
+    updateFromPrefs();
+
+    // Try to restore last read position
+    restoreLastReadPosition(savedInstanceState);
+
+    // Kick start loading of text
+    bookView.startLoadingText();
   }
 
   @Override public void onResume() {
@@ -401,16 +340,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     final int itemId = item.getItemId();
-    
+
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
       return true;
     } else if (itemId == R.id.display_options) {
-      final ModifyReaderSettingsDialog d = new ModifyReaderSettingsDialog();
+      final ReaderSettingsDialog d = new ReaderSettingsDialog();
       d.setBrightnessManager(di.brightnessManager);
       d.setConfiguration(di.config);
-      d.setOnModifyReaderSettingsListener(new ModifyReaderSettingsDialog.ModifyReaderSettingsListener() {
-        @Override public void onReaderSettingsModified(ModifyReaderSettingsDialog.Action action) {
+      d.setOnModifyReaderSettingsListener(new ReaderSettingsDialog.ModifyReaderSettingsListener() {
+        @Override public void onReaderSettingsModified(ReaderSettingsDialog.Action action) {
           switch (action) {
             case MODIFIED:
               updateFromPrefs();
@@ -419,7 +358,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         }
       });
       final FragmentManager fm = getFragmentManager();
-      d.show(fm, ModifyReaderSettingsDialog.TAG);
+      d.show(fm, ReaderSettingsDialog.TAG);
       return true;
     } else if (itemId == R.id.text_to_speech) {
       onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
@@ -601,7 +540,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     savedConfigState.colorProfile = di.config.getColourProfile();
   }
 
-  private void updateFileName(Bundle savedInstanceState) {
+  private void restoreLastReadPosition(Bundle savedInstanceState) {
     int lastPos = di.config.getLastPosition(bookMetadata.bookId);
     int lastIndex = di.config.getLastIndex(bookMetadata.bookId);
 
@@ -613,8 +552,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.bookView.setFileName(bookMetadata.bookId);
     this.bookView.setPosition(lastPos);
     this.bookView.setIndex(lastIndex);
-
-    //config.setLastOpenedFile(fileName);
   }
 
   public void onWindowFocusChanged(boolean hasFocus) {
@@ -769,7 +706,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
       pageDown();
     } else {
       pageUp();
@@ -788,7 +725,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
       pageUp();
     } else {
       pageDown();
@@ -803,7 +740,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
       pageUp();
     } else {
       pageDown();
@@ -818,7 +755,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
       pageDown();
     } else {
       pageUp();
@@ -1098,6 +1035,78 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     void displayBookTableOfContents();
   }
 
+  private class ReaderTextSelectionCallback implements TextSelectionCallback {
+
+    @Override public void lookupDictionary(String text) {
+      if (di.reachability.isReachable()) {
+        if (text != null) {
+          text = text.trim();
+
+          final StringTokenizer st = new StringTokenizer(text);
+          if (st.countTokens() == 1) {
+            definitionView.showLoading();
+            showDefinitionView();
+            final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
+            AndroidFutures.addCallbackMainThread(getWordDefinitionFuture, new FutureCallback<WordDefinition>() {
+              @Override public void onSuccess(@Nullable WordDefinition result) {
+                if (isAdded()) {
+                  definitionView.setWordDefinition(result);
+                  definitionView.showDefinition();
+                }
+              }
+
+              @Override public void onFailure(@NonNull Throwable t) {
+                // Ignore error
+              }
+            });
+          } else {
+            Toast.makeText(getContext(), R.string.ls_book_reading_select_one_word, Toast.LENGTH_SHORT).show();
+          }
+        }
+      } else {
+        final MaterialDialog networkErrorDialog =
+            DialogFactory.createDialog(getContext(), R.string.ls_error_signup_network_title, R.string.ls_error_definition_not_internet,
+                R.string.ls_generic_accept, DialogFactory.EMPTY, new DialogFactory.ActionCallback() {
+                  @Override public void onResponse(MaterialDialog dialog, final DialogFactory.Action action) {
+                  }
+                });
+
+        networkErrorDialog.setCancelable(false);
+        networkErrorDialog.show();
+      }
+    }
+
+    @Override public void share(String selectedText) {
+      final String text = TextUtils.isEmpty(bookMetadata.author) ? bookMetadata.title + " \n\n" + selectedText
+                                                                 : bookMetadata.title + ", " + bookMetadata.author + "\n\n" + selectedText;
+
+      final Intent sendIntent = new Intent();
+      sendIntent.setAction(Intent.ACTION_SEND);
+      sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+      sendIntent.setType("text/plain");
+
+      startActivity(Intent.createChooser(sendIntent, getString(R.string.ls_generic_share)));
+      setShareFlag();
+    }
+  }
+
+  private class ReaderActionModeListener implements ActionModeListener {
+
+    @Override public void onCreateActionMode() {
+      final SystemUiHelper uiHelper = getSystemUiHelper();
+      if (uiHelper != null && !uiHelper.isShowing()) {
+        uiHelper.show();
+      }
+    }
+
+    @Override public void onDestroyActionMode() {
+      final SystemUiHelper uiHelper = getSystemUiHelper();
+      if (uiHelper != null && uiHelper.isShowing()) {
+        uiHelper.hide();
+      }
+    }
+  }
+
   private static class SavedConfigState {
 
     private boolean stripWhiteSpace;
@@ -1110,7 +1119,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     private int textSize;
     private boolean scrolling;
     private boolean allowColoursFromCSS;
-    private ColorProfile colorProfile;
+    private Configuration.ColorProfile colorProfile;
   }
 
   public static class DICompanion {
