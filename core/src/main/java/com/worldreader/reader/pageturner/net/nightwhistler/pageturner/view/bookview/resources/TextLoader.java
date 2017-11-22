@@ -217,7 +217,10 @@ public class TextLoader {
       });
     }
 
-    final double memoryUsage = Configuration.getMemoryUsage();
+    // Calculate memory usage
+    long max = Runtime.getRuntime().maxMemory();
+    long used = Runtime.getRuntime().totalMemory();
+    double memoryUsage = (double) used / (double) max;
 
     Log.d(TAG, "Current memory usage is " + (int) (memoryUsage * 100) + "%");
 
