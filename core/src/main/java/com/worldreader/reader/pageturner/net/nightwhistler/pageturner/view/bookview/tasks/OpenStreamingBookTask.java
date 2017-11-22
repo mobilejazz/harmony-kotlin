@@ -5,7 +5,6 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import jedi.option.Option;
 import org.javatuples.Pair;
@@ -18,16 +17,13 @@ public class OpenStreamingBookTask extends QueueableAsyncTask<Pair<String, Strin
   private static final String TAG = OpenStreamingBookTask.class.getSimpleName();
 
   private final TextLoader textLoader;
-  private final ResourcesLoader resourcesLoader;
   private final int storedIndex;
   private final String contentOpf;
   private final String tocResourcePath;
   private final Logger logger;
 
-  public OpenStreamingBookTask(TextLoader textLoader, ResourcesLoader resourcesLoader, int storedIndex, String contentOpf, String tocResourcePath,
-      Logger logger) {
+  public OpenStreamingBookTask(TextLoader textLoader, int storedIndex, String contentOpf, String tocResourcePath, Logger logger) {
     this.textLoader = textLoader;
-    this.resourcesLoader = resourcesLoader;
     this.storedIndex = storedIndex;
     this.contentOpf = contentOpf;
     this.tocResourcePath = tocResourcePath;
