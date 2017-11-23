@@ -774,8 +774,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
           }
         }
       });
-      builder.setSpan(imageSpan, start, end + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-      builder.setSpan(new CenterSpan(), start, end + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      builder.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      builder.setSpan(new CenterSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     @Override protected int getViewHeight() {

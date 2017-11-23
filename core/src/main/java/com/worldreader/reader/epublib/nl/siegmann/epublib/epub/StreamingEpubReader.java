@@ -30,7 +30,6 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-// TODO: 25/09/2017 Check that get book cover works properly
 public class StreamingEpubReader {
 
   private static Serializer XML_PARSER = new Persister();
@@ -117,7 +116,8 @@ public class StreamingEpubReader {
     return new Spine(spineReferences);
   }
 
-  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Spine spine, final Resources resources, final InputStream ncx) throws IOException {
+  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Spine spine, final Resources resources, final InputStream ncx)
+      throws IOException {
     if (spine == null) {
       return null; // Epub doesn't contain what we are looking for
     }
@@ -133,13 +133,14 @@ public class StreamingEpubReader {
     return tocResource;
   }
 
-  private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Resources resources) throws Exception {
+  private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Resources resources)
+      throws Exception {
     final List<TOCReference> references = getTocReferences(contentOpfEntity, ncxEntity.navPoints, resources);
     return new TableOfContents(references);
   }
 
-  @NonNull
-  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Resources resources) throws Exception {
+  @NonNull private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints,
+      final Resources resources) throws Exception {
     if (navPoints == null) {
       return new ArrayList<>();
     }

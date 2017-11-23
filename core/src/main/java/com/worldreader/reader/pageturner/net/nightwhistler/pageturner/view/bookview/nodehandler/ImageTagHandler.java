@@ -29,6 +29,10 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
       return;
     }
 
+    // Append unicode object replacement char '￼' (http://www.fileformat.info/info/unicode/char/fffc/index.htm).
+    // This is later used by Android spans.
+    builder.append("\uFFFC");
+
     // Create an ImageResourceCallback to hold all data related to the image
     final ImageResourceCallback callback = new ImageResourceCallback.Builder()
         .withSpannableBuilder(builder)

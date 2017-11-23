@@ -20,7 +20,7 @@ public class ImageResourceCallback {
 
   private static final String TAG = ImageResourceCallback.class.getSimpleName();
 
-  private final BookMetadata bookMetadata;
+  private final BookMetadata bm;
   private final StreamingBookRepository repository;
   private final int height;
   private final int width;
@@ -34,7 +34,7 @@ public class ImageResourceCallback {
   private final Logger logger;
 
   public ImageResourceCallback(Builder builder) {
-    this.bookMetadata = builder.bookMetadata;
+    this.bm = builder.bookMetadata;
     this.repository = builder.repository;
     this.height = builder.height;
     this.width = builder.width;
@@ -66,7 +66,7 @@ public class ImageResourceCallback {
   }
 
   private void onPrepareBitmapDrawableFromResource() {
-    final Map<String, ContentOpfEntity.Item> imagesResources = bookMetadata.imagesResources;
+    final Map<String, ContentOpfEntity.Item> imagesResources = bm.imagesResources;
     final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(data) : null;
 
     final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;
@@ -76,12 +76,13 @@ public class ImageResourceCallback {
     final int finalWidth = sizes.getValue0();
     final int finalHeight = sizes.getValue1();
 
-    final StreamingFastBitmapDrawable drawable = new StreamingFastBitmapDrawable(finalWidth, finalHeight, bookMetadata, repository, data, logger);
+    //final AbstractFastBitmapDrawable drawable = FastBimapFactory.create(bm, repository, data, finalWidth, finalHeight, logger);
+    final StreamingFastBitmapDrawable drawable = new StreamingFastBitmapDrawable(finalWidth, finalHeight, bm, repository, data, logger);
 
     notifyListener(drawable, builder, start, end);
   }
 
-  protected void notifyListener(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
+  private void notifyListener(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
     if (listener != null) {
       listener.onBitmapDrawableCreated(drawable, builder, start, end);
     }

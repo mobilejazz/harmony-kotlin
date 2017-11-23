@@ -11,18 +11,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import com.google.common.base.Throwables;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
-import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.util.concurrent.*;
 
 public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
 
@@ -36,12 +29,13 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   private final Shape shape;
   private final Paint paint;
 
-  private boolean isLoaded;
-  private boolean isProcessing;
   private final StreamingBookRepository dataSource;
   private final BookMetadata metadata;
   private final String resource;
   private final Logger logger;
+
+  private boolean isLoaded;
+  private boolean isProcessing;
 
   public StreamingFastBitmapDrawable(int width, int height, BookMetadata metadata, StreamingBookRepository repository, String resource, Logger logger) {
     super(width, height);
@@ -69,33 +63,33 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
       shape.draw(canvas, paint);
       canvas.restoreToCount(count);
 
-      if (!isLoaded && !isProcessing) {
-        isProcessing = true;
-        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.bookId, metadata, URLDecoder.decode(resource));
-        Futures.addCallback(future, new FutureCallback<StreamingResource>() {
-          @Override public void onSuccess(final StreamingResource result) {
-            final InputStream inputStream = result.getInputStream();
-            handler.post(new Runnable() {
-              @Override public void run() {
-                generateDrawable(inputStream);
-                isProcessing = false;
-              }
-            });
-          }
-
-          @Override public void onFailure(@NonNull final Throwable t) {
-            if (t instanceof CancellationException) {
-              return;
-            }
-            handler.post(new Runnable() {
-              @Override public void run() {
-                isProcessing = false;
-                isLoaded = true;
-              }
-            });
-          }
-        }, MoreExecutors.directExecutor());
-      }
+      //if (!isLoaded && !isProcessing) {
+      //  isProcessing = true;
+      //  final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.bookId, metadata, URLDecoder.decode(resource));
+      //  Futures.addCallback(future, new FutureCallback<StreamingResource>() {
+      //    @Override public void onSuccess(final StreamingResource result) {
+      //      final InputStream inputStream = result.getInputStream();
+      //      handler.post(new Runnable() {
+      //        @Override public void run() {
+      //          generateDrawable(inputStream);
+      //          isProcessing = false;
+      //        }
+      //      });
+      //    }
+      //
+      //    @Override public void onFailure(@NonNull final Throwable t) {
+      //      if (t instanceof CancellationException) {
+      //        return;
+      //      }
+      //      handler.post(new Runnable() {
+      //        @Override public void run() {
+      //          isProcessing = false;
+      //          isLoaded = true;
+      //        }
+      //      });
+      //    }
+      //  }, MoreExecutors.directExecutor());
+      //}
     } else {
       canvas.drawBitmap(bitmap, 0.0f, 0.0f, null);
     }

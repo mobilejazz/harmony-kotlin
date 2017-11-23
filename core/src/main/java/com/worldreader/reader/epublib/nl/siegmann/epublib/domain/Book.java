@@ -1,7 +1,5 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
-
 import java.io.*;
 import java.util.*;
 
@@ -28,8 +26,6 @@ import java.util.*;
  * The Content page may be in the Table of Contents, the Guide, but not in the Spine.
  * Etc.
  * <p/>
- *
- * @author paul
  */
 public class Book implements Serializable {
 
@@ -42,13 +38,9 @@ public class Book implements Serializable {
   private Guide guide = new Guide();
   private Resource opfResource;
   private Resource ncxResource;
-  private Resource coverImage;
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  private Book() {
   }
 
   private Book(Builder builder) {
@@ -59,7 +51,6 @@ public class Book implements Serializable {
     this.guide = builder.guide;
     this.opfResource = builder.opfResource;
     this.ncxResource = builder.ncxResource;
-    setCoverImage(builder.coverImage);
   }
 
   /**
@@ -111,45 +102,6 @@ public class Book implements Serializable {
   }
 
   /**
-   * The book's cover image.
-   */
-  public Resource getCoverImage() {
-    if (this.coverImage != null) {
-      return this.coverImage;
-    } else {
-
-      //If we can't determine it from the metadata, take a guess
-      //and return the biggest picture in the book.
-
-      MediaType[] bitmapTypes = {
-          MediatypeService.PNG, MediatypeService.GIF, MediatypeService.JPG
-      };
-
-      List<Resource> bitmapResources = this.resources.getResourcesByMediaTypes(bitmapTypes);
-
-      Resource coverResource = null;
-
-      for (Resource res : bitmapResources) {
-        if (coverResource == null || res.getSize() > coverResource.getSize()) {
-          coverResource = res;
-        }
-      }
-
-      return coverResource;
-    }
-  }
-
-  private void setCoverImage(Resource coverImage) {
-    if (coverImage == null) {
-      return;
-    }
-    if (!resources.containsByHref(coverImage.getHref())) {
-      resources.add(coverImage);
-    }
-    this.coverImage = coverImage;
-  }
-
-  /**
    * The guide; contains references to special sections of the book like colophon, glossary, etc.
    */
   public Guide getGuide() {
@@ -197,10 +149,6 @@ public class Book implements Serializable {
     return opfResource;
   }
 
-  public void setOpfResource(Resource opfResource) {
-    this.opfResource = opfResource;
-  }
-
   public Resource getNcxResource() {
     return ncxResource;
   }
@@ -214,7 +162,6 @@ public class Book implements Serializable {
     private Guide guide;
     private Resource opfResource;
     private Resource ncxResource;
-    private Resource coverImage;
 
     private Builder() {
     }
@@ -251,11 +198,6 @@ public class Book implements Serializable {
 
     public Builder withNcxResource(Resource val) {
       ncxResource = val;
-      return this;
-    }
-
-    public Builder withCoverImage(Resource val) {
-      coverImage = val;
       return this;
     }
 

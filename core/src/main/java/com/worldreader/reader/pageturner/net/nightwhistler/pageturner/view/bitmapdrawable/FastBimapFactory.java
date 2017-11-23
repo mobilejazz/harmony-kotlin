@@ -8,7 +8,7 @@ public class FastBimapFactory {
     throw new AssertionError("No instances allowed!");
   }
 
-  public static AbstractFastBitmapDrawable provide(final BookMetadata bm) {
+  public static AbstractFastBitmapDrawable create(final BookMetadata bm) {
     final int mode = bm.mode;
     switch (mode) {
       case BookMetadata.FILE_MODE:

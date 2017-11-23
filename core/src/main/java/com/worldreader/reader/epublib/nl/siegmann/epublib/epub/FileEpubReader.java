@@ -66,8 +66,8 @@ public class FileEpubReader {
 
   @NonNull private static Resources toEpubRawResources(File file, ZipFile zip) throws IOException {
     final Resources resources = new Resources();
-    final Enumeration<? extends ZipEntry> entries = zip.entries();
 
+    final Enumeration<? extends ZipEntry> entries = zip.entries();
     while (entries.hasMoreElements()) {
       final ZipEntry zipEntry = entries.nextElement();
 
@@ -78,11 +78,10 @@ public class FileEpubReader {
       final String filename = zipEntry.getName();
       final Resource resource;
 
-      if (Constants.OEBPS_CONTENT_OPF.toLowerCase().contains(filename.toLowerCase()) || Constants.META_INF_CONTAINER.toLowerCase()
-          .contains(filename.toLowerCase())) {
+      if (Constants.OEBPS_CONTENT_OPF.toLowerCase().contains(filename.toLowerCase()) || Constants.META_INF_CONTAINER.toLowerCase().contains(filename.toLowerCase())) {
         resource = new Resource(zip.getInputStream(zipEntry), file.getPath(), (int) zipEntry.getSize(), filename);
       } else {
-        resource = new Resource(file.getPath(), (int) zipEntry.getSize(), filename); //new StreamingResource("", filename, mediaType);
+        resource = new Resource(file.getPath(), (int) zipEntry.getSize(), filename);
       }
 
       final MediaType mediaType = MediatypeService.determineMediaType(filename);
