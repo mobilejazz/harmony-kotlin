@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
  */
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import org.json.JSONArray;

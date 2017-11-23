@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.worldreader.core.R;
 import com.worldreader.core.application.helper.ui.adapters.decoration.ItemDividerDecoration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.adapter.TocEntriesAdapter;
 import jedi.option.Option;
 

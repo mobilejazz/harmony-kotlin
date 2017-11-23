@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto;
+package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 /**
  * Entry in a Table of Contents

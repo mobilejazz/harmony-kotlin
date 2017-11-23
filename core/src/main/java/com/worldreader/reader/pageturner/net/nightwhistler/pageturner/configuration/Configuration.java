@@ -25,7 +25,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageOffsets;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import org.json.JSONException;
