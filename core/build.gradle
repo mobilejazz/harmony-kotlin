@@ -77,6 +77,9 @@ dependencies {
   annotationProcessor dependencies.daggerCompiler
   compile dependencies.dagger
 
+  compile dependencies.okHttp
+  compile dependencies.okHttp3LoggingInterceptor
+
   compile dependencies.retrofit2
   compile dependencies.retrofit2Gson
   compile(dependencies.retrofitSimpleXml) {
@@ -90,30 +93,24 @@ dependencies {
     exclude module: 'xpp3'
   }
 
-  compile 'com.scottyab:secure-preferences-lib:0.1.4'
-
   compile dependencies.sqlcipher
 
   compile 'org.javatuples:javatuples:1.2'
-
-  compile dependencies.okHttp
-  compile dependencies.okHttp3LoggingInterceptor
 
   compile('net.nightwhistler.htmlspanner:htmlspanner:0.5-SNAPSHOT') {
     exclude module: 'ant'
     exclude module: 'commons-io'
   }
-  compile 'org.codehaus.jedi:jedi-core:3.0.5'
-  compile 'org.slf4j:slf4j-api:1.6.1'
+  compile dependencies.jedi
 
-  compile project.ext.dependencies.androidjob
+  compile dependencies.securePreferences
+  compile dependencies.androidjob
 
   compile dependencies.scaleImageView
+  compile dependencies.viewpropertyobjectanimator
 
   compile dependencies.awsCore
   compile dependencies.awsMobileAnalytics
 
   compile dependencies.networkConnectionClass
-
-  compile 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
 }
