@@ -12,7 +12,7 @@ import org.javatuples.Pair;
 import static jedi.option.Options.none;
 import static jedi.option.Options.some;
 
-public class OpenStreamingBookTask extends QueueableAsyncTask<Pair<String, String>, Void, Pair<Book, PageTurnerSpine>> {
+public class OpenStreamingBookTask extends QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> {
 
   private static final String TAG = OpenStreamingBookTask.class.getSimpleName();
 
@@ -30,7 +30,7 @@ public class OpenStreamingBookTask extends QueueableAsyncTask<Pair<String, Strin
     this.logger = logger;
   }
 
-  @SafeVarargs @Override public final Option<Pair<Book, PageTurnerSpine>> doInBackground(Pair<String, String>... params) {
+  @SafeVarargs @Override public final Option<Pair<Book, PageTurnerSpine>> doInBackground(Void... params) {
     try {
       final Book book = textLoader.initBook(contentOpf, tocResourcePath);
 

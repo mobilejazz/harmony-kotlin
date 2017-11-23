@@ -6,23 +6,20 @@ import android.view.View;
 
 public class ClickableImageSpan extends ImageSpan {
 
-  private ClickableImageSpanListener onClickListener;
+  private final ClickableImageSpanListener listener;
 
-  public ClickableImageSpan(final Drawable d) {
+  public ClickableImageSpan(final Drawable d, final ClickableImageSpanListener listener) {
     super(d);
+    this.listener = listener;
   }
 
   public void onClick(final View widget) {
-    if (onClickListener != null) {
+    if (listener != null) {
       final Drawable drawable = getDrawable();
       if (drawable != null) {
-        onClickListener.onImageClick(widget, drawable);
+        listener.onImageClick(widget, drawable);
       }
     }
-  }
-
-  public void setOnClickListener(final ClickableImageSpanListener onClickListener) {
-    this.onClickListener = onClickListener;
   }
 
   public interface ClickableImageSpanListener {

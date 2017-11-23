@@ -6,13 +6,14 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SystemFontResolver;
+import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 
 // Creates a configured HtmlSpanner tailored to Book reading
 public class HtmlSpannerFactory {
 
   public static HtmlSpanner create(final Configuration config) {
-    final HtmlSpanner htmlSpanner = new HtmlSpanner(new HtmlCleaner(), new SystemFontResolver());
+    final HtmlSpanner htmlSpanner = new HtmlSpanner(createHtmlCleaner(), new SystemFontResolver());
 
     // Register special Html handlers (wraps common tags with AnchorHandler to capture anchors)
     htmlSpanner.registerHandler("h1", new AnchorHandler(htmlSpanner.getHandlerFor("h1")));
@@ -30,6 +31,21 @@ public class HtmlSpannerFactory {
     // Configure HtmlSpanner with config
 
     return htmlSpanner;
+  }
+
+  private static HtmlCleaner createHtmlCleaner() {
+    HtmlCleaner result = new HtmlCleaner();
+    CleanerProperties cleanerProperties = result.getProperties();
+    cleanerProperties.setAdvancedXmlEscape(true);
+    cleanerProperties.setOmitXmlDeclaration(true);
+    cleanerProperties.setOmitDoctypeDeclaration(false);
+    cleanerProperties.setTranslateSpecialEntities(true);
+    cleanerProperties.setTransResCharsToNCR(true);
+    cleanerProperties.setRecognizeUnicodeChars(true);
+    cleanerProperties.setIgnoreQuestAndExclam(true);
+    cleanerProperties.setUseEmptyElementTags(false);
+    cleanerProperties.setPruneTags("script,title");
+    return result;
   }
 
 }

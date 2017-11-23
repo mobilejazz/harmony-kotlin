@@ -1,44 +1,60 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.SpannableStringBuilder;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
+import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import org.htmlcleaner.TagNode;
 
-public class ImageTagHandler extends TagNodeHandler {
+public abstract class ImageTagHandler extends TagNodeHandler implements ImageResourceCallback.Listener {
 
+  private final BookMetadata bm;
   private final ResourcesLoader resourcesLoader;
-  private final PageTurnerSpine spine;
+  private final Logger logger;
 
-  public ImageTagHandler(final ResourcesLoader resourcesLoader, final PageTurnerSpine spine) {
+  public ImageTagHandler(final BookMetadata bm, final ResourcesLoader resourcesLoader, final Logger logger) {
+    this.bm = bm;
     this.resourcesLoader = resourcesLoader;
-    this.spine = spine;
+    this.logger = logger;
   }
 
   @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack span) {
-    final String src = obtainImageAttribute(node);
+    final String data = obtainImageAttribute(node);
 
-    //if (src == null) {
-    //  return;
-    //}
-    //
-    //if (src.startsWith("data:image")) {
-    //  try {
-    //    final String dataString = src.substring(src.indexOf(',') + 1);
-    //    final byte[] binData = Base64.decode(dataString, Base64.DEFAULT);
-    //    final Resources resources = getContext().getResources();
-    //    setImageSpan(builder, new BitmapDrawable(resources, BitmapFactory.decodeByteArray(binData, 0, binData.length)), start, builder.length());
-    //  } catch (OutOfMemoryError | IllegalArgumentException ia) {
-    //    //Out of memory or invalid Base64, ignore
-    //  }
-    //} else if (spine != null) {
-    //  final String resolvedHref = spine.resolveHref(src);
-    //  final BookView.StreamingResourceCallback callback = new BookView.StreamingResourceCallback(builder, start, builder.length());
-    //  resourcesLoader.registerImageCallback(resolvedHref, callback);
-    //}
+    // Ignore invalid images
+    if (data == null) {
+      return;
+    }
+
+    // Create an ImageResourceCallback to hold all data related to the image
+    final ImageResourceCallback callback = new ImageResourceCallback.Builder()
+        .withSpannableBuilder(builder)
+        .withMetadata(bm)
+        .withData(data)
+        .withStart(start)
+        .withEnd(builder.length())
+        .withHeight(getViewHeight())
+        .withWidth(getViewWidth())
+        .withVerticalMargin(getViewVerticalMargin())
+        .withHorizontal(getViewHorizontalMargin())
+        .withListener(this)
+        .withLogger(logger)
+        .create();
+
+    // Save it to the resources loader to be later processed (when needed)
+    resourcesLoader.registerImageCallback(callback);
   }
+
+  protected abstract int getViewHeight();
+
+  protected abstract int getViewWidth();
+
+  protected abstract int getViewVerticalMargin();
+
+  protected abstract int getViewHorizontalMargin();
 
   private String obtainImageAttribute(TagNode node) {
     String src = node.getAttributeByName("src");

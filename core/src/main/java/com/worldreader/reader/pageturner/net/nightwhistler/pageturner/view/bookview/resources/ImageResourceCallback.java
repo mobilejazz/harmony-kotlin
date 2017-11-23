@@ -9,7 +9,6 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.InlineFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.StreamingFastBitmapDrawable;
 import org.javatuples.Pair;
@@ -31,7 +30,7 @@ public class ImageResourceCallback {
   private final int start;
   private final int end;
   private final String data;
-  private final PageTurnerSpine spine;
+  private final Listener listener;
   private final Logger logger;
 
   public ImageResourceCallback(Builder builder) {
@@ -45,7 +44,7 @@ public class ImageResourceCallback {
     this.start = builder.start;
     this.end = builder.end;
     this.data = builder.data;
-    this.spine = builder.spine;
+    this.listener = builder.listener;
     this.logger = builder.logger;
   }
 
@@ -62,7 +61,8 @@ public class ImageResourceCallback {
     final ByteArrayInputStream is = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
 
     final InlineFastBitmapDrawable drawable = new InlineFastBitmapDrawable(is, width, height, logger);
-    onFastBitmapDrawableCreated(drawable, builder, start, end);
+
+    notifyListener(drawable, builder, start, end);
   }
 
   private void onPrepareBitmapDrawableFromResource() {
@@ -76,11 +76,15 @@ public class ImageResourceCallback {
     final int finalWidth = sizes.getValue0();
     final int finalHeight = sizes.getValue1();
 
-    final StreamingFastBitmapDrawable drawable = new StreamingFastBitmapDrawable(finalWidth, finalHeight, repository, bookMetadata, data, logger);
-    onFastBitmapDrawableCreated(drawable, builder, start, end);
+    final StreamingFastBitmapDrawable drawable = new StreamingFastBitmapDrawable(finalWidth, finalHeight, bookMetadata, repository, data, logger);
+
+    notifyListener(drawable, builder, start, end);
   }
 
-  protected void onFastBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
+  protected void notifyListener(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
+    if (listener != null) {
+      listener.onBitmapDrawableCreated(drawable, builder, start, end);
+    }
   }
 
   private Pair<Integer, Integer> calculateProperImageSize(int originalWidth, int originalHeight) {
@@ -118,7 +122,7 @@ public class ImageResourceCallback {
     private int start;
     private int end;
     private String data;
-    private PageTurnerSpine spine;
+    private Listener listener;
     private Logger logger;
 
     public Builder withMetadata(BookMetadata metadata) {
@@ -171,8 +175,8 @@ public class ImageResourceCallback {
       return this;
     }
 
-    public Builder withSpine(PageTurnerSpine spine) {
-      this.spine = spine;
+    public Builder withListener(Listener listener) {
+      this.listener = listener;
       return this;
     }
 
@@ -185,6 +189,11 @@ public class ImageResourceCallback {
       return new ImageResourceCallback(this);
     }
 
+  }
+
+  public interface Listener {
+
+    void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end);
   }
 
 }

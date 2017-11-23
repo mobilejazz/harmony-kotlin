@@ -28,7 +28,7 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StaticLayoutFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
@@ -294,9 +294,9 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       final ClickableImageSpan[] spans = spanned.getSpans(0, length, ClickableImageSpan.class);
       for (ClickableImageSpan imageSpan : spans) {
         final Drawable drawable = imageSpan.getDrawable();
-        if (drawable instanceof FastBitmapDrawable) {
-          final FastBitmapDrawable fbmp = (FastBitmapDrawable) drawable;
-          fbmp.reset();
+        if (drawable instanceof AbstractFastBitmapDrawable) {
+          final AbstractFastBitmapDrawable fbmp = (AbstractFastBitmapDrawable) drawable;
+          fbmp.destroy();
         }
       }
     }

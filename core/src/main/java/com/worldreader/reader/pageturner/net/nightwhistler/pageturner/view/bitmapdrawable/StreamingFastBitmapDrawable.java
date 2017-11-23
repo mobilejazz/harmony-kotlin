@@ -43,7 +43,7 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   private final String resource;
   private final Logger logger;
 
-  public StreamingFastBitmapDrawable(int width, int height, StreamingBookRepository repository, BookMetadata metadata, String resource, Logger logger) {
+  public StreamingFastBitmapDrawable(int width, int height, BookMetadata metadata, StreamingBookRepository repository, String resource, Logger logger) {
     super(width, height);
 
     this.dataSource = repository;

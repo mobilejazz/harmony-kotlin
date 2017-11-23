@@ -73,8 +73,8 @@ import com.worldreader.core.userflow.model.TutorialModel;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
@@ -629,10 +629,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     }
 
-    // Pages remaining for chapter
-    formatPageChapterProgress();
-
     readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookMetadata.title);
+    formatPageChapterProgress();
 
     // Tutorial feature
     if (di.userFlowTutorial != null) { // TODO: Remove this check
@@ -814,12 +812,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onBookImageClicked(final Drawable drawable) {
-    displayPhotoViewer((FastBitmapDrawable) drawable);
+    displayPhotoViewer((AbstractFastBitmapDrawable) drawable);
   }
 
-  private void displayPhotoViewer(final FastBitmapDrawable drawable) {
+  private void displayPhotoViewer(final AbstractFastBitmapDrawable drawable) {
     final FragmentActivity activity = getActivity();
-    if (activity != null) {
+    if (activity != null && !activity.isFinishing()) {
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
       closeButton.setOnClickListener(new View.OnClickListener() {
@@ -829,7 +827,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       });
 
       final Bitmap bitmap = drawable.getBitmap();
-
       if (bitmap != null) {
         final ImageSource imageSource = ImageSource.cachedBitmap(bitmap);
         final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
@@ -1021,7 +1018,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(pagesForResource));
         put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
         put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.bookId);
-        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.bookId);
+        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.title);
       }};
 
       di.analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
