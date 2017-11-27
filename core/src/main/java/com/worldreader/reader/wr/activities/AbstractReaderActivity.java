@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
-import com.worldreader.reader.wr.fragments.BookIndexFragment;
+import com.worldreader.reader.wr.fragments.BookTocFragment;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
 
@@ -37,14 +37,14 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 public abstract class AbstractReaderActivity extends AppCompatActivity
-    implements AbstractReaderFragment.OnBookTocEntryListener, BookIndexFragment.BookIndexListener {
+    implements AbstractReaderFragment.OnBookTocEntryListener, BookTocFragment.BookIndexListener {
 
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
 
   private SystemUiHelper systemUiHelper;
   private AbstractReaderFragment abstractReaderFragment;
-  private BookIndexFragment bookIndexFragment;
+  private BookTocFragment bookTocFragment;
 
   private AppBarLayout toolbarLayout;
   private Toolbar toolbar;
@@ -81,8 +81,8 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void onSetupActionBar() {
-    this.toolbarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-    this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+    this.toolbarLayout = findViewById(R.id.appbar_layout);
+    this.toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
     // Obtain size of the status bar and add it as margin to toolbar
@@ -122,15 +122,15 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void onSetupBookIndexFragment() {
-    final Fragment fragment = new BookIndexFragment();
+    final Fragment fragment = new BookTocFragment();
     final FragmentManager fm = getSupportFragmentManager();
-    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, BookIndexFragment.TAG).commitNow();
+    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, BookTocFragment.TAG).commitNow();
   }
 
   private void onSetupBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
     abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
-    bookIndexFragment = (BookIndexFragment) fm.findFragmentById(R.id.fragment_book_index);
+    bookTocFragment = (BookTocFragment) fm.findFragmentById(R.id.fragment_book_index);
 
     this.readingContainer = findViewById(R.id.fragment_reading);
     this.bookIndexContainer = findViewById(R.id.content_book_index);
@@ -223,14 +223,14 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
-    if (abstractReaderFragment == null || bookIndexFragment == null) {
+    if (abstractReaderFragment == null || bookTocFragment == null) {
       return false;
     }
 
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onPrepareOptionsMenu(menu);
     } else {
-      bookIndexFragment.onPrepareOptionsMenu(menu);
+      bookTocFragment.onPrepareOptionsMenu(menu);
     }
 
     return true;
@@ -240,7 +240,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     if (isVisibleReadingFragment()) {
       return abstractReaderFragment.onOptionsItemSelected(item);
     } else {
-      return bookIndexFragment.onOptionsItemSelected(item);
+      return bookTocFragment.onOptionsItemSelected(item);
     }
   }
 
@@ -248,7 +248,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onOptionsMenuClosed(menu);
     } else {
-      bookIndexFragment.onOptionsMenuClosed(menu);
+      bookTocFragment.onOptionsMenuClosed(menu);
     }
   }
 
@@ -257,7 +257,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   ///////////////////////////////////////////////////////////////////////////
 
   @Override public void onBookTableOfContentsLoaded(Option<List<TocEntry>> tocEntries) {
-    this.bookIndexFragment.onBookTableOfContentsLoaded(tocEntries);
+    this.bookTocFragment.onBookTableOfContentsLoaded(tocEntries);
   }
 
   @Override public void displayBookTableOfContents() {

@@ -20,9 +20,9 @@ import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 
-public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
+public class BookTocFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
 
-  public static final String TAG = BookIndexFragment.class.getSimpleName();
+  public static final String TAG = BookTocFragment.class.getSimpleName();
 
   private BookIndexListener listener;
 
@@ -37,7 +37,7 @@ public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnC
     void onClickBackButton();
   }
 
-  public BookIndexFragment() {
+  public BookTocFragment() {
   }
 
   @Override public void onAttach(Context context) {
@@ -55,7 +55,7 @@ public class BookIndexFragment extends Fragment implements TocEntriesAdapter.OnC
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     this.progressContainer = view.findViewById(R.id.progress_dialog_container);
-    this.bookIndexRv = ((RecyclerView) view.findViewById(R.id.book_reading_index_fragment_book_index_rv));
+    this.bookIndexRv = view.findViewById(R.id.book_reading_index_fragment_book_index_rv);
     this.emptyView = view.findViewById(R.id.book_reading_index_fragment_empty_toc_tv);
 
     bookIndexRv.setHasFixedSize(true);
