@@ -116,6 +116,8 @@ dependencies {
   compile dependencies.awsCore
   compile dependencies.awsMobileAnalytics
 
+  compile dependencies.networkConnectionClass
+
   testCompile testDependencies.hamcrest
   testCompile(testDependencies.junit) {
     exclude module: 'hamcrest-core'

@@ -2,7 +2,6 @@ package com.worldreader.core.application.helper.image.downloader;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-
 import com.mobilejazz.logger.library.Logger;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -10,11 +9,9 @@ import com.sromku.simple.storage.Storage;
 import com.worldreader.core.application.helper.image.ImageDownloader;
 import com.worldreader.core.application.helper.image.ImageLoader;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
+import java.io.*;
+import java.util.*;
 
 public class PicassoImageDownloader implements ImageDownloader {
 

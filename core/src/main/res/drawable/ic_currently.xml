@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="15.25dp"
-    android:height="17.4522289dp"
-    android:viewportWidth="15.25"
-    android:viewportHeight="17.4522289">
+  android:width="15.25dp"
+  android:height="17.4522289dp"
+  android:viewportWidth="15.25"
+  android:viewportHeight="17.4522289">
 
-    <group android:translateX="-23.375000"
-        android:translateY="-157.764648">
-        <group android:translateX="6.500000"
-            android:translateY="65.500000">
-            <group android:translateX="13.000000"
-                android:translateY="91.000000">
-                <path android:name="ic_currently"
-                    android:fillColor="@color/white"
-                    android:pathData="M11.8438723,8.9719846 C11.3506335,8.50470574 10.8182202,8.08916364
+  <group
+    android:translateX="-23.375000"
+    android:translateY="-157.764648">
+    <group
+      android:translateX="6.500000"
+      android:translateY="65.500000">
+      <group
+        android:translateX="13.000000"
+        android:translateY="91.000000">
+        <path
+          android:name="ic_currently"
+          android:fillColor="@color/white"
+          android:pathData="M11.8438723,8.9719846 C11.3506335,8.50470574 10.8182202,8.08916364
 10.2469534,7.72563019 C9.67603745,7.36232006 9.07877571,7.05719721
 8.4555086,6.81048732 C7.82486374,6.55305083 7.16666514,6.35526701
 6.48624166,6.21918232 C5.80416449,6.08276688 5.10027387,6.01464844
@@ -83,7 +87,7 @@ C13.375,4.40629451 13.3267271,4.64765909 13.2309181,4.86801976
 C13.1323276,5.09477789 12.9948377,5.2961024 12.8163685,5.47457161
 C12.6520892,5.6388509 12.4553287,5.77002457 12.2226794,5.86902424
 C11.9941842,5.96625625 11.7546429,6.01464844 11.5,6.01464844 L11.5,6.01464844 Z" />
-            </group>
-        </group>
+      </group>
     </group>
+  </group>
 </vector>

@@ -10,9 +10,10 @@ import com.worldreader.core.domain.model.LeaderboardStat;
 import com.worldreader.core.domain.model.user.LeaderboardPeriod;
 import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.*;
 
 @Singleton public class GetUserLeaderboardInteractor {
 
@@ -55,7 +56,7 @@ import javax.inject.Singleton;
   private UserRepository.LeaderboardPeriod toRepositoryLeaderboardPeriod(final LeaderboardPeriod leaderboardPeriod) {
     switch (leaderboardPeriod) {
       case GLOBAL:
-        default:
+      default:
         return UserRepository.LeaderboardPeriod.GLOBAL;
       case MONTHLY:
         return UserRepository.LeaderboardPeriod.MONTHLY;

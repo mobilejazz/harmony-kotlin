@@ -2,7 +2,7 @@ package com.worldreader.core.domain.repository;
 
 import com.worldreader.core.domain.model.UserFlow;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserFlowRepository {
 

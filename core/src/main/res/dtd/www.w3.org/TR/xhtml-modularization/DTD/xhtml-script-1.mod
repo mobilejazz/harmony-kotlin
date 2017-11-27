@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Document Scripting Module  ..................................... -->
-<!-- file: xhtml-script-1.mod
+<!-- ...................................................................... --><!-- XHTML Document Scripting Module  ..................................... --><!-- file: xhtml-script-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,53 +13,25 @@
      (none)
      ....................................................................... -->
 
-<!-- Scripting
+  <!-- Scripting
 
-        script, noscript
+          script, noscript
 
-     This module declares element types and attributes used to provide
-     support for executable scripts as well as an alternate content
-     container where scripts are not supported.
--->
+       This module declares element types and attributes used to provide
+       support for executable scripts as well as an alternate content
+       container where scripts are not supported.
+  -->
 
-<!-- script: Scripting Statement ....................... -->
+  <!-- script: Scripting Statement ....................... -->
 
-<!ENTITY % script.element  "INCLUDE" >
-<![%script.element;[
-<!ENTITY % script.content  "( #PCDATA )" >
-<!ENTITY % script.qname  "script" >
-<!ELEMENT %script.qname;  %script.content; >
-<!-- end of script.element -->]]>
+  <!ENTITY % script.element  "INCLUDE" ><![%script.element;[<!ENTITY % script.content  "( #PCDATA )" ><!ENTITY % script.qname  "script" ><!ELEMENT %script.qname;  %script.content; ><!-- end of script.element -->]]>
 
-<!ENTITY % script.attlist  "INCLUDE" >
-<![%script.attlist;[
-<!ATTLIST %script.qname;
-      %XHTML.xmlns.attrib;
-	  %id.attrib;
-      xml:space    ( preserve )             #FIXED 'preserve'
-      charset      %Charset.datatype;       #IMPLIED
-      type         %ContentType.datatype;   #REQUIRED
-      src          %URI.datatype;           #IMPLIED
-      defer        ( defer )                #IMPLIED
->
-<!-- end of script.attlist -->]]>
+  <!ENTITY % script.attlist  "INCLUDE" ><![%script.attlist;[<!ATTLIST %script.qname;%XHTML.xmlns.attrib;  %id.attrib;xml:space    ( preserve )             #FIXED 'preserve'charset      %Charset.datatype;       #IMPLIEDtype         %ContentType.datatype;   #REQUIREDsrc          %URI.datatype;           #IMPLIEDdefer        ( defer )                #IMPLIED><!-- end of script.attlist -->]]>
 
-<!-- noscript: No-Script Alternate Content ............. -->
+  <!-- noscript: No-Script Alternate Content ............. -->
 
-<!ENTITY % noscript.element  "INCLUDE" >
-<![%noscript.element;[
-<!ENTITY % noscript.content
-     "( %Block.mix; )+"
->
-<!ENTITY % noscript.qname  "noscript" >
-<!ELEMENT %noscript.qname;  %noscript.content; >
-<!-- end of noscript.element -->]]>
+  <!ENTITY % noscript.element  "INCLUDE" ><![%noscript.element;[<!ENTITY % noscript.content"( %Block.mix; )+"><!ENTITY % noscript.qname  "noscript" ><!ELEMENT %noscript.qname;  %noscript.content; ><!-- end of noscript.element -->]]>
 
-<!ENTITY % noscript.attlist  "INCLUDE" >
-<![%noscript.attlist;[
-<!ATTLIST %noscript.qname;
-      %Common.attrib;
->
-<!-- end of noscript.attlist -->]]>
+  <!ENTITY % noscript.attlist  "INCLUDE" ><![%noscript.attlist;[<!ATTLIST %noscript.qname;%Common.attrib;><!-- end of noscript.attlist -->]]>
 
-<!-- end of xhtml-script-1.mod -->
+  <!-- end of xhtml-script-1.mod -->

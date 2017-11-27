@@ -78,6 +78,24 @@ public class Category implements Serializable {
     return subCategories;
   }
 
+  /**
+   * Get all subcategories that have this category as ancestor
+   * @return
+   */
+  public List<Category> getAllSubcategoryLevels() {
+    return this.getAllSubcategoryLevels(this.subCategories);
+  }
+
+  private List<Category> getAllSubcategoryLevels(List<Category> categories) {
+    List<Category> allSubcategories = new ArrayList<>();
+    for (Category category : categories) {
+      allSubcategories.add(category);
+      allSubcategories.addAll(getAllSubcategoryLevels(category.getSubCategories()));
+    }
+
+    return allSubcategories;
+  }
+
   public void setSubCategories(List<Category> subCategories) {
     this.subCategories = subCategories;
   }

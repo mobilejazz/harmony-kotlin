@@ -26,8 +26,9 @@ import com.worldreader.core.domain.model.user.UserScore;
 import com.worldreader.core.domain.repository.UserScoreRepository;
 import dagger.Module;
 import dagger.Provides;
-import java.util.List;
+
 import javax.inject.Singleton;
+import java.util.*;
 
 @Module public class UserScoreModule {
 

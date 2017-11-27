@@ -44,8 +44,8 @@ ext {
 
       androidjob               : "com.evernote:android-job:1.1.11",
 
-      okHttp                   : "com.squareup.okhttp3:okhttp:3.8.1",
-      okHttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:3.8.1",
+      okHttp                   : "com.squareup.okhttp3:okhttp:3.9.0",
+      okHttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:3.9.0",
 
       picasso                  : "com.squareup.picasso:picasso:2.5.2",
       picassoOkhttp3           : "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0",
@@ -60,8 +60,10 @@ ext {
 
       scaleImageView           : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0",
 
-      awsCore             : "com.amazonaws:aws-android-sdk-core:2.2.+",
-      awsMobileAnalytics  : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
+      awsCore                  : "com.amazonaws:aws-android-sdk-core:2.2.+",
+      awsMobileAnalytics       : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
+      networkConnectionClass   : "com.facebook.network.connectionclass:connectionclass:1.0.1"
+
   ]
 
   jUnitVersion = '4.12'

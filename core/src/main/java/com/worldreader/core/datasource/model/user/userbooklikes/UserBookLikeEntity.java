@@ -2,7 +2,7 @@ package com.worldreader.core.datasource.model.user.userbooklikes;
 
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
 
-import java.util.Date;
+import java.util.*;
 
 public class UserBookLikeEntity extends RepositoryModel {
 

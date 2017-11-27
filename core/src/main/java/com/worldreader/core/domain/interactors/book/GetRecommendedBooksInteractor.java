@@ -5,8 +5,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.model.Book;
-import java.util.List;
-import java.util.concurrent.Executor;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 public interface GetRecommendedBooksInteractor {
 
@@ -16,4 +17,5 @@ public interface GetRecommendedBooksInteractor {
 
   ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit);
 
+  ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, String language, Executor executor);
 }

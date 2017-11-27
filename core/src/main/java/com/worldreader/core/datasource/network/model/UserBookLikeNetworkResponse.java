@@ -2,7 +2,7 @@ package com.worldreader.core.datasource.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
+import java.util.*;
 
 public class UserBookLikeNetworkResponse {
 

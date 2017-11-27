@@ -6,8 +6,8 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SpinnerAdapter;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
 
 public abstract class EnumSpinnerAdapter<E extends Enum<E>>
     implements SpinnerAdapter {

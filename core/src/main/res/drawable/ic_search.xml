@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="19dp"
-    android:height="19dp"
-    android:viewportWidth="19"
-    android:viewportHeight="19">
+  android:width="19dp"
+  android:height="19dp"
+  android:viewportWidth="19"
+  android:viewportHeight="19">
 
-    <group android:translateX="-321.000000"
-        android:translateY="-18.500000">
-        <path android:name="ic_search"
-            android:fillColor="@color/white"
-            android:pathData="M334.579188,30.4496855 L333.720983,30.4496855 L333.41681,30.1563751
+  <group
+    android:translateX="-321.000000"
+    android:translateY="-18.500000">
+    <path
+      android:name="ic_search"
+      android:fillColor="@color/white"
+      android:pathData="M334.579188,30.4496855 L333.720983,30.4496855 L333.41681,30.1563751
 C334.481418,28.9179531 335.122356,27.3101772 335.122356,25.5611778
 C335.122356,21.661235 331.961121,18.5 328.061178,18.5 C324.161235,18.5
 321,21.661235 321,25.5611778 C321,29.4611206 324.161235,32.6223556
@@ -21,5 +23,5 @@ M328.061178,30.4496855 C325.356204,30.4496855 323.17267,28.2661521
 328.061178,20.6726701 C330.766152,20.6726701 332.949686,22.8562035
 332.949686,25.5611778 C332.949686,28.2661521 330.766152,30.4496855
 328.061178,30.4496855 L328.061178,30.4496855 Z" />
-    </group>
+  </group>
 </vector>

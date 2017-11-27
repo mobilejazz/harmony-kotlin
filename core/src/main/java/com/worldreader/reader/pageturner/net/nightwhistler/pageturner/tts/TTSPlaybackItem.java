@@ -35,8 +35,7 @@ public class TTSPlaybackItem {
 
   private String fileName;
 
-  public TTSPlaybackItem(CharSequence text, MediaPlayer mediaPlayer, int totalTextLength,
-      int offset, boolean lastElementOfPage, String fileName) {
+  public TTSPlaybackItem(CharSequence text, MediaPlayer mediaPlayer, int totalTextLength, int offset, boolean lastElementOfPage, String fileName) {
     this.text = text;
     this.mediaPlayer = mediaPlayer;
     this.totalTextLength = totalTextLength;
@@ -47,10 +46,10 @@ public class TTSPlaybackItem {
 
   public void setOnSpeechCompletedCallback(final SpeechCompletedCallback callback) {
     this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-          @Override public void onCompletion(MediaPlayer mediaPlayer) {
-            callback.speechCompleted(TTSPlaybackItem.this, mediaPlayer);
-          }
-        });
+      @Override public void onCompletion(MediaPlayer mediaPlayer) {
+        callback.speechCompleted(TTSPlaybackItem.this, mediaPlayer);
+      }
+    });
   }
 
   public int getOffset() {

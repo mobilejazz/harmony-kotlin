@@ -7,11 +7,12 @@ import com.worldreader.core.datasource.network.general.retrofit.services.AuthApi
 import com.worldreader.core.datasource.network.general.retrofit.services.OAuthApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserBooksApiService;
-import java.util.concurrent.Executor;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.util.concurrent.*;
 
 public class WorldreaderUserRetrofitApiManager2 extends AbstractRetrofitApiManager {
 

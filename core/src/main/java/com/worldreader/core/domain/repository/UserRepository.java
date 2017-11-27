@@ -9,7 +9,8 @@ import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserReadingStats;
-import java.util.Date;
+
+import java.util.*;
 
 public interface UserRepository extends Repository<User2, RepositorySpecification> {
 

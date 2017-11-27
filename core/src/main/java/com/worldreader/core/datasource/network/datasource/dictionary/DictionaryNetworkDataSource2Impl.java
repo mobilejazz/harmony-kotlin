@@ -9,7 +9,7 @@ import com.worldreader.core.datasource.network.general.retrofit.exception.Retrof
 import retrofit2.Response;
 
 import javax.inject.Inject;
-import java.io.IOException;
+import java.io.*;
 
 public class DictionaryNetworkDataSource2Impl implements DictionaryNetworkDataSource2 {
 

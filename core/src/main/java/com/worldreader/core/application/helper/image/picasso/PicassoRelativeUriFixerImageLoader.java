@@ -3,6 +3,7 @@ package com.worldreader.core.application.helper.image.picasso;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.worldreader.core.application.helper.image.ImageDownloader;
+
 import javax.inject.Inject;
 
 public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {

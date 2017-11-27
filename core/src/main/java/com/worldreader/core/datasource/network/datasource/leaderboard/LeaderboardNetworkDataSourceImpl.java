@@ -8,8 +8,9 @@ import com.worldreader.core.datasource.model.LeaderboardStatsEntity;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.mapper.LeaderboardStatsNetworkDataMapper;
 import com.worldreader.core.datasource.network.model.LeaderboardStatsNetwork;
-import javax.inject.Inject;
 import retrofit2.Call;
+
+import javax.inject.Inject;
 
 public class LeaderboardNetworkDataSourceImpl implements LeaderboardNetworkDataSource {
 

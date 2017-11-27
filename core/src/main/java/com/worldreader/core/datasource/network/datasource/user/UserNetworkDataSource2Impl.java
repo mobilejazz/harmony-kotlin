@@ -38,10 +38,10 @@ import com.worldreader.core.datasource.network.model.WorldreaderProviderDataNetw
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.datasource.spec.user.UpdateUserCategoriesSpecification;
 import com.worldreader.core.error.user.RegisterException;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import retrofit2.Response;
+
+import java.io.*;
+import java.util.*;
 
 public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 

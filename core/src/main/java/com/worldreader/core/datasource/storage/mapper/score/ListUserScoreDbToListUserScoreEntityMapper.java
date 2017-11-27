@@ -4,10 +4,10 @@ import com.google.common.base.Optional;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
 import com.worldreader.core.datasource.storage.model.UserScoreDb;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
 
 @Singleton public class ListUserScoreDbToListUserScoreEntityMapper implements Mapper<Optional<List<UserScoreDb>>, Optional<List<UserScoreEntity>>> {
 

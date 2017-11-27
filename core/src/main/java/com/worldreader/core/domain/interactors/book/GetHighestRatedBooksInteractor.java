@@ -8,8 +8,8 @@ import com.worldreader.core.domain.deprecated.Interactor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.Category;
 
-import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.*;
+import java.util.concurrent.*;
 
 public interface GetHighestRatedBooksInteractor extends Interactor {
 
@@ -19,4 +19,6 @@ public interface GetHighestRatedBooksInteractor extends Interactor {
 
   ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit, Executor executor);
 
+  ListenableFuture<Optional<List<Book>>> execute(List<Category> categories, int offset, int limit, String language,
+      Executor executor);
 }

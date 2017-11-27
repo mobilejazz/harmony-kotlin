@@ -46,8 +46,7 @@ import com.worldreader.core.application.ui.widget.discretebar.internal.drawable.
 import com.worldreader.core.application.ui.widget.discretebar.internal.drawable.ThumbDrawable;
 import com.worldreader.core.application.ui.widget.discretebar.internal.drawable.TrackRectDrawable;
 
-import java.util.Formatter;
-import java.util.Locale;
+import java.util.*;
 
 public class DiscreteSeekBar extends View {
 
@@ -58,6 +57,7 @@ public class DiscreteSeekBar extends View {
    * Interface to propagate seekbar change event
    */
   public interface OnProgressChangeListener {
+
     /**
      * When the {@link DiscreteSeekBar} value changes
      *
@@ -71,6 +71,21 @@ public class DiscreteSeekBar extends View {
     void onStartTrackingTouch(DiscreteSeekBar seekBar);
 
     void onStopTrackingTouch(DiscreteSeekBar seekBar);
+  }
+
+  public static abstract class SimpleOnProgressChangeListener implements OnProgressChangeListener {
+
+    @Override public void onProgressChanged(final DiscreteSeekBar seekBar, final int value, final boolean fromUser) {
+
+    }
+
+    @Override public void onStartTrackingTouch(final DiscreteSeekBar seekBar) {
+
+    }
+
+    @Override public void onStopTrackingTouch(final DiscreteSeekBar seekBar) {
+
+    }
   }
 
   /**
@@ -88,6 +103,7 @@ public class DiscreteSeekBar extends View {
    * @see #setNumericTransformer(DiscreteSeekBar.NumericTransformer)
    */
   public static abstract class NumericTransformer {
+
     /**
      * Return the desired value to be shown to the user.
      * This value will be formatted using the format specified by {@link #setIndicatorFormatter}
@@ -1019,6 +1035,7 @@ public class DiscreteSeekBar extends View {
   }
 
   static class CustomState extends BaseSavedState {
+
     private int progress;
     private int max;
     private int min;

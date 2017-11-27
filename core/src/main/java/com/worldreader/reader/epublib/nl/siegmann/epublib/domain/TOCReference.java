@@ -1,31 +1,23 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * An item in the Table of Contents.
- *
- * @author paul
- * @see nl.siegmann.epublib.domain.TableOfContents
  */
 public class TOCReference extends TitledResourceReference implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 5787958246077042456L;
-  private List<TOCReference> children;
-  private static final Comparator<TOCReference> COMPARATOR_BY_TITLE_IGNORE_CASE =
-      new Comparator<TOCReference>() {
 
-        @Override public int compare(TOCReference tocReference1, TOCReference tocReference2) {
-          return String.CASE_INSENSITIVE_ORDER.compare(tocReference1.getTitle(),
-              tocReference2.getTitle());
-        }
-      };
+  private static final Comparator<TOCReference> COMPARATOR_BY_TITLE_IGNORE_CASE = new Comparator<TOCReference>() {
+
+    @Override public int compare(TOCReference tocReference1, TOCReference tocReference2) {
+      return String.CASE_INSENSITIVE_ORDER.compare(tocReference1.getTitle(), tocReference2.getTitle());
+    }
+  };
+
+  private List<TOCReference> children;
 
   public TOCReference() {
     this(null, null, null);
@@ -39,8 +31,7 @@ public class TOCReference extends TitledResourceReference implements Serializabl
     this(name, resource, fragmentId, new ArrayList<TOCReference>());
   }
 
-  public TOCReference(String title, Resource resource, String fragmentId,
-      List<TOCReference> children) {
+  public TOCReference(String title, Resource resource, String fragmentId, List<TOCReference> children) {
     super(resource, title, fragmentId);
     this.children = children;
   }

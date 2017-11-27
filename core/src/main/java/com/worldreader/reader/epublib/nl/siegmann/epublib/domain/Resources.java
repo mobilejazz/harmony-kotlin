@@ -4,13 +4,8 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * All the resources that make up the book.

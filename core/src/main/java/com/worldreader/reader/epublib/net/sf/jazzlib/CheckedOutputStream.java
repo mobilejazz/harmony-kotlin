@@ -37,9 +37,7 @@ exception statement from your version. */
 
 package com.worldreader.reader.epublib.net.sf.jazzlib;
 
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /* Written using on-line Java Platform 1.2 API Specification
  * and JCL book.
@@ -56,42 +54,43 @@ import java.io.OutputStream;
  * @date May 17, 1999
  */
 public class CheckedOutputStream extends FilterOutputStream {
-	/**
-	 * Creates a new CheckInputStream on top of the supplied OutputStream using
-	 * the supplied Checksum.
-	 */
-	public CheckedOutputStream(final OutputStream out, final Checksum cksum) {
-		super(out);
-		this.sum = cksum;
-	}
 
-	/**
-	 * Returns the Checksum object used. To get the data checksum computed so
-	 * far call <code>getChecksum.getValue()</code>.
-	 */
-	public Checksum getChecksum() {
-		return sum;
-	}
+  /**
+   * Creates a new CheckInputStream on top of the supplied OutputStream using
+   * the supplied Checksum.
+   */
+  public CheckedOutputStream(final OutputStream out, final Checksum cksum) {
+    super(out);
+    this.sum = cksum;
+  }
 
-	/**
-	 * Writes one byte to the OutputStream and updates the Checksum.
-	 */
-	@Override
-	public void write(final int bval) throws IOException {
-		out.write(bval);
-		sum.update(bval);
-	}
+  /**
+   * Returns the Checksum object used. To get the data checksum computed so
+   * far call <code>getChecksum.getValue()</code>.
+   */
+  public Checksum getChecksum() {
+    return sum;
+  }
 
-	/**
-	 * Writes the byte array to the OutputStream and updates the Checksum.
-	 */
-	@Override
-	public void write(final byte[] buf, final int off, final int len)
-			throws IOException {
-		out.write(buf, off, len);
-		sum.update(buf, off, len);
-	}
+  /**
+   * Writes one byte to the OutputStream and updates the Checksum.
+   */
+  @Override
+  public void write(final int bval) throws IOException {
+    out.write(bval);
+    sum.update(bval);
+  }
 
-	/** The checksum object. */
-	private final Checksum sum;
+  /**
+   * Writes the byte array to the OutputStream and updates the Checksum.
+   */
+  @Override
+  public void write(final byte[] buf, final int off, final int len)
+      throws IOException {
+    out.write(buf, off, len);
+    sum.update(buf, off, len);
+  }
+
+  /** The checksum object. */
+  private final Checksum sum;
 }

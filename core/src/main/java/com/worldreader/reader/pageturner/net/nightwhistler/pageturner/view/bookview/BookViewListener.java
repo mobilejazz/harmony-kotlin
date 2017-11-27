@@ -36,11 +36,6 @@ public interface BookViewListener {
   void bookOpened(Book book);
 
   /**
-   * Event indicating we've started parsing the actual text.
-   */
-  void readingFile();
-
-  /**
    * Event indicating text rendering has started
    */
   void renderingText();
@@ -72,20 +67,6 @@ public interface BookViewListener {
   void onWordLongPressed(int startOffset, int endOffset, CharSequence word);
 
   /**
-   * Generated when the user swipes upward.
-   *
-   * @return true if the event was handled.
-   */
-  boolean onSwipeUp();
-
-  /**
-   * Generated when the user swipes downward.
-   *
-   * @return true if the event was handled.
-   */
-  boolean onSwipeDown();
-
-  /**
    * Generated when the user from right to left.
    *
    * @return true if the event was handled.
@@ -112,20 +93,6 @@ public interface BookViewListener {
    * @return true if the event was handled.
    */
   boolean onTapRightEdge();
-
-  /**
-   * Generated when the user taps the top edge of the screen.
-   *
-   * @return true if the event was handled.
-   */
-  boolean onTapTopEdge();
-
-  /**
-   * Generated when the user taps the bottom edge of the screen.
-   *
-   * @return true if the event was handled.
-   */
-  boolean onTapBottomEdge();
 
   /**
    * Called before any sliding the detection is performed.

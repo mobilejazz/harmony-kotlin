@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="28.5117188dp"
-    android:height="29.25dp"
-    android:viewportWidth="28.5117188"
-    android:viewportHeight="29.25">
+  android:width="28.5117188dp"
+  android:height="29.25dp"
+  android:viewportWidth="28.5117188"
+  android:viewportHeight="29.25">
 
-    <group android:translateX="-51.988281"
-        android:translateY="-154.250000">
-        <group android:translateX="7.500000"
-            android:translateY="66.500000">
-            <path android:name="ic_delete"
-                android:fillColor="@color/white"
-                android:pathData="M46,111.761719 C46,112.160158 46.0761711,112.541014 46.2285156,112.904297
+  <group
+    android:translateX="-51.988281"
+    android:translateY="-154.250000">
+    <group
+      android:translateX="7.500000"
+      android:translateY="66.500000">
+      <path
+        android:name="ic_delete"
+        android:fillColor="@color/white"
+        android:pathData="M46,111.761719 C46,112.160158 46.0761711,112.541014 46.2285156,112.904297
 C46.3808601,113.26758 46.5976548,113.589842 46.8789062,113.871094
 C47.1601577,114.152345 47.4824201,114.36914 47.8457031,114.521484
 C48.2089862,114.673829 48.5898418,114.75 48.9882812,114.75 L61.0117188,114.75
@@ -22,6 +25,6 @@ C63.9238289,112.541014 64,112.160158 64,111.761719 L64,93.7617188 L46,93.7617188
 L46,111.761719 Z M65.5117188,89.2617188 L60.2382812,89.2617188 L58.7617188,87.75
 L51.2382812,87.75 L49.7617188,89.2617188 L44.4882812,89.2617188
 L44.4882812,92.25 L65.5117188,92.25 L65.5117188,89.2617188 Z" />
-        </group>
     </group>
+  </group>
 </vector>

@@ -9,10 +9,11 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.domain.repository.UserMilestonesRepository;
-import java.util.List;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class PutAllUserMilestonesInteractor {
 

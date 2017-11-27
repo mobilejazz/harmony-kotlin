@@ -9,22 +9,26 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.*;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.*;
 
 public class EnhancedOkHttpBuilder {
 
   public static final int DEFAULT_CONNECTION_POOL_MAX_IDLE_CONNECTIONS = 5;
 
-  public static final long DEFAULT_CONNECTION_POOL_KEEP_ALIVE_CONNECTIONS =
-      TimeUnit.SECONDS.toMillis(1);
+  public static final long DEFAULT_CONNECTION_POOL_KEEP_ALIVE_CONNECTIONS = TimeUnit.SECONDS.toMillis(1);
 
   public enum LogLevel {
-    NONE(HttpLoggingInterceptor.Level.NONE),
-    BASIC(HttpLoggingInterceptor.Level.BASIC),
-    HEADERS(HttpLoggingInterceptor.Level.HEADERS),
-    BODY(HttpLoggingInterceptor.Level.BODY);
+    NONE(HttpLoggingInterceptor.Level.NONE), BASIC(HttpLoggingInterceptor.Level.BASIC), HEADERS(HttpLoggingInterceptor.Level.HEADERS), BODY(
+        HttpLoggingInterceptor.Level.BODY);
 
     private HttpLoggingInterceptor.Level level;
 
@@ -45,8 +49,7 @@ public class EnhancedOkHttpBuilder {
   // This connection pool is created intentionally for Worldreader for allowing the cancellation of the requests
   // without having problems with the Interactors (i.e when downloading a book)
   public static ConnectionPool createWorldreaderConnectionPool() {
-    return new ConnectionPool(DEFAULT_CONNECTION_POOL_MAX_IDLE_CONNECTIONS,
-        DEFAULT_CONNECTION_POOL_KEEP_ALIVE_CONNECTIONS, TimeUnit.MILLISECONDS);
+    return new ConnectionPool(DEFAULT_CONNECTION_POOL_MAX_IDLE_CONNECTIONS, DEFAULT_CONNECTION_POOL_KEEP_ALIVE_CONNECTIONS, TimeUnit.MILLISECONDS);
   }
 
   public EnhancedOkHttpBuilder() {
@@ -86,11 +89,41 @@ public class EnhancedOkHttpBuilder {
 
   public EnhancedOkHttpBuilder setHostnameVerifier(final HostnameVerifier hostnameVerifier) {
     delegate.hostnameVerifier(hostnameVerifier);
+
+    if (hostnameVerifier instanceof AcceptAllHostnamesVerifier) { // Let's disable any possible SSL verification (mainly for Charles Proxy)
+      try {
+        // Create a trust manager that does not validate certificate chains
+        final TrustManager[] trustAllCerts = new TrustManager[] {
+            new X509TrustManager() {
+              @Override public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+              }
+
+              @Override public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+              }
+
+              @Override public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[] {};
+              }
+            }
+        };
+
+        // Install the all-trusting trust manager
+        final SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustAllCerts, new SecureRandom());
+
+        // Create an ssl socket factory with our all-trusting manager
+        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+        delegate.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     return this;
   }
 
-  public <T extends HttpLoggingInterceptor> EnhancedOkHttpBuilder logging(final boolean enable,
-      LogLevel loglevel, final T interceptor) {
+  public <T extends HttpLoggingInterceptor> EnhancedOkHttpBuilder logging(final boolean enable, LogLevel loglevel, final T interceptor) {
     this.enableLog = true;
     this.loglevel = loglevel;
     this.loggingInterceptor = interceptor;

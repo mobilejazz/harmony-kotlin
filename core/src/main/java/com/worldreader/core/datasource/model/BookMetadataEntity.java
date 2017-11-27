@@ -8,10 +8,12 @@ public class BookMetadataEntity {
   public static final BookMetadataEntity EMPTY = new BookMetadataEntity();
 
   private String bookId;
+  private String version;
   private String relativeContentUrl;
   private String contentOpfName;
   private String tocResourceName;
   private List<String> resources;
+  private Map<String, ContentOpfEntity.Item> imagesResources;
 
   public void setBookId(String bookId) {
     this.bookId = bookId;
@@ -19,6 +21,14 @@ public class BookMetadataEntity {
 
   public String getBookId() {
     return bookId;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(final String version) {
+    this.version = version;
   }
 
   public void setRelativeContentUrl(String relativeUrl) {
@@ -53,4 +63,11 @@ public class BookMetadataEntity {
     this.resources = resources;
   }
 
+  public void setImagesResources(Map<String, ContentOpfEntity.Item> imagesResources) {
+    this.imagesResources = imagesResources;
+  }
+
+  public Map<String, ContentOpfEntity.Item> getImagesResources() {
+    return imagesResources;
+  }
 }

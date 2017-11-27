@@ -1,7 +1,5 @@
 package com.worldreader.core.analytics.event;
 
-import com.worldreader.core.analytics.event.AnalyticsEvent;
-
 import java.util.*;
 
 public class BasicAnalyticsEvent implements AnalyticsEvent {

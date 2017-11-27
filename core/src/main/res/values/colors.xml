@@ -16,7 +16,7 @@
   <color name="yellow">#FBB528</color>
   <color name="darkYellow">#AA7B1B</color>
   <color name="black">#000</color>
-    <color name="black_transparent">#64000000</color>
+  <color name="black_transparent">#64000000</color>
   <color name="green">#518B0E</color>
   <color name="red">#D0021B</color>
   <color name="dark">#58626A</color>
@@ -84,4 +84,7 @@
   <color name="dsb_ripple_color_pressed">#77939393</color>
   <color name="dsb_ripple_color_focused">#99999999</color>
   <color name="dsb_interval_color_number">#ffcccccc</color>
+
+  <!--FastBitmap-->
+  <color name="fastbitmap_placeholder_color">#880055FF</color>
 </resources>

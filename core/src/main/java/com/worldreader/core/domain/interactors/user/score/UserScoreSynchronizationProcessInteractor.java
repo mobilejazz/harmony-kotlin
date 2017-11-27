@@ -31,13 +31,10 @@ import java.util.concurrent.*;
 
   private final AddUserScoreInteractor addUserScoreInteractor;
   private final RemoveAllUserScoreInteractor removeAllUserScoreInteractor;
-
   private final IsAnonymousUserInteractor isAnonymousUserInteractor;
   private final GetUserInteractor getUserInteractor;
-
   private final GetBookPagesUserScoreInteractor getBookPagesUserScoreInteractor;
   private final GetUserLeaderboardInteractor getUserLeaderboardInteractor;
-
   private final SendReadPagesInteractor sendPageReadsInteractor;
 
   private final Logger logger;

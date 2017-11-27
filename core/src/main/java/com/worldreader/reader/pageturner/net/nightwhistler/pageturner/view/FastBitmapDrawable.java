@@ -17,41 +17,129 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.Shape;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.core.domain.model.StreamingResource;
+import com.worldreader.core.domain.repository.StreamingBookRepository;
+
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.concurrent.*;
 
 public class FastBitmapDrawable extends Drawable {
 
-  private Bitmap mBitmap;
+  private static final String TAG = FastBitmapDrawable.class.getSimpleName();
 
-  private int width;
-  private int height;
+  private final String resource;
+  private final StreamingBookRepository dataSource;
+  private final BookMetadata metadata;
+  private final Logger logger;
 
-  public FastBitmapDrawable(Bitmap b) {
-    mBitmap = b;
+  private final Handler handler = new Handler(Looper.getMainLooper());
 
-    if (b != null) {
-      this.width = b.getWidth();
-      this.height = b.getHeight();
-    }
+  private final Rect r;
+  private final Shape shape;
+  private final Paint paint;
+
+  private final int width;
+  private final int height;
+
+  private Bitmap bitmap;
+  private boolean isLoaded;
+  private boolean isProcessing;
+
+  private ListenableFuture<StreamingResource> getBookResourceFuture;
+
+  public FastBitmapDrawable(final String resource, final int width, final int height, final StreamingBookRepository dataSource, final BookMetadata metadata,
+      final Logger logger) {
+    this.resource = resource;
+    this.dataSource = dataSource;
+    this.metadata = metadata;
+
+    this.width = width;
+    this.height = height;
+    this.logger = logger;
+
+    this.r = new Rect(0, 0, width, height);
+
+    this.shape = new RectShape();
+    shape.resize(width, height);
+
+    this.paint = new Paint();
+    paint.setColor(Color.parseColor("#fbf3ea"));
+
+    setBounds(0, 0, width - 1, height - 1);
   }
 
-  @Override public void draw(Canvas canvas) {
-    if (mBitmap != null) {
-      canvas.drawBitmap(mBitmap, 0.0f, 0.0f, null);
-    }
-  }
+  @Override public void draw(@NonNull Canvas canvas) {
+    if (bitmap == null) {
+      final int count = canvas.save();
+      canvas.translate(r.left, r.top);
+      shape.draw(canvas, paint);
+      canvas.restoreToCount(count);
 
-  @Override public int getOpacity() {
-    return PixelFormat.TRANSLUCENT;
+      if (!isLoaded && !isProcessing) {
+        isProcessing = true;
+        this.getBookResourceFuture = dataSource.getBookResourceFuture(metadata.getBookId(), metadata, URLDecoder.decode(resource));
+        Futures.addCallback(getBookResourceFuture, new FutureCallback<StreamingResource>() {
+          @Override public void onSuccess(final StreamingResource result) {
+            final InputStream inputStream = result.getInputStream();
+            handler.post(new Runnable() {
+              @Override public void run() {
+                generateDrawable(inputStream);
+                isProcessing = false;
+              }
+            });
+          }
+
+          @Override public void onFailure(@NonNull final Throwable t) {
+            if (t instanceof CancellationException) {
+              return;
+            }
+
+            handler.post(new Runnable() {
+              @Override public void run() {
+                isProcessing = false;
+                isLoaded = true;
+              }
+            });
+          }
+        }, MoreExecutors.directExecutor());
+      }
+
+    } else {
+      canvas.drawBitmap(bitmap, 0.0f, 0.0f, null);
+    }
+
   }
 
   @Override public void setAlpha(int alpha) {
   }
 
   @Override public void setColorFilter(ColorFilter cf) {
+  }
+
+  @Override public int getOpacity() {
+    return PixelFormat.TRANSLUCENT;
   }
 
   @Override public int getIntrinsicWidth() {
@@ -70,16 +158,43 @@ public class FastBitmapDrawable extends Drawable {
     return height;
   }
 
-  public Bitmap getBitmap() {
-    return mBitmap;
+  private void generateDrawable(final InputStream inputStream) {
+    try {
+      final Bitmap localBitmap = getBitmap(inputStream);
+      if (localBitmap == null || localBitmap.getHeight() < 1 || localBitmap.getWidth() < 1) {
+        isLoaded = true;
+        return;
+      }
+      recycle();
+      bitmap = localBitmap;
+      isLoaded = true;
+      invalidateSelf();
+    } catch (Throwable e) {
+      logger.e(TAG, "Could not load image: " + Throwables.getStackTraceAsString(e));
+      isLoaded = true;
+    }
   }
 
-  public void destroy() {
-    if (this.mBitmap != null) {
-      this.mBitmap.recycle();
+  @Nullable public Bitmap getBitmap() {
+    return bitmap;
+  }
+
+  public void recycle() {
+    if (this.bitmap != null) {
+      this.bitmap.recycle();
     }
 
-    this.mBitmap = null;
-    this.setCallback(null);
+    this.bitmap = null;
   }
+
+  public void reset() {
+    recycle();
+    isLoaded = false;
+  }
+
+  @Nullable private Bitmap getBitmap(InputStream is) throws IOException {
+    final Bitmap originalBitmap = BitmapFactory.decodeStream(is);
+    return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+  }
+
 }

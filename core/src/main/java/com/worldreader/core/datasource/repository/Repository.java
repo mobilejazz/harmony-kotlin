@@ -5,7 +5,7 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 
-import java.util.List;
+import java.util.*;
 
 public interface Repository<M extends RepositoryModel, S extends RepositorySpecification> {
 

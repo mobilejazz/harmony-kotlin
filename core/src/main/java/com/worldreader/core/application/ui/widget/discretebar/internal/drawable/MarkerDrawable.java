@@ -46,6 +46,7 @@ import android.view.animation.Interpolator;
  * @hide
  */
 public class MarkerDrawable extends StateDrawable implements Animatable {
+
   private static final long FRAME_DURATION = 1000 / 60;
   private static final int ANIMATION_DURATION = 250;
 
@@ -240,6 +241,7 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
    * This is the "poor's man" AnimatorListener for this Drawable
    */
   public interface MarkerAnimationListener {
+
     void onClosingComplete();
 
     void onOpeningComplete();

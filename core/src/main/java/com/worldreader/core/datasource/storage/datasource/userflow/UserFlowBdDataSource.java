@@ -2,7 +2,7 @@ package com.worldreader.core.datasource.storage.datasource.userflow;
 
 import com.worldreader.core.datasource.model.UserFlowEntity;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserFlowBdDataSource {
 

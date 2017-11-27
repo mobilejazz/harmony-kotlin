@@ -1,262 +1,208 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.epub;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.google.common.base.Function;
+import com.google.common.collect.Ordering;
+import com.worldreader.core.datasource.model.ContentOpfEntity;
+import com.worldreader.core.datasource.model.NCXEntity;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.MediaType;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Metadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.util.ResourceUtil;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import com.worldreader.reader.epublib.org.apache.commons.io.FilenameUtils;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
 
-/**
- * Reads an epub file.
- *
- * @author paul
- */
+// TODO: 25/09/2017 Check that get book cover works properly
 public class EpubReader {
 
-  //private static final Logger log = LoggerFactory.getLogger(EpubReader.class);
-  private BookProcessor bookProcessor = BookProcessor.IDENTITY_BOOKPROCESSOR;
+  private static Serializer XML_PARSER = new Persister();
 
-  public Book readEpub(InputStream in) throws IOException {
-    return readEpub(in, Constants.CHARACTER_ENCODING);
-  }
+  public static Book readStreamingEpub(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {
+    final ContentOpfEntity contentOpf = XML_PARSER.read(ContentOpfEntity.class, contentOpfIs, false);
+    final NCXEntity NCXEntity = XML_PARSER.read(NCXEntity.class, tocResourceIs, false);
 
-  public Book readEpub(ZipInputStream in) throws IOException {
-    return readEpub(in, Constants.CHARACTER_ENCODING);
-  }
+    final Book book = new Book();
 
-  public Book readEpub(ZipFile zipfile) throws IOException {
-    return readEpub(zipfile, Constants.CHARACTER_ENCODING);
-  }
+    book.setOpfResource(toOpfResource(contentOpfIs));
+    book.setResources(toBookResources(contentOpf));
+    book.setMetadata(toBookMetadata(contentOpf));
+    book.setSpine(toSpine(contentOpf, book.getResources()));
+    book.setTableOfContents(toTableOfContents(contentOpf, NCXEntity, book));
+    book.setNcxResource(toNcxResource(contentOpf, book, tocResourceIs));
 
-  /**
-   * Read epub from inputstream
-   *
-   * @param in the inputstream from which to read the epub
-   * @param encoding the encoding to use for the html files within the epub
-   * @throws IOException
-   */
-  public Book readEpub(InputStream in, String encoding) throws IOException {
-    return readEpub(new ZipInputStream(in), encoding);
-  }
-
-  /**
-   * Reads this EPUB without loading all resources into memory.
-   *
-   * @param fileName the file to load
-   * @param encoding the encoding for XHTML files
-   * @param lazyLoadedTypes a list of the MediaType to load lazily
-   * @throws IOException
-   */
-  public Book readEpubLazy(String fileName, String encoding, List<MediaType> lazyLoadedTypes)
-      throws IOException {
-    Book result = new Book();
-    Resources resources = readLazyResources(fileName, encoding, lazyLoadedTypes);
-    handleMimeType(result, resources);
-    String packageResourceHref = getPackageResourceHref(resources);
-    Resource packageResource = processPackageResource(packageResourceHref, result, resources);
-    result.setOpfResource(packageResource);
-    Resource ncxResource = processNcxResource(packageResource, result);
-    result.setNcxResource(ncxResource);
-    result = postProcessBook(result);
-    return result;
-  }
-
-  /**
-   * Reads this EPUB without loading any resources into memory.
-   *
-   * @param fileName the file to load
-   * @param encoding the encoding for XHTML files
-   * @throws IOException
-   */
-  public Book readEpubLazy(String fileName, String encoding) throws IOException {
-    return readEpubLazy(fileName, encoding, Arrays.asList(MediatypeService.mediatypes));
-  }
-
-  public Book readEpub(ZipInputStream in, String encoding) throws IOException {
-    return readEpubResources(readResources(in, encoding));
-  }
-
-  public Book readEpub(ZipFile in, String encoding) throws IOException {
-    return readEpubResources(readResources(in, encoding));
-  }
-
-  public Book readEpubStreaming(InputStream packageResourceInputStream) {
-    Book b = new Book();
-    Resources resources = new Resources();
-
-    Resource packageResource = createFakePackageResource(packageResourceInputStream);
-    try {
-      ResourceUtil.generateStreamingResourcesFromPackageResource(resources, packageResource);
-    } catch (Exception e) {
-      //log.error(e.getMessage(), e);
-    }
-    resources.add(packageResource);
-
-    String packageResourceHref = getPackageResourceHref(resources);
-    b.setOpfResource(processPackageResource(packageResourceHref, b, resources));
-    b.setNcxResource(processNcxResource(packageResource, b));
-
-    b = postProcessBook(b);
-
-    return b;
-  }
-
-  public Book readEpubResources(Resources resources) throws IOException {
-    Book result = new Book();
-    handleMimeType(result, resources);
-    String packageResourceHref = getPackageResourceHref(resources);
-    Resource packageResource = processPackageResource(packageResourceHref, result, resources);
-    result.setOpfResource(packageResource);
-    Resource ncxResource = processNcxResource(packageResource, result);
-    result.setNcxResource(ncxResource);
-    result = postProcessBook(result);
-    return result;
-  }
-
-  private Book postProcessBook(Book book) {
-    if (bookProcessor != null) {
-      book = bookProcessor.processBook(book);
-    }
     return book;
   }
 
-  private Resource processNcxResource(Resource packageResource, Book book) {
-    return NCXDocument.read(book);
+  private static Resource toOpfResource(InputStream contentOpfIs) throws IOException {
+    contentOpfIs.reset();
+    return new Resource(contentOpfIs, "OEBPS/content.opf");
   }
 
-  public static Resource processNcxResource(Book book) {
-    return NCXDocument.read(book);
-  }
+  private static Resources toBookResources(ContentOpfEntity contentOpf) {
+    final List<ContentOpfEntity.Item> entries = contentOpf.getManifest();
+    final Resources resources = new Resources();
 
-  private Resource processPackageResource(String packageResourceHref, Book book,
-      Resources resources) {
-    Resource packageResource = resources.remove(packageResourceHref);
-    try {
-      PackageDocumentReader.read(packageResource, this, book, resources);
-    } catch (Exception e) {
-      //log.error(e.getMessage(), e);
-    }
-    return packageResource;
-  }
+    for (ContentOpfEntity.Item entry : entries) {
+      final MediaType mediaType = MediatypeService.getMediaTypeByName(entry.mediaType);
+      final StreamingResource resource = new StreamingResource(entry.id, entry.href, mediaType);
 
-  private String getPackageResourceHref(Resources resources) {
-    String defaultResult = "OEBPS/content.opf";
-    String result = defaultResult;
-
-    Resource containerResource = resources.remove("META-INF/container.xml");
-    if (containerResource == null) {
-      return result;
-    }
-    try {
-      Document document = ResourceUtil.getAsDocument(containerResource);
-      Element rootFileElement = (Element) ((Element) document.getDocumentElement()
-          .getElementsByTagName("rootfiles")
-          .item(0)).getElementsByTagName("rootfile").item(0);
-      result = rootFileElement.getAttribute("full-path");
-    } catch (Exception e) {
-      //log.error(e.getMessage(), e);
-    }
-    if (StringUtil.isBlank(result)) {
-      result = defaultResult;
-    }
-    return result;
-  }
-
-  private void handleMimeType(Book result, Resources resources) {
-    resources.remove("mimetype");
-  }
-
-  private Resources readLazyResources(String fileName, String defaultHtmlEncoding,
-      List<MediaType> lazyLoadedTypes) throws IOException {
-
-    ZipFile zipFile = new ZipFile(fileName);
-
-    Resources result = new Resources();
-    Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-    while (entries.hasMoreElements()) {
-      ZipEntry zipEntry = entries.nextElement();
-
-      if (zipEntry.isDirectory()) {
-        continue;
+      // Set proper encoding if source is HTML
+      if (mediaType == MediatypeService.XHTML) {
+        resource.setInputEncoding(Constants.CHARACTER_ENCODING);
       }
 
-      String href = zipEntry.getName();
-      MediaType mediaType = MediatypeService.determineMediaType(href);
-
-      Resource resource;
-
-      if (lazyLoadedTypes.contains(mediaType)) {
-        resource = new Resource(fileName, zipEntry.getSize(), href);
-      } else {
-        resource =
-            new Resource(zipFile.getInputStream(zipEntry), fileName, (int) zipEntry.getSize(),
-                href);
-      }
-
-      if (resource.getMediaType() == MediatypeService.XHTML) {
-        resource.setInputEncoding(defaultHtmlEncoding);
-      }
-      result.add(resource);
-    }
-
-    return result;
-  }
-
-  private Resources readResources(ZipInputStream in, String defaultHtmlEncoding)
-      throws IOException {
-    Resources result = new Resources();
-    for (ZipEntry zipEntry = in.getNextEntry(); zipEntry != null; zipEntry = in.getNextEntry()) {
-      if (zipEntry.isDirectory()) {
-        continue;
-      }
-      Resource resource = ResourceUtil.createResource(zipEntry, in);
-      if (resource.getMediaType() == MediatypeService.XHTML) {
-        resource.setInputEncoding(defaultHtmlEncoding);
-      }
-      result.add(resource);
-    }
-    return result;
-  }
-
-  private Resources readResources(ZipFile zipFile, String defaultHtmlEncoding) throws IOException {
-    Resources result = new Resources();
-    Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-    while (entries.hasMoreElements()) {
-      ZipEntry zipEntry = entries.nextElement();
-      if (zipEntry != null && !zipEntry.isDirectory()) {
-        Resource resource = ResourceUtil.createResource(zipEntry, zipFile.getInputStream(zipEntry));
-        if (resource.getMediaType() == MediatypeService.XHTML) {
-          resource.setInputEncoding(defaultHtmlEncoding);
+      // If the source supports width and height, let's add it
+      if (MediatypeService.isBitmapImage(mediaType)) {
+        if (!TextUtils.isEmpty(entry.width) && !TextUtils.isEmpty(entry.height)) {
+          resource.setWidth(entry.width);
+          resource.setHeight(entry.height);
         }
-        result.add(resource);
       }
+
+      resources.add(resource);
+    }
+
+    return resources;
+  }
+
+  private static Metadata toBookMetadata(final ContentOpfEntity contentOpf) {
+    final ContentOpfEntity.Metadata metadata = contentOpf.getMetadata();
+
+    final Metadata toReturn = new Metadata();
+    toReturn.setTitles(Collections.singletonList(metadata.getTitle()));
+    toReturn.setAuthors(Collections.singletonList(new Author(metadata.getCreator())));
+    toReturn.setDescriptions(Collections.singletonList(metadata.getDescription()));
+    toReturn.setPublishers(Collections.singletonList(metadata.getPublisher()));
+
+    return toReturn;
+  }
+
+  private static Spine toSpine(final ContentOpfEntity contentOpf, final Resources resources) {
+    final List<SpineReference> spineReferences = new ArrayList<>();
+    final List<ContentOpfEntity.itemref> itemrefs = contentOpf.getSpineItemRefs();
+
+    for (ContentOpfEntity.itemref itemref : itemrefs) {
+      final String idRef = itemref.idRef;
+      final Resource resource = resources.getByIdOrHref(idRef);
+      if (resource != null) {
+        final SpineReference reference = new SpineReference(resource);
+        spineReferences.add(reference);
+      }
+    }
+
+    return new Spine(spineReferences);
+  }
+
+  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Book book, final InputStream ncx) throws IOException {
+    final Spine spine = book.getSpine();
+
+    if (spine == null) {
+      return null; // Epub doesn't contain what we are looking for
+    }
+
+    ncx.reset();
+
+    final String tocId = contentOpfEntity.spine.toc;
+    final Resource tocResource = book.getResources().getById(tocId);
+    tocResource.setData(ncx);
+
+    spine.setTocResource(tocResource);
+
+    return tocResource;
+  }
+
+  private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Book book) throws Exception {
+    final List<TOCReference> references = getTocReferences(contentOpfEntity, ncxEntity.navPoints, book);
+    return new TableOfContents(references);
+  }
+
+  @NonNull
+  private static List<TOCReference> getTocReferences(final ContentOpfEntity contentOpfEntity, final List<NCXEntity.NavPoint> navPoints, final Book book) throws Exception {
+    if (navPoints == null) {
+      return new ArrayList<>();
+    }
+
+    final List<TOCReference> references = new ArrayList<>(navPoints.size());
+
+    // Order this list from min to max by playOrder
+    Collections.sort(navPoints, Ordering.natural().onResultOf(new Function<NCXEntity.NavPoint, Comparable>() {
+      @Nullable @Override public Comparable apply(@Nullable NCXEntity.NavPoint input) {
+        return input.playOrder;
+      }
+    }));
+
+    // Navigate through ordered navPoints
+    for (NCXEntity.NavPoint navPoint : navPoints) {
+      final TOCReference tocReference = toTOCReference(contentOpfEntity, navPoint, book);
+      if (tocReference != null) {
+        references.add(tocReference);
+      }
+    }
+
+    return references;
+  }
+
+  @Nullable private static TOCReference toTOCReference(final ContentOpfEntity contentOpfEntity, final NCXEntity.NavPoint navPoint, final Book book)
+      throws Exception {
+    // Retrieve values from XML
+    final String label = navPoint.navLabel.text;
+    final String rawSrc = navPoint.content.src;
+
+    // Transform to url
+    final String src = URLDecoder.decode(rawSrc, Constants.CHARACTER_ENCODING);
+
+    // Create reference
+    final String tocResourceId = contentOpfEntity.spine.toc;
+    final Resource tocResource = book.getResources().getById(tocResourceId);
+    final String tocResourceHref = tocResource.getHref();
+
+    final String reference = FilenameUtils.getPath(tocResourceHref) + src;
+
+    // Obtain just the fragmentId
+    final String fragmentId = StringUtil.substringAfter(reference, Constants.FRAGMENT_SEPARATOR_CHAR);
+
+    // Retrieve from resources
+    final String href = StringUtil.substringBefore(reference, Constants.FRAGMENT_SEPARATOR_CHAR);
+    final Resource resource = book.getResources().getByHref(href);
+
+    final TOCReference result;
+    if (resource != null) {
+      result = new TOCReference(label, resource, fragmentId);
+      final List<NCXEntity.NavPoint> newNavPoints = navPoint.navPoints;
+
+      if (newNavPoints != null) {
+        // Order this list from min to max by playOrder
+        Collections.sort(newNavPoints, Ordering.natural().onResultOf(new Function<NCXEntity.NavPoint, Comparable>() {
+          @Nullable @Override public Comparable apply(@Nullable NCXEntity.NavPoint input) {
+            return input.playOrder;
+          }
+        }));
+
+        // Call recursively until last element inside has been consumed
+        result.setChildren(getTocReferences(contentOpfEntity, newNavPoints, book));
+      }
+    } else {
+      result = null;
     }
 
     return result;
   }
 
-  private Resource createFakePackageResource(InputStream inputStream)
-      throws IllegalArgumentException {
-    try {
-      return ResourceUtil.createFakePackageResource(inputStream);
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Invalid content opf file!", e);
-    }
-  }
 }

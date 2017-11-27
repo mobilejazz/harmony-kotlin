@@ -19,8 +19,8 @@ public class AnalyticsEventConstants {
   public static final String BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM = "currentPageNumberInSpineElement";
   public static final String BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM = "amountOfPagesForSpineElement";
 
-
   public static class Reader {
+
     public static final String OPEN_READER = "Open";
   }
 

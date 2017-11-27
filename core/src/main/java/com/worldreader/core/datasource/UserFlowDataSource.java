@@ -8,9 +8,7 @@ import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.repository.UserFlowRepository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UserFlowDataSource implements UserFlowRepository {
 

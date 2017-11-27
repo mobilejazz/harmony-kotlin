@@ -10,7 +10,6 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 
 import javax.inject.Inject;
-
 import java.util.concurrent.*;
 
 import static com.worldreader.core.datasource.repository.spec.RepositorySpecification.SimpleRepositorySpecification;

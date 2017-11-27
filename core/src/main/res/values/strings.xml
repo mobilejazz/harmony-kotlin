@@ -1,203 +1,209 @@
 <?xml version="1.0"?>
 <resources>
-    <!-- Generics -->
-    <string name="ls_generic_cancel">Cancel</string>
-    <string name="ls_generic_accept">OK</string>
-    <string name="ls_generic_delete">Delete</string>
-    <string name="ls_generic_done">Done</string>
-    <string name="ls_generic_dismiss">Dismiss</string>
-    <string name="ls_generic_save">Save</string>
-    <string name="ls_generic_close">Close</string>
-    <string name="ls_generic_yes">Yes</string>
-    <string name="ls_generic_no">No</string>
-    <string name="ls_generic_quit">Quit</string>
-    <string name="ls_generic_retry">Retry</string>
-    <string name="ls_generic_back">Back</string>
-    <string name="ls_generic_next">Next</string>
-    <string name="ls_generic_search">Search</string>
-    <string name="ls_generic_share">Share</string>
-    <string name="ls_generic_settings">Settings</string>
-    <string name="ls_generic_skip">Skip</string>
-    <string name="ls_generic_edit">Edit</string>
-    <string name="ls_my_library_view_all">More</string>
-    <string name="ls_offline_books_screen_title">Offline Books</string>
-    <!-- Book Detail Layout-->
-    <string name="ls_generic_like">Like</string>
-    <string name="ls_generic_liked">Liked</string>
-    <string name="ls_book_detail_add_to_currently_reading">Add to My Books</string>
-    <string name="ls_book_detail_added_to_currently_reading">Added to My Books</string>
-    <string name="ls_book_detail_download_book">Download the book (read offline)</string>
-    <string name="ls_book_detail_number_of_likes">%1$d likes</string>
-    <string name="ls_book_detail_number_of_times_read">%1$d times read</string>
-    <string name="ls_delete_book_dialog_title">Delete book</string>
-    <string name="ls_delete_book_dialog_message">Are you sure that you want to delete the book?
+  <!-- Generics -->
+  <string name="ls_generic_cancel">Cancel</string>
+  <string name="ls_generic_accept">OK</string>
+  <string name="ls_generic_delete">Delete</string>
+  <string name="ls_generic_done">Done</string>
+  <string name="ls_generic_dismiss">Dismiss</string>
+  <string name="ls_generic_save">Save</string>
+  <string name="ls_generic_close">Close</string>
+  <string name="ls_generic_yes">Yes</string>
+  <string name="ls_generic_no">No</string>
+  <string name="ls_generic_quit">Quit</string>
+  <string name="ls_generic_retry">Retry</string>
+  <string name="ls_generic_back">Back</string>
+  <string name="ls_generic_next">Next</string>
+  <string name="ls_generic_search">Search</string>
+  <string name="ls_generic_share">Share</string>
+  <string name="ls_generic_settings">Settings</string>
+  <string name="ls_generic_skip">Skip</string>
+  <string name="ls_generic_edit">Edit</string>
+  <string name="ls_my_library_view_all">More</string>
+  <string name="ls_offline_books_screen_title">Offline Books</string>
+  <!-- Book Detail Layout-->
+  <string name="ls_generic_like">Like</string>
+  <string name="ls_generic_liked">Liked</string>
+  <string name="ls_book_detail_add_to_currently_reading">Add to My Books</string>
+  <string name="ls_book_detail_added_to_currently_reading">Added to My Books</string>
+  <string name="ls_book_detail_download_book">Download the book (read offline)</string>
+  <string name="ls_book_detail_number_of_likes">%1$d likes</string>
+  <string name="ls_book_detail_number_of_times_read">%1$d times read</string>
+  <string name="ls_delete_book_dialog_title">Delete book</string>
+  <string name="ls_delete_book_dialog_message">Are you sure that you want to delete the book?
     </string>
-    <string name="ls_download_book_exceeded_limit_title">Download book</string>
-    <string name="ls_download_book_exceeded_limit_message">You have exceeded the book download limit
+  <string name="ls_download_book_exceeded_limit_title">Download book</string>
+  <string name="ls_download_book_exceeded_limit_message">You have exceeded the book download limit
         for today. You can download more tomorrow .
     </string>
-    <string name="ls_open_book_not_internet">"You need to download a book to read offline without an
+  <string name="ls_open_book_not_internet">"You need to download a book to read offline without an
         internet connection. "
     </string>
-    <!-- View all layout & My books layout-->
-    <string name="ls_view_all_delete_book_title">Delete book?</string>
-    <string name="ls_view_all_delete_book_message">Are you sure that you want to delete this book?
+  <!-- View all layout & My books layout-->
+  <string name="ls_view_all_delete_book_title">Delete book?</string>
+  <string name="ls_view_all_delete_book_message">Are you sure that you want to delete this book?
         All your saved progress will be removed as well.
     </string>
-    <string name="ls_view_all_delete_book_error">Sorry, there was an error when deleting your book.
+  <string name="ls_view_all_delete_book_error">Sorry, there was an error when deleting your book.
         Please try again.
     </string>
-    <!-- Settings -->
-    <string name="ls_settings_profile_settings">Profile settings</string>
-    <string name="ls_settings_my_goals">My goals</string>
-    <!-- User Profile Layout -->
-    <string name="ls_user_not_registered_register_now">Register now</string>
-    <!-- Register layout -->
-    <string name="ls_signup_login_btn">Sign in</string>
-    <string name="ls_signup_no_register">Sign up later</string>
-    <string name="ls_signup_message">Get more from your reading. Sign up to get exclusive features
+  <!-- Settings -->
+  <string name="ls_settings_profile_settings">Profile settings</string>
+  <string name="ls_settings_my_goals">My goals</string>
+  <!-- User Profile Layout -->
+  <string name="ls_user_not_registered_register_now">Register now</string>
+  <!-- Register layout -->
+  <string name="ls_signup_login_btn">Sign in</string>
+  <string name="ls_signup_no_register">Sign up later</string>
+  <string name="ls_signup_message">Get more from your reading. Sign up to get exclusive features
         and book recommendations.
     </string>
-    <string name="ls_signup_username">Username</string>
-    <string name="ls_signup_password">Password</string>
-    <string name="ls_signup_repeat_password">Repeat password</string>
-    <string name="ls_signup_terms_and_conditions">Agree to terms and conditions</string>
-    <string name="ls_signup_register_now_btn">Sign up now</string>
-    <string name="ls_signup_accept_terms_conditions">Agree to terms and conditions</string>
-    <string name="ls_signup_email">Email</string>
-    <!-- Loading book layout -->
-    <string name="ls_loading_book_message">Loading</string>
-    <string name="ls_loading_book_please_wait">Please wait</string>
-    <!-- Book finished layout -->
-    <string name="ls_congratulations_title">Congratulations!</string>
-    <string name="ls_congratulations_finished_book">You\'ve finished the book!</string>
-    <string name="ls_congratulations_back_to_book_detai">Back to My Library</string>
-    <string name="ls_share_finished_book_title">Share read book</string>
-    <string name="ls_share_finished_book">Hey I\'ve finished reading \"%1$s\" by \"%2$s\" on
+  <string name="ls_signup_username">Username</string>
+  <string name="ls_signup_password">Password</string>
+  <string name="ls_signup_repeat_password">Repeat password</string>
+  <string name="ls_signup_terms_and_conditions">Agree to terms and conditions</string>
+  <string name="ls_signup_register_now_btn">Sign up now</string>
+  <string name="ls_signup_accept_terms_conditions">Agree to terms and conditions</string>
+  <string name="ls_signup_email">Email</string>
+  <!-- Loading book layout -->
+  <string name="ls_loading_book_message">Loading</string>
+  <string name="ls_loading_book_please_wait">Please wait</string>
+  <!-- Book finished layout -->
+  <string name="ls_congratulations_title">Congratulations!</string>
+  <string name="ls_congratulations_finished_book">You\'ve finished the book!</string>
+  <string name="ls_congratulations_back_to_book_detai">Back to My Library</string>
+  <string name="ls_share_finished_book_title">Share read book</string>
+  <string name="ls_share_finished_book">Hey I\'ve finished reading \"%1$s\" by \"%2$s\" on
         Worldreader! Download the application here: %3$s
     </string>
-    <string name="ls_book_finished_back_to_book_detail">Back to Book Details</string>
-    <string name="ls_congratulations_share_it">Share it!</string>
-    <!--#Tutorial Home Screen-->
-    <string name="ls_my_library_tutorial_title">Welcome to Worldreader!</string>
-    <string name="ls_my_library_tutorial_message">"Start reading by selecting a book from your
+  <string name="ls_book_finished_back_to_book_detail">Back to Book Details</string>
+  <string name="ls_congratulations_share_it">Share it!</string>
+  <!--#Tutorial Home Screen-->
+  <string name="ls_my_library_tutorial_title">Welcome to Worldreader!</string>
+  <string name="ls_my_library_tutorial_message">"Start reading by selecting a book from your
         personalised recommendations below!"
     </string>
-    <string name="ls_collections_tutorial_message">
+  <string name="ls_collections_tutorial_message">
         <b>Collections</b>
         are groups of books we\'ve created just for you.\n\nIf you want a challenge,
       try reading an entire collection!</string>
-    <string name="ls_categories_tutorial_message">Categories are groups of books with similar
+  <string name="ls_categories_tutorial_message">Categories are groups of books with similar
         subjects or ideas.\n\nFind everything from quick reads
      to classic stories here.</string>
-    <string name="ls_categories_tutorial_button_two">Ok, got it!</string>
-    <string name="ls_my_library_tutorial_button_one">Skip tutorial</string>
-    <string name="ls_my_library_tutorial_button_two">Next</string>
-    <!--#Tutorial Reader Screen-->
-    <string name="ls_tutorial_reader_initial_title">Ready to read?</string>
-    <string name="ls_tutorial_reader_initial_message">"<b>Swipe to turn pages</b>, tap the screen if
+  <string name="ls_categories_tutorial_button_two">Ok, got it!</string>
+  <string name="ls_my_library_tutorial_button_one">Skip tutorial</string>
+  <string name="ls_my_library_tutorial_button_two">Next</string>
+  <!--#Tutorial Reader Screen-->
+  <string name="ls_tutorial_reader_initial_title">Ready to read?</string>
+  <string name="ls_tutorial_reader_initial_message">"<b>Swipe to turn pages</b>, tap the screen if
         you want to use the Reading Menu."
     </string>
-    <string name="ls_tutorial_reader_options_title">Reading Options</string>
-    <string name="ls_tutorial_reader_options_message">Change reading options such as brightness,
+  <string name="ls_tutorial_reader_options_title">Reading Options</string>
+  <string name="ls_tutorial_reader_options_message">Change reading options such as brightness,
         page colour and font size.
     </string>
-    <string name="ls_tutorial_reader_index_title">Want a specific page?</string>
-    <string name="ls_tutorial_reader_index_message">"Use the <b>table of contents</b> to see
+  <string name="ls_tutorial_reader_index_title">Want a specific page?</string>
+  <string name="ls_tutorial_reader_index_message">"Use the <b>table of contents</b> to see
         chapters and navigate through the book."
     </string>
-    <!--#Tutorial Default texts-->
-    <string name="ls_tutorial_got_it_btn">Ok, got it!</string>
-    <string name="ls_tutorial_skip_btn">Skip tutorial</string>
-    <string name="ls_tutorial_next_btn">Next</string>
-    <!--#Book Reading Screen-->
-    <string name="ls_book_reading_font_size_smallest">Smallest (12pt)</string>
-    <string name="ls_book_reading_font_size_small">Small (14pt)</string>
-    <string name="ls_book_reading_font_size_normal">Normal (18pt)</string>
-    <string name="ls_book_reading_font_size_big">Big (20pt)</string>
-    <string name="ls_book_reading_font_size_biggest">Biggest (24pt)</string>
-    <string name="ls_book_reading_font_family_original">Original</string>
-    <string name="ls_book_reading_font_family_gentium_book_basic">Gentium Book Basic</string>
-    <string name="ls_book_reading_font_family_gentium_basic">Gentium Basic</string>
-    <string name="ls_book_reading_font_family_frank_ruehl">Frank Ruehl</string>
-    <string name="ls_book_reading_book_index">Table of contents</string>
-    <string name="ls_book_reading_no_table_of_contents">This book has no table of contents</string>
-    <string name="ls_book_reading_unknown_author">Unknown author</string>
-    <string name="ls_text_to_speech">Read out loud</string>
-    <string name="ls_display_options">Display options</string>
-    <string name="ls_contents">Contents</string>
-    <string name="ls_book_reading_select_one_word">Please select one word to search in the
+  <!--#Tutorial Default texts-->
+  <string name="ls_tutorial_got_it_btn">Ok, got it!</string>
+  <string name="ls_tutorial_skip_btn">Skip tutorial</string>
+  <string name="ls_tutorial_next_btn">Next</string>
+  <!--#Book Reading Screen-->
+  <string name="ls_book_reading_font_size_smallest">Smallest (12pt)</string>
+  <string name="ls_book_reading_font_size_small">Small (14pt)</string>
+  <string name="ls_book_reading_font_size_normal">Normal (18pt)</string>
+  <string name="ls_book_reading_font_size_big">Big (20pt)</string>
+  <string name="ls_book_reading_font_size_biggest">Biggest (24pt)</string>
+  <string name="ls_book_reading_font_family_original">Original</string>
+  <string name="ls_book_reading_font_family_gentium_book_basic">Gentium Book Basic</string>
+  <string name="ls_book_reading_font_family_gentium_basic">Gentium Basic</string>
+  <string name="ls_book_reading_font_family_frank_ruehl">Frank Ruehl</string>
+  <string name="ls_book_reading_book_index">Table of contents</string>
+  <string name="ls_book_reading_no_table_of_contents">This book has no table of contents</string>
+  <string name="ls_book_reading_unknown_author">Unknown author</string>
+  <string name="ls_text_to_speech">Read out loud</string>
+  <string name="ls_display_options">Display options</string>
+  <string name="ls_contents">Contents</string>
+  <string name="ls_book_reading_select_one_word">Please select one word to search in the
         dictionary.
     </string>
-    <string name="ls_book_reading_font_family_open_sans">Open Sans</string>
-    <string name="ls_book_reading_font_family_lora">Lora</string>
-    <string name="ls_book_reading_font_family_poppins">Poppins</string>
-    <string name="ls_loading_text">Loading text…</string>
-    <string name="ls_reader_set_your_goals_title">Set your goals</string>
-    <string name="ls_reader_set_your_goals_message">Set a reading goal and see how you compare to
+  <string name="ls_book_reading_font_family_open_sans">Open Sans</string>
+  <string name="ls_book_reading_font_family_lora">Lora</string>
+  <string name="ls_book_reading_font_family_poppins">Poppins</string>
+  <string name="ls_loading_text">Loading text…</string>
+  <string name="ls_reader_set_your_goals_title">Set your goals</string>
+  <string name="ls_reader_set_your_goals_message">Set a reading goal and see how you compare to
         other readers. Let\'s do it now.
     </string>
-    <string name="ls_reader_reminder_set_your_goals_title">Set your reading goal?</string>
-    <string name="ls_reader_reminder_set_your_goals_message">Let\'s do it now so you can compare
+  <string name="ls_reader_reminder_set_your_goals_title">Set your reading goal?</string>
+  <string name="ls_reader_reminder_set_your_goals_message">Let\'s do it now so you can compare
         your progress with other readers.
     </string>
-    <!--#DefintionView-->
-    <string name="ls_definition_view_no_definitions_found">No definition found</string>
-    <string name="ls_definition_view_adjective">adjective</string>
-    <string name="ls_definition_view_adverb">adverb</string>
-    <string name="ls_definition_view_verb">verb</string>
-    <string name="ls_definition_view_noun">noun</string>
-    <string name="ls_offline_books_catalog_outdated_title">Offline Books Update</string>
-    <string name="ls_offline_books_catalog_outdated_description">Your offline books are outdated. In
+  <!--#DefintionView-->
+  <string name="ls_definition_view_no_definitions_found">No definition found</string>
+  <string name="ls_definition_view_adjective">adjective</string>
+  <string name="ls_definition_view_adverb">adverb</string>
+  <string name="ls_definition_view_verb">verb</string>
+  <string name="ls_definition_view_noun">noun</string>
+  <string name="ls_offline_books_catalog_outdated_title">Offline Books Update</string>
+  <string name="ls_offline_books_catalog_outdated_description">Your offline books are outdated. In
         order to continue reading offline, you should update now or when you have a good Internet
         connection.\n\n<b>Note:</b> If you choose to update later, the outdated books will be
         removed. The books will be available to download again if you choose.
     </string>
-    <string name="ls_offline_books_catalog_outdated_update">Update</string>
-    <!--#Not registered dialog-->
-    <string name="ls_not_registered_dialog_title">Ready to track your progress?</string>
-    <string name="ls_not_registered_dialog_message">Find out what kind of reader you are and see
+  <string name="ls_offline_books_catalog_outdated_update">Update</string>
+  <!--#Not registered dialog-->
+  <string name="ls_not_registered_dialog_title">Ready to track your progress?</string>
+  <string name="ls_not_registered_dialog_message">Find out what kind of reader you are and see
         what other people are reading.
     </string>
-    <string name="ls_error_signup_network_title">Network unavailable</string>
-    <string name="ls_error_definition_not_internet">Sorry, you need to be connected to the internet
+  <string name="ls_error_signup_network_title">Network unavailable</string>
+  <string name="ls_error_definition_not_internet">Sorry, you need to be connected to the internet
         to search for a definition.
     </string>
-    <string name="ls_error_tts_not_internet">Sorry, you need to be connected to the internet to Read
+  <string name="ls_error_tts_not_internet">Sorry, you need to be connected to the internet to Read
         out loud.
     </string>
-    <string name="ls_book_detail_recommended">From The Same Category</string>
-    <string name="ls_my_library_currently_reading">My Books</string>
-    <string name="ls_login_forgot_password">Forgot your password?</string>
-    <string name="ls_login_btn_title">Start Reading</string>
-    <string name="ls_category_detail_most_popular">Most Popular</string>
-    <string name="ls_category_detail_highest_rated">Highest Rated</string>
-    <string name="ls_my_library_new_releases">New Releases</string>
-    <string name="ls_error_network_first_part_title">Sorry,</string>
-    <string name="ls_error_network_second_part_title">is not available offline, please connect to
+  <string name="ls_book_detail_recommended">From The Same Category</string>
+  <string name="ls_my_library_currently_reading">My Books</string>
+  <string name="ls_login_forgot_password">Forgot your password?</string>
+  <string name="ls_login_btn_title">Start Reading</string>
+  <string name="ls_category_detail_most_popular">Most Popular</string>
+  <string name="ls_category_detail_highest_rated">Highest Rated</string>
+  <string name="ls_my_library_new_releases">New Releases</string>
+  <string name="ls_error_network_first_part_title">Sorry,</string>
+  <string name="ls_error_network_second_part_title">is not available offline, please connect to
         the internet to see this screen.
     </string>
-    <string name="ls_error_network_title">Network error</string>
-    <string name="ls_error_network_generic_screen_title">This Screen</string>
-    <string name="ls_error_invalid_username_password_combination">Invalid username and password
+  <string name="ls_error_network_title">Network error</string>
+  <string name="ls_error_network_generic_screen_title">This Screen</string>
+  <string name="ls_error_invalid_username_password_combination">Invalid username and password
         combination
     </string>
-    <string name="ls_error_common_network_message">Network error, please check your internet
+  <string name="ls_error_common_network_message">Network error, please check your internet
         connection.
     </string>
-    <string name="ls_error_username_taken_message">This username has already been taken</string>
-    <string name="ls_error_register_google_message">This email address is already registered with
+  <string name="ls_error_username_taken_message">This username has already been taken</string>
+  <string name="ls_error_register_google_message">This email address is already registered with
         Google.
     </string>
-    <string name="ls_error_register_facebook_message">This email address is already registered with
+  <string name="ls_error_register_facebook_message">This email address is already registered with
         Facebook.
     </string>
-    <string name="ls_user_profile_invalid_duplicated_email">This email address has been used before.
+  <string name="ls_user_profile_invalid_duplicated_email">This email address has been used before.
         Please choose another.
     </string>
-    <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose
+  <string name="ls_user_profile_username_already_taken">Username already taken. Please, choose
         another one!
     </string>
-    <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string>
-    <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string>
+  <string name="ls_forgot_password_account_not_exits">The account doesn\'t exist.</string>
+  <string name="ls_error_fatal_error_message">Oops! Something went wrong.</string>
+  <string name="ls_terms_and_conditions_title">Terms and Conditions</string>
+
+  <!-- Reader -->
+  <string name="ls_definition">Definition</string>
+  <string name="ls_init_tts">Initializing Text To Speech…\nPlease wait.</string>
+  <string name="ls_tts_failed">Text To Speech failed to load.</string>
 </resources>

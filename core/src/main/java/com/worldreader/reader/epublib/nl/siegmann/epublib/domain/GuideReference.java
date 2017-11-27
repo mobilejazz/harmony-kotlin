@@ -2,7 +2,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * These are references to elements of the book's guide.
@@ -12,9 +12,6 @@ import java.io.Serializable;
  */
 public class GuideReference extends TitledResourceReference implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = -316179702440631834L;
 
   /**

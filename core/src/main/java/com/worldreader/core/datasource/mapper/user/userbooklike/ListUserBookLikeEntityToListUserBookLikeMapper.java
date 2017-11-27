@@ -8,7 +8,7 @@ import com.worldreader.core.domain.model.user.UserBookLike;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
+import java.util.*;
 
 @Singleton public class ListUserBookLikeEntityToListUserBookLikeMapper
     implements Mapper<Optional<List<UserBookLikeEntity>>, Optional<List<UserBookLike>>> {

@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Images Module  ................................................. -->
-<!-- file: xhtml-image-1.mod
+<!-- ...................................................................... --><!-- XHTML Images Module  ................................................. --><!-- file: xhtml-image-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,37 +13,21 @@
      (none)
      ....................................................................... -->
 
-<!-- Images
+  <!-- Images
 
-        img
+          img
 
-     This module provides markup to support basic image embedding.
--->
+       This module provides markup to support basic image embedding.
+  -->
 
-<!-- To avoid problems with text-only UAs as well as to make
-     image content understandable and navigable to users of
-     non-visual UAs, you need to provide a description with
-     the 'alt' attribute, and avoid server-side image maps.
--->
+  <!-- To avoid problems with text-only UAs as well as to make
+       image content understandable and navigable to users of
+       non-visual UAs, you need to provide a description with
+       the 'alt' attribute, and avoid server-side image maps.
+  -->
 
-<!ENTITY % img.element  "INCLUDE" >
-<![%img.element;[
-<!ENTITY % img.content  "EMPTY" >
-<!ENTITY % img.qname  "img" >
-<!ELEMENT %img.qname;  %img.content; >
-<!-- end of img.element -->]]>
+  <!ENTITY % img.element  "INCLUDE" ><![%img.element;[<!ENTITY % img.content  "EMPTY" ><!ENTITY % img.qname  "img" ><!ELEMENT %img.qname;  %img.content; ><!-- end of img.element -->]]>
 
-<!ENTITY % img.attlist  "INCLUDE" >
-<![%img.attlist;[
-<!ATTLIST %img.qname;
-      %Common.attrib;
-      src          %URI.datatype;           #REQUIRED
-      alt          %Text.datatype;          #REQUIRED
-      longdesc     %URI.datatype;           #IMPLIED
-      name         CDATA                    #IMPLIED
-      height       %Length.datatype;        #IMPLIED
-      width        %Length.datatype;        #IMPLIED
->
-<!-- end of img.attlist -->]]>
+  <!ENTITY % img.attlist  "INCLUDE" ><![%img.attlist;[<!ATTLIST %img.qname;%Common.attrib;src          %URI.datatype;           #REQUIREDalt          %Text.datatype;          #REQUIREDlongdesc     %URI.datatype;           #IMPLIEDname         CDATA                    #IMPLIEDheight       %Length.datatype;        #IMPLIEDwidth        %Length.datatype;        #IMPLIED><!-- end of img.attlist -->]]>
 
-<!-- end of xhtml-image-1.mod -->
+  <!-- end of xhtml-image-1.mod -->

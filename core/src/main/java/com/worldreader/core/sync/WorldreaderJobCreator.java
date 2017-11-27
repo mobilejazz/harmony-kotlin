@@ -19,6 +19,7 @@ import com.worldreader.core.domain.interactors.user.userbooks.PutAllUserBooksInt
 import com.worldreader.core.domain.interactors.user.userbookslike.GetAllUserBookLikesInteractor;
 import com.worldreader.core.domain.interactors.user.userbookslike.PutAllUserBooksLikesInteractor;
 import com.worldreader.core.sync.jobs.SynchronizationJob;
+
 import javax.inject.Inject;
 
 public class WorldreaderJobCreator implements JobCreator {
@@ -49,6 +50,7 @@ public class WorldreaderJobCreator implements JobCreator {
   }
 
   public static class InjectableCompanion {
+
     public @Inject Logger logger;
     public @Inject GetUserInteractor getUserInteractor;
     public @Inject SaveUserInteractor saveUserInteractor;

@@ -13,10 +13,9 @@ import com.worldreader.core.domain.model.Banner;
 import com.worldreader.core.domain.repository.BannerRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 // TODO: 13/01/2017 [refactor]: Update the interactor with the new Identifier string for the banners
 public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, ErrorCore>
@@ -30,13 +29,13 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
   private DomainCallback<List<Banner>, ErrorCore> callback;
 
   @Inject public GetBannersInteractorImp(InteractorExecutor executor, MainThread mainThread,
-                                         BannerRepository bannerRepository) {
+      BannerRepository bannerRepository) {
     super(executor, mainThread);
     this.bannerRepository = bannerRepository;
   }
 
   @Override public void execute(Type type, int index, int limit,
-                                DomainCallback<List<Banner>, ErrorCore> callback) {
+      DomainCallback<List<Banner>, ErrorCore> callback) {
     this.type = type;
     this.index = index;
     this.limit = limit;
@@ -46,7 +45,7 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
 
   @Override
   public ListenableFuture<Optional<List<Banner>>> execute(final String identifier, final int index,
-                                                          final int limit) {
+      final int limit) {
     return execute(identifier, index, limit, getExecutor());
   }
 

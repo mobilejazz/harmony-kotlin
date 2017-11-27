@@ -14,6 +14,7 @@ import com.worldreader.core.datasource.storage.datasource.oauth.OAuthBdDataSourc
 import com.worldreader.core.domain.repository.OAuthRepository;
 import dagger.Module;
 import dagger.Provides;
+
 import javax.inject.Singleton;
 
 @Module public class OAuthModule {

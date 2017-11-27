@@ -23,27 +23,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
-import android.os.Debug;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import jedi.functional.Filter;
-import jedi.functional.Functor;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
 import org.json.JSONException;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import static java.util.Arrays.asList;
-import static jedi.functional.FunctionalPrimitives.*;
+import static java.util.Arrays.*;
+import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
@@ -56,46 +48,38 @@ import static jedi.option.Options.option;
 public class Configuration {
 
   public static final String TAG = Configuration.class.getSimpleName();
-  public static final String KEY_POS = "offset:";
-  public static final String KEY_IDX = "index:";
-  public static final String KEY_NAV_TAP_V = "nav_tap_v";
-  public static final String KEY_NAV_TAP_H = "nav_tap_h";
-  public static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
-  public static final String KEY_NAV_SWIPE_V = "nav_swipe_v";
-  public static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
-  public static final String KEY_SCROLLING = "scrolling";
-  public static final String KEY_TEXT_SIZE = "itext_size";
-  public static final String KEY_MARGIN_H = "margin_h";
-  public static final String KEY_MARGIN_V = "margin_v";
-  public static final String KEY_LINE_SPACING = "line_spacing";
-  public static final String KEY_NIGHT_MODE = "night_mode";
-  public static final String KEY_SCREEN_ORIENTATION = "screen_orientation";
-  public static final String KEY_FONT_FACE = "font_face";
-  public static final String KEY_SERIF_FONT = "serif_font";
-  public static final String KEY_SANS_SERIF_FONT = "sans_serif_font";
-  public static final String PREFIX_DAY = "day";
-  public static final String PREFIX_NIGHT = "night";
-  public static final String PREFIX_CREAM = "cream";
-  public static final String KEY_BRIGHTNESS = "bright";
-  public static final String KEY_BACKGROUND = "bg";
-  public static final String KEY_LINK = "link";
-  public static final String KEY_TEXT = "text";
-  public static final String KEY_BRIGHTNESS_CTRL = "set_brightness";
-  public static final String KEY_SCROLL_STYLE = "scroll_style";
-  public static final String KEY_SCROLL_SPEED = "scroll_speed";
-  public static final String KEY_H_ANIMATION = "h_animation";
-  public static final String KEY_V_ANIMATION = "v_animation";
-  public static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
-  public static final String KEY_OFFSETS = "offsets";
-  public static final String KEY_SHOW_PAGENUM = "show_pagenum";
-  public static final String KEY_READING_DIRECTION = "reading_direction";
-  public static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
-  public static final String KEY_LONG_SHORT = "long_short";
-  public static final String KEY_ALLOW_STYLING = "allow_styling";
-  public static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
-  public static final String KEY_LAST_TITLE = "last_title";
-  //Which platform version to start text selection on.
-  public static final int TEXT_SELECTION_PLATFORM_VERSION = Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+
+  private static final String KEY_POS = "offset:";
+  private static final String KEY_IDX = "index:";
+  private static final String KEY_NAV_TAP_H = "nav_tap_h";
+  private static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
+  private static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
+  private static final String KEY_SCROLLING = "scrolling";
+  private static final String KEY_TEXT_SIZE = "itext_size";
+  private static final String KEY_MARGIN_H = "margin_h";
+  private static final String KEY_MARGIN_V = "margin_v";
+  private static final String KEY_LINE_SPACING = "line_spacing";
+  private static final String KEY_NIGHT_MODE = "night_mode";
+  private static final String KEY_FONT_FACE = "font_face";
+  private static final String KEY_SERIF_FONT = "serif_font";
+  private static final String KEY_SANS_SERIF_FONT = "sans_serif_font";
+  private static final String PREFIX_DAY = "day";
+  private static final String PREFIX_NIGHT = "night";
+  private static final String PREFIX_CREAM = "cream";
+  private static final String KEY_BRIGHTNESS = "bright";
+  private static final String KEY_BACKGROUND = "bg";
+  private static final String KEY_LINK = "link";
+  private static final String KEY_TEXT = "text";
+  private static final String KEY_SCROLL_STYLE = "scroll_style";
+  private static final String KEY_SCROLL_SPEED = "scroll_speed";
+  private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
+  private static final String KEY_OFFSETS = "offsets";
+  private static final String KEY_SHOW_PAGENUM = "show_pagenum";
+  private static final String KEY_READING_DIRECTION = "reading_direction";
+  private static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
+  private static final String KEY_ALLOW_STYLING = "allow_styling";
+  private static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
+
   private SharedPreferences settings;
   private Context context;
   private Map<String, FontFamily> fontCache = new HashMap<>();
@@ -116,37 +100,12 @@ public class Configuration {
     return (double) used / (double) max;
   }
 
-  /*
-      Returns the available bitmap memory.
-      On newer Android versions this is the same as the normaL
-      heap memory.
-   */
-  public static double getBitmapMemoryUsage() {
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-      return getMemoryUsage();
-    }
-
-    long max = Runtime.getRuntime().maxMemory();
-    long used = Debug.getNativeHeapAllocatedSize();
-
-    return (double) used / (double) max;
-  }
-
-  public boolean isVerticalTappingEnabled() {
-    return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_TAP_V, false);
-  }
-
   public boolean isHorizontalTappingEnabled() {
     return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_TAP_H, true);
   }
 
   public boolean isHorizontalSwipeEnabled() {
     return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_SWIPE_H, true);
-  }
-
-  public boolean isVerticalSwipeEnabled() {
-    return settings.getBoolean(KEY_NAV_SWIPE_V, false) && !isScrollingEnabled();
   }
 
   public boolean isAllowStyling() {
@@ -214,11 +173,6 @@ public class Configuration {
       Log.e(TAG, "Could not retrieve page offsets: " + js.getMessage());
       return none();
     }
-  }
-
-  public LongShortPressBehaviour getLongShortPressBehaviour() {
-    String value = settings.getString(KEY_LONG_SHORT, LongShortPressBehaviour.NORMAL.name());
-    return LongShortPressBehaviour.valueOf(value.toUpperCase(Locale.US));
   }
 
   public ReadingDirection getReadingDirection() {
@@ -314,12 +268,6 @@ public class Configuration {
     }
   }
 
-  public Orientation getScreenOrientation() {
-    String orientation = settings.getString(KEY_SCREEN_ORIENTATION,
-        Orientation.PORTRAIT.name().toLowerCase(Locale.US));
-    return Orientation.valueOf(orientation.toUpperCase(Locale.US));
-  }
-
   private void updateValue(SharedPreferences prefs, String key, Object value) {
     SharedPreferences.Editor editor = prefs.edit();
 
@@ -343,20 +291,15 @@ public class Configuration {
   }
 
   private FontFamily loadFamilyFromAssets(String key, FontFamilies.FontFamily fontFamily) {
-    String basePath = "fonts/";
+    final String basePath = "fonts/";
 
-    Typeface basic = Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getFont());
-    Typeface boldFace =
-        Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getBoldFont());
-    Typeface italicFace =
-        Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getItalicFont());
-    //Typeface biFace =
-    //    Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getBoldItalicFont());
+    final Typeface basic = Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getFont());
+    final Typeface boldFace = Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getBoldFont());
+    final Typeface italicFace = Typeface.createFromAsset(context.getAssets(), basePath + fontFamily.getItalicFont());
 
-    FontFamily fam = new FontFamily(key, basic);
+    final FontFamily fam = new FontFamily(key, basic);
     fam.setBoldTypeface(boldFace);
     fam.setItalicTypeface(italicFace);
-    //fam.setBoldItalicTypeface(biFace);
 
     return fam;
   }
@@ -435,23 +378,22 @@ public class Configuration {
   }
 
   public boolean isUseColoursFromCSS() {
-    String setting = KEY_ALLOW_STYLE_COLOURS;
-    boolean nightDefault = false;
-    boolean creamDefault = false;
-    boolean dayDefault = true;
+    final String setting = KEY_ALLOW_STYLE_COLOURS;
+    final boolean nightDefault = false;
+    final boolean creamDefault = false;
+    final boolean dayDefault = true;
+    final ColorProfile colorProfile = getColourProfile();
 
-    if (getColourProfile() == ColorProfile.NIGHT) {
+    if (colorProfile == ColorProfile.NIGHT) {
       return settings.getBoolean(PREFIX_NIGHT + "_" + setting, nightDefault);
-    }
-    if (getColourProfile() == ColorProfile.CREAM) {
+    } else if (colorProfile == ColorProfile.CREAM) {
       return settings.getBoolean(PREFIX_CREAM + "_" + setting, creamDefault);
     } else {
       return settings.getBoolean(PREFIX_DAY + "_" + setting, dayDefault);
     }
   }
 
-  private int getProfileSetting(String setting, int dayDefault, int nightDefault,
-      int creamDefault) {
+  private int getProfileSetting(String setting, int dayDefault, int nightDefault, int creamDefault) {
     if (getColourProfile() == ColorProfile.NIGHT) {
       return settings.getInt(PREFIX_NIGHT + "_" + setting, nightDefault);
     } else if (getColourProfile() == ColorProfile.CREAM) {
@@ -462,8 +404,7 @@ public class Configuration {
   }
 
   public ScrollStyle getAutoScrollStyle() {
-    String style = settings.getString(KEY_SCROLL_STYLE,
-        ScrollStyle.ROLLING_BLIND.name().toLowerCase(Locale.US));
+    String style = settings.getString(KEY_SCROLL_STYLE, ScrollStyle.ROLLING_BLIND.name().toLowerCase(Locale.US));
     if ("rolling_blind".equals(style)) {
       return ScrollStyle.ROLLING_BLIND;
     } else {
@@ -475,69 +416,8 @@ public class Configuration {
     return settings.getInt(KEY_SCROLL_SPEED, 20);
   }
 
-  public void setAnimationStyle(AnimationStyle animation) {
-    settings.edit().putString(KEY_V_ANIMATION, animation.name().toLowerCase()).commit();
-    settings.edit().putString(KEY_H_ANIMATION, animation.name().toLowerCase()).commit();
-  }
-
-  public AnimationStyle getHorizontalAnim() {
-    String animH =
-        settings.getString(KEY_H_ANIMATION, AnimationStyle.NONE.name().toLowerCase(Locale.US));
-    return AnimationStyle.valueOf(animH.toUpperCase(Locale.US));
-  }
-
-  public AnimationStyle getVerticalAnim() {
-    String animV =
-        settings.getString(KEY_V_ANIMATION, AnimationStyle.NONE.name().toLowerCase(Locale.US));
-    return AnimationStyle.valueOf(animV.toUpperCase(Locale.US));
-  }
-
-  public Option<File> getStorageBase() {
-    return option(Environment.getExternalStorageDirectory());
-  }
-
-  public Option<File> getDownloadsFolder() {
-    return firstOption(asList(ContextCompat.getExternalFilesDirs(context, "Downloads")));
-  }
-
-  public Option<File> getLibraryFolder() {
-    Option<File> libraryFolder = getStorageBase().map(new Functor<File, File>() {
-      @Override public File execute(File baseFolder) {
-        return new File(baseFolder.getAbsolutePath() + "/PageTurner/Books");
-      }
-    });
-
-    //If the library-folder on external storage exists, return it
-    if (!isEmpty(select(libraryFolder, new Filter<File>() {
-      @Override public Boolean execute(File file) {
-        return file.exists();
-      }
-    }))) {
-      return libraryFolder;
-    }
-
-    if (!isEmpty(libraryFolder)) {
-      try {
-        boolean result = libraryFolder.unsafeGet().mkdirs();
-
-        if (result) {
-          return libraryFolder;
-        }
-      } catch (Exception e) {
-      }
-    }
-
-    return firstOption(asList(ContextCompat.getExternalFilesDirs(context, "Books")));
-  }
-
   public Option<File> getTTSFolder() {
     return firstOption(asList(ContextCompat.getExternalCacheDirs(context)));
   }
 
-  /**
-   * Return the default folder path which is shown for the "scan for books" custom directory
-   */
-  private String getDefaultScanFolder() {
-    return getStorageBase().unsafeGet().getAbsolutePath() + "/eBooks";
-  }
 }

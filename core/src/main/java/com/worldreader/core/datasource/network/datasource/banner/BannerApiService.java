@@ -1,11 +1,12 @@
 package com.worldreader.core.datasource.network.datasource.banner;
 
 import com.worldreader.core.datasource.model.BannerEntity;
-import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+import java.util.*;
 
 public interface BannerApiService {
 

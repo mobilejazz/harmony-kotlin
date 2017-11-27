@@ -4,9 +4,9 @@ import com.google.common.base.Optional;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.score.UserScoreEntity;
 import com.worldreader.core.domain.model.user.UserScore;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class ListUserScoreEntityToListUserScoreMapper implements Mapper<Optional<List<UserScoreEntity>>, Optional<List<UserScore>>> {
 

@@ -1,5 +1,6 @@
 package com.worldreader.core.datasource;
 
+import android.support.annotation.Nullable;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
@@ -23,8 +24,7 @@ public class CategoryDataSource implements CategoryRepository {
   private CategoryEntityDataMapper mapper;
   private CountryCodeProvider countryCodeProvider;
 
-  @Inject public CategoryDataSource(CategoryBdDataSource bdDataSource,
-      CategoryNetworkDataSource networkDataSource, CategoryEntityDataMapper mapper,
+  @Inject public CategoryDataSource(CategoryBdDataSource bdDataSource, CategoryNetworkDataSource networkDataSource, CategoryEntityDataMapper mapper,
       CountryCodeProvider countryCodeProvider) {
     this.bdDataSource = bdDataSource;
     this.networkDataSource = networkDataSource;
@@ -33,9 +33,14 @@ public class CategoryDataSource implements CategoryRepository {
   }
 
   @Override public void categories(final CompletionCallback<List<Category>> callback) {
-    final String key = URLProvider.withEndpoint(CategoryNetworkDataSourceImp.ENDPOINT)
-        .addLanguage(countryCodeProvider.getLanguageIso3Code())
-        .build();
+    categories(countryCodeProvider.getLanguageIso3Code(), callback);
+  }
+
+  @Override public void categories(@Nullable String language, final CompletionCallback<List<Category>> callback) {
+    if (language == null) {
+      language = countryCodeProvider.getLanguageIso3Code();
+    }
+    final String key = URLProvider.withEndpoint(CategoryNetworkDataSourceImp.ENDPOINT).addLanguage(language).build();
 
     try {
       List<CategoryEntity> categoryEntities = bdDataSource.obtains(key);
@@ -64,8 +69,7 @@ public class CategoryDataSource implements CategoryRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private void responseCategoriesLoaded(List<Category> categories,
-      CompletionCallback<List<Category>> callback) {
+  private void responseCategoriesLoaded(List<Category> categories, CompletionCallback<List<Category>> callback) {
     if (callback != null) {
       callback.onSuccess(categories);
     }

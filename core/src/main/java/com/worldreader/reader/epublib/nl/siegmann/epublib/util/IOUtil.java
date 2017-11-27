@@ -1,12 +1,6 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * Most of the functions herein are re-implementations of the ones in apache io IOUtils.

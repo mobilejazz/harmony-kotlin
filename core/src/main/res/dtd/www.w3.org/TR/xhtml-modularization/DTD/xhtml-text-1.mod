@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Text Module  ................................................... -->
-<!-- file: xhtml-text-1.mod
+<!-- ...................................................................... --><!-- XHTML Text Module  ................................................... --><!-- file: xhtml-text-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,38 +13,18 @@
      (none)
      ....................................................................... -->
 
-<!-- Textual Content
+  <!-- Textual Content
 
-     The Text module includes declarations for all core
-     text container elements and their attributes.
--->
+       The Text module includes declarations for all core
+       text container elements and their attributes.
+  -->
 
-<!ENTITY % xhtml-inlstruct.module "INCLUDE" >
-<![%xhtml-inlstruct.module;[
-<!ENTITY % xhtml-inlstruct.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Inline Structural 1.0//EN"
-            "xhtml-inlstruct-1.mod" >
-%xhtml-inlstruct.mod;]]>
+  <!ENTITY % xhtml-inlstruct.module "INCLUDE" ><![%xhtml-inlstruct.module;[<!ENTITY % xhtml-inlstruct.modPUBLIC "-//W3C//ELEMENTS XHTML Inline Structural 1.0//EN""xhtml-inlstruct-1.mod" >%xhtml-inlstruct.mod;]]>
 
-<!ENTITY % xhtml-inlphras.module "INCLUDE" >
-<![%xhtml-inlphras.module;[
-<!ENTITY % xhtml-inlphras.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Inline Phrasal 1.0//EN"
-            "xhtml-inlphras-1.mod" >
-%xhtml-inlphras.mod;]]>
+  <!ENTITY % xhtml-inlphras.module "INCLUDE" ><![%xhtml-inlphras.module;[<!ENTITY % xhtml-inlphras.modPUBLIC "-//W3C//ELEMENTS XHTML Inline Phrasal 1.0//EN""xhtml-inlphras-1.mod" >%xhtml-inlphras.mod;]]>
 
-<!ENTITY % xhtml-blkstruct.module "INCLUDE" >
-<![%xhtml-blkstruct.module;[
-<!ENTITY % xhtml-blkstruct.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Block Structural 1.0//EN"
-            "xhtml-blkstruct-1.mod" >
-%xhtml-blkstruct.mod;]]>
+  <!ENTITY % xhtml-blkstruct.module "INCLUDE" ><![%xhtml-blkstruct.module;[<!ENTITY % xhtml-blkstruct.modPUBLIC "-//W3C//ELEMENTS XHTML Block Structural 1.0//EN""xhtml-blkstruct-1.mod" >%xhtml-blkstruct.mod;]]>
 
-<!ENTITY % xhtml-blkphras.module "INCLUDE" >
-<![%xhtml-blkphras.module;[
-<!ENTITY % xhtml-blkphras.mod
-     PUBLIC "-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN"
-            "xhtml-blkphras-1.mod" >
-%xhtml-blkphras.mod;]]>
+  <!ENTITY % xhtml-blkphras.module "INCLUDE" ><![%xhtml-blkphras.module;[<!ENTITY % xhtml-blkphras.modPUBLIC "-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN""xhtml-blkphras-1.mod" >%xhtml-blkphras.mod;]]>
 
-<!-- end of xhtml-text-1.mod -->
+  <!-- end of xhtml-text-1.mod -->

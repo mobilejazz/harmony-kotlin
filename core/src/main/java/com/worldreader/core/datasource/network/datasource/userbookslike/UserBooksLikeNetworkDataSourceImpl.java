@@ -16,10 +16,8 @@ import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import retrofit2.Response;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class UserBooksLikeNetworkDataSourceImpl implements UserBooksLikeNetworkDataSource {
 

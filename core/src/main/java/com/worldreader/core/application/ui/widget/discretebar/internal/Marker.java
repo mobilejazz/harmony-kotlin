@@ -46,6 +46,7 @@ import com.worldreader.core.application.ui.widget.discretebar.internal.drawable.
  * @hide
  */
 public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationListener {
+
   private static final int PADDING_DP = 4;
   private static final int ELEVATION_DP = 8;
   private static final int SEPARATION_DP = 30;

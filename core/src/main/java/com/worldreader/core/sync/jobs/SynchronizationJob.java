@@ -37,8 +37,8 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
 import java.util.concurrent.*;
 
 public class SynchronizationJob extends Job {
@@ -121,8 +121,9 @@ public class SynchronizationJob extends Job {
 
         // 1.1 Send all the userbooks not synchronized to the server.
         UserBookNetworkSpecification userBookNetworkSpecification = new UserBookNetworkSpecification();
-        final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksFuture = putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSynched,
-            directExecutor);
+        final ListenableFuture<Optional<List<UserBook>>> putAllUserBooksFuture =
+            putAllUserBooksInteractor.execute(userBookNetworkSpecification, userBooksNotSynched,
+                directExecutor);
         final List<UserBook> updatedUserBooks = putAllUserBooksFuture.get().or(Collections.<UserBook>emptyList());
 
         logger.d(TAG, "Userbooks responded by the network count:  " + updatedUserBooks.size());
@@ -160,8 +161,9 @@ public class SynchronizationJob extends Job {
       logger.d(TAG, "Finished the user scores synchronization.");
 
       // 4 Synchronizing all userbooklikes
-      final List<UserBookLike> userBookLikes = getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikesNotSyncStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN),
-          directExecutor).get();
+      final List<UserBookLike> userBookLikes =
+          getAllUserBookLikesInteractor.execute(new GetAllUserBooksLikesNotSyncStorageSpec(UserStorageSpecification.UserTarget.LOGGED_IN),
+              directExecutor).get();
 
       if (userBookLikes != null && !userBookLikes.isEmpty()) {
         // We have to sync all userbooks like to server
@@ -218,7 +220,8 @@ public class SynchronizationJob extends Job {
   public static void scheduleJob() {
     jobId = new JobRequest.Builder(TAG)
         .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-        .setPeriodic(TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL), TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL_FLEX))
+        .setPeriodic(TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL),
+            TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL_FLEX))
         .setUpdateCurrent(true)
         .build()
         .schedule();

@@ -124,7 +124,7 @@ public class Book implements Serializable {
   }
 
   public String getCover() {
-    return cover;
+    return cover + "?size=480x800";
   }
 
   public void setCover(String cover) {
@@ -179,7 +179,7 @@ public class Book implements Serializable {
    */
   public String getCoverUrlWithSize(int measuredWidth, int measuredHeight) {
     StringBuilder urlBuilder = new StringBuilder();
-    urlBuilder.append(getCover());
+    urlBuilder.append(cover);
     urlBuilder.append("?size=");
 
     int height = 0, width = 0;
@@ -193,19 +193,11 @@ public class Book implements Serializable {
     } else if (measuredHeight < 240) {
       height = 240;
       width = 320;
-    } else if (measuredHeight < 480) {
+    } else {
       height = 480;
       width = 800;
-    } else if (measuredHeight < 720) {
-      height = 720;
-      width = 1280;
-    } else if (measuredHeight < 768) {
-      height = 768;
-      width = 1280;
-    } else {
-      height = 1080;
-      width = 1920;
     }
+    // To save bandwidth image size is limited to 480x800 maximum
 
     urlBuilder.append(height);
     urlBuilder.append("x");

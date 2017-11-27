@@ -12,8 +12,7 @@ import com.worldreader.core.domain.thread.MainThread;
 import com.worldreader.core.userflow.model.TutorialModel;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UserFlowTutorialManager implements UserFlowTutorial {
 

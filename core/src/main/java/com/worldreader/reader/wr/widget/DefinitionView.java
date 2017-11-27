@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.worldreader.core.R;
 import com.worldreader.core.domain.model.WordDefinition;
 
-import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 public class DefinitionView extends LinearLayout {
 
@@ -40,6 +40,7 @@ public class DefinitionView extends LinearLayout {
   private WordDefinition wordDefinition;
 
   public interface OnClickCrossListener {
+
     void onClick(DefinitionView view);
   }
 

@@ -1,11 +1,12 @@
 package com.worldreader.core.datasource.network.datasource.book;
 
 import com.worldreader.core.datasource.model.BookEntity;
-import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+import java.util.*;
 
 public interface BookApiService {
 

@@ -37,9 +37,7 @@ exception statement from your version. */
 
 package com.worldreader.reader.epublib.net.sf.jazzlib;
 
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /* Written using on-line Java Platform 1.2 API Specification
  * and JCL book.
@@ -58,153 +56,154 @@ import java.io.OutputStream;
  * @date Jan 11, 2001
  */
 public class DeflaterOutputStream extends FilterOutputStream {
-	/**
-	 * This buffer is used temporarily to retrieve the bytes from the deflater
-	 * and write them to the underlying output stream.
-	 */
-	protected byte[] buf;
 
-	/**
-	 * The deflater which is used to deflate the stream.
-	 */
-	protected Deflater def;
+  /**
+   * This buffer is used temporarily to retrieve the bytes from the deflater
+   * and write them to the underlying output stream.
+   */
+  protected byte[] buf;
 
-	/**
-	 * Deflates everything in the def's input buffers. This will call
-	 * <code>def.deflate()</code> until all bytes from the input buffers are
-	 * processed.
-	 */
-	protected void deflate() throws IOException {
-		while (!def.needsInput()) {
-			final int len = def.deflate(buf, 0, buf.length);
+  /**
+   * The deflater which is used to deflate the stream.
+   */
+  protected Deflater def;
 
-			// System.err.println("DOS deflated " + len + " out of " +
-			// buf.length);
-			if (len <= 0) {
-				break;
-			}
-			out.write(buf, 0, len);
-		}
+  /**
+   * Deflates everything in the def's input buffers. This will call
+   * <code>def.deflate()</code> until all bytes from the input buffers are
+   * processed.
+   */
+  protected void deflate() throws IOException {
+    while (!def.needsInput()) {
+      final int len = def.deflate(buf, 0, buf.length);
 
-		if (!def.needsInput()) {
-			throw new InternalError("Can't deflate all input?");
-		}
-	}
+      // System.err.println("DOS deflated " + len + " out of " +
+      // buf.length);
+      if (len <= 0) {
+        break;
+      }
+      out.write(buf, 0, len);
+    }
 
-	/**
-	 * Creates a new DeflaterOutputStream with a default Deflater and default
-	 * buffer size.
-	 *
-	 * @param out
-	 *            the output stream where deflated output should be written.
-	 */
-	public DeflaterOutputStream(final OutputStream out) {
-		this(out, new Deflater(), 512);
-	}
+    if (!def.needsInput()) {
+      throw new InternalError("Can't deflate all input?");
+    }
+  }
 
-	/**
-	 * Creates a new DeflaterOutputStream with the given Deflater and default
-	 * buffer size.
-	 *
-	 * @param out
-	 *            the output stream where deflated output should be written.
-	 * @param defl
-	 *            the underlying deflater.
-	 */
-	public DeflaterOutputStream(final OutputStream out, final Deflater defl) {
-		this(out, defl, 512);
-	}
+  /**
+   * Creates a new DeflaterOutputStream with a default Deflater and default
+   * buffer size.
+   *
+   * @param out
+   *            the output stream where deflated output should be written.
+   */
+  public DeflaterOutputStream(final OutputStream out) {
+    this(out, new Deflater(), 512);
+  }
 
-	/**
-	 * Creates a new DeflaterOutputStream with the given Deflater and buffer
-	 * size.
-	 *
-	 * @param out
-	 *            the output stream where deflated output should be written.
-	 * @param defl
-	 *            the underlying deflater.
-	 * @param bufsize
-	 *            the buffer size.
-	 * @exception IllegalArgumentException
-	 *                if bufsize isn't positive.
-	 */
-	public DeflaterOutputStream(final OutputStream out, final Deflater defl,
-			final int bufsize) {
-		super(out);
-		if (bufsize <= 0) {
-			throw new IllegalArgumentException("bufsize <= 0");
-		}
-		buf = new byte[bufsize];
-		def = defl;
-	}
+  /**
+   * Creates a new DeflaterOutputStream with the given Deflater and default
+   * buffer size.
+   *
+   * @param out
+   *            the output stream where deflated output should be written.
+   * @param defl
+   *            the underlying deflater.
+   */
+  public DeflaterOutputStream(final OutputStream out, final Deflater defl) {
+    this(out, defl, 512);
+  }
 
-	/**
-	 * Flushes the stream by calling flush() on the deflater and then on the
-	 * underlying stream. This ensures that all bytes are flushed. This function
-	 * doesn't work in Sun's JDK, but only in jazzlib.
-	 */
-	@Override
-	public void flush() throws IOException {
-		def.flush();
-		deflate();
-		out.flush();
-	}
+  /**
+   * Creates a new DeflaterOutputStream with the given Deflater and buffer
+   * size.
+   *
+   * @param out
+   *            the output stream where deflated output should be written.
+   * @param defl
+   *            the underlying deflater.
+   * @param bufsize
+   *            the buffer size.
+   * @exception IllegalArgumentException
+   *                if bufsize isn't positive.
+   */
+  public DeflaterOutputStream(final OutputStream out, final Deflater defl,
+      final int bufsize) {
+    super(out);
+    if (bufsize <= 0) {
+      throw new IllegalArgumentException("bufsize <= 0");
+    }
+    buf = new byte[bufsize];
+    def = defl;
+  }
 
-	/**
-	 * Finishes the stream by calling finish() on the deflater. This was the
-	 * only way to ensure that all bytes are flushed in Sun's JDK.
-	 */
-	public void finish() throws IOException {
-		def.finish();
-		while (!def.finished()) {
-			final int len = def.deflate(buf, 0, buf.length);
-			if (len <= 0) {
-				break;
-			}
-			out.write(buf, 0, len);
-		}
-		if (!def.finished()) {
-			throw new InternalError("Can't deflate all input?");
-		}
-		out.flush();
-	}
+  /**
+   * Flushes the stream by calling flush() on the deflater and then on the
+   * underlying stream. This ensures that all bytes are flushed. This function
+   * doesn't work in Sun's JDK, but only in jazzlib.
+   */
+  @Override
+  public void flush() throws IOException {
+    def.flush();
+    deflate();
+    out.flush();
+  }
 
-	/**
-	 * Calls finish () and closes the stream.
-	 */
-	@Override
-	public void close() throws IOException {
-		finish();
-		out.close();
-	}
+  /**
+   * Finishes the stream by calling finish() on the deflater. This was the
+   * only way to ensure that all bytes are flushed in Sun's JDK.
+   */
+  public void finish() throws IOException {
+    def.finish();
+    while (!def.finished()) {
+      final int len = def.deflate(buf, 0, buf.length);
+      if (len <= 0) {
+        break;
+      }
+      out.write(buf, 0, len);
+    }
+    if (!def.finished()) {
+      throw new InternalError("Can't deflate all input?");
+    }
+    out.flush();
+  }
 
-	/**
-	 * Writes a single byte to the compressed output stream.
-	 *
-	 * @param bval
-	 *            the byte value.
-	 */
-	@Override
-	public void write(final int bval) throws IOException {
-		final byte[] b = new byte[1];
-		b[0] = (byte) bval;
-		write(b, 0, 1);
-	}
+  /**
+   * Calls finish () and closes the stream.
+   */
+  @Override
+  public void close() throws IOException {
+    finish();
+    out.close();
+  }
 
-	/**
-	 * Writes a len bytes from an array to the compressed stream.
-	 *
-	 * @param buf
-	 *            the byte array.
-	 * @param off
-	 *            the offset into the byte array where to start.
-	 * @param len
-	 *            the number of bytes to write.
-	 */
-	@Override
-	public void write(final byte[] buf, final int off, final int len)
-			throws IOException {
-		def.setInput(buf, off, len);
-		deflate();
-	}
+  /**
+   * Writes a single byte to the compressed output stream.
+   *
+   * @param bval
+   *            the byte value.
+   */
+  @Override
+  public void write(final int bval) throws IOException {
+    final byte[] b = new byte[1];
+    b[0] = (byte) bval;
+    write(b, 0, 1);
+  }
+
+  /**
+   * Writes a len bytes from an array to the compressed stream.
+   *
+   * @param buf
+   *            the byte array.
+   * @param off
+   *            the offset into the byte array where to start.
+   * @param len
+   *            the number of bytes to write.
+   */
+  @Override
+  public void write(final byte[] buf, final int off, final int len)
+      throws IOException {
+    def.setInput(buf, off, len);
+    deflate();
+  }
 }

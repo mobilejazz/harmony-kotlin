@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:width="12dp"
-    android:height="14.015625dp"
-    android:viewportWidth="12"
-    android:viewportHeight="14.015625"
-    >
+  android:width="12dp"
+  android:height="14.015625dp"
+  android:viewportWidth="12"
+  android:viewportHeight="14.015625">
 
-    <group
-            android:translateX="-186.000000"
-            android:translateY="-600.492188">
-        <path
-            android:name="ic_reader_pause"
-            android:fillColor="#FFFFFF"
-            android:pathData="M186,614.507812 L190.007812,614.507812 L190.007812,600.492188 L186,600.492188
+  <group
+    android:translateX="-186.000000"
+    android:translateY="-600.492188">
+    <path
+      android:name="ic_reader_pause"
+      android:fillColor="#FFFFFF"
+      android:pathData="M186,614.507812 L190.007812,614.507812 L190.007812,600.492188 L186,600.492188
 L186,614.507812 Z M193.992188,600.492188 L193.992188,614.507812 L198,614.507812
 L198,600.492188 L193.992188,600.492188 Z" />
-    </group>
+  </group>
 </vector>

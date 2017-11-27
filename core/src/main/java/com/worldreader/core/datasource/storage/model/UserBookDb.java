@@ -3,7 +3,21 @@ package com.worldreader.core.datasource.storage.model;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteColumn;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
-import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.*;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_BOOKMARK;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_BOOK_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_COLLECTION_IDS;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_CREATED_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_FINISHED;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_LIKED;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_MARK_IN_MY_BOOKS;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_OPENED_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_RATING;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_SAVED_OFFLINE_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_SYNC;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_UPDATED_AT;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.COLUMN_USER_ID;
+import static com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable.TABLE;
 
 @StorIOSQLiteType(table = TABLE) public class UserBookDb {
 

@@ -12,9 +12,10 @@ import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.WorldreaderProviderData;
 import com.worldreader.core.domain.repository.OAuthRepository;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.*;
 
 @Singleton public class LoginUserInteractor {
 

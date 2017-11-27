@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-import java.util.List;
+import java.util.*;
 
 public interface UserBooksApiService {
 
@@ -29,7 +29,8 @@ public interface UserBooksApiService {
 
   @DELETE("userbooks/delete/{bookId}") Call<Void> deleteUserBook(@Path("bookId") String bookId);
 
-  @POST("userbooks/{bookId}/read") Call<UserBookStatsNetworkResponse> updateBookReadingStats(@Path("bookId") String bookId, @Body ReadingStatisticUpdateBody body);
+  @POST("userbooks/{bookId}/read") Call<UserBookStatsNetworkResponse> updateBookReadingStats(@Path("bookId") String bookId,
+      @Body ReadingStatisticUpdateBody body);
 
   @PUT("userbooks/{bookId}/inMyBooks") Call<UserBookNetworkResponse> markBookAsInMyBooks(@Path("bookId") String bookId, @Body UserBookNetworkBody body);
 

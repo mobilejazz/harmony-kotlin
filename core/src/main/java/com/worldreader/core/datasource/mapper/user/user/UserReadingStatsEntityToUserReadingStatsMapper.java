@@ -4,10 +4,10 @@ import com.google.common.base.Optional;
 import com.worldreader.core.datasource.mapper.Mapper;
 import com.worldreader.core.datasource.model.user.UserReadingStatsEntity;
 import com.worldreader.core.domain.model.user.UserReadingStats;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
 
 @Singleton public class UserReadingStatsEntityToUserReadingStatsMapper
     implements Mapper<Optional<UserReadingStatsEntity>, Optional<UserReadingStats>> {

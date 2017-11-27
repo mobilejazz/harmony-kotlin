@@ -6,8 +6,7 @@ import com.worldreader.core.datasource.model.user.userbooklikes.UserBookLikeEnti
 import com.worldreader.core.datasource.network.model.UserBookLikeNetworkResponse;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ListUserBookLikeNetworkResponseToListUserBookLikeEntityMapper
     implements Mapper<Optional<List<UserBookLikeNetworkResponse>>, Optional<List<UserBookLikeEntity>>> {

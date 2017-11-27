@@ -9,9 +9,10 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.model.user.UserReadingStats;
 import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
-import java.util.Date;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
 
 @Singleton public class GetUserReadingStatsInteractor {
 

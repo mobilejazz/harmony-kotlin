@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
 
   <ProgressBar
       android:id="@+id/progress_dialog_container"
@@ -15,18 +15,18 @@
       tools:visibility="visible" />
 
   <android.support.v7.widget.RecyclerView
-      android:id="@+id/book_reading_index_fragment_book_index_rv"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="gone"
-      tools:visibility="gone" />
+    android:id="@+id/book_reading_index_fragment_book_index_rv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    tools:visibility="gone" />
 
   <TextView
-      android:id="@+id/book_reading_index_fragment_empty_toc_tv"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:gravity="center"
-      android:text="@string/ls_book_reading_no_table_of_contents"
-      android:visibility="gone"
-      tools:visibility="gone" />
+    android:id="@+id/book_reading_index_fragment_empty_toc_tv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:text="@string/ls_book_reading_no_table_of_contents"
+    android:visibility="gone"
+    tools:visibility="gone" />
 </FrameLayout>

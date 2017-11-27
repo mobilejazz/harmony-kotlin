@@ -7,7 +7,7 @@ import com.worldreader.core.datasource.storage.datasource.cache.CacheBddDataSour
 import com.worldreader.core.datasource.storage.datasource.cache.manager.entity.CacheObject;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
 
 public class UserFlowBdDataSourceImpl implements UserFlowBdDataSource {
 

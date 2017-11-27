@@ -13,8 +13,8 @@ import com.worldreader.core.domain.repository.UserScoreRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Date;
-import java.util.concurrent.Executor;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Singleton public class AnonymousUserScoreSynchronizationProcessInteractor {
 

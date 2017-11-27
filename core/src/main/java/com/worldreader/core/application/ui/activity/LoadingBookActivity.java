@@ -187,13 +187,15 @@ public abstract class LoadingBookActivity extends AppCompatActivity
   }
 
   @Override public void onNotifyDisplayReader(final BookMetadata bookMetadata) {
-    long endTime = System.nanoTime();
-    long diff = (endTime - startTime) / 1000000;
+    if (!isFinishing()) {
+      long endTime = System.nanoTime();
+      long diff = (endTime - startTime) / 1000000;
 
-    if (diff > TWO_SECONDS) {
-      openReader(bookMetadata);
-    } else {
-      openReaderWithDelay(bookMetadata);
+      if (diff > TWO_SECONDS) {
+        openReader(bookMetadata);
+      } else {
+        openReaderWithDelay(bookMetadata);
+      }
     }
   }
   //endregion

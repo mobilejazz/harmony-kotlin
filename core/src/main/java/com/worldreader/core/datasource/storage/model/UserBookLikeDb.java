@@ -4,7 +4,7 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteColumn;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBookLikesTable;
 
-import java.util.Date;
+import java.util.*;
 
 @StorIOSQLiteType(table = UserBookLikesTable.TABLE) public class UserBookLikeDb {
 

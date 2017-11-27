@@ -1,5 +1,7 @@
 package com.worldreader.core.domain.model;
 
+import com.worldreader.core.datasource.model.ContentOpfEntity;
+
 import java.io.*;
 import java.util.*;
 
@@ -8,11 +10,13 @@ public class BookMetadata implements Serializable {
   public static final BookMetadata EMPTY = new BookMetadata();
 
   private String bookId;
+  private String version;
   private int collectionId;
   private String relativeContentUrl;
   private String contentOpfName;
   private String tocResourceName;
   private List<String> resources;
+  private Map<String, ContentOpfEntity.Item> imagesResources;
   private boolean streaming;
 
   // Extra fields for BookFinished
@@ -25,6 +29,14 @@ public class BookMetadata implements Serializable {
 
   public void setBookId(String bookId) {
     this.bookId = bookId;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(final String version) {
+    this.version = version;
   }
 
   public boolean isStreaming() {
@@ -91,11 +103,12 @@ public class BookMetadata implements Serializable {
     this.resources = resources;
   }
 
-  public boolean isImage(String resource) {
-    return resource.contains("png") || resource.contains("jpg") || resource.contains("jpeg");
+  public Map<String, ContentOpfEntity.Item> getImagesResources() {
+    return imagesResources;
   }
 
-  public String addStaticImageSize(String resource) {
-    return resource + "?size=480x800";
+  public void setImagesResources(Map<String, ContentOpfEntity.Item> resources) {
+    this.imagesResources = resources;
   }
+
 }

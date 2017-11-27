@@ -38,9 +38,7 @@ exception statement from your version. */
 
 package com.worldreader.reader.epublib.net.sf.jazzlib;
 
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * This filter stream is used to decompress data compressed in the "deflate"
@@ -54,207 +52,208 @@ import java.io.InputStream;
  * @since 1.1
  */
 public class InflaterInputStream extends FilterInputStream {
-	/**
-	 * Decompressor for this filter
-	 */
-	protected Inflater inf;
 
-	/**
-	 * Byte array used as a buffer
-	 */
-	protected byte[] buf;
+  /**
+   * Decompressor for this filter
+   */
+  protected Inflater inf;
 
-	/**
-	 * Size of buffer
-	 */
-	protected int len;
+  /**
+   * Byte array used as a buffer
+   */
+  protected byte[] buf;
 
-	/*
-	 * We just use this if we are decoding one byte at a time with the read()
-	 * call
-	 */
-	private final byte[] onebytebuffer = new byte[1];
+  /**
+   * Size of buffer
+   */
+  protected int len;
 
-	/**
-	 * Create an InflaterInputStream with the default decompresseor and a
-	 * default buffer size.
-	 *
-	 * @param in
-	 *            the InputStream to read bytes from
-	 */
-	public InflaterInputStream(final InputStream in) {
-		this(in, new Inflater(), 4096);
-	}
+  /*
+   * We just use this if we are decoding one byte at a time with the read()
+   * call
+   */
+  private final byte[] onebytebuffer = new byte[1];
 
-	/**
-	 * Create an InflaterInputStream with the specified decompresseor and a
-	 * default buffer size.
-	 *
-	 * @param in
-	 *            the InputStream to read bytes from
-	 * @param inf
-	 *            the decompressor used to decompress data read from in
-	 */
-	public InflaterInputStream(final InputStream in, final Inflater inf) {
-		this(in, inf, 4096);
-	}
+  /**
+   * Create an InflaterInputStream with the default decompresseor and a
+   * default buffer size.
+   *
+   * @param in
+   *            the InputStream to read bytes from
+   */
+  public InflaterInputStream(final InputStream in) {
+    this(in, new Inflater(), 4096);
+  }
 
-	/**
-	 * Create an InflaterInputStream with the specified decompresseor and a
-	 * specified buffer size.
-	 *
-	 * @param in
-	 *            the InputStream to read bytes from
-	 * @param inf
-	 *            the decompressor used to decompress data read from in
-	 * @param size
-	 *            size of the buffer to use
-	 */
-	public InflaterInputStream(final InputStream in, final Inflater inf,
-			final int size) {
-		super(in);
-		this.len = 0;
+  /**
+   * Create an InflaterInputStream with the specified decompresseor and a
+   * default buffer size.
+   *
+   * @param in
+   *            the InputStream to read bytes from
+   * @param inf
+   *            the decompressor used to decompress data read from in
+   */
+  public InflaterInputStream(final InputStream in, final Inflater inf) {
+    this(in, inf, 4096);
+  }
 
-		if (in == null) {
-			throw new NullPointerException("in may not be null");
-		}
-		if (inf == null) {
-			throw new NullPointerException("inf may not be null");
-		}
-		if (size < 0) {
-			throw new IllegalArgumentException("size may not be negative");
-		}
+  /**
+   * Create an InflaterInputStream with the specified decompresseor and a
+   * specified buffer size.
+   *
+   * @param in
+   *            the InputStream to read bytes from
+   * @param inf
+   *            the decompressor used to decompress data read from in
+   * @param size
+   *            size of the buffer to use
+   */
+  public InflaterInputStream(final InputStream in, final Inflater inf,
+      final int size) {
+    super(in);
+    this.len = 0;
 
-		this.inf = inf;
-		this.buf = new byte[size];
-	}
+    if (in == null) {
+      throw new NullPointerException("in may not be null");
+    }
+    if (inf == null) {
+      throw new NullPointerException("inf may not be null");
+    }
+    if (size < 0) {
+      throw new IllegalArgumentException("size may not be negative");
+    }
 
-	/**
-	 * Returns 0 once the end of the stream (EOF) has been reached. Otherwise
-	 * returns 1.
-	 */
-	@Override
-	public int available() throws IOException {
-		// According to the JDK 1.2 docs, this should only ever return 0
-		// or 1 and should not be relied upon by Java programs.
-		return inf.finished() ? 0 : 1;
-	}
+    this.inf = inf;
+    this.buf = new byte[size];
+  }
 
-	/**
-	 * Closes the input stream
-	 */
-	@Override
-	public synchronized void close() throws IOException {
-		if (in != null) {
-			in.close();
-		}
-		in = null;
-	}
+  /**
+   * Returns 0 once the end of the stream (EOF) has been reached. Otherwise
+   * returns 1.
+   */
+  @Override
+  public int available() throws IOException {
+    // According to the JDK 1.2 docs, this should only ever return 0
+    // or 1 and should not be relied upon by Java programs.
+    return inf.finished() ? 0 : 1;
+  }
 
-	/**
-	 * Fills the buffer with more data to decompress.
-	 */
-	protected void fill() throws IOException {
-		if (in == null) {
-			throw new ZipException("InflaterInputStream is closed");
-		}
+  /**
+   * Closes the input stream
+   */
+  @Override
+  public synchronized void close() throws IOException {
+    if (in != null) {
+      in.close();
+    }
+    in = null;
+  }
 
-		len = in.read(buf, 0, buf.length);
+  /**
+   * Fills the buffer with more data to decompress.
+   */
+  protected void fill() throws IOException {
+    if (in == null) {
+      throw new ZipException("InflaterInputStream is closed");
+    }
 
-		if (len < 0) {
-			throw new ZipException("Deflated stream ends early.");
-		}
+    len = in.read(buf, 0, buf.length);
 
-		inf.setInput(buf, 0, len);
-	}
+    if (len < 0) {
+      throw new ZipException("Deflated stream ends early.");
+    }
 
-	/**
-	 * Reads one byte of decompressed data.
-	 *
-	 * The byte is in the lower 8 bits of the int.
-	 */
-	@Override
-	public int read() throws IOException {
-		final int nread = read(onebytebuffer, 0, 1); // read one byte
+    inf.setInput(buf, 0, len);
+  }
 
-		if (nread > 0) {
-			return onebytebuffer[0] & 0xff;
-		}
+  /**
+   * Reads one byte of decompressed data.
+   *
+   * The byte is in the lower 8 bits of the int.
+   */
+  @Override
+  public int read() throws IOException {
+    final int nread = read(onebytebuffer, 0, 1); // read one byte
 
-		return -1;
-	}
+    if (nread > 0) {
+      return onebytebuffer[0] & 0xff;
+    }
 
-	/**
-	 * Decompresses data into the byte array
-	 *
-	 * @param b
-	 *            the array to read and decompress data into
-	 * @param off
-	 *            the offset indicating where the data should be placed
-	 * @param len
-	 *            the number of bytes to decompress
-	 */
-	@Override
-	public int read(final byte[] b, final int off, final int len)
-			throws IOException {
-		if (len == 0) {
-			return 0;
-		}
+    return -1;
+  }
 
-		for (;;) {
-			int count;
+  /**
+   * Decompresses data into the byte array
+   *
+   * @param b
+   *            the array to read and decompress data into
+   * @param off
+   *            the offset indicating where the data should be placed
+   * @param len
+   *            the number of bytes to decompress
+   */
+  @Override
+  public int read(final byte[] b, final int off, final int len)
+      throws IOException {
+    if (len == 0) {
+      return 0;
+    }
 
-			try {
-				count = inf.inflate(b, off, len);
-			} catch (final DataFormatException dfe) {
-				throw new ZipException(dfe.getMessage());
-			}
+    for (; ; ) {
+      int count;
 
-			if (count > 0) {
-				return count;
-			}
+      try {
+        count = inf.inflate(b, off, len);
+      } catch (final DataFormatException dfe) {
+        throw new ZipException(dfe.getMessage());
+      }
 
-			if (inf.needsDictionary() | inf.finished()) {
-				return -1;
-			} else if (inf.needsInput()) {
-				fill();
-			} else {
-				throw new InternalError("Don't know what to do");
-			}
-		}
-	}
+      if (count > 0) {
+        return count;
+      }
 
-	/**
-	 * Skip specified number of bytes of uncompressed data
-	 *
-	 * @param n
-	 *            number of bytes to skip
-	 */
-	@Override
-	public long skip(long n) throws IOException {
-		if (n < 0) {
-			throw new IllegalArgumentException();
-		}
+      if (inf.needsDictionary() | inf.finished()) {
+        return -1;
+      } else if (inf.needsInput()) {
+        fill();
+      } else {
+        throw new InternalError("Don't know what to do");
+      }
+    }
+  }
 
-		if (n == 0) {
-			return 0;
-		}
+  /**
+   * Skip specified number of bytes of uncompressed data
+   *
+   * @param n
+   *            number of bytes to skip
+   */
+  @Override
+  public long skip(long n) throws IOException {
+    if (n < 0) {
+      throw new IllegalArgumentException();
+    }
 
-		// Implementation copied from InputStream
-		// Throw away n bytes by reading them into a temp byte[].
-		// Limit the temp array to 2Kb so we don't grab too much memory.
-		final int buflen = n > 2048 ? 2048 : (int) n;
-		final byte[] tmpbuf = new byte[buflen];
-		final long origN = n;
+    if (n == 0) {
+      return 0;
+    }
 
-		while (n > 0L) {
-			final int numread = read(tmpbuf, 0, n > buflen ? buflen : (int) n);
-			if (numread <= 0) {
-				break;
-			}
-			n -= numread;
-		}
+    // Implementation copied from InputStream
+    // Throw away n bytes by reading them into a temp byte[].
+    // Limit the temp array to 2Kb so we don't grab too much memory.
+    final int buflen = n > 2048 ? 2048 : (int) n;
+    final byte[] tmpbuf = new byte[buflen];
+    final long origN = n;
 
-		return origN - n;
-	}
+    while (n > 0L) {
+      final int numread = read(tmpbuf, 0, n > buflen ? buflen : (int) n);
+      if (numread <= 0) {
+        break;
+      }
+      n -= numread;
+    }
+
+    return origN - n;
+  }
 }

@@ -16,7 +16,6 @@ import com.worldreader.core.datasource.storage.datasource.cache.manager.table.Us
   @StorIOSQLiteColumn(name = UserMilestonesTable.COLUMN_CREATED_AT) String createdAt;
   @StorIOSQLiteColumn(name = UserMilestonesTable.COLUMN_UPDATED_AT) String updatedAt;
 
-
   public UserScoreDb() {
   }
 

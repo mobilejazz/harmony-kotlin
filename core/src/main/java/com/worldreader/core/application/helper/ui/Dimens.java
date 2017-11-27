@@ -36,11 +36,11 @@ public class Dimens {
       if (isTablet(c)) {
         resourceId = resources.getIdentifier(
             orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height"
-                : "navigation_bar_height_landscape", "dimen", "android");
+                                                              : "navigation_bar_height_landscape", "dimen", "android");
       } else {
         resourceId = resources.getIdentifier(
             orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height"
-                : "navigation_bar_width", "dimen", "android");
+                                                              : "navigation_bar_width", "dimen", "android");
       }
 
       if (resourceId > 0) {

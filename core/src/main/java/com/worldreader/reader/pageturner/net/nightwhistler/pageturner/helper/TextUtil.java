@@ -20,22 +20,17 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.helper;
 
 import jedi.functional.Filter;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.select;
 
 public class TextUtil {
 
-  private static final Pattern PUNCTUATION =
-      Pattern.compile("\\.( ?\\.)*[\"'”’]?|[\\?!] ?[\"'”’]?|, ?[\"'”’]|”");
+  private static final Pattern PUNCTUATION = Pattern.compile("\\.( ?\\.)*[\"'”’]?|[\\?!] ?[\"'”’]?|, ?[\"'”’]|”");
 
-  /*
-  These are titles like Mr. Mrs., etc that will often cause incorrect
-  breaks in English text. We filter them out.
-   */
+  // These are titles like Mr. Mrs., etc that will often cause incorrect breaks in English text. We filter them out.
   private static final String[] TITLES = { "mr", "mrs", "dr", "ms", "st" };
 
   private TextUtil() {
@@ -46,7 +41,6 @@ public class TextUtil {
    * question marks, etc.
    */
   public static List<String> splitOnPunctuation(String input) {
-
     StringBuffer stringBuffer = new StringBuffer();
 
     Matcher matcher = PUNCTUATION.matcher(input);
@@ -90,15 +84,5 @@ public class TextUtil {
         return s.length() > 0;
       }
     });
-  }
-
-  public static String shortenText(String original) {
-    String text = original;
-
-    if (text.length() > 40) {
-      text = text.substring(0, 40) + "…";
-    }
-
-    return text;
   }
 }

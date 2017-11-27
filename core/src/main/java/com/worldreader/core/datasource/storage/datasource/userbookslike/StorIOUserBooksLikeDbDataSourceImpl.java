@@ -23,9 +23,7 @@ import com.worldreader.core.error.userbooklike.DeleteUserBookLikeFailException;
 import com.worldreader.core.error.userbooklike.PutAllUserBookLikeStorageFailException;
 import com.worldreader.core.error.userbooklike.UpdateUserBookLikeFailException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StorIOUserBooksLikeDbDataSourceImpl implements Repository.Storage<UserBookLikeEntity, UserBookLikeStorageSpec> {
 

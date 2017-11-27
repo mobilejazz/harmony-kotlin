@@ -9,11 +9,12 @@ import android.widget.TextView;
 import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
 
-import java.util.List;
+import java.util.*;
 
 public class TocEntriesAdapter extends RecyclerView.Adapter<TocEntriesAdapter.TocEntriesHolder> {
 
   public interface OnClickBookSectionListener {
+
     void onBookSectionSelected(TocEntry tocEntry);
   }
 

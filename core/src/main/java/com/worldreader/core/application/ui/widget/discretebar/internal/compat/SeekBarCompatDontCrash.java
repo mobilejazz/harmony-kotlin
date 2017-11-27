@@ -19,8 +19,8 @@ import com.worldreader.core.application.ui.widget.discretebar.internal.drawable.
  *
  * @hide
  */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class SeekBarCompatDontCrash {
+@TargetApi(Build.VERSION_CODES.LOLLIPOP) class SeekBarCompatDontCrash {
+
   public static void setOutlineProvider(View marker, final MarkerDrawable markerDrawable) {
     marker.setOutlineProvider(new ViewOutlineProvider() {
       @Override

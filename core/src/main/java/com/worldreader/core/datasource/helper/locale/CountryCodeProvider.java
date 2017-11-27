@@ -1,10 +1,14 @@
 package com.worldreader.core.datasource.helper.locale;
 
+import com.google.common.base.Optional;
+
 public interface CountryCodeProvider {
 
   String getIPAddress(boolean useIPv4);
 
   String getCountryCode();
+
+  Optional<String> getGeolocationCountryIsoCode();
 
   String getNetworkCountryIsoCode();
 

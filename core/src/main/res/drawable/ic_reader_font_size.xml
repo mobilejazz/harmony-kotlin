@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="26dp"
-    android:height="18dp"
-    android:viewportHeight="18"
-    android:viewportWidth="26">
+  android:width="26dp"
+  android:height="18dp"
+  android:viewportHeight="18"
+  android:viewportWidth="26">
 
+  <group
+    android:translateX="-41.000000"
+    android:translateY="-379.000000">
     <group
-        android:translateX="-41.000000"
-        android:translateY="-379.000000">
-        <group
-            android:translateX="27.000000"
-            android:translateY="138.000000">
-            <group
-                android:translateX="14.000000"
-                android:translateY="241.000000">
-                <path
-                    android:name="A"
-                    android:fillColor="@color/ic_reader_font"
-                    android:pathData="M19.2226562,11.6523438 L12.6845703,11.6523438 L12.2402344,12.7441406
+      android:translateX="27.000000"
+      android:translateY="138.000000">
+      <group
+        android:translateX="14.000000"
+        android:translateY="241.000000">
+        <path
+          android:name="A"
+          android:fillColor="@color/ic_reader_font"
+          android:pathData="M19.2226562,11.6523438 L12.6845703,11.6523438 L12.2402344,12.7441406
 C11.5800748,14.3268308 11.25,15.3593726 11.25,15.8417969 C11.25,16.3580755
 11.4256167,16.7495104 11.7768555,17.0161133 C12.1280942,17.2827162
 12.5787733,17.4160156 13.1289062,17.4160156 L13.1289062,18 L8.01269531,18
@@ -33,10 +33,10 @@ L19.0068359,17.4160156 C19.8362672,17.4160156 20.3969712,17.3546556
 21.1269531,16.5019531 C21.1269531,16.3157543 20.9322936,15.7613978
 20.5429688,14.8388672 L19.2226562,11.6523438 Z M19.0068359,11.0810547
 L15.9599609,3.74316406 L12.9257812,11.0810547 L19.0068359,11.0810547 Z" />
-                <path
-                    android:name="A-Copy-3"
-                    android:fillColor="@color/ic_reader_font"
-                    android:pathData="M6.90625,14.09375 L2.8828125,14.09375 L2.609375,14.765625 C2.20312297,15.7395882
+        <path
+          android:name="A-Copy-3"
+          android:fillColor="@color/ic_reader_font"
+          android:pathData="M6.90625,14.09375 L2.8828125,14.09375 L2.609375,14.765625 C2.20312297,15.7395882
 2,16.3749985 2,16.671875 C2,16.9895849 2.10807184,17.2304679
 2.32421875,17.3945312 C2.54036566,17.5585946 2.81770664,17.640625
 3.15625,17.640625 L3.15625,18 L0.0078125,18 L0.0078125,17.640625
@@ -52,7 +52,7 @@ C7.98828215,17.4518225 8.078125,17.3020845 8.078125,17.078125
 C8.078125,16.9635411 7.95833453,16.6223987 7.71875,16.0546875 L6.90625,14.09375
 Z M6.7734375,13.7421875 L4.8984375,9.2265625 L3.03125,13.7421875
 L6.7734375,13.7421875 Z" />
-            </group>
-        </group>
+      </group>
     </group>
+  </group>
 </vector>

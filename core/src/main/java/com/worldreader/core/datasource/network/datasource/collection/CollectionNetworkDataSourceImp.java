@@ -7,9 +7,10 @@ import com.worldreader.core.common.deprecated.error.adapter.ErrorAdapter;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.model.CollectionEntity;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit2.Call;
+
+import javax.inject.Inject;
+import java.util.*;
 
 public class CollectionNetworkDataSourceImp implements CollectionNetworkDataSource {
 

@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:width="16.3945312dp"
-    android:height="16.1132812dp"
-    android:viewportWidth="16.3945312"
-    android:viewportHeight="16.1132812"
-    >
+  android:width="16.3945312dp"
+  android:height="16.1132812dp"
+  android:viewportWidth="16.3945312"
+  android:viewportHeight="16.1132812">
 
+  <group
+    android:translateX="-74.011719"
+    android:translateY="-174.886719">
     <group
-            android:translateX="-74.011719"
-            android:translateY="-174.886719">
-        <group
-                android:translateX="27.000000"
-                android:translateY="138.000000">
-            <path
-                android:name="ic_reader_a_white"
-                android:fillColor="@color/black"
-                android:pathData="M57.359375,47.140625 L51.3242188,47.140625 L50.9140625,48.1484375
+      android:translateX="27.000000"
+      android:translateY="138.000000">
+      <path
+        android:name="ic_reader_a_white"
+        android:fillColor="@color/black"
+        android:pathData="M57.359375,47.140625 L51.3242188,47.140625 L50.9140625,48.1484375
 C50.3046845,49.6093823 50,50.5624978 50,51.0078125 C50,51.4843774
 50.1621078,51.8457019 50.4863281,52.0917969 C50.8105485,52.3378919
 51.22656,52.4609375 51.734375,52.4609375 L51.734375,53 L47.0117188,53
@@ -32,6 +30,6 @@ L57.1601562,52.4609375 C57.9257851,52.4609375 58.443358,52.4042974
 59.1171875,51.6171875 C59.1171875,51.4453116 58.9375018,50.933598
 58.578125,50.0820312 L57.359375,47.140625 Z M57.1601562,46.6132812
 L54.3476562,39.8398438 L51.546875,46.6132812 L57.1601562,46.6132812 Z" />
-        </group>
     </group>
+  </group>
 </vector>

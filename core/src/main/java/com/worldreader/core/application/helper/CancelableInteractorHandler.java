@@ -5,13 +5,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.domain.thread.MainThread;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import javax.inject.Inject;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.concurrent.*;
 
 @PerActivity
 public class CancelableInteractorHandler {

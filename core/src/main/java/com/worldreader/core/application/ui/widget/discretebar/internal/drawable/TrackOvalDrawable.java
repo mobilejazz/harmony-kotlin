@@ -30,6 +30,7 @@ import android.support.annotation.NonNull;
  * @hide
  */
 public class TrackOvalDrawable extends StateDrawable {
+
   private RectF mRectF = new RectF();
 
   public TrackOvalDrawable(@NonNull ColorStateList tintStateList) {

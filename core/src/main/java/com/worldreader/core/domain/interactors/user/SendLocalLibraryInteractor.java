@@ -9,9 +9,9 @@ import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.repository.UserRepository;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 @PerActivity public class SendLocalLibraryInteractor {
 

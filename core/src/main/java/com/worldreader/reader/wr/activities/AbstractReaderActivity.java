@@ -36,8 +36,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
 
-  private static final String TAG = AbstractReaderActivity.class.getSimpleName();
-
   private SystemUiHelper systemUiHelper;
   private AbstractReaderFragment abstractReaderFragment;
   private BookIndexFragment bookIndexFragment;
@@ -120,7 +118,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     readingContainer.setVisibility(View.VISIBLE);
     bookIndexContainer.setVisibility(View.GONE);
 
-    View decorView = getWindow().getDecorView();
+    final View decorView = getWindow().getDecorView();
     decorView.setSystemUiVisibility(decorView.getSystemUiVisibility()
         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -217,11 +215,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  @Override public boolean onSearchRequested() {
-    //abstractReaderFragment.onSearchRequested();
-    return true;
-  }
-
   @Override public void onBookTableOfContentsLoaded(Option<List<TocEntry>> tocEntries) {
     this.bookIndexFragment.onBookTableOfContentsLoaded(tocEntries);
   }
@@ -236,18 +229,19 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     readingContainer.setVisibility(View.GONE);
     bookIndexContainer.setVisibility(View.VISIBLE);
 
-    Window window = getWindow();
+    final Window window = getWindow();
     window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
-    View decorView = getWindow().getDecorView();
+    final View decorView = getWindow().getDecorView();
     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+
     invalidateOptionsMenu();
   }
 
   private void updateActionBarForTableOfContents() {
     if (getSupportActionBar() != null) {
-      Spannable title = new SpannableString(getString(R.string.ls_book_reading_book_index));
+      final Spannable title = new SpannableString(getString(R.string.ls_book_reading_book_index));
       title.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.font_white)), 0, title.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
       getSupportActionBar().setTitle(title);
     }

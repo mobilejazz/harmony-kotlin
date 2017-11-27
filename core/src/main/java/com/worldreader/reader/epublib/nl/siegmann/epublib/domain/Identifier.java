@@ -2,9 +2,8 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 /**
  * A Book's identifier.
@@ -21,6 +20,7 @@ public class Identifier implements Serializable {
   private static final long serialVersionUID = 955949951416391810L;
 
   public interface Scheme {
+
     String UUID = "UUID";
     String ISBN = "ISBN";
     String URL = "URL";

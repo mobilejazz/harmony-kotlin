@@ -23,7 +23,6 @@ import android.os.AsyncTask;
 import jedi.functional.Command;
 import jedi.functional.Functor;
 import jedi.option.Option;
-import com.worldreader.reader.pageturner.net.nightwhistler.ui.UiUtils;
 
 import static java.lang.Integer.toHexString;
 import static jedi.option.Options.none;
@@ -31,27 +30,15 @@ import static jedi.option.Options.none;
 /**
  * Subclass of AsyncTask which notifies the scheduler when it's done.
  */
-public class QueueableAsyncTask<Params, Progress, Result>
-    extends AsyncTask<Params, Progress, Option<Result>> {
+public class QueueableAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Option<Result>> {
 
-  public interface QueueCallback {
-    void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled);
-  }
-
-  private UiUtils.Action onPreExecutionOperation;
+  private Action onPreExecutionOperation;
   private Command<Option<Result>> onPostExecuteOperation;
   private Command<Option<Result>> onCancelledOperation;
   private Command<Progress[]> onProgressUpdateOperation;
-
   private Functor<Params[], Option<Result>> doInBackgroundFunction;
-
   private QueueCallback callback;
-
   private boolean cancelRequested = false;
-
-  @Override protected final void onPreExecute() {
-    this.doOnPreExecute();
-  }
 
   /**
    * Called before execution.
@@ -62,10 +49,6 @@ public class QueueableAsyncTask<Params, Progress, Result>
     }
   }
 
-  @Override protected final void onProgressUpdate(Progress... values) {
-    this.doOnProgressUpdate(values);
-  }
-
   public void doOnProgressUpdate(Progress... values) {
     if (this.onProgressUpdateOperation != null) {
       this.onProgressUpdateOperation.execute(values);
@@ -73,21 +56,8 @@ public class QueueableAsyncTask<Params, Progress, Result>
   }
 
   /**
-   * Overridden and made final to implement notification.
-   *
-   * Subclasses should override doOnPostExecute() instead.
-   */
-  @Override protected final void onPostExecute(Option<Result> result) {
-    if (callback != null) {
-      callback.taskCompleted(this, this.cancelRequested);
-    }
-
-    doOnPostExecute(result);
-  }
-
-  /**
    * Called when a cancellation is requested.
-   *
+   * <p>
    * Default simply sets a flag and calls cancel()
    */
   public void requestCancellation() {
@@ -97,18 +67,6 @@ public class QueueableAsyncTask<Params, Progress, Result>
 
   public boolean isCancelRequested() {
     return cancelRequested;
-  }
-
-  @Override protected final void onCancelled(Option<Result> result) {
-    if (callback != null) {
-      callback.taskCompleted(this, this.cancelRequested);
-    }
-
-    doOnCancelled(result);
-  }
-
-  @Override protected final void onCancelled() {
-    onCancelled(null);
   }
 
   public void doOnCancelled(Option<Result> result) {
@@ -123,7 +81,7 @@ public class QueueableAsyncTask<Params, Progress, Result>
 
   /**
    * Gets executed on the UI thread.
-   *
+   * <p>
    * Override this to implement your on post-processing operations.
    */
   public void doOnPostExecute(Option<Result> result) {
@@ -140,36 +98,50 @@ public class QueueableAsyncTask<Params, Progress, Result>
     return none();
   }
 
+  @Override protected final void onPreExecute() {
+    this.doOnPreExecute();
+  }
+
+  /**
+   * Overridden and made final to implement notification.
+   * <p>
+   * Subclasses should override doOnPostExecute() instead.
+   */
+  @Override protected final void onPostExecute(Option<Result> result) {
+    if (callback != null) {
+      callback.taskCompleted(this, this.cancelRequested);
+    }
+
+    doOnPostExecute(result);
+  }
+
+  @SafeVarargs @Override protected final void onProgressUpdate(Progress... values) {
+    this.doOnProgressUpdate(values);
+  }
+
+  @Override protected final void onCancelled(Option<Result> result) {
+    if (callback != null) {
+      callback.taskCompleted(this, this.cancelRequested);
+    }
+
+    doOnCancelled(result);
+  }
+
+  @Override protected final void onCancelled() {
+    onCancelled(null);
+  }
+
   @Override public String toString() {
     return getClass().getSimpleName() + " (" + toHexString(hashCode()) + ")";
   }
 
-  /**
-   * Sets the operation to be performed when this task is cancelled.
-   *
-   * @return this object
-   */
-  public QueueableAsyncTask setOnCancelled(Command<Option<Result>> onCancelledOperation) {
-    this.onCancelledOperation = onCancelledOperation;
-    return this;
+  public interface QueueCallback {
+
+    void taskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean wasCancelled);
   }
 
-  public QueueableAsyncTask setOnPostExecute(Command<Option<Result>> onPostExecuteOperation) {
-    this.onPostExecuteOperation = onPostExecuteOperation;
-    return this;
-  }
+  public interface Action {
 
-  public QueueableAsyncTask setDoInBackground(
-      Functor<Params[], Option<Result>> doInBackgroundFunction) {
-    this.doInBackgroundFunction = doInBackgroundFunction;
-    return this;
-  }
-
-  public void setOnPreExecute(UiUtils.Action onPreExecutionOperation) {
-    this.onPreExecutionOperation = onPreExecutionOperation;
-  }
-
-  public void setOnProgressUpdate(Command<Progress[]> onProgressUpdateOperation) {
-    this.onProgressUpdateOperation = onProgressUpdateOperation;
+    void perform();
   }
 }

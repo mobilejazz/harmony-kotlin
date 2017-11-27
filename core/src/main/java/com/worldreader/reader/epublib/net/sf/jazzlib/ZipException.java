@@ -37,7 +37,7 @@ exception statement from your version. */
 
 package com.worldreader.reader.epublib.net.sf.jazzlib;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Thrown during the creation or input of a zip file.
@@ -47,24 +47,25 @@ import java.io.IOException;
  * @status updated to 1.4
  */
 public class ZipException extends IOException {
-	/**
-	 * Compatible with JDK 1.0+.
-	 */
-	private static final long serialVersionUID = 8000196834066748623L;
 
-	/**
-	 * Create an exception without a message.
-	 */
-	public ZipException() {
-	}
+  /**
+   * Compatible with JDK 1.0+.
+   */
+  private static final long serialVersionUID = 8000196834066748623L;
 
-	/**
-	 * Create an exception with a message.
-	 *
-	 * @param msg
-	 *            the message
-	 */
-	public ZipException(final String msg) {
-		super(msg);
-	}
+  /**
+   * Create an exception without a message.
+   */
+  public ZipException() {
+  }
+
+  /**
+   * Create an exception with a message.
+   *
+   * @param msg
+   *            the message
+   */
+  public ZipException(final String msg) {
+    super(msg);
+  }
 }

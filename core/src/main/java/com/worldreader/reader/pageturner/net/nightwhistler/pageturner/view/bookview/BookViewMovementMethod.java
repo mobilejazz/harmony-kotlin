@@ -7,18 +7,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.span.ClickableImageSpan;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 
 public class BookViewMovementMethod extends LinkMovementMethod {
-
-  private static BookViewMovementMethod INSTANCE;
-
-  public static BookViewMovementMethod getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new BookViewMovementMethod();
-    }
-    return INSTANCE;
-  }
 
   @Override public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
     final int action = event.getAction();

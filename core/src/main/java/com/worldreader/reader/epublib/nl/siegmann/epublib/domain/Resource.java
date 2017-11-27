@@ -1,19 +1,13 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
+import android.util.Log;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.service.MediatypeService;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.util.commons.io.XmlStreamReader;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.io.*;
+import java.util.zip.*;
 
 /**
  * Represents a resource that is part of the epub.
@@ -33,6 +27,8 @@ public class Resource implements Serializable {
   protected String href;
   protected String originalHref;
   protected MediaType mediaType;
+  protected String width;
+  protected String height;
   protected String inputEncoding = Constants.CHARACTER_ENCODING;
   protected byte[] data;
 
@@ -213,8 +209,7 @@ public class Resource implements Serializable {
   public byte[] getData() throws IOException {
 
     if (data == null) {
-
-      //LOG.info("Initializing lazy resource " + fileName + "#" + this.href);
+      Log.e("epublib", "Initializing lazy resource " + fileName + "#" + this.href);
 
       InputStream in = getResourceStream();
       byte[] readData = IOUtil.toByteArray(in, (int) this.cachedSize);
@@ -355,18 +350,6 @@ public class Resource implements Serializable {
   }
 
   /**
-   * Gets the contents of the Resource as Reader.
-   *
-   * Does all sorts of smart things (courtesy of apache commons io XMLStreamREader) to handle
-   * encodings, byte order markers, etc.
-   *
-   * @throws IOException
-   */
-  public Reader getReader() throws IOException {
-    return new XmlStreamReader(new ByteArrayInputStream(getData()), getInputEncoding());
-  }
-
-  /**
    * Gets the hashCode of the Resource's href.
    */
   public int hashCode() {
@@ -378,10 +361,7 @@ public class Resource implements Serializable {
    * one.
    */
   public boolean equals(Object resourceObject) {
-    if (!(resourceObject instanceof Resource)) {
-      return false;
-    }
-    return href.equals(((Resource) resourceObject).getHref());
+    return resourceObject instanceof Resource && href.equals(((Resource) resourceObject).getHref());
   }
 
   /**
@@ -397,6 +377,22 @@ public class Resource implements Serializable {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public String getWidth() {
+    return width;
+  }
+
+  public void setWidth(final String width) {
+    this.width = width;
+  }
+
+  public String getHeight() {
+    return height;
+  }
+
+  public void setHeight(final String height) {
+    this.height = height;
   }
 
   public String toString() {

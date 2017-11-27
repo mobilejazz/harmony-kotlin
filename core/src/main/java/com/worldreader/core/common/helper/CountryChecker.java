@@ -6,16 +6,14 @@ import android.os.LocaleList;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
-
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import javax.inject.Inject;
+import java.util.*;
 
 @PerActivity public class CountryChecker {
 
@@ -31,14 +29,58 @@ import javax.inject.Inject;
     this.logger = logger;
   }
 
+  public boolean isLocatedInAnyCountry(String... countryIso2Codes) {
+    boolean isLocatedInAnyCountry = false;
+    for (String countryIso2Code : countryIso2Codes) {
+      isLocatedInAnyCountry = isLocatedInCountry(countryIso2Code);
+      if (isLocatedInAnyCountry) {
+        break;
+      }
+    }
+    return isLocatedInAnyCountry;
+  }
+
   public boolean isLocatedInCountry(String countryIso2Code) {
-    return isLocaleFromCountry(countryIso2Code)
-        || isSimFromCountry(countryIso2Code)
-        || isNetworkFromCountry(countryIso2Code)
+    final Optional<Boolean> isGeolocationFromCountryResult = isGeolocationFromCountry(countryIso2Code);
+    if (isGeolocationFromCountryResult.isPresent()) {
+      return isGeolocationFromCountryResult.get();
+    }
+
+    final Optional<Boolean> isSimFromCountryResult = isSimFromCountry(countryIso2Code);
+    if (isSimFromCountryResult.isPresent()) {
+      return isSimFromCountryResult.get();
+    }
+
+    return isNetworkFromCountry(countryIso2Code)
+        || isLocaleFromCountry(countryIso2Code)
         || isKeyboardFromCountry(countryIso2Code);
   }
 
-  public boolean isLocaleFromCountry(String countryIso2Code) {
+  private Optional<Boolean> isGeolocationFromCountry(final String countryIso2Code) {
+    final Optional<String> geolocationCountryIsoCodeResult = countryCodeProvider.getGeolocationCountryIsoCode();
+    if (!geolocationCountryIsoCodeResult.isPresent()) {
+      return Optional.absent();
+    }
+
+    return geolocationCountryIsoCodeResult.transform(new Function<String, Boolean>() {
+      @Override public Boolean apply(String geolocationCountryIso2Code) {
+        return geolocationCountryIso2Code.equalsIgnoreCase(countryIso2Code);
+      }
+    });
+  }
+
+  private Optional<Boolean> isSimFromCountry(String countryIso2Code) {
+    String simCountry = countryCodeProvider.getSimCountryIsoCode();
+    logger.d(TAG, "Current SIM country code: " + simCountry);
+
+    if (simCountry == null || simCountry.isEmpty()) {
+      return Optional.absent();
+    }
+
+    return Optional.of(countryIso2Code.equalsIgnoreCase(simCountry));
+  }
+
+  private boolean isLocaleFromCountry(String countryIso2Code) {
     final List<Locale> locales = getLocales();
     boolean countryFound = false;
     for (Locale locale : locales) {
@@ -64,19 +106,13 @@ import javax.inject.Inject;
     return locales;
   }
 
-  public boolean isSimFromCountry(String countryIso2Code) {
-    String simCountry = countryCodeProvider.getSimCountryIsoCode();
-    logger.d(TAG, "Current SIM country code: " + simCountry);
-    return countryIso2Code.equalsIgnoreCase(simCountry);
-  }
-
-  public boolean isNetworkFromCountry(String countryIso2Code) {
+  private boolean isNetworkFromCountry(String countryIso2Code) {
     String networkCountry = countryCodeProvider.getNetworkCountryIsoCode();
     logger.d(TAG, "Current Network country code: " + networkCountry);
     return countryIso2Code.equalsIgnoreCase(networkCountry);
   }
 
-  public boolean isKeyboardFromCountry(String countryIso2Code) {
+  private boolean isKeyboardFromCountry(String countryIso2Code) {
     List<String> keyboardLocales = getKeyboardLocales();
     boolean found = false;
     for (String keyboardLocale : keyboardLocales) {
@@ -108,6 +144,5 @@ import javax.inject.Inject;
     return locales;
 
   }
-
 
 }

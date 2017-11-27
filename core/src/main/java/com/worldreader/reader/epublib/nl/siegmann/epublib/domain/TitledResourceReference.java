@@ -3,7 +3,7 @@ package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class TitledResourceReference extends ResourceReference implements Serializable {
 

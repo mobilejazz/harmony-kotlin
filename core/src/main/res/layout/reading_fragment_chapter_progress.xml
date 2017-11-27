@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:clickable="true">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_height="match_parent"
+  android:layout_width="match_parent"
+  android:orientation="vertical"
+  android:clickable="true">
 
   <View
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/span_4"
-      android:background="@drawable/definition_view_shadow_background"/>
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/span_4"
+    android:background="@drawable/definition_view_shadow_background" />
 
   <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:padding="@dimen/span_16"
-      android:background="?android:colorBackground">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/span_16"
+    android:background="?android:colorBackground">
 
     <TextView
         android:id="@+id/reading_fragment_progress_chapter_title_tv"
@@ -45,14 +45,14 @@
         />
 
     <TextView
-        android:id="@+id/reading_fragment_chapter_progress_pages_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:ellipsize="end"
-        tools:text="1 / 20"/>
+      android:id="@+id/reading_fragment_chapter_progress_pages_tv"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textStyle="bold"
+      android:singleLine="true"
+      android:ellipsize="end"
+      tools:text="1 / 20" />
 
   </LinearLayout>
 

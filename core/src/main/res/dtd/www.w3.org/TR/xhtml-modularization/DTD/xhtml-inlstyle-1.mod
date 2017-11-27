@@ -1,6 +1,4 @@
-<!-- ...................................................................... -->
-<!-- XHTML Inline Style Module  ........................................... -->
-<!-- file: xhtml-inlstyle-1.mod
+<!-- ...................................................................... --><!-- XHTML Inline Style Module  ........................................... --><!-- file: xhtml-inlstyle-1.mod
 
      This is XHTML, a reformulation of HTML as a modular XML application.
      Copyright 1998-2005 W3C (MIT, ERCIM, Keio), All Rights Reserved.
@@ -15,20 +13,16 @@
      (none)
      ....................................................................... -->
 
-<!-- Inline Style
+  <!-- Inline Style
 
-     This module declares the 'style' attribute, used to support inline
-     style markup. This module must be instantiated prior to the XHTML
-     Common Attributes module in order to be included in %Core.attrib;.
--->
+       This module declares the 'style' attribute, used to support inline
+       style markup. This module must be instantiated prior to the XHTML
+       Common Attributes module in order to be included in %Core.attrib;.
+  -->
 
-<!ENTITY % style.attrib
-     "style        CDATA                    #IMPLIED"
->
+  <!ENTITY % style.attrib"style        CDATA                    #IMPLIED">
 
 
-<!ENTITY % Core.extra.attrib
-     "%style.attrib;"
->
+  <!ENTITY % Core.extra.attrib"%style.attrib;">
 
-<!-- end of xhtml-inlstyle-1.mod -->
+  <!-- end of xhtml-inlstyle-1.mod -->
