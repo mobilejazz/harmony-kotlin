@@ -545,17 +545,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void onWindowFocusChanged(boolean hasFocus) {
-    //final SystemUiHelper systemUiHelper = getSystemUiHelper();
-    //if (hasFocus) {
-    //  updateFromPrefs();
-    //  if (systemUiHelper != null && systemUiHelper.isShowing()) {
-    //    systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
-    //  }
-    //} else {
-    //  if (systemUiHelper != null) {
-    //    systemUiHelper.keepScreenOff();
-    //  }
-    //}
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+    if (hasFocus) {
+      updateFromPrefs();
+      if (systemUiHelper != null && systemUiHelper.isShowing()) {
+        systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
+      }
+    } else {
+      if (systemUiHelper != null) {
+        systemUiHelper.keepScreenOff();
+      }
+    }
   }
 
   public boolean onTouchEvent(MotionEvent event) {
