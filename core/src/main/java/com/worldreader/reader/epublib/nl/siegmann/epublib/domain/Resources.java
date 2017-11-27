@@ -10,24 +10,20 @@ import java.util.*;
 /**
  * All the resources that make up the book.
  * XHTML files, images and epub xml documents must be here.
- *
- * @author paul
  */
 public class Resources implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 2450876953383871451L;
+
   private static final String IMAGE_PREFIX = "image_";
   private static final String ITEM_PREFIX = "item_";
   private int lastId = 1;
 
-  private Map<String, Resource> resources = new HashMap<String, Resource>();
+  private Map<String, Resource> resources = new HashMap<>();
 
   /**
    * Adds a resource to the resources.
-   *
+   * <p>
    * Fixes the resources id and href if necessary.
    */
   public Resource add(Resource resource) {
@@ -41,7 +37,7 @@ public class Resources implements Serializable {
    * Checks the id of the given resource and changes to a unique identifier if it isn't one
    * already.
    */
-  public void fixResourceId(Resource resource) {
+  private void fixResourceId(Resource resource) {
     String resourceId = resource.getId();
 
     // first try and create a unique id based on the resource's href
@@ -63,8 +59,7 @@ public class Resources implements Serializable {
    * Check if the id is a valid identifier. if not: prepend with valid identifier
    */
   private String makeValidId(String resourceId, Resource resource) {
-    if (StringUtil.isNotBlank(resourceId) && !Character.isJavaIdentifierStart(
-        resourceId.charAt(0))) {
+    if (StringUtil.isNotBlank(resourceId) && !Character.isJavaIdentifierStart(resourceId.charAt(0))) {
       resourceId = getResourceItemPrefix(resource) + resourceId;
     }
     return resourceId;
@@ -81,14 +76,13 @@ public class Resources implements Serializable {
   }
 
   /**
-   * Creates a new resource id that is guarenteed to be unique for this set of Resources
+   * Creates a new resource id that is guaranteed to be unique for this set of Resources
    */
   private String createUniqueResourceId(Resource resource) {
     int counter = lastId;
     if (counter == Integer.MAX_VALUE) {
       if (resources.size() == Integer.MAX_VALUE) {
-        throw new IllegalArgumentException(
-            "Resources contains " + Integer.MAX_VALUE + " elements: no new elements can be added");
+        throw new IllegalArgumentException("Resources contains " + Integer.MAX_VALUE + " elements: no new elements can be added");
       } else {
         counter = 1;
       }
@@ -105,7 +99,7 @@ public class Resources implements Serializable {
   /**
    * Whether the map of resources already contains a resource with the given id.
    */
-  public boolean containsId(String id) {
+  private boolean containsId(String id) {
     if (StringUtil.isBlank(id)) {
       return false;
     }
@@ -195,11 +189,7 @@ public class Resources implements Serializable {
    * Whether there exists a resource with the given href
    */
   public boolean containsByHref(String href) {
-    if (StringUtil.isBlank(href)) {
-      return false;
-    }
-    return resources.containsKey(
-        StringUtil.substringBefore(href, Constants.FRAGMENT_SEPARATOR_CHAR));
+    return !StringUtil.isBlank(href) && resources.containsKey(StringUtil.substringBefore(href, Constants.FRAGMENT_SEPARATOR_CHAR));
   }
 
   /**
@@ -226,7 +216,7 @@ public class Resources implements Serializable {
    * @param resources A map with as keys the resources href and as values the Resources
    */
   public void set(Map<String, Resource> resources) {
-    this.resources = new HashMap<String, Resource>(resources);
+    this.resources = new HashMap<>(resources);
   }
 
   /**
@@ -252,18 +242,17 @@ public class Resources implements Serializable {
       return null;
     }
     href = StringUtil.substringBefore(href, Constants.FRAGMENT_SEPARATOR_CHAR);
-    Resource result = resources.get(href);
-    return result;
+    return resources.get(href);
   }
 
   /**
    * Matches a Resource by only the last portion of the href (the filename)
    */
   public Resource getByFileName(String href) {
-
     if (StringUtil.isBlank(href)) {
       return null;
     }
+
     href = StringUtil.substringBefore(href, Constants.FRAGMENT_SEPARATOR_CHAR);
     href = StringUtil.substringAfter(href, '/');
 
@@ -278,7 +267,7 @@ public class Resources implements Serializable {
 
   /**
    * Gets the first resource (random order) with the give mediatype.
-   *
+   * <p>
    * Useful for looking up the table of contents as it's supposed to be the only resource with NCX
    * mediatype.
    */
@@ -288,12 +277,11 @@ public class Resources implements Serializable {
 
   /**
    * Gets the first resource (random order) with the give mediatype.
-   *
+   * <p>
    * Useful for looking up the table of contents as it's supposed to be the only resource with NCX
    * mediatype.
    */
-  public static Resource findFirstResourceByMediaType(Collection<Resource> resources,
-      MediaType mediaType) {
+  public static Resource findFirstResourceByMediaType(Collection<Resource> resources, MediaType mediaType) {
     for (Resource resource : resources) {
       if (resource.getMediaType() == mediaType) {
         return resource;
@@ -306,7 +294,7 @@ public class Resources implements Serializable {
    * All resources that have the given MediaType.
    */
   public List<Resource> getResourcesByMediaType(MediaType mediaType) {
-    List<Resource> result = new ArrayList<Resource>();
+    final List<Resource> result = new ArrayList<>();
     if (mediaType == null) {
       return result;
     }

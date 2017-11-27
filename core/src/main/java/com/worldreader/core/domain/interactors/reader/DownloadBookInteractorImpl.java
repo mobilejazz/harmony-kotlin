@@ -10,7 +10,6 @@ import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
-import com.worldreader.core.domain.model.BookImageQuality;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
@@ -35,8 +34,9 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
   private DomainCallback<Integer, ErrorCore<?>> callback;
   private DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback;
 
-  @Inject public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor, MainThread mainThread,
-      GetBookMetadataInteractor getBookMetadataInteractor, StreamingBookRepository streamingBookRepository) {
+  @Inject
+  public DownloadBookInteractorImpl(Logger logger, InteractorExecutor executor, MainThread mainThread, GetBookMetadataInteractor getBookMetadataInteractor,
+      StreamingBookRepository streamingBookRepository) {
     super(executor, mainThread);
     this.logger = logger;
     this.getBookMetadataInteractor = getBookMetadataInteractor;
@@ -66,7 +66,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
-  @Override public ListenableFuture<Void> execute(final String bookId, final String version, final BookImageQuality bookImageQuality, Executor executor) {
+  @Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
     this.bookId = bookId;
     this.version = version;
     this.forceBookMetadataRefresh = false;
@@ -75,7 +75,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
-        downloadBookResources(bookMetadata, false, bookImageQuality);
+        downloadBookResources(bookMetadata, false);
         settableFuture.set(null);
       }
 
@@ -91,7 +91,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
       @Override public void onSuccess(BookMetadata bookMetadata) {
         try {
           boolean shouldNotify = backgroundCallback == null;
-          downloadBookResources(bookMetadata, shouldNotify, BookImageQuality.NETWORK_QUALITY_DEPENDANT);
+          downloadBookResources(bookMetadata, shouldNotify);
         } catch (Throwable throwable) {
           ErrorCore errorCore = ErrorCore.of(new FailedDownloadBookException());
           notifyErrorResponse(errorCore);
@@ -104,18 +104,18 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     });
   }
 
-  private void downloadBookResources(BookMetadata bookMetadata, boolean shouldNotifyResponses, BookImageQuality bookImageQuality) throws Throwable {
-    if (bookMetadata != null && bookMetadata.getResources() != null) {
-      List<String> resources = bookMetadata.getResources();
+  private void downloadBookResources(BookMetadata bookMetadata, boolean shouldNotifyResponses) throws Throwable {
+    if (bookMetadata != null && bookMetadata.resources != null) {
+      final List<String> resources = bookMetadata.resources;
 
       int numberOfResources = resources.size() + 2/*content opf && toc*/;
       int count = 0;
 
-      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.getContentOpfName());
+      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.contentOpfName);
 
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
 
-      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.getTocResource());
+      streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.tocResourceName);
 
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
 
@@ -125,7 +125,7 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
         logger.d(TAG, "Downloading current resource: " + resource);
 
         try {
-          streamingBookRepository.getBookResource(bookId, bookMetadata, resource, bookImageQuality);
+          streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
         } catch (Exception e) {
           if (e instanceof UnknownHostException) {
             // If we have problems with the network we rethrow the exception (causing the download to stop)

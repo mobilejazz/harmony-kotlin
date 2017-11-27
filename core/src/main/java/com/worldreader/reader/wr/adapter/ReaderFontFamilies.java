@@ -7,9 +7,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configurat
 public enum ReaderFontFamilies {
 
   ORIGINAL(FontFamilies.OPEN_SANS.DEFAULT, R.string.ls_book_reading_font_family_open_sans),
-
   LORA(FontFamilies.LORA.DEFAULT, R.string.ls_book_reading_font_family_lora),
-
   POPPINS(FontFamilies.POPPINS.DEFAULT, R.string.ls_book_reading_font_family_poppins);
 
   private FontFamilies.FontFamily fontFamily;

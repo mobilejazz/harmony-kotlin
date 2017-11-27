@@ -28,7 +28,7 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.StaticLayoutFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
@@ -59,9 +59,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     this.layoutFactory = new StaticLayoutFactory();
   }
 
-  /**
-   * Returns the current page INSIDE THE SECTION.
-   */
   public int getCurrentPage() {
     return this.pageNum;
   }
@@ -80,7 +77,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     final TextPaint textPaint = bookView.getInnerView().getPaint();
     final int boundedWidth = bookView.getInnerView().getMeasuredWidth();
 
-    Log.d(TAG, "OFFSETT Page width: " + boundedWidth);
+    Log.d(TAG, "OFFSET Page width: " + boundedWidth);
 
     final StaticLayout layout = layoutFactory.create(text, textPaint, boundedWidth, bookView.getLineSpacing());
 
@@ -88,21 +85,21 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       return emptyList();
     }
 
-    Log.d(TAG, "OFFSETT Layout height: " + layout.getHeight());
-    Log.d(TAG, "OFFSETT bookView.getMeasuredHeight(): " + bookView.getMeasuredHeight());
-    Log.d(TAG, "OFFSETT bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
-    Log.d(TAG, "OFFSETT bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
+    Log.d(TAG, "OFFSET Layout height: " + layout.getHeight());
+    Log.d(TAG, "OFFSET bookView.getMeasuredHeight(): " + bookView.getMeasuredHeight());
+    Log.d(TAG, "OFFSET bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
+    Log.d(TAG, "OFFSET bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
 
     layout.draw(new Canvas());
 
     //Subtract the height of the top margin
     int pageHeight = bookView.getMeasuredHeight() - bookView.getVerticalMargin();
-    Log.d(TAG, "OFFSETT FIRST pageHeight " + pageHeight);
+    Log.d(TAG, "OFFSET FIRST pageHeight " + pageHeight);
 
     //Just subtract the bottom margin
     pageHeight = pageHeight - bookView.getVerticalMargin();
 
-    Log.d(TAG, "OFFSETT Got pageHeight " + pageHeight);
+    Log.d(TAG, "OFFSET Got pageHeight " + pageHeight);
 
     int totalLines = layout.getLineCount();
     int topLineNextPage = -1;
@@ -269,7 +266,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   @Override public void updatePosition() {
-    if (pageOffsets.isEmpty() || text.length() == 0 || this.pageNum == -1) {
+    if (pageOffsets.isEmpty() || text.length() == 0 || pageNum == -1) {
       return;
     }
 
@@ -277,7 +274,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       updatePageNumber();
     }
 
-    CharSequence sequence = getTextForPage(this.pageNum).getOrElse("");
+    CharSequence sequence = getTextForPage(pageNum).getOrElse("");
 
     if (sequence.length() > 0) {
       // #555 Remove \n at the end of sequence which get InnerView size changed
@@ -297,9 +294,9 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       final ClickableImageSpan[] spans = spanned.getSpans(0, length, ClickableImageSpan.class);
       for (ClickableImageSpan imageSpan : spans) {
         final Drawable drawable = imageSpan.getDrawable();
-        if (drawable instanceof FastBitmapDrawable) {
-          final FastBitmapDrawable fbmp = (FastBitmapDrawable) drawable;
-          fbmp.reset();
+        if (drawable instanceof AbstractFastBitmapDrawable) {
+          final AbstractFastBitmapDrawable fbmp = (AbstractFastBitmapDrawable) drawable;
+          fbmp.destroy();
         }
       }
     }
@@ -325,22 +322,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     return option(text);
   }
 
-  @Override public Option<CharSequence> getNextPageText() {
-    if (isAtEnd()) {
-      return none();
-    }
-
-    return getTextForPage(this.pageNum + 1);
-  }
-
-  @Override public Option<CharSequence> getPreviousPageText() {
-    if (isAtStart()) {
-      return none();
-    }
-
-    return getTextForPage(this.pageNum - 1);
-  }
-
   @Override public void setBookView(BookView bookView) {
     this.bookView = bookView;
     this.childView = bookView.getInnerView();
@@ -354,11 +335,4 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     }
   }
 
-  @Override public CharSequence getChartDisplayed() {
-    if (this.childView != null && this.childView.getText() != null) {
-      return this.childView.getText();
-    } else {
-      return "";
-    }
-  }
 }

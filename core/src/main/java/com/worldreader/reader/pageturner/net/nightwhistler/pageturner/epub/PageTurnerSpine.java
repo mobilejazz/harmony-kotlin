@@ -18,17 +18,12 @@
  */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
-import android.util.Log;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
+import android.support.annotation.NonNull;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.InlineResource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
 import jedi.option.Option;
 
-import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -38,59 +33,36 @@ import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
 /**
- * Special spine class which handles navigation
- * and provides a custom cover.
- *
- * @author Alex Kuiper
+ * Special spine class which handles navigation and provides a custom cover.
  */
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static final String TAG = PageTurnerSpine.class.getSimpleName();
 
-  private static String TOC_ENTRY = "toc";
-  private SpineEntry tocResource;
+  private static final String COVER_HREF = "PageTurnerCover";
 
-  private List<SpineEntry> entries;
-  private List<List<Integer>> pageOffsets = new ArrayList<>();
-
-  private int position;
-
-  public static final String COVER_HREF = "PageTurnerCover";
-
-  /**
-   * How long should a cover page be to be included
-   **/
-  private static final int COVER_PAGE_THRESHOLD = 1024;
+  private final Book book;
+  private final List<SpineEntry> entries;
 
   private String tocHref;
-
-  private ResourcesLoader resourcesLoader;
-
-  private Book book;
-  private Spine originalSpine;
+  private int position;
 
   /**
    * Creates a new Spine from this book.
    */
-  public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader) {
+  public PageTurnerSpine(Book book) {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
-    this.resourcesLoader = resourcesLoader;
-    this.originalSpine = book.getSpine();
 
-    addResource(createCoverResource(book));
-
-    String href = null;
-
-    if (entries.size() > 0 && !entries.get(0).href.equals(COVER_HREF)) {
-      href = book.getCoverPage().getHref();
+    String coverHref = null;
+    if (!entries.isEmpty() && !entries.get(0).href.equals(COVER_HREF)) {
+      coverHref = book.getCoverPage().getHref();
     }
 
-    for (int i = 0; i < book.getSpine().size(); i++) {
-      Resource res = book.getSpine().getResource(i);
-
-      if (href == null || !(href.equals(res.getHref()))) {
+    for (SpineReference reference : book.getSpine().getSpineReferences()) {
+      final Resource res = reference.getResource();
+      if (coverHref == null || !(coverHref.equals(res.getHref()))) {
         addResource(res);
       }
     }
@@ -100,45 +72,16 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     }
   }
 
-  public void setPageOffsets(List<List<Integer>> pageOffsets) {
-    if (pageOffsets != null) {
-      this.pageOffsets = pageOffsets;
-    } else {
-      this.pageOffsets = new ArrayList<>();
-    }
-  }
-
-  public int getTotalNumberOfPages() {
-    int total = 0;
-    for (List<Integer> pagesPerSection : pageOffsets) {
-      total += pagesPerSection.size();
-    }
-
-    return Math.max(0, total - 1);
-  }
-
-  @Override public Iterator<SpineEntry> iterator() {
+  @NonNull @Override public Iterator<SpineEntry> iterator() {
     return this.entries.iterator();
   }
 
-  public List<List<Integer>> getPageOffsets() {
-    return pageOffsets;
-  }
-
-  /**
-   * Adds a new resource.
-   */
   private void addResource(Resource resource) {
     SpineEntry newEntry = new SpineEntry();
     newEntry.title = resource.getTitle();
     newEntry.resource = resource;
     newEntry.href = resource.getHref();
     newEntry.size = (int) resource.getSize();
-
-    if (resource.getId() != null && TOC_ENTRY.equals(resource.getId().toLowerCase())) {
-      tocResource = newEntry;
-    }
-
     entries.add(newEntry);
   }
 
@@ -148,14 +91,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    */
   public int size() {
     return this.entries.size();
-  }
-
-  public Resource getLastResource() {
-    if (entries != null && !entries.isEmpty()) {
-      return entries.get(entries.size() - 1).resource;
-    } else {
-      return null;
-    }
   }
 
   /**
@@ -194,18 +129,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   /**
-   * Returns the title of the current entry,
-   * or null if it could not be determined.
-   */
-  public Option<String> getCurrentTitle() {
-    if (entries.size() > 0) {
-      return option(entries.get(position).title);
-    } else {
-      return none();
-    }
-  }
-
-  /**
    * Returns the current resource, or null
    * if there is none.
    */
@@ -220,7 +143,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return getResourceForIndex(position + 1);
   }
 
-  public Option<Resource> getResourceForIndex(int index) {
+  private Option<Resource> getResourceForIndex(int index) {
     if (entries.isEmpty() || index < 0 || index >= entries.size()) {
       return none();
     }
@@ -258,8 +181,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static String resolveHref(String href, String against) {
     try {
-      String result = new URI(encode(against)).resolve(encode(href)).getPath();
-      return result;
+      return new URI(encode(against)).resolve(encode(href)).getPath();
     } catch (URISyntaxException u) {
       return href;
     } catch (IllegalArgumentException i) {
@@ -292,8 +214,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * multiple encodes safe.
    */
   private static boolean isUnsafe(char ch) {
-    if (ch > 128 || ch < 0) return true;
-    return " %$&+,:;=?@<>#[]".indexOf(ch) >= 0;
+    return ch > 128 || ch < 0 || " %$&+,:;=?@<>#[]".indexOf(ch) >= 0;
   }
 
   /**
@@ -309,34 +230,13 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   /**
    * Navigates to a specific point in the spine.
-   *
-   * @return false if the point did not exist.
    */
-  public boolean navigateByIndex(int index) {
+  public void navigateByIndex(int index) {
     if (index < 0 || index >= size()) {
-      return false;
+      return;
     }
 
     this.position = index;
-    return true;
-  }
-
-  public boolean shouldNavigateToFirstContent(int storedIndex) {
-    return storedIndex < 0 || storedIndex >= size();
-  }
-
-  public Option<Resource> tryToNavigateToChapterContent() {
-    if (tocResource != null) {
-      int position = entries.indexOf(tocResource);
-      int nextPosition = position + 1;
-
-      // Update the index.
-      this.position = nextPosition;
-
-      return getResourceForIndex(nextPosition);
-    } else {
-      return getCurrentResource();
-    }
   }
 
   /**
@@ -352,7 +252,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if that point did not exist.
    */
   public boolean navigateByHref(String href) {
-
     String encodedHref = encode(href);
 
     for (int i = 0; i < size(); i++) {
@@ -366,72 +265,8 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return false;
   }
 
-  /**
-   * Returns a percentage, which indicates how
-   * far the given point in the current entry is
-   * compared to the whole book.
-   */
-  public int getProgressPercentage(double progressInPart) {
-    return getProgressPercentage(getPosition(), progressInPart);
-  }
-
-  private int getProgressPercentage(int index, double progressInPart) {
-    if (this.entries == null) {
-      return -1;
-    }
-
-    double uptoHere = 0;
-
-    List<Double> percentages = getRelativeSizes();
-
-    for (int i = 0; i < percentages.size() && i < index; i++) {
-      uptoHere += percentages.get(i);
-    }
-
-    double thisPart = percentages.get(index);
-
-    double progress = uptoHere + (progressInPart * thisPart);
-
-    return (int) (progress * 100);
-  }
-
-  /**
-   * Returns the progress percentage for the given text position
-   * in the given index.
-   */
-  public int getProgressPercentage(int index, int position) {
-    if (this.entries == null || index >= entries.size()) {
-      return -1;
-    }
-
-    double progressInPart = ((double) position / (double) entries.get(index).size);
-    return getProgressPercentage(index, progressInPart);
-  }
-
-  /**
-   * Returns a list of doubles representing the relative size of each spine index.
-   */
-  public List<Double> getRelativeSizes() {
-    int total = 0;
-    List<Integer> sizes = new ArrayList<>();
-
-    for (int i = 0; i < entries.size(); i++) {
-      int size = entries.get(i).size;
-      sizes.add(size);
-      total += size;
-    }
-
-    List<Double> result = new ArrayList<>();
-    for (int i = 0; i < sizes.size(); i++) {
-      double part = (double) sizes.get(i) / (double) total;
-      result.add(part);
-    }
-
-    return result;
-  }
-
   public Long getSizeForCurrentResource() {
-    Option<Resource> currentResource = getCurrentResource();
+    final Option<Resource> currentResource = getCurrentResource();
 
     if (currentResource == null) {
       return null;
@@ -440,51 +275,8 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return currentResource.unsafeGet().getSize();
   }
 
-  private Resource createCoverResource(Book book) {
-    if (book.getCoverPage() != null && book.getCoverPage().getSize() > 0 && book.getCoverPage().getSize() < COVER_PAGE_THRESHOLD) {
-      Log.d("PageTurnerSpine", "Using cover resource " + book.getCoverPage().getHref());
-      return book.getCoverPage();
-    }
-
-    if (book.getCoverPage() instanceof StreamingResource) {
-      try {
-        book.getCoverPage().setData(resourcesLoader.loadResource(book.getCoverPage()));
-        return book.getCoverPage();
-      } catch (IOException e) {
-        // Do nothing more as the cover will be generated by this class
-        Log.d(TAG, "Exception while downloading cover!", e);
-      }
-    }
-
-    Log.d("PageTurnerSpine", "Constructing a cover page");
-    final Resource res = new InlineResource(generateCoverPage(book).getBytes(), COVER_HREF);
-    res.setTitle("Cover");
-
-    return res;
-  }
-
-  private String generateCoverPage(Book book) {
-    final StringBuilder centerpiece = new StringBuilder("<center><h1>" + (book.getTitle() != null ? book.getTitle() : "Book without a title") + "</h1>");
-
-    if (!book.getMetadata().getAuthors().isEmpty()) {
-      for (Author author : book.getMetadata().getAuthors()) {
-        centerpiece.append("<h3>").append(author.getFirstname()).append(" ").append(author.getLastname()).append("</h3>");
-      }
-    } else {
-      centerpiece.append("<h3>Unknown author</h3>");
-    }
-
-    centerpiece.append("</center>");
-
-    return "<html><body>" + centerpiece + "</body></html>";
-  }
-
   public Book getBook() {
     return book;
-  }
-
-  public Spine getOriginalSpine() {
-    return originalSpine;
   }
 
   public static class SpineEntry {

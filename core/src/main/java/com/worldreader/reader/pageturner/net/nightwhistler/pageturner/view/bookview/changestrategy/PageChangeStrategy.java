@@ -26,7 +26,7 @@ public interface PageChangeStrategy {
 
   /**
    * Loads the given section of text.
-   *
+   * <p>
    * This will be a whole "file" from an epub.
    */
   void loadText(Spanned text);
@@ -81,7 +81,9 @@ public interface PageChangeStrategy {
    */
   void pageDown();
 
-  /** Simple way to differentiate without instanceof **/
+  /**
+   * Simple way to differentiate without instanceof
+   **/
   boolean isScrolling();
 
   /**
@@ -111,19 +113,8 @@ public interface PageChangeStrategy {
    */
   Option<Spanned> getText();
 
-  /**
-   * Gets the text for the next page to be displayed, or null if we've reached the end.
-   */
-  Option<CharSequence> getNextPageText();
-
-  /**
-   * Gets the text for the previous page to be displayed, or null if we've reached the start.
-   */
-  Option<CharSequence> getPreviousPageText();
-
   void setBookView(BookView bookView);
 
   int getSizeChartDisplayed();
 
-  CharSequence getChartDisplayed();
 }

@@ -10,7 +10,6 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.Collection;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 public class LoadingBookPresenterImpl implements LoadingBookPresenter {
@@ -48,10 +47,10 @@ public class LoadingBookPresenterImpl implements LoadingBookPresenter {
   @Override public void initialize(final Book book, final Collection collection) {
     final ListenableFuture<BookMetadata> getBookMetadataFuture = getBookMetadataInteractor.execute(book.getId(), book.getVersion());
     interactorHandler.addCallbackMainThread(getBookMetadataFuture, new FutureCallback<BookMetadata>() {
-      @Override public void onSuccess(@Nullable BookMetadata bookMetadata) {
-        int collectionId = collection == null ? 0 : collection.getId();
-        bookMetadata.setCollectionId(collectionId);
-        bookMetadata.setTitle(book.getTitle());
+      @Override public void onSuccess(@NonNull BookMetadata bookMetadata) {
+        bookMetadata.title = book.getTitle();
+        bookMetadata.author = book.getAuthor();
+        bookMetadata.collectionId = collection == null ? 0 : collection.getId();
 
         view.onNotifyDisplayReader(bookMetadata);
       }

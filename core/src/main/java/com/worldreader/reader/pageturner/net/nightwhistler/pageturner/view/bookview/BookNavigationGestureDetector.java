@@ -20,10 +20,10 @@ public class BookNavigationGestureDetector extends GestureDetector.SimpleOnGestu
   private BookView bookView;
   private DisplayMetrics metrics;
 
-  public BookNavigationGestureDetector(BookView bookView, BookViewListener navListener, DisplayMetrics metrics) {
+  public BookNavigationGestureDetector(final BookView bookView, final DisplayMetrics metrics, final BookViewListener navListener) {
     this.bookView = bookView;
-    this.bookViewListener = navListener;
     this.metrics = metrics;
+    this.bookViewListener = navListener;
   }
 
   @Override public boolean onSingleTapUp(MotionEvent e) {

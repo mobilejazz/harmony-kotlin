@@ -6,27 +6,22 @@ import java.util.*;
 /**
  * The guide is a selection of special pages of the book.
  * Examples of these are the cover, list of illustrations, etc.
- *
+ * <p>
  * It is an optional part of an epub, and support for the various types of references varies by
  * reader.
- *
+ * <p>
  * The only part of this that is heavily used is the cover page.
  *
  * @author paul
  */
 public class Guide implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = -6256645339915751189L;
 
-  public static final String DEFAULT_COVER_TITLE = GuideReference.COVER;
-
-  private List<GuideReference> references = new ArrayList<GuideReference>();
   private static final int COVERPAGE_NOT_FOUND = -1;
   private static final int COVERPAGE_UNITIALIZED = -2;
 
+  private List<GuideReference> references = new ArrayList<>();
   private int coverPageIndex = -1;
 
   public List<GuideReference> getReferences() {
@@ -78,21 +73,12 @@ public class Guide implements Serializable {
     coverPageIndex = result;
   }
 
-  /**
-   * The coverpage of the book.
-   */
   public Resource getCoverPage() {
     GuideReference guideReference = getCoverReference();
     if (guideReference == null) {
       return null;
     }
     return guideReference.getResource();
-  }
-
-  public void setCoverPage(Resource coverPage) {
-    GuideReference coverpageGuideReference =
-        new GuideReference(coverPage, GuideReference.COVER, DEFAULT_COVER_TITLE);
-    setCoverReference(coverpageGuideReference);
   }
 
   public ResourceReference addReference(GuideReference reference) {
@@ -105,7 +91,7 @@ public class Guide implements Serializable {
    * A list of all GuideReferences that have the given referenceTypeName (ignoring case).
    */
   public List<GuideReference> getGuideReferencesByType(String referenceTypeName) {
-    List<GuideReference> result = new ArrayList<GuideReference>();
+    final List<GuideReference> result = new ArrayList<>();
     for (GuideReference guideReference : references) {
       if (referenceTypeName.equalsIgnoreCase(guideReference.getType())) {
         result.add(guideReference);

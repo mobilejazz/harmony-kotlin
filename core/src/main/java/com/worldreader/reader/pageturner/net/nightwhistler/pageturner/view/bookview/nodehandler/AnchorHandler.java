@@ -11,12 +11,10 @@ import org.htmlcleaner.TagNode;
  * and
  * <h1>tags as anchor points. This class harvests those point by wrapping
  * the original handler.
- *
- * @author Alex Kuiper
  */
 public class AnchorHandler extends TagNodeHandler {
 
-  private TagNodeHandler wrappedHandler;
+  private final TagNodeHandler wrappedHandler;
 
   private AnchorCallback callback;
 
@@ -30,7 +28,7 @@ public class AnchorHandler extends TagNodeHandler {
 
   @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
     final String id = node.getAttributeByName("id");
-    if (id != null) {
+    if (id != null && callback != null) {
       callback.registerAnchor(id, start);
     }
 
@@ -39,6 +37,10 @@ public class AnchorHandler extends TagNodeHandler {
 
   public void setCallback(AnchorCallback callback) {
     this.callback = callback;
+  }
+
+  public TagNodeHandler getWrappedHandler() {
+    return wrappedHandler;
   }
 
   public interface AnchorCallback {

@@ -5,41 +5,31 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <ViewSwitcher
+  <FrameLayout
     android:id="@+id/reading_fragment_main_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView
       android:id="@+id/reading_fragment_bookView"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <view
+      <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookTextView
         android:id="@id/bookview_inner"
-        class="com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView$InnerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:textColorHighlight="@color/gray_profile_screen" />
+        android:cursorVisible="false"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:longClickable="true"
+        android:textColorHighlight="@color/gray_profile_screen"
+        android:textIsSelectable="true" />
 
     </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
 
-    <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.AnimatedImageView
-      android:id="@+id/reading_fragment_dummy_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-  </ViewSwitcher>
-
-  <TextView
-    android:id="@+id/reading_fragment_page_number_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignBottom="@id/reading_fragment_main_container" />
-
-  <include layout="@layout/reading_fragment_media_player_bar" />
+  </FrameLayout>
 
   <include
     android:id="@+id/reading_fragment_chapter_progress_container"
@@ -68,7 +58,9 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       android:clickable="true"
-      android:focusable="true" />
+      android:focusable="true"
+      android:visibility="gone"/>
 
   </RelativeLayout>
+
 </RelativeLayout>
