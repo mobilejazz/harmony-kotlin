@@ -1,15 +1,13 @@
 package com.worldreader.core.domain.interactors.reader;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
-import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
 import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
+import com.worldreader.core.domain.model.BookImageQuality;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
 import com.worldreader.core.domain.thread.MainThread;
@@ -51,6 +49,10 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Void> execute(String bookId, String version, BookImageQuality bookImageQuality, Executor executor) {
+    return null;
+  }
+
   @Override public void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback) {
     this.bookId = bookId;
     this.version = "latest";
@@ -66,25 +68,25 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
-  @Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
-    this.bookId = bookId;
-    this.version = version;
-    this.forceBookMetadataRefresh = false;
-
-    final SettableFuture<Void> settableFuture = SettableFuture.create();
-    executor.execute(new SafeRunnable() {
-      @Override protected void safeRun() throws Throwable {
-        final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
-        downloadBookResources(bookMetadata, false);
-        settableFuture.set(null);
-      }
-
-      @Override protected void onExceptionThrown(Throwable t) {
-        settableFuture.setException(t);
-      }
-    });
-    return settableFuture;
-  }
+  //@Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
+  //  this.bookId = bookId;
+  //  this.version = version;
+  //  this.forceBookMetadataRefresh = false;
+  //
+  //  final SettableFuture<Void> settableFuture = SettableFuture.create();
+  //  executor.execute(new SafeRunnable() {
+  //    @Override protected void safeRun() throws Throwable {
+  //      final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
+  //      downloadBookResources(bookMetadata, false);
+  //      settableFuture.set(null);
+  //    }
+  //
+  //    @Override protected void onExceptionThrown(Throwable t) {
+  //      settableFuture.setException(t);
+  //    }
+  //  });
+  //  return settableFuture;
+  //}
 
   @Override public void run() {
     getBookMetadataInteractor.execute(bookId, version, forceBookMetadataRefresh, new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {

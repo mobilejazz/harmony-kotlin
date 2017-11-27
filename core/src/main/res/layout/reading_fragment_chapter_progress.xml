@@ -28,7 +28,7 @@
       android:gravity="center"
       android:minHeight="@dimen/span_32"
       android:singleLine="true"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/primary"
       android:textStyle="bold"
       tools:text="Once upon a time" />
 
@@ -38,11 +38,11 @@
       android:layout_height="wrap_content"
       android:clickable="false"
       android:focusable="false"
-      app:dsb_indicatorColor="@color/colorPrimary"
+      app:dsb_indicatorColor="@color/primary"
       app:dsb_indicatorPopupEnabled="false"
       app:dsb_max="100"
       app:dsb_min="0"
-      app:dsb_progressColor="@color/colorPrimary" />
+      app:dsb_progressColor="@color/primary" />
 
     <TextView
       android:id="@+id/chapter_progress_pages_tv"

@@ -20,6 +20,7 @@ import com.worldreader.core.domain.thread.MainThread;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>> implements DeleteBookDownloadedInteractor {
 
@@ -83,6 +84,10 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
     });
 
     return settableFuture;
+  }
+
+  @Override public ListenableFuture<Void> execute(String bookId, String version, Executor executor) {
+    return null;
   }
 
   @Override public void run() {

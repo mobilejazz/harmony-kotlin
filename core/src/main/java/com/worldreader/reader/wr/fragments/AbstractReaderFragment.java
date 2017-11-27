@@ -25,8 +25,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -44,14 +42,9 @@ import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
-import com.worldreader.core.analytics.Analytics;
-import com.worldreader.core.analytics.event.AnalyticsEventConstants;
-import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
 import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.application.helper.ui.Dimens;
@@ -59,17 +52,10 @@ import com.worldreader.core.application.ui.dialog.DialogFactory;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
 import com.worldreader.core.common.date.Dates;
-import com.worldreader.core.common.deprecated.callback.CompletionCallback;
-import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
-import com.worldreader.core.domain.interactors.user.FinishBookInteractor;
-import com.worldreader.core.domain.interactors.user.SendReadPagesInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
-import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.model.WordDefinition;
-import com.worldreader.core.userflow.UserFlowTutorial;
-import com.worldreader.core.userflow.model.TutorialModel;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
@@ -121,15 +107,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private OnBookTocEntryListener bookTocEntryListener;
 
-  private BookView bookView;
-  private TextView readingTitleProgressTv;
-  private DiscreteSeekBar chapterProgressDsb;
-  private TextView chapterProgressPagesTv;
-  private DefinitionView definitionView;
-  private TutorialView tutorialView;
-  private View containerTutorialView;
-  private View progressContainer;
-  private ProgressDialog progressDialog;
+  protected BookView bookView;
+  protected TextView readingTitleProgressTv;
+  protected DiscreteSeekBar chapterProgressDsb;
+  protected TextView chapterProgressPagesTv;
+  protected DefinitionView definitionView;
+  protected TutorialView tutorialView;
+  protected View containerTutorialView;
+  protected View progressContainer;
+  protected ProgressDialog progressDialog;
 
   protected DICompanion di;
 
@@ -636,66 +622,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookMetadata.title);
     formatPageChapterProgress();
 
-    // Tutorial feature
-    if (di.userFlowTutorial != null) { // TODO: Remove this check
-      di.userFlowTutorial.get(UserFlow.Type.READER, new CompletionCallback<List<TutorialModel>>() {
-        private boolean isTutorial(List<TutorialModel> tutorials) {
-          boolean isTutorial = false;
-
-          for (TutorialModel tutorialModel : tutorials) {
-            if (tutorialModel.getType() == TutorialModel.Type.TUTORIAL) {
-              isTutorial = true;
-              break;
-            }
-          }
-          return isTutorial;
-        }
-
-        @Override public void onSuccess(final List<TutorialModel> tutorials) {
-          if (tutorials.isEmpty()) {
-            tutorialView.setVisibility(View.GONE);
-          } else {
-            boolean isTutorial = isTutorial(tutorials);
-
-            if (isTutorial) {
-              setTutorialViewVisibility(View.VISIBLE);
-              tutorialView.setTutorialListener(new TutorialView.TutorialListener() {
-                @Override public void onCompleted() {
-                  tutorialView.setVisibility(View.GONE);
-                }
-              });
-              tutorialView.setIsTrianglesDisabled(true);
-              tutorialView.setTutorials(tutorials);
-            } else {
-              setTutorialViewVisibility(View.GONE);
-
-              TutorialModel tutorialModel = tutorials.get(0);
-              if (tutorialModel.getType() == TutorialModel.Type.SET_YOUR_GOALS) {
-                if (getActivity() != null) {
-                  MaterialDialog setYourGoalsDialog = DialogFactory.createSetYourGoalsDialog(getActivity(), new DialogFactory.ActionCallback() {
-                    @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-                      if (action == DialogFactory.Action.OK) {
-                        onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT);
-                      }
-                    }
-                  });
-
-                  if (getActivity().hasWindowFocus()) {
-                    setYourGoalsDialog.show();
-                  }
-                }
-              } else if (tutorialModel.getType() == TutorialModel.Type.BECOME_WORLDREADER) {
-                displayUserNotRegisteredDialog();
-              }
-            }
-          }
-        }
-
-        @Override public void onError(ErrorCore errorCore) {
-          tutorialView.setVisibility(View.GONE);
-        }
-      });
-    }
+    onReaderFragmentEvent(BookReaderEvents.READER_PARSE_ENTRY_FINISHED_EVENT);
   }
 
   @Override public void onProgressUpdate(int progressPercentage) {
@@ -715,7 +642,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (bookView.isAtEnd()) {
-      notifyFinishedBookEventInteractor();
+      onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
     }
 
     return true;
@@ -764,7 +691,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (bookView.isAtEnd()) {
-      notifyFinishedBookEventInteractor();
+      onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
     }
 
     return true;
@@ -966,67 +893,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.bookView.navigateTo(tocEntry);
   }
 
-  private void setTutorialViewVisibility(int visibility) {
-    tutorialView.setVisibility(visibility);
-    containerTutorialView.setVisibility(visibility);
-  }
-
-  private void displayUserNotRegisteredDialog() {
-    MaterialDialog dialog = DialogFactory.createDialog(getActivity(), R.string.ls_not_registered_dialog_title, R.string.ls_not_registered_dialog_message,
-        R.string.ls_generic_accept, R.string.ls_generic_cancel, new DialogFactory.ActionCallback() {
-          @Override public void onResponse(MaterialDialog dialog, DialogFactory.Action action) {
-            if (action == DialogFactory.Action.OK) {
-              onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT);
-            }
-          }
-        });
-
-    dialog.show();
-  }
-
-  private void notifyFinishedBookEventInteractor() {
-    final ListenableFuture<Boolean> finishBookFuture = di.finishBookInteractor.execute(bookMetadata.bookId);
-    Futures.addCallback(finishBookFuture, new FutureCallback<Boolean>() {
-      @Override public void onSuccess(final Boolean result) {
-        // Ignored result
-      }
-
-      @Override public void onFailure(@NonNull final Throwable t) {
-        // Ignored result
-      }
-    }, MoreExecutors.directExecutor());
-  }
-
   private void formatPageChapterProgress() {
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
-
     chapterProgressPagesTv.setText(pagesForResource < currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource));
-
-    final Option<Spanned> text = bookView.getStrategy().getText();
-    final Spanned spanned = text.getOrElse(new SpannableString(""));
-
-    if (pagesForResource > 0) {
-      // TODO: 21/11/2017 Move this to event
-      final Map<String, String> amaAttributes = new HashMap<String, String>() {{
-        //Book toc size
-        put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES, String.valueOf(bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size()));
-
-        // Book spine size
-        put(AnalyticsEventConstants.BOOK_SPINE_SIZE, String.valueOf(bookView.getSpineSize()));
-
-        //Currently reading toc entry number
-        put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION, String.valueOf(bookView.getIndex()));
-        put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS, String.valueOf(spanned.length()));
-        put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(currentPage));
-        put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(pagesForResource));
-        put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(bookView.getStrategy().getSizeChartDisplayed()));
-        put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookMetadata.bookId);
-        put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, bookMetadata.title);
-      }};
-
-      di.analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, amaAttributes));
-    }
+    onReaderFragmentEvent(BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT);
   }
 
   public interface OnBookTocEntryListener {
@@ -1125,16 +996,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   public static class DICompanion {
 
-    @Inject public Configuration config;
     @Inject public StreamingBookDataSource streamingBookDataSource;
     @Inject public GetWordDefinitionInteractor getWordDefinitionInteractor;
-    @Inject public FinishBookInteractor finishBookInteractor;
-    @Inject public SendReadPagesInteractor sendReadPagesInteractor;
-    @Inject public UserFlowTutorial userFlowTutorial;
+
+    @Inject public Configuration config;
     @Inject public BrightnessManager brightnessManager;
     @Inject public Dates dateUtils;
     @Inject public Reachability reachability;
-    @Inject public Analytics analytics;
     @Inject public Logger logger;
   }
 
@@ -1153,6 +1021,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     public static final int NAVIGATION_TO_SIGNUP_SCREEN_EVENT = 10;
     public static final int READ_PAGE_ANALYTICS_EVENT = 11;
     public static final int SAVE_CURRENTLY_BOOK_READING_EVENT = 12;
+    public static final int READER_PARSE_ENTRY_FINISHED_EVENT = 13;
+    public static final int READER_FINISHED_BOOK_EVENT = 14;
+    public static final int READER_FORMATTED_PAGE_CHAPTER_EVENT = 15;
   }
 
   @IntDef({
@@ -1161,7 +1032,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       BookReaderEvents.GAMIFICATION_FONT_SIZE_CHANGED_EVENT, BookReaderEvents.GAMIFICATION_BACKGROUND_CHANGED_EVENT,
       BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT, BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT,
       BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT, BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT,
-      BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT, BookReaderEvents.READ_PAGE_ANALYTICS_EVENT, BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT
+      BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT, BookReaderEvents.READ_PAGE_ANALYTICS_EVENT, BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT,
+      BookReaderEvents.READER_PARSE_ENTRY_FINISHED_EVENT, BookReaderEvents.READER_FINISHED_BOOK_EVENT, BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT
   }) @Retention(RetentionPolicy.SOURCE) @interface BookReaderFragmentEvent {
 
   }

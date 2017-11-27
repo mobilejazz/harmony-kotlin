@@ -51,7 +51,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   private View readingContainer;
   private View bookIndexContainer;
 
-  @Override protected final void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     onSetupSystemUiHelper();
     setContentView(R.layout.activity_reader);
