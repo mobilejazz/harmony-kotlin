@@ -8,6 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
+// TODO: 27/11/2017 Remove harcoded contentOpfName/tocResourceName/resources/imagesResources
 public class BookMetadata implements Serializable {
 
   public static final int FILE_MODE = 0;

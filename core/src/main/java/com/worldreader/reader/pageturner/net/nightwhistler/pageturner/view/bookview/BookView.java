@@ -570,7 +570,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     for (TOCReference ref : refs) {
-
       StringBuilder title = new StringBuilder();
 
       for (int i = 0; i < level; i++) {

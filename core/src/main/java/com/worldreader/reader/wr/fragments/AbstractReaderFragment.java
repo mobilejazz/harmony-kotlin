@@ -95,6 +95,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
+// TODO: 27/11/2017 Move interactors to concrete implementations
+// TODO: 27/11/2017 Check visibility bugs (onFocusVisibilityChanged)
+// TODO: 27/11/2017 Prepare design to be the same as Pablo's invision
+// TODO: 27/11/2017 Fix dagger injection on all projects
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
   public static final String CHANGE_FONT_KEY = "change_font_key";

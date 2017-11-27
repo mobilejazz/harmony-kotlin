@@ -8,9 +8,9 @@ import android.util.Log;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.domain.model.BookMetadata;
-import com.worldreader.core.domain.repository.StreamingBookRepository;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.FastBimapFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.InlineFastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.StreamingFastBitmapDrawable;
 import org.javatuples.Pair;
 
 import java.io.*;
@@ -21,7 +21,6 @@ public class ImageResourceCallback {
   private static final String TAG = ImageResourceCallback.class.getSimpleName();
 
   private final BookMetadata bm;
-  private final StreamingBookRepository repository;
   private final int height;
   private final int width;
   private final int verticalMargin;
@@ -35,7 +34,6 @@ public class ImageResourceCallback {
 
   public ImageResourceCallback(Builder builder) {
     this.bm = builder.bookMetadata;
-    this.repository = builder.repository;
     this.height = builder.height;
     this.width = builder.width;
     this.verticalMargin = builder.verticalMargin;
@@ -49,7 +47,7 @@ public class ImageResourceCallback {
   }
 
   public void onPrepareFastBitmapDrawable() {
-    if (!TextUtils.isEmpty(data) && data.startsWith("data:image")) {
+    if (!TextUtils.isEmpty(data) && data.startsWith("data:image")) { // Check if image is inlined as Base64 in the epub (this is a special case)
       onPrepareBitmapDrawableFromInline();
     } else {
       onPrepareBitmapDrawableFromResource();
@@ -76,8 +74,7 @@ public class ImageResourceCallback {
     final int finalWidth = sizes.getValue0();
     final int finalHeight = sizes.getValue1();
 
-    //final AbstractFastBitmapDrawable drawable = FastBimapFactory.create(bm, repository, data, finalWidth, finalHeight, logger);
-    final StreamingFastBitmapDrawable drawable = new StreamingFastBitmapDrawable(finalWidth, finalHeight, bm, repository, data, logger);
+    final AbstractFastBitmapDrawable drawable = FastBimapFactory.create(bm, null, finalWidth, finalHeight, logger);
 
     notifyListener(drawable, builder, start, end);
   }
@@ -114,7 +111,6 @@ public class ImageResourceCallback {
   public static class Builder {
 
     private BookMetadata bookMetadata;
-    private StreamingBookRepository repository;
     private int height;
     private int width;
     private int verticalMargin;
@@ -128,11 +124,6 @@ public class ImageResourceCallback {
 
     public Builder withMetadata(BookMetadata metadata) {
       this.bookMetadata = metadata;
-      return this;
-    }
-
-    public Builder withRepository(StreamingBookRepository repository) {
-      this.repository = repository;
       return this;
     }
 
