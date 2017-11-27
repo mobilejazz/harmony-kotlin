@@ -41,15 +41,15 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.PageChangeStrategy;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.helper.TocUtils;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.ImageTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
@@ -556,33 +556,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public Option<List<TocEntry>> getTableOfContents() {
     if (book != null) {
-      final List<TocEntry> result = new ArrayList<>();
-      flatten(book.getTableOfContents().getTocReferences(), result, 0);
-      return some(result);
+      return some(TocUtils.flattenTocReferences(spine, book.getTableOfContents()));
     } else {
       return none();
-    }
-  }
-
-  private void flatten(List<TOCReference> refs, List<TocEntry> entries, int level) {
-    if (spine == null || refs == null || refs.isEmpty()) {
-      return;
-    }
-
-    for (TOCReference ref : refs) {
-      StringBuilder title = new StringBuilder();
-
-      for (int i = 0; i < level; i++) {
-        title.append("  ");
-      }
-
-      title.append(ref.getTitle());
-
-      if (ref.getResource() != null) {
-        entries.add(new TocEntry(title.toString(), spine.resolveTocHref(ref.getCompleteHref())));
-      }
-
-      flatten(ref.getChildren(), entries, level + 1);
     }
   }
 
