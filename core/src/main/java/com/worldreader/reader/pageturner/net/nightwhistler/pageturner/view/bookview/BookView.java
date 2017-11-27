@@ -60,14 +60,14 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageT
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.FastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.PageChangeStrategy;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadTask;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -91,7 +91,9 @@ import java.util.*;
 import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.forEach;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
-import static jedi.option.Options.*;
+import static jedi.option.Options.none;
+import static jedi.option.Options.option;
+import static jedi.option.Options.some;
 
 public class BookView extends ScrollView implements TextSelectionActions.SelectedTextProvider {
 
@@ -429,6 +431,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     strategy.pageDown();
     progressUpdate();
     notifyListenersPageDownEvent();
+    deselectText();
   }
 
   public void lastPageDown() {
@@ -438,6 +441,16 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void pageUp() {
     strategy.pageUp();
     progressUpdate();
+    deselectText();
+  }
+
+  // FIXME: Workaround to avoid text selection on some devices when swiping pages
+  private void deselectText() {
+    getInnerView().post(new Runnable() {
+      @Override public void run() {
+        getInnerView().clearFocus();
+      }
+    });
   }
 
   private void notifyListenersPageDownFirstPageEvent() {
@@ -1082,23 +1095,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
       super.onSizeChanged(w, h, oldw, oldh);
       bookView.onInnerViewResize();
-    }
-
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-      // Workaround to https://code.google.com/p/android/issues/detail?id=191430
-      if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-        int startSelection = getSelectionStart();
-        int endSelection = getSelectionEnd();
-        if (startSelection != endSelection) {
-          if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            final CharSequence text = getText();
-            setText(null);
-            setText(text);
-          }
-        }
-      }
-
-      return super.dispatchTouchEvent(event);
     }
 
     @Override public void onWindowFocusChanged(boolean hasWindowFocus) {
