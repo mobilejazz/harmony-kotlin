@@ -418,6 +418,16 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void pageUp() {
     strategy.pageUp();
     progressUpdate();
+    deselectText();
+  }
+
+  // FIXME: Workaround to avoid text selection on some devices when swiping pages
+  private void deselectText() {
+    getInnerView().post(new Runnable() {
+      @Override public void run() {
+        getInnerView().clearFocus();
+      }
+    });
   }
 
   private void notifyListenersPageDownFirstPageEvent() {
