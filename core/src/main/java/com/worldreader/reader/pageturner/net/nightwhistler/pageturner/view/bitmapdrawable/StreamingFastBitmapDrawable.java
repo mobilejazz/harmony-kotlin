@@ -19,11 +19,15 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueuedTask;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.concurrent.*;
 
+// TODO: 28/11/2017 If possible do a refactor to include loading logic inside Resource instead of passing variables around here
 public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
 
   private static final String TAG = StreamingFastBitmapDrawable.class.getSimpleName();
@@ -36,19 +40,19 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   private final Shape shape;
   private final Paint paint;
 
-  private final StreamingBookRepository dataSource;
-  private final BookMetadata metadata;
-  private final String resource;
+  private final StreamingBookRepository repository;
+  private final BookMetadata bm;
+  private final Resource resource;
   private final Logger logger;
 
   private boolean isLoaded;
   private boolean isProcessing;
 
-  public StreamingFastBitmapDrawable(int width, int height, BookMetadata metadata, StreamingBookRepository repository, String resource, Logger logger) {
+  public StreamingFastBitmapDrawable(int width, int height, BookMetadata metadata, StreamingBookRepository repository, Resource resource, Logger logger) {
     super(width, height);
 
-    this.dataSource = repository;
-    this.metadata = metadata;
+    this.repository = repository;
+    this.bm = metadata;
     this.resource = resource;
     this.logger = logger;
 
@@ -71,35 +75,74 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
       canvas.restoreToCount(count);
 
       if (!isLoaded && !isProcessing) {
-        isProcessing = true;
-        final ListenableFuture<StreamingResource> future = dataSource.getBookResourceFuture(metadata.bookId, metadata, URLDecoder.decode(resource));
-        Futures.addCallback(future, new FutureCallback<StreamingResource>() {
-          @Override public void onSuccess(final StreamingResource result) {
-            final InputStream inputStream = result.getInputStream();
-            handler.post(new Runnable() {
-              @Override public void run() {
-                generateDrawable(inputStream);
-                isProcessing = false;
-              }
-            });
-          }
-
-          @Override public void onFailure(@NonNull final Throwable t) {
-            if (t instanceof CancellationException) {
-              return;
-            }
-            handler.post(new Runnable() {
-              @Override public void run() {
-                isProcessing = false;
-                isLoaded = true;
-              }
-            });
-          }
-        }, MoreExecutors.directExecutor());
+        retrieveDrawableResource();
       }
     } else {
       canvas.drawBitmap(bitmap, 0.0f, 0.0f, null);
     }
+  }
+
+  private void retrieveDrawableResource() {
+    isProcessing = true;
+    if (bm.mode == BookMetadata.FILE_MODE) {
+      retrieveDrawableFromResource();
+    } else {
+      retrieveDrawableFromRepository();
+    }
+  }
+
+  private void retrieveDrawableFromResource() {
+    // TODO: This should be passed as constructor to be completely agnostic
+    final ListenableFuture<InputStream> future = QueuedTask.READER_THREAD_EXECUTOR.submit(new Callable<InputStream>() {
+      @Override public InputStream call() throws Exception {
+        return null;
+      }
+    });
+    Futures.addCallback(future, new FutureCallback<InputStream>() {
+      @Override public void onSuccess(@Nullable InputStream result) {
+        convertToDrawable(result);
+      }
+
+      @Override public void onFailure(Throwable t) {
+        markAsError(t);
+      }
+    }, MoreExecutors.directExecutor());
+  }
+
+  private void retrieveDrawableFromRepository() {
+    final ListenableFuture<StreamingResource> future = repository.getBookResourceFuture(bm.bookId, bm, URLDecoder.decode(resource.getHref()));
+    Futures.addCallback(future, new FutureCallback<StreamingResource>() {
+      @Override public void onSuccess(final StreamingResource result) {
+        final InputStream inputStream = result.getInputStream();
+        convertToDrawable(inputStream);
+      }
+
+      @Override public void onFailure(@NonNull final Throwable t) {
+        markAsError(t);
+      }
+    }, MoreExecutors.directExecutor());
+  }
+
+  private void markAsError(@NonNull Throwable t) {
+    if (t instanceof CancellationException) {
+      return;
+    }
+    handler.post(new Runnable() {
+      @Override public void run() {
+        isProcessing = false;
+        isLoaded = true;
+      }
+    });
+  }
+
+  private void convertToDrawable(InputStream inputStream) {
+    generateDrawable(inputStream);
+    handler.post(new Runnable() {
+      @Override public void run() {
+        isProcessing = false;
+        invalidateSelf();
+      }
+    });
   }
 
   private void generateDrawable(final InputStream inputStream) {
@@ -112,7 +155,6 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
       recycle();
       bitmap = localBitmap;
       isLoaded = true;
-      invalidateSelf();
     } catch (Throwable e) {
       logger.e(TAG, "Could not load image: " + Throwables.getStackTraceAsString(e));
       isLoaded = true;

@@ -6,8 +6,11 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import com.mobilejazz.logger.library.Logger;
+import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.FastBimapFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.InlineFastBitmapDrawable;
@@ -29,6 +32,8 @@ public class ImageResourceCallback {
   private final int start;
   private final int end;
   private final String data;
+  private final StreamingBookDataSource repository;
+  private final Resources resources;
   private final Listener listener;
   private final Logger logger;
 
@@ -43,6 +48,8 @@ public class ImageResourceCallback {
     this.end = builder.end;
     this.data = builder.data;
     this.listener = builder.listener;
+    this.repository = builder.repository;
+    this.resources = builder.resources;
     this.logger = builder.logger;
   }
 
@@ -64,8 +71,10 @@ public class ImageResourceCallback {
   }
 
   private void onPrepareBitmapDrawableFromResource() {
+    final Resource resource = resources.getByFileName(data);
+
     final Map<String, ContentOpfEntity.Item> imagesResources = bm.imagesResources;
-    final ContentOpfEntity.Item item = imagesResources != null ? imagesResources.get(data) : null;
+    final ContentOpfEntity.Item item = imagesResources != null && resource != null ? imagesResources.get(resource.getHref()) : null;
 
     final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;
     final Integer height = item != null && !TextUtils.isEmpty(item.height) ? Integer.valueOf(item.height) : 800;
@@ -74,7 +83,7 @@ public class ImageResourceCallback {
     final int finalWidth = sizes.getValue0();
     final int finalHeight = sizes.getValue1();
 
-    final AbstractFastBitmapDrawable drawable = FastBimapFactory.create(bm, null, finalWidth, finalHeight, logger);
+    final AbstractFastBitmapDrawable drawable = FastBimapFactory.create(bm, resource, finalWidth, finalHeight, repository, logger);
 
     notifyListener(drawable, builder, start, end);
   }
@@ -119,6 +128,8 @@ public class ImageResourceCallback {
     private int start;
     private int end;
     private String data;
+    private StreamingBookDataSource repository;
+    private Resources resources;
     private Listener listener;
     private Logger logger;
 
@@ -164,6 +175,16 @@ public class ImageResourceCallback {
 
     public Builder withData(String data) {
       this.data = data;
+      return this;
+    }
+
+    public Builder withRepository(StreamingBookDataSource repository) {
+      this.repository = repository;
+      return this;
+    }
+
+    public Builder withResources(Resources resources) {
+      this.resources = resources;
       return this;
     }
 

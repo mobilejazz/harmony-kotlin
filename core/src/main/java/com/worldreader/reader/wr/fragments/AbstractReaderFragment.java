@@ -178,7 +178,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.textLoader = new TextLoader(HtmlSpannerFactory.create(di.config), resourcesLoader);
 
     // Initialize BookView
-    this.bookView.init(bookMetadata, resourcesLoader, textLoader, di.logger);
+    this.bookView.init(di, bookMetadata, resourcesLoader, textLoader);
     this.bookView.setListener(this);
     this.bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener());
 

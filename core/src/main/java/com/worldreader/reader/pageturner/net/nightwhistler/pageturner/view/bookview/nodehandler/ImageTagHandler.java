@@ -3,8 +3,10 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import android.text.SpannableStringBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import org.htmlcleaner.TagNode;
@@ -13,11 +15,13 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
 
   private final BookMetadata bm;
   private final ResourcesLoader resourcesLoader;
+  private final AbstractReaderFragment.DICompanion di;
   private final Logger logger;
 
-  public ImageTagHandler(final BookMetadata bm, final ResourcesLoader resourcesLoader, final Logger logger) {
+  public ImageTagHandler(final BookMetadata bm, final ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, final Logger logger) {
     this.bm = bm;
     this.resourcesLoader = resourcesLoader;
+    this.di = di;
     this.logger = logger;
   }
 
@@ -44,6 +48,8 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
         .withWidth(getViewWidth())
         .withVerticalMargin(getViewVerticalMargin())
         .withHorizontal(getViewHorizontalMargin())
+        .withRepository(di.streamingBookDataSource)
+        .withResources(getResources())
         .withListener(this)
         .withLogger(logger)
         .create();
@@ -59,6 +65,8 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
   protected abstract int getViewVerticalMargin();
 
   protected abstract int getViewHorizontalMargin();
+
+  protected abstract Resources getResources();
 
   private String obtainImageAttribute(TagNode node) {
     String src = node.getAttributeByName("src");

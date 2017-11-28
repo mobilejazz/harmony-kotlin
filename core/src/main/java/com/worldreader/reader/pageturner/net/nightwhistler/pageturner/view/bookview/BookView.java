@@ -41,6 +41,7 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.Constants;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
@@ -58,6 +59,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadNextResourceTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.TasksFactory;
+import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -123,13 +125,13 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super(context, attributes);
   }
 
-  public void init(BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader, Logger logger) {
+  public void init(AbstractReaderFragment.DICompanion di, BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader) {
     final Context context = getContext();
 
     this.bookMetadata = bookMetadata;
     this.resourcesLoader = resourcesLoader;
     this.textLoader = textLoader;
-    this.logger = logger;
+    this.logger = di.logger;
 
     // Prepare other stuff needed for this view to work
     this.configuration = new Configuration(context);
@@ -143,7 +145,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     this.textLoader.registerTagNodeHandler("table", new TableHandler());
 
-    final ImageTagHandler imgHandler = new BookViewImageTagHandler(bookMetadata, resourcesLoader, logger);
+    final ImageTagHandler imgHandler = new BookViewImageTagHandler(bookMetadata, resourcesLoader, di, logger);
     this.textLoader.registerTagNodeHandler("img", imgHandler);
     this.textLoader.registerTagNodeHandler("image", imgHandler);
 
@@ -736,8 +738,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class BookViewImageTagHandler extends ImageTagHandler {
 
-    BookViewImageTagHandler(BookMetadata bm, ResourcesLoader resourcesLoader, Logger logger) {
-      super(bm, resourcesLoader, logger);
+    BookViewImageTagHandler(BookMetadata bm, ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, Logger logger) {
+      super(bm, resourcesLoader, di, logger);
     }
 
     @Override public void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
@@ -767,6 +769,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override protected int getViewHorizontalMargin() {
       return horizontalMargin;
+    }
+
+    @Override protected Resources getResources() {
+      return book.getResources();
     }
 
   }
