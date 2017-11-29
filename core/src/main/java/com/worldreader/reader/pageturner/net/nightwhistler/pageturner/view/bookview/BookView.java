@@ -145,7 +145,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     this.textLoader.registerTagNodeHandler("table", new TableHandler());
 
-    final ImageTagHandler imgHandler = new BookViewImageTagHandler(bookMetadata, resourcesLoader, di, logger);
+    final ImageTagHandler imgHandler = new BookViewImageTagHandler(getContext(), bookMetadata, resourcesLoader, di, logger);
     this.textLoader.registerTagNodeHandler("img", imgHandler);
     this.textLoader.registerTagNodeHandler("image", imgHandler);
 
@@ -748,8 +748,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class BookViewImageTagHandler extends ImageTagHandler {
 
-    BookViewImageTagHandler(BookMetadata bm, ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, Logger logger) {
-      super(bm, resourcesLoader, di, logger);
+    BookViewImageTagHandler(Context context, BookMetadata bm, ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, Logger logger) {
+      super(context, bm, resourcesLoader, di, logger);
     }
 
     @Override public void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end) {

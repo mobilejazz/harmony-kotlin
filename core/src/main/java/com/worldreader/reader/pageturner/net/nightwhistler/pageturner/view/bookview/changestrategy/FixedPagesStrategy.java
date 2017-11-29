@@ -296,7 +296,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
         final Drawable drawable = imageSpan.getDrawable();
         if (drawable instanceof AbstractFastBitmapDrawable) {
           final AbstractFastBitmapDrawable fbmp = (AbstractFastBitmapDrawable) drawable;
-          fbmp.destroy();
+          fbmp.recycle();
         }
       }
     }

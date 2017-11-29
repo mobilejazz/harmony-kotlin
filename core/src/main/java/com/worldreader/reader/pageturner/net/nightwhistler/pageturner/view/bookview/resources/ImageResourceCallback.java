@@ -1,10 +1,15 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
+import com.google.common.base.Throwables;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
@@ -23,6 +28,7 @@ public class ImageResourceCallback {
 
   private static final String TAG = ImageResourceCallback.class.getSimpleName();
 
+  private final Context context;
   private final BookMetadata bm;
   private final int height;
   private final int width;
@@ -38,6 +44,7 @@ public class ImageResourceCallback {
   private final Logger logger;
 
   public ImageResourceCallback(Builder builder) {
+    this.context = builder.context.getApplicationContext();
     this.bm = builder.bookMetadata;
     this.height = builder.height;
     this.width = builder.width;
@@ -76,8 +83,38 @@ public class ImageResourceCallback {
     final Map<String, ContentOpfEntity.Item> imagesResources = bm.imagesResources;
     final ContentOpfEntity.Item item = imagesResources != null && resource != null ? imagesResources.get(resource.getHref()) : null;
 
-    final Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : 480;
-    final Integer height = item != null && !TextUtils.isEmpty(item.height) ? Integer.valueOf(item.height) : 800;
+    // Try to load image sizes from the content.opf
+    Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : null;
+    Integer height = item != null && !TextUtils.isEmpty(item.height) ? Integer.valueOf(item.height) : null;
+
+    // If for some reason we can't load properly the size...
+    if (width == null || height == null) {
+      if (bm.mode == BookMetadata.FILE_MODE) {
+        // Try to load from file itself as we have the InputStream
+        try {
+          // Loading this directly uses an optimized version of InputStream (or at least it should be)
+          final InputStream inputStream = resource.getInputStream();
+
+          final BitmapFactory.Options Bitmp_Options = new BitmapFactory.Options();
+          Bitmp_Options.inJustDecodeBounds = true;
+
+          inputStream.mark(inputStream.available());
+
+          BitmapFactory.decodeResourceStream(context.getResources(), new TypedValue(), inputStream, new Rect(), Bitmp_Options);
+
+          width = Bitmp_Options.outWidth;
+          height = Bitmp_Options.outHeight;
+        } catch (Exception e) {
+          logger.e(TAG, "Can't decode properly size on InputSteam: " + Throwables.getStackTraceAsString(e));
+          width = 480;
+          height = 800;
+        }
+      } else {
+        // Load default harcoded sizes as we don't access to the InputStream (until it goes by network)
+        width = 480;
+        height = 800;
+      }
+    }
 
     final Pair<Integer, Integer> sizes = calculateProperImageSize(width, height);
     final int finalWidth = sizes.getValue0();
@@ -119,6 +156,7 @@ public class ImageResourceCallback {
 
   public static class Builder {
 
+    private Context context;
     private BookMetadata bookMetadata;
     private int height;
     private int width;
@@ -132,6 +170,11 @@ public class ImageResourceCallback {
     private Resources resources;
     private Listener listener;
     private Logger logger;
+
+    public Builder withContext(Context context) {
+      this.context = context;
+      return this;
+    }
 
     public Builder withMetadata(BookMetadata metadata) {
       this.bookMetadata = metadata;

@@ -1,5 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
+import android.content.Context;
 import android.text.SpannableStringBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
@@ -13,12 +14,14 @@ import org.htmlcleaner.TagNode;
 
 public abstract class ImageTagHandler extends TagNodeHandler implements ImageResourceCallback.Listener {
 
+  private final Context context;
   private final BookMetadata bm;
   private final ResourcesLoader resourcesLoader;
   private final AbstractReaderFragment.DICompanion di;
   private final Logger logger;
 
-  public ImageTagHandler(final BookMetadata bm, final ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, final Logger logger) {
+  public ImageTagHandler(final Context context, final BookMetadata bm, final ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, final Logger logger) {
+    this.context = context.getApplicationContext();
     this.bm = bm;
     this.resourcesLoader = resourcesLoader;
     this.di = di;
@@ -39,6 +42,7 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
 
     // Create an ImageResourceCallback to hold all data related to the image
     final ImageResourceCallback callback = new ImageResourceCallback.Builder()
+        .withContext(context)
         .withSpannableBuilder(builder)
         .withMetadata(bm)
         .withData(data)
