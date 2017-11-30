@@ -30,6 +30,12 @@ android {
       buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "1" // minutes
     }
 
+    debugRelease {
+      buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "15" // minutes
+    }
+
     release {
       buildConfigField "boolean", "DEBUG_JOB_MANAGER", "false"
       buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
@@ -67,12 +73,8 @@ dependencies {
   compile dependencies.storioAnnotation
   annotationProcessor dependencies.storioAnnotationProcessor
 
-  compile(dependencies.materialDialogsCore) {
-    transitive = true
-  }
-  compile(dependencies.materialDialogsCommons) {
-    transitive = true
-  }
+  compile(dependencies.materialDialogsCore) { transitive = true }
+  compile(dependencies.materialDialogsCommons) { transitive = true }
 
   compile dependencies.dagger
   annotationProcessor dependencies.daggerCompiler
