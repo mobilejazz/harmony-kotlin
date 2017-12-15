@@ -47,8 +47,8 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static final String TAG = PageTurnerSpine.class.getSimpleName();
 
-  private static String TOC_ENTRY = "toc";
-  private SpineEntry tocResource;
+  //private static String TOC_ENTRY = "toc";
+  //private SpineEntry tocResource;
 
   private List<SpineEntry> entries;
   private List<List<Integer>> pageOffsets = new ArrayList<>();
@@ -67,7 +67,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private ResourcesLoader resourcesLoader;
 
   private Book book;
-  private Spine originalSpine;
+  //private Spine originalSpine;
 
   /**
    * Creates a new Spine from this book.
@@ -77,7 +77,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.entries = new ArrayList<>();
     this.position = 0;
     this.resourcesLoader = resourcesLoader;
-    this.originalSpine = book.getSpine();
+    //this.originalSpine = book.getSpine();
 
     addResource(createCoverResource(book));
 
@@ -90,14 +90,23 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     for (int i = 0; i < book.getSpine().size(); i++) {
       Resource res = book.getSpine().getResource(i);
 
-      if (href == null || !(href.equals(res.getHref()))) {
-        addResource(res);
+      if (!isBlackListed(res)) {
+        if (href == null || !(href.equals(res.getHref()))) {
+          addResource(res);
+        }
+      }
+
+      if (book.getNcxResource() != null) {
+        this.tocHref = book.getNcxResource().getHref();
       }
     }
+  }
 
-    if (book.getNcxResource() != null) {
-      this.tocHref = book.getNcxResource().getHref();
-    }
+  private boolean isBlackListed(Resource resource){
+    String[] blackList = {"toc", "nav", "title", "copy", "copyright", "dedi","dedication", "epiloge", "ack", "acknowledgements", "backcover", "back", "index"};
+    if(Arrays.asList(blackList).contains(resource.getId()))
+      return true;
+    return false;
   }
 
   public void setPageOffsets(List<List<Integer>> pageOffsets) {
@@ -135,9 +144,9 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     newEntry.href = resource.getHref();
     newEntry.size = (int) resource.getSize();
 
-    if (resource.getId() != null && TOC_ENTRY.equals(resource.getId().toLowerCase())) {
+    /*if (resource.getId() != null && TOC_ENTRY.equals(resource.getId().toLowerCase())) {
       tocResource = newEntry;
-    }
+    }*/
 
     entries.add(newEntry);
   }
@@ -320,7 +329,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.position = index;
     return true;
   }
-
+/*
   public boolean shouldNavigateToFirstContent(int storedIndex) {
     return storedIndex < 0 || storedIndex >= size();
   }
@@ -337,7 +346,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     } else {
       return getCurrentResource();
     }
-  }
+  }*/
 
   /**
    * Returns the current position in the spine.
@@ -482,10 +491,10 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   public Book getBook() {
     return book;
   }
-
+/*
   public Spine getOriginalSpine() {
     return originalSpine;
-  }
+  }*/
 
   public static class SpineEntry {
 
