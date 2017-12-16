@@ -175,7 +175,8 @@ public class TableOfContents implements Serializable {
     if (tocReferences == null) {
       tocReferences = new ArrayList<TOCReference>();
     }
-    tocReferences.add(tocReference);
+    if(!tocReferences.contains(tocReference))
+      tocReferences.add(tocReference);
     return tocReference;
   }
 

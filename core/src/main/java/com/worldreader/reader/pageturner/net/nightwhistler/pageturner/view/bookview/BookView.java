@@ -1134,7 +1134,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         final Book book = textLoader.initBook(contentOpfIs, tocResourcesIs);
 
-        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader);
+        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader, getContext());
         spine.navigateByIndex(storedIndex);
 
         return some(Pair.with(book, spine));

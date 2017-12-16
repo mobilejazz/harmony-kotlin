@@ -18,6 +18,8 @@
  */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Author;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
@@ -25,7 +27,9 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.InlineResource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import com.worldreader.core.R;
 import jedi.option.Option;
 
 import java.io.*;
@@ -46,9 +50,7 @@ import static jedi.option.Options.option;
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static final String TAG = PageTurnerSpine.class.getSimpleName();
-
-  //private static String TOC_ENTRY = "toc";
-  //private SpineEntry tocResource;
+  private HashMap<String, String> blackList = new HashMap<>();
 
   private List<SpineEntry> entries;
   private List<List<Integer>> pageOffsets = new ArrayList<>();
@@ -69,14 +71,19 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private Book book;
   //private Spine originalSpine;
 
+
   /**
    * Creates a new Spine from this book.
    */
-  public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader) {
+  public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader, Context context) {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
     this.resourcesLoader = resourcesLoader;
+
+    initBlackList(context);
+
+
     //this.originalSpine = book.getSpine();
 
     addResource(createCoverResource(book));
@@ -94,6 +101,8 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
         if (href == null || !(href.equals(res.getHref()))) {
           addResource(res);
         }
+      }else{
+        book.getTableOfContents().addTOCReference(new TOCReference(blackList.get(res.getId()).toString(),res));
       }
 
       if (book.getNcxResource() != null) {
@@ -102,9 +111,33 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     }
   }
 
+
+  private void initBlackList(Context c){
+    Resources r = c.getResources();
+    blackList.put("toc", r.getString(R.string.ls_toc));
+    blackList.put("nav", r.getString(R.string.ls_toc));
+    blackList.put("copy",r.getString(R.string.ls_copy));
+    blackList.put("copyright",r.getString(R.string.ls_copy));
+    blackList.put("title", r.getString(R.string.ls_title));
+    blackList.put("dedi",r.getString(R.string.ls_dedi));
+    blackList.put("dedication",r.getString(R.string.ls_dedi));
+    blackList.put("epiloge",r.getString(R.string.ls_epiloge));
+    blackList.put("ack",r.getString(R.string.ls_ack));
+    blackList.put("acknowledgements",r.getString(R.string.ls_ack));
+    blackList.put("backcover",r.getString(R.string.ls_back));
+    blackList.put("back",r.getString(R.string.ls_back));
+    blackList.put("bcover",r.getString(R.string.ls_back));
+    blackList.put("index",r.getString(R.string.ls_index));
+    blackList.put("contents",r.getString(R.string.ls_toc));
+    blackList.put("credits",r.getString(R.string.ls_credits));
+    blackList.put("morebyauthor",r.getString(R.string.ls_moreByAuthor));
+    blackList.put("morebypublisher",r.getString(R.string.ls_moreByPublisher));
+
+
+
+  }
   private boolean isBlackListed(Resource resource){
-    String[] blackList = {"toc", "nav", "title", "copy", "copyright", "dedi","dedication", "epiloge", "ack", "acknowledgements", "backcover", "back", "index"};
-    if(Arrays.asList(blackList).contains(resource.getId()))
+    if(blackList.keySet().contains(resource.getId()))
       return true;
     return false;
   }

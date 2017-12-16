@@ -52,4 +52,13 @@ public class TOCReference extends TitledResourceReference implements Serializabl
   public void setChildren(List<TOCReference> children) {
     this.children = children;
   }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    TOCReference tocReference = (TOCReference) o;
+    return this.getResource().getId().equals(tocReference.getResource().getId());
+
+  }
 }
