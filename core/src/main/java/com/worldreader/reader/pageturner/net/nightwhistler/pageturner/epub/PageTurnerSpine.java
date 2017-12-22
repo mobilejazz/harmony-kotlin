@@ -50,7 +50,7 @@ import static jedi.option.Options.option;
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static final String TAG = PageTurnerSpine.class.getSimpleName();
-  private HashMap<String, String> blackList = new HashMap<>();
+
 
   private List<SpineEntry> entries;
   private List<List<Integer>> pageOffsets = new ArrayList<>();
@@ -71,19 +71,17 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private Book book;
   //private Spine originalSpine;
 
+  HashMap<String, String> blackList;
 
   /**
    * Creates a new Spine from this book.
    */
-  public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader, Context context) {
+  public PageTurnerSpine(Book book, ResourcesLoader resourcesLoader, HashMap<String, String> blackList) {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
     this.resourcesLoader = resourcesLoader;
-
-    initBlackList(context);
-
-
+    this.blackList = blackList;
     //this.originalSpine = book.getSpine();
 
     addResource(createCoverResource(book));
@@ -111,31 +109,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     }
   }
 
-
-  private void initBlackList(Context c){
-    Resources r = c.getResources();
-    blackList.put("toc", r.getString(R.string.ls_toc));
-    blackList.put("nav", r.getString(R.string.ls_toc));
-    blackList.put("copy",r.getString(R.string.ls_copy));
-    blackList.put("copyright",r.getString(R.string.ls_copy));
-    blackList.put("title", r.getString(R.string.ls_title));
-    blackList.put("dedi",r.getString(R.string.ls_dedi));
-    blackList.put("dedication",r.getString(R.string.ls_dedi));
-    blackList.put("epiloge",r.getString(R.string.ls_epiloge));
-    blackList.put("ack",r.getString(R.string.ls_ack));
-    blackList.put("acknowledgements",r.getString(R.string.ls_ack));
-    blackList.put("backcover",r.getString(R.string.ls_back));
-    blackList.put("back",r.getString(R.string.ls_back));
-    blackList.put("bcover",r.getString(R.string.ls_back));
-    blackList.put("index",r.getString(R.string.ls_index));
-    blackList.put("contents",r.getString(R.string.ls_toc));
-    blackList.put("credits",r.getString(R.string.ls_credits));
-    blackList.put("morebyauthor",r.getString(R.string.ls_moreByAuthor));
-    blackList.put("morebypublisher",r.getString(R.string.ls_moreByPublisher));
-
-
-
-  }
   private boolean isBlackListed(Resource resource){
     if(blackList.keySet().contains(resource.getId()))
       return true;
