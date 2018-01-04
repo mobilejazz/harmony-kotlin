@@ -50,7 +50,7 @@ import static jedi.option.Options.option;
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private static final String TAG = PageTurnerSpine.class.getSimpleName();
-  private HashMap<String, String> blackList = new HashMap<>();
+
 
   private List<SpineEntry> entries;
   private List<List<Integer>> pageOffsets = new ArrayList<>();
@@ -71,6 +71,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private Book book;
   //private Spine originalSpine;
 
+  HashMap<String, String> blackList;
 
   /**
    * Creates a new Spine from this book.
@@ -81,7 +82,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.position = 0;
     this.resourcesLoader = resourcesLoader;
     this.blackList = blackList;
-
     //this.originalSpine = book.getSpine();
 
     addResource(createCoverResource(book));
@@ -108,8 +108,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
       }
     }
   }
-
-
 
   private boolean isBlackListed(Resource resource){
     if(blackList.keySet().contains(resource.getId()))

@@ -1127,6 +1127,32 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     @Override public void doOnPreExecute() {
     }
 
+
+    private HashMap<String, String> initBlackList(){
+      HashMap<String, String> blackList = new HashMap<>();
+
+      blackList.put("toc", getResources().getString(R.string.ls_toc));
+      blackList.put("nav", getResources().getString(R.string.ls_toc));
+      blackList.put("copy",getResources().getString(R.string.ls_copy));
+      blackList.put("copyright",getResources().getString(R.string.ls_copy));
+      blackList.put("title", getResources().getString(R.string.ls_title));
+      blackList.put("dedi",getResources().getString(R.string.ls_dedi));
+      blackList.put("dedication",getResources().getString(R.string.ls_dedi));
+      blackList.put("epiloge",getResources().getString(R.string.ls_epiloge));
+      blackList.put("ack",getResources().getString(R.string.ls_ack));
+      blackList.put("acknowledgements",getResources().getString(R.string.ls_ack));
+      blackList.put("backcover",getResources().getString(R.string.ls_back));
+      blackList.put("back",getResources().getString(R.string.ls_back));
+      blackList.put("bcover",getResources().getString(R.string.ls_back));
+      blackList.put("index",getResources().getString(R.string.ls_index));
+      blackList.put("contents",getResources().getString(R.string.ls_toc));
+      blackList.put("credits",getResources().getString(R.string.ls_credits));
+      blackList.put("morebyauthor",getResources().getString(R.string.ls_moreByAuthor));
+      blackList.put("morebypublisher",getResources().getString(R.string.ls_moreByPublisher));
+      return blackList;
+    }
+
+
     @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(None... nones) {
       try {
         final InputStream contentOpfIs = resourcesLoader.loadResource(contentOpf);
