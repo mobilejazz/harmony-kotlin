@@ -21,7 +21,7 @@ public class TasksFactory {
       case BookMetadata.FILE_MODE:
         return new OpenFileEpubBookTask(context, bm, tl, index, logger);
       case BookMetadata.STREAMING_MODE:
-        return new OpenStreamingBookTask(context, tl, index, bm.contentOpfName, bm.tocResourceName, logger);
+        return new OpenStreamingBookTask(context, bm, tl, index, bm.contentOpfName, bm.tocResourceName, logger);
       default:
         throw new IllegalStateException("BookMetadata mode not recognized!");
     }

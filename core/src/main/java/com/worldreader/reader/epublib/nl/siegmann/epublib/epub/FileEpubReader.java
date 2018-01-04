@@ -27,6 +27,8 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.epublib.org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
+import org.simpleframework.xml.strategy.TreeStrategy;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -34,7 +36,8 @@ import java.util.*;
 
 public class FileEpubReader {
 
-  private static Serializer XML_PARSER = new Persister();
+  private static Strategy XML_STRATEGY = new TreeStrategy("clazz", "l"); // Ignore class attribute in SimpleXML (https://stackoverflow.com/a/16563238)
+  private static Serializer XML_PARSER = new Persister(XML_STRATEGY);
 
   public static Book readFileEpub(final File file) throws Exception {
     final ZipFile zip = new ZipFile(file);

@@ -26,6 +26,7 @@ public class BookMetadata implements Serializable {
   public Map<String, Object> extras = new HashMap<>();
 
   // Optional (Only used in streaming mode and will be deprecated in near future favoring the usage of a Map)
+  public String contentOpfPath;
   public String contentOpfName;
   public String tocResourceName;
   public List<String> resources;

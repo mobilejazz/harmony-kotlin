@@ -16,6 +16,7 @@ public class BookMetadataEntityDataMapper implements Mapper<BookMetadata, BookMe
     bookMetadata.tocResourceName = data.getTocResource();
     bookMetadata.resources = data.getResources();
     bookMetadata.imagesResources = data.getImagesResources();
+    bookMetadata.contentOpfPath = data.getContentOpfPath();
     return bookMetadata;
   }
 
@@ -31,6 +32,7 @@ public class BookMetadataEntityDataMapper implements Mapper<BookMetadata, BookMe
     bookMetadataEntity.setContentOpfName(data.contentOpfName);
     bookMetadataEntity.setResources(data.resources);
     bookMetadataEntity.setImagesResources(data.imagesResources);
+    bookMetadataEntity.setContentOpfPath(data.contentOpfPath);
     return bookMetadataEntity;
   }
 

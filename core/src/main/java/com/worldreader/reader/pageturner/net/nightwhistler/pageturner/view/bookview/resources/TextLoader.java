@@ -44,12 +44,14 @@ public class TextLoader {
   private Map<String, Map<String, Integer>> anchors = new HashMap<>();
   private List<AnchorHandler> anchorHandlers = new ArrayList<>();
 
+  private final String rawContentPath;
   private final HtmlSpanner htmlSpanner;
   private final ResourcesLoader resourcesLoader;
 
   private LinkTagHandler.LinkTagCallBack linkTagCallBack;
 
-  public TextLoader(final HtmlSpanner spanner, final ResourcesLoader resourcesLoader) {
+  public TextLoader(final String rawContentPath, final HtmlSpanner spanner, final ResourcesLoader resourcesLoader) {
+    this.rawContentPath = rawContentPath;
     this.htmlSpanner = spanner;
     this.resourcesLoader = resourcesLoader;
     registerCallbacksSpannerHandlers();
@@ -268,14 +270,14 @@ public class TextLoader {
     return newBook;
   }
 
-  public Book initBook(final String contentOpf, final String tocResourcePath) throws Exception {
+  public Book initBook(final String contentOpfPath, final String contentOpf, final String tocResourcePath) throws Exception {
     closeCurrentBook();
     clearAnchors();
 
     final InputStream contentOpfIs = resourcesLoader.loadResource(new Resource(contentOpf));
     final InputStream tocResourcesIs = resourcesLoader.loadResource(new Resource(tocResourcePath));
 
-    final Book newBook = StreamingEpubReader.readStreamingEpub(contentOpfIs, tocResourcesIs);
+    final Book newBook = StreamingEpubReader.readStreamingEpub(contentOpfPath, contentOpfIs, tocResourcesIs);
     this.currentBook = newBook;
 
     return newBook;

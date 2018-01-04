@@ -175,7 +175,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final ResourcesLoader resourcesLoader = ResourcesLoaderFactory.create(bookMetadata, di);
 
     // Prepare resources loader
-    this.textLoader = new TextLoader(HtmlSpannerFactory.create(di.config), resourcesLoader);
+    this.textLoader = new TextLoader(bookMetadata.contentOpfPath, HtmlSpannerFactory.create(di.config), resourcesLoader);
 
     // Initialize BookView
     this.bookView.init(di, bookMetadata, resourcesLoader, textLoader);

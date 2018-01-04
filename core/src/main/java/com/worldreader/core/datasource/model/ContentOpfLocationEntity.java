@@ -11,10 +11,8 @@ import java.util.regex.*;
 
 @Root(strict = false, name = "container") public class ContentOpfLocationEntity {
 
-  private static final Pattern CONTENT_OPF_NAME_PATTERN = Pattern.compile("([-\\w\\._]+\\.opf)$");
-
-  private static final Pattern CONTENT_OPF_PATH_PATTERN =
-      Pattern.compile("([-\\w/\\._]+/).*\\.opf$");
+  private static final Pattern CONTENT_OPF_NAME_PATTERN = Pattern.compile("([-\\w._]+\\.opf)$");
+  private static final Pattern CONTENT_OPF_PATH_PATTERN = Pattern.compile("([-\\w/._]+/).*\\.opf$");
 
   @ElementList(name = "rootfiles") public List<RootFile> rootFiles;
 

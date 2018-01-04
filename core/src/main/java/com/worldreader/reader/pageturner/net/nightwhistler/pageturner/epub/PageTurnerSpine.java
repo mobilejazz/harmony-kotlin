@@ -24,7 +24,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import jedi.option.Option;
 
 import java.net.URI;
@@ -44,11 +43,11 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private final Book book;
   private final List<SpineEntry> entries;
+  private final Map<String, String> blacklist;
 
   private String tocHref;
   private int position;
 
-  private Map<String, String> blackList;
 
   /**
    * Creates a new Spine from this book.
@@ -57,7 +56,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
-    this.blackList = blackList;
+    this.blacklist = blacklist;
 
     String coverHref = null;
     if (!entries.isEmpty() && !entries.get(0).href.equals(COVER_HREF)) {
@@ -66,19 +65,17 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
     for (SpineReference reference : book.getSpine().getSpineReferences()) {
       final Resource res = reference.getResource();
-
       if (!isBlackListed(res)) {
         if (coverHref == null || !(coverHref.equals(res.getHref()))) {
           addResource(res);
         }
       } else {
         final String resourceId = res.getId();
-        final String blackListResource = blacklist.containsKey(resourceId) ? blackList.get(resourceId) : "";
+        final String blackListResource = this.blacklist.containsKey(resourceId) ? this.blacklist.get(resourceId) : "";
         if (!TextUtils.isEmpty(blackListResource)) {
           book.getTableOfContents().addTOCReference(new TOCReference(blackListResource, res));
         }
       }
-
     }
 
     if (book.getNcxResource() != null) {
@@ -87,7 +84,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   private boolean isBlackListed(Resource resource) {
-    return blackList.keySet().contains(resource.getId());
+    return blacklist.keySet().contains(resource.getId());
   }
 
   @NonNull @Override public Iterator<SpineEntry> iterator() {

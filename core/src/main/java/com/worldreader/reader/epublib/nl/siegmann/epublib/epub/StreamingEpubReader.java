@@ -25,6 +25,8 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.epublib.org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
+import org.simpleframework.xml.strategy.TreeStrategy;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -32,14 +34,15 @@ import java.util.*;
 
 public class StreamingEpubReader {
 
-  private static Serializer XML_PARSER = new Persister();
+  private static Strategy XML_STRATEGY = new TreeStrategy("clazz", "l"); // Ignore class attribute in SimpleXML (https://stackoverflow.com/a/16563238)
+  private static Serializer XML_PARSER = new Persister(XML_STRATEGY);
 
-  public static Book readStreamingEpub(final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {
+  public static Book readStreamingEpub(final String contentPath, final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {
     final ContentOpfEntity contentOpf = XML_PARSER.read(ContentOpfEntity.class, contentOpfIs, false);
     final NCXEntity NCXEntity = XML_PARSER.read(NCXEntity.class, tocResourceIs, false);
 
     final Resource opfResource = toOpfResource(contentOpfIs);
-    final Resources resources = toBookResources(contentOpf);
+    final Resources resources = toBookResources(contentPath, contentOpf);
     final Metadata metadata = toBookMetadata(contentOpf);
     final Spine spine = toSpine(contentOpf, resources);
     final TableOfContents tableOfContents = toTableOfContents(contentOpf, NCXEntity, resources);
@@ -61,13 +64,13 @@ public class StreamingEpubReader {
     return new Resource(contentOpfIs, "OEBPS/content.opf");
   }
 
-  private static Resources toBookResources(ContentOpfEntity contentOpf) {
+  private static Resources toBookResources(final String contentPath, final ContentOpfEntity contentOpf) {
     final List<ContentOpfEntity.Item> entries = contentOpf.getManifest();
     final Resources resources = new Resources();
 
     for (ContentOpfEntity.Item entry : entries) {
       final MediaType mediaType = MediatypeService.getMediaTypeByName(entry.mediaType);
-      final StreamingResource resource = new StreamingResource(entry.id, entry.href, mediaType);
+      final StreamingResource resource = new StreamingResource(entry.id, contentPath + entry.href, mediaType);
 
       // Set proper encoding if source is HTML
       if (mediaType == MediatypeService.XHTML) {
