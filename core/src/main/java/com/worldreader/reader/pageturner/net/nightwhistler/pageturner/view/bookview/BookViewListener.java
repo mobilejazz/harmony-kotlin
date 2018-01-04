@@ -25,46 +25,39 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 
 /**
  * Listener interface for updates from a BookView.
- *
- * @author Alex Kuiper
  */
 public interface BookViewListener {
 
   /**
    * Called after the Bookview has successfully parsed the book.
    */
-  void bookOpened(Book book);
+  void onBookOpened(Book book);
 
   /**
    * Event indicating text rendering has started
    */
-  void renderingText();
+  void onStartRenderingText();
 
   /**
    * Called if the book could not be opened for some reason.
    */
-  void errorOnBookOpening(String errorMessage);
+  void onErrorOnBookOpening();
 
   /**
    * Called when the BookView starts parsing a new entry
    * of the book. Usually after a pageUp or pageDown event.
    */
-  void parseEntryStart(int entry);
+  void onParseEntryStart(int entry);
 
   /**
    * Called after parsing is complete.
    */
-  void parseEntryComplete(String name, Resource resource);
-
-  /** Indicates how far we've progressed in the book **/
-  void progressUpdate(int progressPercentage, int pageNumber, int totalPages);
+  void onParseEntryComplete(Resource resource);
 
   /**
-   * Generated when the user long-presses on a word in the text
-   *
-   * @param word the selected word.
-   */
-  void onWordLongPressed(int startOffset, int endOffset, CharSequence word);
+   * Indicates how far we've progressed in the book
+   **/
+  void onProgressUpdate(int progressPercentage);
 
   /**
    * Generated when the user from right to left.
@@ -118,9 +111,9 @@ public interface BookViewListener {
   /**
    * Called when the user touches the screen and before any detection of the event has been
    * performed.
-   *
+   * <p>
    * This will always be called when the user taps the screen in every situation.
-   *
+   * <p>
    * Returns true if the event has been captured and does not want to process further event
    * detection. False otherwise.
    */
@@ -128,21 +121,11 @@ public interface BookViewListener {
 
   /**
    * Called when the user touches the screen.
-   *
+   * <p>
    * This will always be called when the user taps the screen, even
    * when an edge is tapped.
    */
   void onScreenTap();
-
-  /**
-   * Called when a background calculation for page numbers is started.
-   */
-  void onStartCalculatePageNumbers();
-
-  /**
-   * Called when the background calculation is complete.
-   */
-  void onCalculatePageNumbersComplete();
 
   /**
    * Called when the user navigates one page in the book.
@@ -160,5 +143,8 @@ public interface BookViewListener {
    */
   void onLastScreenPageDown();
 
+  /**
+   * Called when the user clicks on an image.
+   */
   void onBookImageClicked(final Drawable drawable);
 }

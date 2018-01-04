@@ -24,26 +24,19 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.PageOffsets;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageOffsets;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import org.json.JSONException;
 
-import java.io.*;
 import java.util.*;
 
-import static java.util.Arrays.*;
-import static jedi.functional.FunctionalPrimitives.firstOption;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
 /**
- * Application configuration class which provides a friendly API to the various
- * settings available.
- *
- * @author Alex Kuiper
+ * Application configuration class which provides a friendly API to the various settings available.
  */
 public class Configuration {
 
@@ -51,8 +44,6 @@ public class Configuration {
 
   private static final String KEY_POS = "offset:";
   private static final String KEY_IDX = "index:";
-  private static final String KEY_NAV_TAP_H = "nav_tap_h";
-  private static final String KEY_NAV_SWIPE_H = "nav_swipe_h";
   private static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
   private static final String KEY_SCROLLING = "scrolling";
   private static final String KEY_TEXT_SIZE = "itext_size";
@@ -70,46 +61,39 @@ public class Configuration {
   private static final String KEY_BACKGROUND = "bg";
   private static final String KEY_LINK = "link";
   private static final String KEY_TEXT = "text";
-  private static final String KEY_SCROLL_STYLE = "scroll_style";
-  private static final String KEY_SCROLL_SPEED = "scroll_speed";
   private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
   private static final String KEY_OFFSETS = "offsets";
-  private static final String KEY_SHOW_PAGENUM = "show_pagenum";
   private static final String KEY_READING_DIRECTION = "reading_direction";
-  private static final String KEY_DIM_SYSTEM_UI = "dim_system_ui";
-  private static final String KEY_ALLOW_STYLING = "allow_styling";
   private static final String KEY_ALLOW_STYLE_COLOURS = "allow_style_colours";
 
   private SharedPreferences settings;
   private Context context;
   private Map<String, FontFamily> fontCache = new HashMap<>();
 
+  public enum ColorProfile {
+    DAY, NIGHT, CREAM
+  }
+
+  public enum ReadingDirection {
+    LEFT_TO_RIGHT, RIGHT_TO_LEFT
+  }
+
+  public enum ScrollStyle {
+    ROLLING_BLIND, PAGE_TIMER
+  }
+
+  public static class FontSizes {
+
+    public static final int SMALLEST = 12;
+    public static final int SMALL = 14;
+    public static final int NORMAL = 18;
+    public static final int BIG = 20;
+    public static final int BIGGEST = 24;
+  }
+
   public Configuration(Context context) {
     this.settings = PreferenceManager.getDefaultSharedPreferences(context);
     this.context = context;
-  }
-
-  /**
-   * Returns the bytes of available memory left on the heap. Not totally sure
-   * if it works reliably.
-   */
-  public static double getMemoryUsage() {
-    long max = Runtime.getRuntime().maxMemory();
-    long used = Runtime.getRuntime().totalMemory();
-
-    return (double) used / (double) max;
-  }
-
-  public boolean isHorizontalTappingEnabled() {
-    return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_TAP_H, true);
-  }
-
-  public boolean isHorizontalSwipeEnabled() {
-    return !isScrollingEnabled() && settings.getBoolean(KEY_NAV_SWIPE_H, true);
-  }
-
-  public boolean isAllowStyling() {
-    return settings.getBoolean(KEY_ALLOW_STYLING, false);
   }
 
   public int getLastPosition(String fileName) {
@@ -134,8 +118,8 @@ public class Configuration {
     return settings.getInt(KEY_POS + fileName, -1);
   }
 
-  private SharedPreferences getPrefsForBook(String fileName) {
-    String bookHash = Integer.toHexString(fileName.hashCode());
+  private SharedPreferences getPrefsForBook(final String fileName) {
+    final String bookHash = Integer.toHexString(fileName.hashCode());
     return context.getSharedPreferences(bookHash, 0);
   }
 
@@ -162,12 +146,10 @@ public class Configuration {
     }
 
     try {
-      PageOffsets offsets = PageOffsets.fromJSON(data);
-
+      final PageOffsets offsets = PageOffsets.fromJSON(data);
       if (offsets == null || !offsets.isValid(this)) {
         return none();
       }
-
       return option(offsets.getOffsets());
     } catch (JSONException js) {
       Log.e(TAG, "Could not retrieve page offsets: " + js.getMessage());
@@ -187,10 +169,9 @@ public class Configuration {
   }
 
   public int getLastIndex(String fileName) {
-    SharedPreferences bookPrefs = getPrefsForBook(fileName);
+    final SharedPreferences bookPrefs = getPrefsForBook(fileName);
 
     int pos = bookPrefs.getInt(KEY_IDX, -1);
-
     if (pos != -1) {
       return pos;
     }
@@ -211,14 +192,6 @@ public class Configuration {
   public void setLastIndex(String fileName, int index) {
     SharedPreferences bookPrefs = getPrefsForBook(fileName);
     updateValue(bookPrefs, KEY_IDX, index);
-  }
-
-  public boolean isShowPageNumbers() {
-    return settings.getBoolean(KEY_SHOW_PAGENUM, true);
-  }
-
-  public boolean isDimSystemUI() {
-    return settings.getBoolean(KEY_DIM_SYSTEM_UI, false);
   }
 
   public boolean isStripWhiteSpaceEnabled() {
@@ -402,22 +375,4 @@ public class Configuration {
       return settings.getInt(PREFIX_DAY + "_" + setting, dayDefault);
     }
   }
-
-  public ScrollStyle getAutoScrollStyle() {
-    String style = settings.getString(KEY_SCROLL_STYLE, ScrollStyle.ROLLING_BLIND.name().toLowerCase(Locale.US));
-    if ("rolling_blind".equals(style)) {
-      return ScrollStyle.ROLLING_BLIND;
-    } else {
-      return ScrollStyle.PAGE_TIMER;
-    }
-  }
-
-  public int getScrollSpeed() {
-    return settings.getInt(KEY_SCROLL_SPEED, 20);
-  }
-
-  public Option<File> getTTSFolder() {
-    return firstOption(asList(ContextCompat.getExternalCacheDirs(context)));
-  }
-
 }

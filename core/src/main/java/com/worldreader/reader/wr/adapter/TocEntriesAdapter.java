@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.worldreader.core.R;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.dto.TocEntry;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 
 import java.util.*;
 

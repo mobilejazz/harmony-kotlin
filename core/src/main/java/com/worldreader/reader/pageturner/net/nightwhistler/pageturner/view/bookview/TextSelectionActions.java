@@ -19,7 +19,6 @@
 
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -29,13 +28,13 @@ import com.worldreader.core.R;
 import jedi.functional.Command;
 import jedi.option.Option;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB) public class TextSelectionActions implements ActionMode.Callback {
+public class TextSelectionActions implements ActionMode.Callback {
 
   private TextSelectionCallback callBack;
   private ActionModeListener actionModeListener;
   private SelectedTextProvider selectedTextProvider;
 
-  public TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider) {
+  TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider) {
     this.callBack = callBack;
     this.actionModeListener = actionModeListener;
     this.selectedTextProvider = selectedTextProvider;
@@ -44,16 +43,6 @@ import jedi.option.Option;
   @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
     mode.finish();
     return true;
-  }
-
-  private static OnMenuItemClickListener react(final ActionMode mode, final Action action) {
-    return new OnMenuItemClickListener() {
-      @Override public boolean onMenuItemClick(MenuItem item) {
-        action.perform();
-        mode.finish();
-        return true;
-      }
-    };
   }
 
   @Override public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
@@ -70,7 +59,7 @@ import jedi.option.Option;
 
     menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new Action() {
       @Override public void perform() {
-        callBack.share(selectedTextProvider.getSelectionStart(), selectedTextProvider.getSelectionEnd(), selectedTextProvider.getSelectedText().getOrElse(""));
+        callBack.share(selectedTextProvider.getSelectedText().getOrElse(""));
       }
     })).setIcon(R.drawable.ic_share_dark);
 
@@ -99,6 +88,16 @@ import jedi.option.Option;
     }
 
     return true;
+  }
+
+  private static OnMenuItemClickListener react(final ActionMode mode, final Action action) {
+    return new OnMenuItemClickListener() {
+      @Override public boolean onMenuItemClick(MenuItem item) {
+        action.perform();
+        mode.finish();
+        return true;
+      }
+    };
   }
 
   public interface SelectedTextProvider {

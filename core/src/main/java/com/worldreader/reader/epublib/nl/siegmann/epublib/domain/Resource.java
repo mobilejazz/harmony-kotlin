@@ -12,14 +12,9 @@ import java.util.zip.*;
 /**
  * Represents a resource that is part of the epub.
  * A resource can be a html file, image, xml, etc.
- *
- * @author paul
  */
 public class Resource implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 1043946707835004037L;
 
   protected String id;
@@ -39,7 +34,7 @@ public class Resource implements Serializable {
 
   /**
    * Creates an empty Resource with the given href.
-   *
+   * <p>
    * Assumes that if the data is of a text type (html/css/etc) then the encoding will be UTF-8
    *
    * @param href The location of the resource within the epub. Example: "chapter1.html".
@@ -51,7 +46,7 @@ public class Resource implements Serializable {
   /**
    * Creates a Resource with the given data and MediaType.
    * The href will be automatically generated.
-   *
+   * <p>
    * Assumes that if the data is of a text type (html/css/etc) then the encoding will be UTF-8
    *
    * @param data The Resource's contents
@@ -64,11 +59,12 @@ public class Resource implements Serializable {
   /**
    * Creates a resource with the given data at the specified href.
    * The MediaType will be determined based on the href extension.
-   *
+   * <p>
    * Assumes that if the data is of a text type (html/css/etc) then the encoding will be UTF-8
    *
    * @param data The Resource's contents
    * @param href The location of the resource within the epub. Example: "chapter1.html".
+   *
    * @see nl.siegmann.epublib.service.MediatypeService.determineMediaType(String)
    */
   public Resource(byte[] data, String href) {
@@ -81,11 +77,11 @@ public class Resource implements Serializable {
    *
    * @param in The Resource's contents
    * @param href The location of the resource within the epub. Example: "cover.jpg".
+   *
    * @see nl.siegmann.epublib.service.MediatypeService.determineMediaType(String)
    */
   public Resource(Reader in, String href) throws IOException {
-    this(null, IOUtil.toByteArray(in, Constants.CHARACTER_ENCODING), href,
-        MediatypeService.determineMediaType(href), Constants.CHARACTER_ENCODING);
+    this(null, IOUtil.toByteArray(in, Constants.CHARACTER_ENCODING), href, MediatypeService.determineMediaType(href), Constants.CHARACTER_ENCODING);
   }
 
   /**
@@ -94,10 +90,11 @@ public class Resource implements Serializable {
    *
    * @param in The Resource's contents
    * @param href The location of the resource within the epub. Example: "cover.jpg".
+   *
    * @see nl.siegmann.epublib.service.MediatypeService.determineMediaType(String)
-   *
+   * <p>
    * Assumes that if the data is of a text type (html/css/etc) then the encoding will be UTF-8
-   *
+   * <p>
    * It is recommended to us the
    * @see Resource.Resource(Reader, String)
    * method for creating textual (html/css/etc) resources to prevent encoding problems.
@@ -109,10 +106,10 @@ public class Resource implements Serializable {
 
   /**
    * Creates a Resource that tries to load the data, but falls back to lazy loading.
-   *
+   * <p>
    * If the size of the resource is known ahead of time we can use that to allocate
    * a matching byte[]. If this succeeds we can safely load the data.
-   *
+   * <p>
    * If it fails we leave the data null for now and it will be lazy-loaded when
    * it is accessed.
    *
@@ -126,7 +123,7 @@ public class Resource implements Serializable {
 
   /**
    * Creates a Lazy resource, by not actually loading the data for this entry.
-   *
+   * <p>
    * The data will be loaded on the first call to getData()
    *
    * @param fileName the fileName for the epub we're created from.
@@ -178,6 +175,7 @@ public class Resource implements Serializable {
    * Gets the contents of the Resource as an InputStream.
    *
    * @return The contents of the Resource.
+   *
    * @throws IOException
    */
   public InputStream getInputStream() throws IOException {
@@ -199,7 +197,7 @@ public class Resource implements Serializable {
 
   /**
    * The contents of the resource as a byte[]
-   *
+   * <p>
    * If this resource was lazy-loaded and the data was not yet loaded,
    * it will be loaded into memory at this point.
    * This included opening the zip file, so expect a first load to be slow.
@@ -207,7 +205,6 @@ public class Resource implements Serializable {
    * @return The contents of the resource
    */
   public byte[] getData() throws IOException {
-
     if (data == null) {
       Log.e("epublib", "Initializing lazy resource " + fileName + "#" + this.href);
 
@@ -225,8 +222,8 @@ public class Resource implements Serializable {
     return data;
   }
 
-  private InputStream getResourceStream() throws FileNotFoundException, IOException {
-    ZipFile zipResource = new ZipFile(fileName);
+  private InputStream getResourceStream() throws IOException {
+    final ZipFile zipResource = new ZipFile(fileName);
     ZipEntry zipEntry = zipResource.getEntry(originalHref);
     if (zipEntry == null) {
       zipResource.close();
@@ -237,7 +234,7 @@ public class Resource implements Serializable {
 
   /**
    * Tells this resource to release its cached data.
-   *
+   * <p>
    * If this resource was not lazy-loaded, this is a no-op.
    */
   public void close() {
@@ -302,7 +299,7 @@ public class Resource implements Serializable {
 
   /**
    * The resources Id.
-   *
+   * <p>
    * Must be both unique within all the resources of this book and a valid identifier.
    */
   public String getId() {
@@ -311,7 +308,7 @@ public class Resource implements Serializable {
 
   /**
    * The location of the resource within the contents folder of the epub file.
-   *
+   * <p>
    * Example:<br/>
    * images/cover.jpg<br/>
    * content/chapter1.xhtml<br/>
@@ -396,7 +393,7 @@ public class Resource implements Serializable {
   }
 
   public String toString() {
-    return StringUtil.toString("id", id, "title", title, "encoding", inputEncoding, "mediaType",
-        mediaType, "href", href, "size", (data == null ? 0 : data.length));
+    return StringUtil.toString("id", id, "title", title, "encoding", inputEncoding, "mediaType", mediaType, "href", href, "size",
+        (data == null ? 0 : data.length));
   }
 }

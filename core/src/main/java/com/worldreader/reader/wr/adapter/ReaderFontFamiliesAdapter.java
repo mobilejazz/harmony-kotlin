@@ -14,17 +14,10 @@ public class ReaderFontFamiliesAdapter extends EnumSpinnerAdapter<ReaderFontFami
     super(context, ReaderFontFamilies.class);
   }
 
-  @Override public View getView(int position, View convertView, ViewGroup parent) {
-    TextView textView;
-    ReaderFontFamilies fontFamily = getItem(position);
+  @Override public View getView(int position, View cv, ViewGroup parent) {
+    final ReaderFontFamilies fontFamily = getItem(position);
 
-    if (convertView == null) {
-      textView =
-          (TextView) LayoutInflater.from(context).inflate(R.layout.reader_enum_adapter, parent, false);
-    } else {
-      textView = (TextView) convertView;
-    }
-
+    final TextView textView = cv == null ? (TextView) LayoutInflater.from(context).inflate(R.layout.reader_enum_adapter, parent, false) : (TextView) cv;
     textView.setText(fontFamily.getStringId());
 
     return textView;

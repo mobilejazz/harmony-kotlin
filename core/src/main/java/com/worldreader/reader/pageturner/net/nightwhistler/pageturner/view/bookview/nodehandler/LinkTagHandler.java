@@ -20,6 +20,7 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
@@ -31,33 +32,32 @@ import java.util.*;
 
 public class LinkTagHandler extends TagNodeHandler {
 
-  private List<String> externalProtocols;
+  private static final List<String> EXTERNAL_PROTOCOLS = new ArrayList<String>() {{
+    add("http://");
+    add("epub://");
+    add("https://");
+    add("http://");
+    add("ftp://");
+    add("mailto:");
+  }};
 
-  private LinkCallBack callBack;
+  private LinkTagCallBack callBack;
 
-  public LinkTagHandler(LinkCallBack callBack) {
+  public LinkTagHandler() {
+  }
+
+  public LinkTagHandler(LinkTagCallBack callBack) {
     this.callBack = callBack;
-
-    this.externalProtocols = new ArrayList<>();
-    externalProtocols.add("http://");
-    externalProtocols.add("epub://");
-    externalProtocols.add("https://");
-    externalProtocols.add("http://");
-    externalProtocols.add("ftp://");
-    externalProtocols.add("mailto:");
   }
 
   @Override public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
-    String href = node.getAttributeByName("href");
-
-    if (href == null) {
+    final String href = node.getAttributeByName("href");
+    if (TextUtils.isEmpty(href)) {
       return;
     }
 
-    final String linkHref = href;
-
     // First check if it should be a normal URL link
-    for (String protocol : this.externalProtocols) {
+    for (String protocol : EXTERNAL_PROTOCOLS) {
       if (href.toLowerCase(Locale.US).startsWith(protocol)) {
         builder.setSpan(new URLSpan(href), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return;
@@ -65,15 +65,21 @@ public class LinkTagHandler extends TagNodeHandler {
     }
 
     // If not, consider it an internal nav link.
-    ClickableSpan span = new ClickableSpan() {
+    final ClickableSpan span = new ClickableSpan() {
       @Override public void onClick(View widget) {
-        callBack.onLinkClicked(linkHref);
+        if (callBack != null) {
+          callBack.onLinkClicked(href);
+        }
       }
     };
     spanStack.pushSpan(span, start, end);
   }
 
-  public interface LinkCallBack {
+  public void setCallBack(final LinkTagCallBack callBack) {
+    this.callBack = callBack;
+  }
+
+  public interface LinkTagCallBack {
 
     void onLinkClicked(String href);
   }

@@ -90,7 +90,6 @@ public final class SystemUiHelper {
    * @param listener A listener which is called when the system visibility is changed
    */
   public SystemUiHelper(Activity activity, int level, int flags, OnVisibilityChangeListener listener) {
-
     mHandler = new Handler(Looper.getMainLooper());
     mHideRunnable = new HideRunnable();
 

@@ -2,7 +2,8 @@ package com.worldreader.reader.wr.adapter;
 
 import android.support.annotation.StringRes;
 import com.worldreader.core.R;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.FontSizes;
+
+import static com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration.FontSizes;
 
 public enum ReaderFontSizes {
   SMALLEST(FontSizes.SMALLEST, R.string.ls_book_reading_font_size_smallest),

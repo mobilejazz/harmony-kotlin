@@ -2,10 +2,8 @@ apply plugin: 'com.android.library'
 apply from: 'buildsystem/dependencies.gradle'
 
 android {
-  def globalConfiguration = project.ext;
-
-  compileSdkVersion globalConfiguration.androidCompileSdkVersion
-  buildToolsVersion globalConfiguration.androidBuildToolsVersion
+  compileSdkVersion rootProject.ext.androidCompileSdkVersion
+  buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
   lintOptions {
     abortOnError false
@@ -17,8 +15,8 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion globalConfiguration.androidMinSdkVersion
-    targetSdkVersion globalConfiguration.androidTargetSdkVersion
+    minSdkVersion rootProject.ext.androidMinSdkVersion
+    targetSdkVersion rootProject.ext.androidTargetSdkVersion
 
     versionCode 1001
 
@@ -30,6 +28,12 @@ android {
       buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
       buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "1" // minutes
       buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "1" // minutes
+    }
+
+    debugRelease {
+      buildConfigField "boolean", "DEBUG_JOB_MANAGER", "true"
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL", "15" // minutes
+      buildConfigField "long", "JOB_MANAGER_BACKGROUND_INTERVAL_FLEX", "15" // minutes
     }
 
     release {
@@ -48,7 +52,6 @@ android {
 
 dependencies {
   def dependencies = project.ext.dependencies
-  def testDependencies = project.ext.testDependencies
 
   compile dependencies.appCompat
   compile dependencies.supportAnnotation
@@ -70,15 +73,14 @@ dependencies {
   compile dependencies.storioAnnotation
   annotationProcessor dependencies.storioAnnotationProcessor
 
-  compile(dependencies.materialDialogsCore) {
-    transitive = true
-  }
-  compile(dependencies.materialDialogsCommons) {
-    transitive = true
-  }
+  compile(dependencies.materialDialogsCore) { transitive = true }
+  compile(dependencies.materialDialogsCommons) { transitive = true }
 
   compile dependencies.dagger
   annotationProcessor dependencies.daggerCompiler
+
+  compile dependencies.okHttp
+  compile dependencies.okHttp3LoggingInterceptor
 
   compile dependencies.retrofit2
   compile dependencies.retrofit2Gson
@@ -93,36 +95,26 @@ dependencies {
     exclude module: 'xpp3'
   }
 
-  compile 'com.scottyab:secure-preferences-lib:0.1.4'
-
   compile dependencies.sqlcipher
 
   compile 'org.javatuples:javatuples:1.2'
-
-  compile dependencies.okHttp
-  compile dependencies.okHttp3LoggingInterceptor
 
   compile('net.nightwhistler.htmlspanner:htmlspanner:0.5-SNAPSHOT') {
     exclude module: 'ant'
     exclude module: 'commons-io'
   }
-  compile 'org.codehaus.jedi:jedi-core:3.0.5'
-  compile 'org.slf4j:slf4j-api:1.6.1'
+  compile dependencies.jedi
 
-  compile project.ext.dependencies.androidjob
+  compile dependencies.securePreferences
+  compile dependencies.androidjob
 
   compile dependencies.scaleImageView
+  compile dependencies.viewpropertyobjectanimator
 
   compile dependencies.awsCore
   compile dependencies.awsMobileAnalytics
 
   compile dependencies.networkConnectionClass
 
-  testCompile testDependencies.hamcrest
-  testCompile(testDependencies.junit) {
-    exclude module: 'hamcrest-core'
-  }
-  testCompile testDependencies.mockito
-  testCompile testDependencies.powermock
-  testCompile testDependencies.powermockito
+  compile group: 'com.squareup', name: 'javapoet', version: '1.7.0'
 }

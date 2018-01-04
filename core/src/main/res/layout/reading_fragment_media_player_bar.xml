@@ -58,9 +58,8 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/span_48"
         android:layout_weight="1"
-        android:background="?selectableItemBackground"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
-        android:onClick="onMediaButtonEvent"
         app:srcCompat="@drawable/ic_reader_rewind" />
 
       <ImageButton
@@ -68,7 +67,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/span_48"
         android:layout_weight="1"
-        android:background="?selectableItemBackground"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
         android:minHeight="48dp"
         android:onClick="onMediaButtonEvent"
@@ -79,9 +78,8 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/span_48"
         android:layout_weight="1"
-        android:background="?selectableItemBackground"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
-        android:onClick="onMediaButtonEvent"
         app:srcCompat="@drawable/ic_reader_stop" />
 
 
@@ -90,9 +88,8 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/span_48"
         android:layout_weight="1"
-        android:background="?selectableItemBackground"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
-        android:onClick="onMediaButtonEvent"
         app:srcCompat="@drawable/ic_reader_forward" />
 
     </LinearLayout>

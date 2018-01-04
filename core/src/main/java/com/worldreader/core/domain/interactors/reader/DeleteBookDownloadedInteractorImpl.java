@@ -1,7 +1,6 @@
 package com.worldreader.core.domain.interactors.reader;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.application.di.qualifiers.RemoveBookDownloaded;
@@ -23,8 +22,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>>
-    implements DeleteBookDownloadedInteractor {
+public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore<?>> implements DeleteBookDownloadedInteractor {
 
   private static final String TAG = DeleteBookDownloadedInteractor.class.getSimpleName();
 
@@ -39,12 +37,9 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   private DomainCallback<Boolean, ErrorCore<?>> callback;
   private DomainBackgroundCallback<Boolean, ErrorCore<?>> backgroundCallback;
 
-  @Inject
-  public DeleteBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      @RemoveBookDownloaded final Action<BookDownloaded, Boolean> deleteBookDownloadedAction,
-      GetBookMetadataInteractor getBookMetadataInteractor,
-      StreamingBookRepository streamingBookRepository, ImageDownloader imageDownloader,
-      Logger logger) {
+  @Inject public DeleteBookDownloadedInteractorImpl(InteractorExecutor executor, MainThread mainThread,
+      @RemoveBookDownloaded final Action<BookDownloaded, Boolean> deleteBookDownloadedAction, GetBookMetadataInteractor getBookMetadataInteractor,
+      StreamingBookRepository streamingBookRepository, ImageDownloader imageDownloader, Logger logger) {
     super(executor, mainThread);
     this.deleteBookDownloadedAction = deleteBookDownloadedAction;
     this.getBookMetadataInteractor = getBookMetadataInteractor;
@@ -60,8 +55,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
     this.executor.run(this);
   }
 
-  @Override
-  public void execute(final String bookId, final String version, final DomainBackgroundCallback<Boolean, ErrorCore<?>> callback) {
+  @Override public void execute(final String bookId, final String version, final DomainBackgroundCallback<Boolean, ErrorCore<?>> callback) {
     this.bookId = bookId;
     this.version = version;
     this.backgroundCallback = callback;
@@ -69,31 +63,31 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   }
 
   @Override public ListenableFuture<Void> execute(final String bookId, final String version) {
-    return execute(bookId, version, getExecutor());
-  }
-
-  @Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
     final SettableFuture<Void> settableFuture = SettableFuture.create();
 
-    executor.execute(new SafeRunnable() {
+    getExecutor().execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
+        execute(bookId, version, new Callback<Boolean>() {
+          @Override public void onSuccess(final Boolean aBoolean) {
+            settableFuture.set(null);
+          }
 
-        if (bookMetadata != null && bookMetadata.getResources() != null) {
-          performDeleteAllResources(bookMetadata);
-          performDeleteBookIdFromBookDownloadedList(bookId, null);
-          imageDownloader.delete(bookId);
-          settableFuture.set(null);
-        } else {
-          settableFuture.setException(ErrorCore.EMPTY.getCause());
-        }
+          @Override public void onError(final Throwable e) {
+            settableFuture.setException(e);
+          }
+        });
       }
 
       @Override protected void onExceptionThrown(final Throwable t) {
         settableFuture.setException(t);
       }
     });
+
     return settableFuture;
+  }
+
+  @Override public ListenableFuture<Void> execute(String bookId, String version, Executor executor) {
+    return null;
   }
 
   @Override public void run() {
@@ -119,33 +113,31 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   //region Private methods
 
   private void execute(final String bookId, final String version, final Callback<Boolean> callback) {
-    getBookMetadataInteractor.execute(bookId, version,
-        new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
-          @Override public void onSuccess(BookMetadata bookMetadata) {
-            logger.d(TAG, "Deleting downloaded book with id: " + bookId);
+    getBookMetadataInteractor.execute(bookId, version, new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
+      @Override public void onSuccess(BookMetadata bookMetadata) {
+        logger.d(TAG, "Deleting downloaded book with id: " + bookId);
 
-            if (bookMetadata != null && bookMetadata.getResources() != null) {
-              performDeleteAllResources(bookMetadata);
-              performDeleteBookIdFromBookDownloadedList(bookId, callback);
-              imageDownloader.delete(bookId);
-            } else {
-              if (callback != null) {
-                callback.onError(ErrorCore.EMPTY.getCause());
-              }
-            }
+        if (bookMetadata != null && bookMetadata.resources != null) {
+          performDeleteAllResources(bookMetadata);
+          performDeleteBookIdFromBookDownloadedList(bookId, callback);
+          imageDownloader.delete(bookId);
+        } else {
+          if (callback != null) {
+            callback.onError(ErrorCore.EMPTY.getCause());
           }
+        }
+      }
 
-          @Override public void onError(ErrorCore errorCore) {
-            if (callback != null) {
-              callback.onError(errorCore.getCause());
-            }
-          }
-        });
+      @Override public void onError(ErrorCore errorCore) {
+        if (callback != null) {
+          callback.onError(errorCore.getCause());
+        }
+      }
+    });
 
   }
 
-  private void performDeleteBookIdFromBookDownloadedList(final String bookId,
-      Callback<Boolean> callback) {
+  private void performDeleteBookIdFromBookDownloadedList(final String bookId, Callback<Boolean> callback) {
     BookDownloaded bookDownloaded = BookDownloaded.create(bookId, new Date());
 
     boolean isDeleted = deleteBookDownloadedAction.perform(bookDownloaded);
@@ -156,16 +148,22 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
   }
 
   private void performDeleteAllResources(BookMetadata bookMetadata) {
-    List<String> resources = bookMetadata.getResources();
+    final List<String> resources = bookMetadata.resources;
 
-    streamingBookRepository.deleteBookResource(bookMetadata.getBookId(),
-        bookMetadata.getContentOpfName());
-    streamingBookRepository.deleteBookResource(bookMetadata.getBookId(),
-        bookMetadata.getTocResource());
+    streamingBookRepository.deleteBookResource(bookMetadata.bookId, bookMetadata.contentOpfName);
+    streamingBookRepository.deleteBookResource(bookMetadata.bookId, bookMetadata.tocResourceName);
 
     for (String resource : resources) {
       logger.d(TAG, "Deleting current resource: " + resource);
-      streamingBookRepository.deleteBookResource(bookMetadata.getBookId(), resource);
+
+      String resourceToDownload;
+      if (resource.contains("png") || resource.contains("jpg") || resource.contains("jpeg")) {
+        resourceToDownload = resource + "?size=480x800";
+      } else {
+        resourceToDownload = resource;
+      }
+
+      streamingBookRepository.deleteBookResource(bookMetadata.bookId, resourceToDownload);
     }
   }
   //endregion

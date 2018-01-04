@@ -219,19 +219,43 @@ public class StreamingBookNetworkDataSourceImpl implements StreamingBookNetworkD
     return Pair.with(bookMetadataEntity, bodyIs);
   }
 
-  private BookMetadataEntity toBookMetadataEntity(final String bookId, final String version, final ContentOpfLocationEntity contentContainer,
-      final ContentOpfEntity contentOpf, boolean isGeneratedOpf) {
+  private BookMetadataEntity toBookMetadataEntity(final String bookId, final String version, final ContentOpfLocationEntity contentContainer, final ContentOpfEntity contentOpf, boolean isGeneratedOpf) {
     final String rawContentOpfName = contentContainer.getContentOpfName();
     final String contentOpfName = isGeneratedOpf ? rawContentOpfName.substring(0, rawContentOpfName.lastIndexOf(".")) + "_generated.opf" : rawContentOpfName;
+
+    String tocEntry = contentOpf.getTocEntry();
+    List<String> manifestEntriesHref = contentOpf.getManifestEntriesHref();
+    Map<String, ContentOpfEntity.Item> imagesResourcesEntries = contentOpf.getImagesResourcesEntries();
+
+    // Perform a cleanup to discern if the resources are inside to content.opf folder or outside
+    final String rawSubPath = contentContainer.getContentOpfPath();
+    if (!TextUtils.isEmpty(rawSubPath)) {
+      if (!TextUtils.isEmpty(tocEntry)) {
+        tocEntry = rawSubPath + tocEntry;
+      }
+
+      for (String hrefEntry : manifestEntriesHref) {
+        if (!TextUtils.isEmpty(hrefEntry)) {
+          hrefEntry = rawSubPath + hrefEntry;
+        }
+      }
+
+      for (ContentOpfEntity.Item item : imagesResourcesEntries.values()) {
+        if (!TextUtils.isEmpty(item.href)) {
+          item.href = rawSubPath + item.href;
+        }
+      }
+    }
 
     final BookMetadataEntity entity = new BookMetadataEntity();
     entity.setBookId(bookId);
     entity.setVersion(version);
     entity.setRelativeContentUrl(contentContainer.getContentOpfPath());
-    entity.setContentOpfName(contentOpfName);
-    entity.setTocResource(contentOpf.getTocEntry());
-    entity.setResources(contentOpf.getManifestEntriesHref());
-    entity.setImagesResources(contentOpf.getImagesResourcesEntries());
+    entity.setContentOpfName(rawSubPath + contentOpfName);
+    entity.setTocResource(tocEntry);
+    entity.setResources(manifestEntriesHref);
+    entity.setImagesResources(imagesResourcesEntries);
+    entity.setContentOpfPath(rawSubPath);
 
     return entity;
   }

@@ -59,6 +59,6 @@ public class TOCReference extends TitledResourceReference implements Serializabl
 
     TOCReference tocReference = (TOCReference) o;
     return this.getResource().getId().equals(tocReference.getResource().getId());
-
   }
+
 }

@@ -10,6 +10,7 @@ public class BookMetadataEntity {
   private String bookId;
   private String version;
   private String relativeContentUrl;
+  private String contentOpfPath;
   private String contentOpfName;
   private String tocResourceName;
   private List<String> resources;
@@ -37,6 +38,14 @@ public class BookMetadataEntity {
 
   public String getRelativeContentUrl() {
     return this.relativeContentUrl;
+  }
+
+  public String getContentOpfPath() {
+    return contentOpfPath;
+  }
+
+  public void setContentOpfPath(String contentOpfPath) {
+    this.contentOpfPath = contentOpfPath;
   }
 
   public String getContentOpfName() {
