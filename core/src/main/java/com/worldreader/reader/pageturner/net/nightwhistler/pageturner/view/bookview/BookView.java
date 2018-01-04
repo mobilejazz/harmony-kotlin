@@ -1134,7 +1134,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
         final Book book = textLoader.initBook(contentOpfIs, tocResourcesIs);
 
-        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader, getContext());
+        final PageTurnerSpine spine = new PageTurnerSpine(book, resourcesLoader, initBlackList());
         spine.navigateByIndex(storedIndex);
 
         return some(Pair.with(book, spine));
@@ -1142,6 +1142,30 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         logger.sendIssue(TAG, "Exception while trying to open book with ID: " + bookId + " . Current exception: " + Throwables.getStackTraceAsString(e));
         return none();
       }
+    }
+
+
+    private HashMap<String, String> initBlackList(){
+      HashMap<String, String> blackList = new HashMap<>();
+      blackList.put("toc", getResources().getString(R.string.ls_toc));
+      blackList.put("nav", getResources().getString(R.string.ls_toc));
+      blackList.put("copy",getResources().getString(R.string.ls_copy));
+      blackList.put("copyright",getResources().getString(R.string.ls_copy));
+      blackList.put("title", getResources().getString(R.string.ls_title));
+      blackList.put("dedi",getResources().getString(R.string.ls_dedi));
+      blackList.put("dedication",getResources().getString(R.string.ls_dedi));
+      blackList.put("epilogue",getResources().getString(R.string.ls_epilogue));
+      blackList.put("ack",getResources().getString(R.string.ls_ack));
+      blackList.put("acknowledgements",getResources().getString(R.string.ls_ack));
+      blackList.put("backcover",getResources().getString(R.string.ls_back));
+      blackList.put("back",getResources().getString(R.string.ls_back));
+      blackList.put("bcover",getResources().getString(R.string.ls_back));
+      blackList.put("index",getResources().getString(R.string.ls_index));
+      blackList.put("contents",getResources().getString(R.string.ls_toc));
+      blackList.put("credits",getResources().getString(R.string.ls_credits));
+      blackList.put("morebyauthor",getResources().getString(R.string.ls_moreByAuthor));
+      blackList.put("morebypublisher",getResources().getString(R.string.ls_moreByPublisher));
+      return blackList;
     }
 
     @Override public void doOnPostExecute(Option<Pair<Book, PageTurnerSpine>> pair) {
