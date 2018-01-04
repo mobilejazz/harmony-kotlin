@@ -66,7 +66,7 @@ public class OpenStreamingBookTask extends QueueableAsyncTask<Void, Void, Pair<B
       put("title", r.getString(R.string.ls_title));
       put("dedi", r.getString(R.string.ls_dedi));
       put("dedication", r.getString(R.string.ls_dedi));
-      put("epiloge", r.getString(R.string.ls_epiloge));
+      put("epiloge", r.getString(R.string.ls_epilogue));
       put("ack", r.getString(R.string.ls_ack));
       put("acknowledgements", r.getString(R.string.ls_ack));
       put("backcover", r.getString(R.string.ls_back));
