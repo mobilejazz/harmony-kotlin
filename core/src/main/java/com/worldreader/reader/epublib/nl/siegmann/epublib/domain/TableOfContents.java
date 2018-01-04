@@ -26,20 +26,20 @@ public class TableOfContents implements Serializable {
   }
 
   public TableOfContents(List<TOCReference> tocReferences) {
-    this.tocReferences = tocReferences;
+    this.tocReferences = tocReferences == null ? new ArrayList<TOCReference>() : tocReferences;
   }
 
   public List<TOCReference> getTocReferences() {
     return tocReferences;
   }
-  
+
   /**
    * All unique references (unique by href) in the order in which they are referenced to in the
    * table of contents.
    */
   public List<Resource> getAllUniqueResources() {
-    Set<String> uniqueHrefs = new HashSet<>();
-    List<Resource> result = new ArrayList<>();
+    final Set<String> uniqueHrefs = new HashSet<>();
+    final List<Resource> result = new ArrayList<>();
     getAllUniqueResources(uniqueHrefs, result, tocReferences);
     return result;
   }
@@ -68,5 +68,13 @@ public class TableOfContents implements Serializable {
       result += getTotalSize(tocReference.getChildren());
     }
     return result;
+  }
+
+  public TOCReference addTOCReference(TOCReference tocReference) {
+    if (!tocReferences.contains(tocReference)) {
+      tocReferences.add(tocReference);
+    }
+
+    return tocReference;
   }
 }

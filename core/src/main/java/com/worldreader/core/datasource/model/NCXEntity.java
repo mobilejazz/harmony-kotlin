@@ -15,7 +15,7 @@ import java.util.*;
   public static class NavPoint {
 
     @Attribute(name = "id", required = false) public String id;
-    @Attribute(name = "playOrder", required = false) public String playOrder;
+    @Attribute(name = "playOrder", required = false) public int playOrder;
     @Element(name = "navLabel", required = false) public NavLabel navLabel;
     @Element(name = "content", required = false) public Content content;
     @ElementList(required = false, inline = true) public List<NavPoint> navPoints;

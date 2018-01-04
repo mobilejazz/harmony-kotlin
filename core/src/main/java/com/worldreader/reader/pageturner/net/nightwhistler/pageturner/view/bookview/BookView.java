@@ -327,7 +327,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public void loadText() {
     if (spine == null) {
-      final QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> task = TasksFactory.createOpenBookTask(bookMetadata, textLoader, storedIndex, logger);
+      final QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> task = TasksFactory.createOpenBookTask(getContext(), bookMetadata, textLoader, storedIndex, logger);
       task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
         @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
           result.match(new Command<Object>() {

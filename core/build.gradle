@@ -115,4 +115,6 @@ dependencies {
   compile dependencies.awsMobileAnalytics
 
   compile dependencies.networkConnectionClass
+
+  compile group: 'com.squareup', name: 'javapoet', version: '1.7.0'
 }

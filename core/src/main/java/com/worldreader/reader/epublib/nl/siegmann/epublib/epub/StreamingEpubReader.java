@@ -150,7 +150,7 @@ public class StreamingEpubReader {
     // Order this list from min to max by playOrder
     Collections.sort(navPoints, Ordering.natural().onResultOf(new Function<NCXEntity.NavPoint, Comparable>() {
       @Nullable @Override public Comparable apply(@Nullable NCXEntity.NavPoint input) {
-        return Integer.valueOf(input.playOrder);
+        return input.playOrder;
       }
     }));
 

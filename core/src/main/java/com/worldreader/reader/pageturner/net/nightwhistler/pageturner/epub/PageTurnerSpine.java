@@ -19,9 +19,12 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import jedi.option.Option;
 
 import java.net.URI;
@@ -37,8 +40,6 @@ import static jedi.option.Options.option;
  */
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
-  private static final String TAG = PageTurnerSpine.class.getSimpleName();
-
   private static final String COVER_HREF = "PageTurnerCover";
 
   private final Book book;
@@ -47,13 +48,16 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private String tocHref;
   private int position;
 
+  private Map<String, String> blackList;
+
   /**
    * Creates a new Spine from this book.
    */
-  public PageTurnerSpine(Book book) {
+  public PageTurnerSpine(Book book, Map<String, String> blacklist) {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
+    this.blackList = blackList;
 
     String coverHref = null;
     if (!entries.isEmpty() && !entries.get(0).href.equals(COVER_HREF)) {
@@ -62,9 +66,19 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
     for (SpineReference reference : book.getSpine().getSpineReferences()) {
       final Resource res = reference.getResource();
-      if (coverHref == null || !(coverHref.equals(res.getHref()))) {
-        addResource(res);
+
+      if (!isBlackListed(res)) {
+        if (coverHref == null || !(coverHref.equals(res.getHref()))) {
+          addResource(res);
+        }
+      } else {
+        final String resourceId = res.getId();
+        final String blackListResource = blacklist.containsKey(resourceId) ? blackList.get(resourceId) : "";
+        if (!TextUtils.isEmpty(blackListResource)) {
+          book.getTableOfContents().addTOCReference(new TOCReference(blackListResource, res));
+        }
       }
+
     }
 
     if (book.getNcxResource() != null) {
@@ -72,12 +86,16 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     }
   }
 
+  private boolean isBlackListed(Resource resource) {
+    return blackList.keySet().contains(resource.getId());
+  }
+
   @NonNull @Override public Iterator<SpineEntry> iterator() {
     return this.entries.iterator();
   }
 
   private void addResource(Resource resource) {
-    SpineEntry newEntry = new SpineEntry();
+    final SpineEntry newEntry = new SpineEntry();
     newEntry.title = resource.getTitle();
     newEntry.resource = resource;
     newEntry.href = resource.getHref();

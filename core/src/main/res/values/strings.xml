@@ -206,4 +206,19 @@
   <string name="ls_definition">Definition</string>
   <string name="ls_init_tts">Initializing Text To Speech…\nPlease wait.</string>
   <string name="ls_tts_failed">Text To Speech failed to load.</string>
+
+
+  <!--Spine elements that will be removed from the spine, and should be present in the toc-->
+  <string name="ls_toc">Table of Contents</string>
+  <string name="ls_copy">Copyright</string>
+  <string name="ls_title">Title</string>
+  <string name="ls_dedi">Dedication</string>
+  <string name="ls_epiloge">Epiloge</string>
+  <string name="ls_ack">Acknowledgements</string>
+  <string name="ls_back">Back Cover</string>
+  <string name="ls_index">Index</string>
+  <string name="ls_credits">Credits</string>
+  <string name="ls_moreByAuthor">More by the same author</string>
+  <string name="ls_moreByPublisher">More by the same publisher</string>
+
 </resources>
