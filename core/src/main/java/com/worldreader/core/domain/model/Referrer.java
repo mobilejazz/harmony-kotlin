@@ -37,6 +37,7 @@ public class Referrer {
     return userId;
   }
 
+
   /**
    * Check if the string has a valid invitation identifier (to be sure that is not part of any other campaign)
    * @param referrerUrlQueryValue
@@ -81,7 +82,6 @@ public class Referrer {
    * @return
    */
   public String formatAsUrlQuery() {
-
     return new StringBuilder(REFERRER_URL_QUERY_KEY).append("=").append(formatAsUrlQueryValue()).toString();
   }
 

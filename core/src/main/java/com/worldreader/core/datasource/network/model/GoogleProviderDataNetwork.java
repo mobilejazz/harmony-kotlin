@@ -5,21 +5,22 @@ public class GoogleProviderDataNetwork
 
   private final NetworkGoogleRegisterData googleRegisterData;
 
-  public GoogleProviderDataNetwork(String googleId, String name, String email) {
-    this.googleRegisterData = new NetworkGoogleRegisterData(googleId, name, email);
+  public GoogleProviderDataNetwork(String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
+    this.googleRegisterData = new NetworkGoogleRegisterData(googleId, name, email, referrerDeviceId, referrerUserId);
   }
 
   @Override public NetworkGoogleRegisterData get() {
     return this.googleRegisterData;
   }
 
-  public static class NetworkGoogleRegisterData {
+  public static class NetworkGoogleRegisterData extends BaseNetworkRegisterData {
 
     private final String googleId;
     private final String name;
     private final String email;
 
-    public NetworkGoogleRegisterData(String googleId, String name, String email) {
+    public NetworkGoogleRegisterData(String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
+      super(referrerDeviceId, referrerUserId);
       this.googleId = googleId;
       this.name = name;
       this.email = email;

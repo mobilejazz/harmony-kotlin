@@ -10,7 +10,7 @@ import com.worldreader.core.datasource.model.LeaderboardStatEntity;
 import com.worldreader.core.datasource.model.user.UserReadingStatsEntity;
 import com.worldreader.core.datasource.model.user.user.UserEntity2;
 import com.worldreader.core.datasource.network.datasource.user.UserNetworkDataSource2;
-import com.worldreader.core.datasource.network.model.FacebookRegisterProviderDataNetwork;
+import com.worldreader.core.datasource.network.model.FacebookProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.GoogleProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.RegisterProviderNetwork;
 import com.worldreader.core.datasource.network.model.WorldreaderProviderDataNetwork;
@@ -21,6 +21,7 @@ import com.worldreader.core.datasource.repository.spec.StorageSpecification;
 import com.worldreader.core.datasource.spec.user.UpdateUserCategoriesSpecification;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.model.LeaderboardStat;
+import com.worldreader.core.domain.model.Referrer;
 import com.worldreader.core.domain.model.user.GoogleProviderData;
 import com.worldreader.core.domain.model.user.ReadToKidsProviderData;
 import com.worldreader.core.domain.model.user.RegisterProvider;
@@ -61,17 +62,17 @@ public class UserDataSource2 implements UserRepository {
   }
 
   @NetworkOnly @Override
-  public void register(RegisterProvider provider, RegisterProviderData<?> registerProviderData, Callback<Optional<User2>> callback) {
+  public void register(RegisterProvider provider, RegisterProviderData<?> registerProviderData, Referrer referrer, Callback<Optional<User2>> callback) {
     final Object rawData = registerProviderData.get();
     switch (provider) {
       case FACEBOOK:
-        registerUserWithFacebook(rawData, callback);
+        registerUserWithFacebook(rawData, referrer, callback);
         break;
       case GOOGLE:
-        registerUserWithGoogle(rawData, callback);
+        registerUserWithGoogle(rawData, referrer, callback);
         break;
       case WORLDREADER:
-        registerUserWithWorldreader(rawData, callback);
+        registerUserWithWorldreader(rawData, referrer, callback);
         break;
     }
   }
@@ -200,9 +201,9 @@ public class UserDataSource2 implements UserRepository {
     });
   }
 
-  private void registerUserWithFacebook(Object data, final Callback<Optional<User2>> callback) {
+  private void registerUserWithFacebook(Object data, Referrer referrer, final Callback<Optional<User2>> callback) {
     final String facebookToken = (String) data;
-    final FacebookRegisterProviderDataNetwork facebookProviderData = new FacebookRegisterProviderDataNetwork(facebookToken);
+    final FacebookProviderDataNetwork facebookProviderData = new FacebookProviderDataNetwork(facebookToken, referrer.getDeviceId(), referrer.getUserId());
     userNetworkDataSource.register(RegisterProviderNetwork.FACEBOOK, facebookProviderData, new Callback<Optional<UserEntity2>>() {
       @Override public void onSuccess(Optional<UserEntity2> optional) {
         final Optional<User2> toReturn = toUserMapper.transform(optional);
@@ -215,10 +216,11 @@ public class UserDataSource2 implements UserRepository {
     });
   }
 
-  private void registerUserWithGoogle(Object data, final Callback<Optional<User2>> callback) {
+  private void registerUserWithGoogle(Object data, Referrer referrer, final Callback<Optional<User2>> callback) {
     final GoogleProviderData.DomainGoogleRegisterData registerData = (GoogleProviderData.DomainGoogleRegisterData) data;
     final GoogleProviderDataNetwork googleProviderData =
-        new GoogleProviderDataNetwork(registerData.getGoogleId(), registerData.getName(), registerData.getEmail());
+        new GoogleProviderDataNetwork(registerData.getGoogleId(), registerData.getName(), registerData.getEmail(), referrer.getDeviceId(),
+            referrer.getUserId());
     userNetworkDataSource.register(RegisterProviderNetwork.GOOGLE, googleProviderData, new Callback<Optional<UserEntity2>>() {
       @Override public void onSuccess(Optional<UserEntity2> optional) {
         final Optional<User2> toReturn = toUserMapper.transform(optional);
@@ -231,18 +233,19 @@ public class UserDataSource2 implements UserRepository {
     });
   }
 
-  private void registerUserWithWorldreader(Object data, final Callback<Optional<User2>> callback) {
+  private void registerUserWithWorldreader(Object data, Referrer referrer, final Callback<Optional<User2>> callback) {
     final WorldreaderProviderDataNetwork worldreaderProviderData;
 
     if (data instanceof WorldreaderProviderData.DomainWorldreaderData) {
       final WorldreaderProviderData.DomainWorldreaderData registerData = (WorldreaderProviderData.DomainWorldreaderData) data;
-      worldreaderProviderData = new WorldreaderProviderDataNetwork(registerData.getUsername(), registerData.getPassword(), registerData.getEmail());
+      worldreaderProviderData = new WorldreaderProviderDataNetwork(registerData.getUsername(), registerData.getPassword(), registerData.getEmail(), referrer
+          .getDeviceId(), referrer.getUserId());
     } else if (data instanceof ReadToKidsProviderData.DomainReadToKidsData) {
       final ReadToKidsProviderData.DomainReadToKidsData readToKidsData = (ReadToKidsProviderData.DomainReadToKidsData) data;
 
       worldreaderProviderData =
           new WorldreaderProviderDataNetwork(readToKidsData.getUsername(), readToKidsData.getPassword(), readToKidsData.getEmail(),
-              readToKidsData.getActivatorCode(), readToKidsData.getGender(), readToKidsData.getAge());
+              readToKidsData.getActivatorCode(), readToKidsData.getGender(), readToKidsData.getAge(), referrer.getDeviceId(), referrer.getUserId());
     } else {
       throw new UnsupportedOperationException("Provider data not supported");
     }

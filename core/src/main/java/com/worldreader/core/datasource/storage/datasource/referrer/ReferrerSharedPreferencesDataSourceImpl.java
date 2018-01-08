@@ -12,25 +12,24 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
 
   private SharedPreferences sharedPreferences;
 
-  private static final String KEY_INVITATION_REFERRER = "invitationReferrer";
+  private static final String KEY_REFERRER_DEVICE_ID = "referrerDeviceId";
+  private static final String KEY_REFERRER_USER_ID = "referrerUserId";
 
   @Inject public ReferrerSharedPreferencesDataSourceImpl(@ReferrerSharedPreferences SharedPreferences sharedPreferences) {
     this.sharedPreferences = sharedPreferences;
   }
 
   @SuppressLint("ApplySharedPref") @Override public void put(Referrer referrer) {
-    this.sharedPreferences.edit().putString(KEY_INVITATION_REFERRER, referrer.formatAsUrlQueryValue()).commit();
+    this.sharedPreferences.edit()
+        .putString(KEY_REFERRER_DEVICE_ID, referrer.getDeviceId())
+        .putString(KEY_REFERRER_USER_ID, referrer.getUserId())
+        .commit();
   }
 
   @Override public Referrer get() {
-    Referrer referrer = null;
-    if (this.sharedPreferences.contains(KEY_INVITATION_REFERRER)) {
-      try {
-        referrer = Referrer.parse(this.sharedPreferences.getString(KEY_INVITATION_REFERRER, ""));
-      } catch (Referrer.ReferrerParseException e) {
-        // Won't happen
-      }
-    }
-    return referrer;
+    return new Referrer(
+        this.sharedPreferences.getString(KEY_REFERRER_DEVICE_ID, null),
+        this.sharedPreferences.getString(KEY_REFERRER_USER_ID, null)
+    );
   }
 }

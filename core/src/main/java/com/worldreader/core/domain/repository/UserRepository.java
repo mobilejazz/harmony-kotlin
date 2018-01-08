@@ -5,6 +5,7 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.domain.model.LeaderboardStat;
+import com.worldreader.core.domain.model.Referrer;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
@@ -20,7 +21,7 @@ public interface UserRepository extends Repository<User2, RepositorySpecificatio
     WEEKLY
   }
 
-  void register(RegisterProvider provider, RegisterProviderData<?> registerProviderData, Callback<Optional<User2>> callback);
+  void register(RegisterProvider provider, RegisterProviderData<?> registerProviderData, Referrer referrer, Callback<Optional<User2>> callback);
 
   void resetPassword(String email, Callback<Optional<Boolean>> callback);
 
