@@ -25,6 +25,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,6 +47,8 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
+import com.worldreader.core.analytics.Analytics;
+import com.worldreader.core.analytics.reader.ReaderAnalytics;
 import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.application.helper.ui.Dimens;
@@ -82,7 +86,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
 // TODO: 27/11/2017 Move interactors to concrete implementations
-// TODO: 27/11/2017 Check visibility bugs (onFocusVisibilityChanged)
 // TODO: 27/11/2017 Prepare design to be the same as Pablo's invision
 // TODO: 27/11/2017 Fix dagger injection on all projects
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
@@ -897,7 +900,33 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
     chapterProgressPagesTv.setText(pagesForResource < currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource));
+
+    // Notify analytics
+    onNotifyPageProgressAnalytics(pagesForResource, currentPage);
+
+    // Tell implementors about event
     onReaderFragmentEvent(BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT);
+  }
+
+  private void onNotifyPageProgressAnalytics(int pagesForResource, int currentPage) {
+    final Option<Spanned> text = bookView.getStrategy().getText();
+    final Spanned spanned = text.getOrElse(new SpannableString(""));
+    final int tocSize = bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size();
+    final int spineSize = bookView.getSpineSize();
+    final int spinePosition = bookView.getIndex();
+    final int textSizeInChars = bookView.getStrategy().getSizeChartDisplayed();
+    ReaderAnalytics.sendFormattedChapterEvent(
+        di.analytics,
+        bookMetadata.bookId,
+        bookMetadata.title,
+        pagesForResource,
+        currentPage,
+        spanned,
+        tocSize,
+        spineSize,
+        spinePosition,
+        textSizeInChars
+    );
   }
 
   public interface OnBookTocEntryListener {
@@ -1003,6 +1032,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     @Inject public BrightnessManager brightnessManager;
     @Inject public Dates dateUtils;
     @Inject public Reachability reachability;
+    @Inject public Analytics analytics;
     @Inject public Logger logger;
   }
 
