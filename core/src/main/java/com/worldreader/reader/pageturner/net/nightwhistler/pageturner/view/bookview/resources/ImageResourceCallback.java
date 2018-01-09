@@ -81,7 +81,16 @@ public class ImageResourceCallback {
     final Resource resource = resources.getByFileName(data);
 
     final Map<String, ContentOpfEntity.Item> imagesResources = bm.imagesResources;
-    final ContentOpfEntity.Item item = imagesResources != null && resource != null ? imagesResources.get(resource.getHref()) : null;
+    ContentOpfEntity.Item item = null;
+
+    if (imagesResources != null && resource != null) {
+      for (ContentOpfEntity.Item elem : imagesResources.values()) {
+        if (elem.href.contains(resource.getHref())) {
+          item = elem;
+          break;
+        }
+      }
+    }
 
     // Try to load image sizes from the content.opf
     Integer width = item != null && !TextUtils.isEmpty(item.width) ? Integer.valueOf(item.width) : null;
