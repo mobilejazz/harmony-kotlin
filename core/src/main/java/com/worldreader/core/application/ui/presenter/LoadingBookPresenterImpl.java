@@ -51,6 +51,7 @@ public class LoadingBookPresenterImpl implements LoadingBookPresenter {
         bookMetadata.title = book.getTitle();
         bookMetadata.author = book.getAuthor();
         bookMetadata.collectionId = collection == null ? 0 : collection.getId();
+        bookMetadata.mode = BookMetadata.STREAMING_MODE;
 
         view.onNotifyDisplayReader(bookMetadata);
       }
