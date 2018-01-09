@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.concurrency.SafeRunnable;
-import com.worldreader.core.domain.model.user.FacebookRegisterProviderData;
+import com.worldreader.core.domain.model.user.FacebookProviderData;
 import com.worldreader.core.domain.model.user.GoogleProviderData;
 import com.worldreader.core.domain.model.user.ReadToKidsProviderData;
 import com.worldreader.core.domain.model.user.RegisterProvider;
@@ -41,7 +41,7 @@ import java.util.concurrent.*;
 
         switch (provider) {
           case FACEBOOK:
-            final String facebookToken = ((FacebookRegisterProviderData) data).get();
+            final String facebookToken = ((FacebookProviderData) data).get();
             final boolean isLoggedFacebook = repository.loginWithFacebook(facebookToken);
             future.set(isLoggedFacebook);
             break;

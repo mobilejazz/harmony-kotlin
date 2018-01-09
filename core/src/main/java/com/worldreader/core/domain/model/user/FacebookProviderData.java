@@ -1,10 +1,10 @@
 package com.worldreader.core.domain.model.user;
 
-public class FacebookRegisterProviderData implements RegisterProviderData<String> {
+public class FacebookProviderData implements RegisterProviderData<String> {
 
   private final String facebookToken;
 
-  public FacebookRegisterProviderData(final String facebookToken) {
+  public FacebookProviderData(final String facebookToken) {
     this.facebookToken = facebookToken;
   }
 

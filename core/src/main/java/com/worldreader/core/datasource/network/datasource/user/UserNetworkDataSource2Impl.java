@@ -14,6 +14,7 @@ import com.worldreader.core.datasource.model.user.user.UserEntity2;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.datasource.network.general.retrofit.services.AuthApiService2;
 import com.worldreader.core.datasource.network.general.retrofit.services.UserApiService2;
+import com.worldreader.core.datasource.network.model.FacebookProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.GoogleProviderDataNetwork;
 import com.worldreader.core.datasource.network.model.LeaderboardStatNetwork;
 import com.worldreader.core.datasource.network.model.LocalLibraryNetworkBody;
@@ -171,8 +172,9 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
 
   private void registerUserWithFacebook(Object data,
       final Callback<Optional<UserEntity2>> callback) {
-    final String facebookToken = (String) data;
-    final UserFacebookRegisterBody body = UserFacebookRegisterBody.create(facebookToken);
+    final FacebookProviderDataNetwork.NetworkFacebookRegisterData registerData = (FacebookProviderDataNetwork.NetworkFacebookRegisterData) data;
+    final UserFacebookRegisterBody body =
+        UserFacebookRegisterBody.create(registerData.getFacebookToken(), registerData.getReferrerDeviceId(), registerData.getReferrerUserId());
     try {
       final Response<Void> response = authApiService.registerWithFacebook(body).execute();
       final boolean successful = response.isSuccessful();
@@ -194,7 +196,7 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
         (GoogleProviderDataNetwork.NetworkGoogleRegisterData) data;
     final UserGoogleRegisterBody body =
         UserGoogleRegisterBody.create(registerData.getGoogleId(), registerData.getName(),
-            registerData.getEmail());
+            registerData.getEmail(), registerData.getReferrerDeviceId(), registerData.getReferrerUserId());
     try {
       final Response<Void> response = authApiService.registerWithGoogle(body).execute();
       final boolean successful = response.isSuccessful();
@@ -218,7 +220,7 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
     final UserRegisterBody body =
         UserRegisterBody.create(registerData.getUsername(), registerData.getPassword(),
             registerData.getEmail(), registerData.getActivatorCode(), registerData.getGender(),
-            registerData.getAge());
+            registerData.getAge(), registerData.getReferrerDeviceId(), registerData.getReferrerUserId());
     try {
       final Response<UserNetworkResponse> response = apiService.register(body).execute();
       final boolean successful = response.isSuccessful();
