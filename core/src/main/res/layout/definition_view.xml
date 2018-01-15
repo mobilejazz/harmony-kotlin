@@ -20,7 +20,9 @@
     android:paddingBottom="@dimen/span_16"
     android:paddingLeft="@dimen/span_24"
     android:paddingRight="@dimen/span_24"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:paddingEnd="@dimen/span_24"
+    android:paddingStart="@dimen/span_24">
 
     <include
       android:id="@+id/definition_view_loading_container"

@@ -44,7 +44,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:layout_gravity="top|right"
+      android:layout_gravity="top|end"
       android:src="@drawable/as_downloaded_book_cover" />
 
 

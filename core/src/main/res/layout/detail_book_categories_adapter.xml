@@ -24,7 +24,7 @@
     android:textColor="@color/white"
     tools:text="Learn"
 
-    />
+    android:layout_toStartOf="@+id/home_categories_adapter_img_icon" />
 
   <ImageView
     android:id="@+id/home_categories_adapter_img_icon"
@@ -35,6 +35,8 @@
     android:layout_alignTop="@+id/home_categories_adapter_txt_title"
     android:layout_gravity="center_vertical"
     android:layout_marginRight="@dimen/span_4"
-    android:contentDescription="@null" />
+    android:contentDescription="@null"
+    android:layout_marginEnd="@dimen/span_4"
+    android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

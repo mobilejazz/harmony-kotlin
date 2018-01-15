@@ -16,6 +16,8 @@
     android:ellipsize="end"
     android:gravity="center_vertical"
     android:singleLine="true"
-    android:text="@string/ls_offline_books_screen_title" />
+    android:text="@string/ls_offline_books_screen_title"
+    android:layout_marginEnd="@dimen/span_8"
+    android:layout_marginStart="@dimen/span_8" />
 
 </LinearLayout>

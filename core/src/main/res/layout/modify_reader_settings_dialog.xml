@@ -63,7 +63,9 @@
             app:dsb_indicatorPopupEnabled="false"
             app:dsb_max="100"
             app:dsb_min="0"
-            app:dsb_progressColor="@color/primary" />
+            app:dsb_progressColor="@color/primary"
+          android:layout_marginEnd="@dimen/span_8"
+          android:layout_marginStart="@dimen/span_8" />
     </LinearLayout>
 
   <LinearLayout

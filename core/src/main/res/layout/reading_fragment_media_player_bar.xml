@@ -34,7 +34,8 @@
       android:gravity="center_vertical"
       android:paddingLeft="@dimen/span_16"
       android:paddingRight="@dimen/span_16"
-      >
+    android:paddingStart="@dimen/span_16"
+    android:paddingEnd="@dimen/span_16">
 
     <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
       android:id="@+id/reading_fragment_media_progress"

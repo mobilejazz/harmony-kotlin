@@ -42,7 +42,7 @@
             android:id="@+id/detail_book_collection_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
+            android:layout_gravity="top|start"
             android:contentDescription="@null"
             android:src="@drawable/as_collectiondetail"
             android:visibility="gone" />
@@ -51,7 +51,7 @@
             android:id="@+id/detail_book_offline_book_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             android:contentDescription="@null"
             android:src="@drawable/as_downloaded_book_detail"
             android:visibility="gone" />
@@ -63,19 +63,24 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/span_8"
+          android:paddingEnd="@dimen/detail_book_title_padding_right"
           android:paddingLeft="@dimen/span_8"
           android:paddingRight="@dimen/detail_book_title_padding_right"
+          android:paddingStart="@dimen/span_8"
           android:paddingTop="@dimen/span_16"
           android:textAppearance="?android:textAppearanceLarge"
-          android:textColor="@color/font_gray" />
+          android:textColor="@color/font_gray"
+          tools:text="Book title " />
 
         <TextView
           android:id="@+id/detail_book_publisher"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/span_16"
+          android:paddingEnd="@dimen/detail_book_title_padding_right"
           android:paddingLeft="@dimen/span_8"
           android:paddingRight="@dimen/detail_book_title_padding_right"
+          android:paddingStart="@dimen/span_8"
           android:textAppearance="?android:textAppearanceSmall"
           android:textColor="@color/font_gray"
           tools:text="Jose Luis Franconetti Olmedo" />
@@ -86,13 +91,14 @@
         android:id="@+id/detail_book_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/detail_book_content_layout_margin_right"
         android:layout_marginRight="@dimen/detail_book_content_layout_margin_right"
         android:src="@drawable/ic_read_book"
         app:backgroundTint="@color/yellow"
         app:borderWidth="0dp"
         app:elevation="@dimen/span_8"
         app:layout_anchor="@id/book_cover"
-        app:layout_anchorGravity="bottom|right"
+        app:layout_anchorGravity="bottom|right|end"
         app:pressedTranslationZ="@dimen/span_16"
         app:rippleColor="@color/darkYellow" />
 
@@ -114,6 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:contentDescription="@null"
+        android:paddingEnd="@dimen/span_8"
         android:paddingRight="@dimen/span_8"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_like_gray" />
@@ -141,6 +148,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:contentDescription="@null"
+        android:paddingEnd="@dimen/span_8"
         android:paddingRight="@dimen/span_8"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_book_gray" />
@@ -175,8 +183,11 @@
         android:contentDescription="@null"
         android:drawableLeft="@drawable/ic_like_wrapper"
         android:drawablePadding="-26dp"
+        android:drawableStart="@drawable/ic_like_wrapper"
+        android:paddingEnd="@dimen/span_10"
         android:paddingLeft="@dimen/span_10"
         android:paddingRight="@dimen/span_10"
+        android:paddingStart="@dimen/span_10"
         android:textAllCaps="true"
         android:textColor="@color/font_white"
         android:textOff="@string/ls_generic_like"
@@ -204,8 +215,11 @@
         android:background="@drawable/detail_book_btn_book_cover"
         android:contentDescription="@null"
         android:drawableLeft="@drawable/ic_currently_wrapper"
+        android:drawableStart="@drawable/ic_currently_wrapper"
+        android:paddingEnd="@dimen/span_10"
         android:paddingLeft="@dimen/span_10"
         android:paddingRight="@dimen/span_10"
+        android:paddingStart="@dimen/span_10"
         android:textAllCaps="true"
         android:textColor="@color/font_white"
         android:textOff="@string/ls_book_detail_add_to_currently_reading"
@@ -230,8 +244,10 @@
       android:background="?android:attr/selectableItemBackground"
       android:clickable="true"
       android:focusable="true"
+      android:paddingEnd="@dimen/span_8"
       android:paddingLeft="@dimen/span_8"
-      android:paddingRight="@dimen/span_8" />
+      android:paddingRight="@dimen/span_8"
+      android:paddingStart="@dimen/span_8" />
 
     <View
       android:id="@+id/detail_book_offline_switch_separator"
@@ -245,8 +261,10 @@
       android:layout_height="wrap_content"
       android:lineSpacingMultiplier="1.2"
       android:paddingBottom="@dimen/span_16"
+      android:paddingEnd="@dimen/span_8"
       android:paddingLeft="@dimen/span_8"
       android:paddingRight="@dimen/span_8"
+      android:paddingStart="@dimen/span_8"
       android:paddingTop="@dimen/span_16" />
 
     <View
@@ -262,10 +280,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:drawableLeft="@drawable/ic_collection_wrapper"
+      android:drawableStart="@drawable/ic_collection_wrapper"
       android:gravity="center"
       android:minHeight="@dimen/span_48"
+      android:paddingEnd="@dimen/span_8"
       android:paddingLeft="@dimen/span_8"
       android:paddingRight="@dimen/span_8"
+      android:paddingStart="@dimen/span_8"
       android:visibility="gone"
       tools:text="Collection / Name of Collection" />
 

@@ -11,7 +11,7 @@
     android:layout_marginLeft="@dimen/global_shelve_books_layout_margin_left_right_bottom"
     android:layout_weight="1"
 
-    />
+    android:layout_marginStart="@dimen/global_shelve_books_layout_margin_left_right_bottom" />
 
   <com.worldreader.core.application.ui.widget.BookView
     android:id="@+id/global_shelve_books_layout_book_two"
@@ -20,7 +20,9 @@
     android:layout_margin="2dp"
     android:layout_marginLeft="@dimen/global_shelve_books_layout_margin_left_right_bottom"
     android:layout_marginRight="@dimen/global_shelve_books_layout_margin_left_right_bottom"
-    android:layout_weight="1" />
+    android:layout_weight="1"
+    android:layout_marginEnd="@dimen/global_shelve_books_layout_margin_left_right_bottom"
+    android:layout_marginStart="@dimen/global_shelve_books_layout_margin_left_right_bottom" />
 
   <com.worldreader.core.application.ui.widget.BookView
     android:id="@+id/global_shelve_books_layout_book_three"
@@ -28,7 +30,8 @@
     android:layout_height="fill_parent"
     android:layout_margin="2dp"
     android:layout_marginRight="@dimen/global_shelve_books_layout_margin_left_right_bottom"
-    android:layout_weight="1" />
+    android:layout_weight="1"
+    android:layout_marginEnd="@dimen/global_shelve_books_layout_margin_left_right_bottom" />
 
   <com.worldreader.core.application.ui.widget.BookView
     android:id="@+id/global_shelve_books_layout_book_four"
@@ -36,5 +39,6 @@
     android:layout_height="fill_parent"
     android:layout_margin="2dp"
     android:layout_marginRight="@dimen/global_shelve_books_layout_margin_left_right_bottom"
-    android:layout_weight="1" />
+    android:layout_weight="1"
+    android:layout_marginEnd="@dimen/global_shelve_books_layout_margin_left_right_bottom" />
 </merge>
