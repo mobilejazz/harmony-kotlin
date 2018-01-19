@@ -45,6 +45,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:layout_gravity="top|end"
+      android:rotationY="@integer/locale_mirror_flip"
       android:src="@drawable/as_downloaded_book_cover" />
 
 

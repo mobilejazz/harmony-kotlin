@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:contentDescription="@null"
+            android:rotationY="@integer/locale_mirror_flip"
             android:src="@drawable/as_collectiondetail"
             android:visibility="gone" />
 
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
             android:contentDescription="@null"
+            android:rotationY="@integer/locale_mirror_flip"
             android:src="@drawable/as_downloaded_book_detail"
             android:visibility="gone" />
 
@@ -178,7 +180,6 @@
         android:layout_alignTop="@+id/view"
         android:layout_toLeftOf="@+id/view"
         android:layout_toStartOf="@+id/view"
-        android:layout_weight="1"
         android:background="@drawable/detail_book_btn_book_cover"
         android:contentDescription="@null"
         android:drawableLeft="@drawable/ic_like_wrapper"
@@ -211,7 +212,6 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/view"
         android:layout_toRightOf="@+id/view"
-        android:layout_weight="1"
         android:background="@drawable/detail_book_btn_book_cover"
         android:contentDescription="@null"
         android:drawableLeft="@drawable/ic_currently_wrapper"

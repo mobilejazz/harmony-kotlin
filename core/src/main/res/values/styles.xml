@@ -27,6 +27,7 @@
 
   <style name="Widget.Worldreader.Core.TextView.Book.Download">
     <item name="android:drawableLeft">@drawable/ic_download_wrapper</item>
+    <item name="android:drawableStart">@drawable/ic_download_wrapper</item>
     <item name="android:textColor">@color/font_gray</item>
   </style>
 
