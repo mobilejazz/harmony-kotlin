@@ -3,21 +3,27 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <item
-    android:id="@+id/show_book_content"
-    android:icon="@drawable/ic_reader_index"
-    android:title="@string/ls_contents"
-    app:showAsAction="ifRoom" />
-
-  <item
-    android:id="@+id/display_options"
+    android:id="@+id/show_reader_options"
     android:icon="@drawable/ic_reader_style"
     android:title="@string/ls_display_options"
     app:showAsAction="ifRoom" />
 
   <item
-    android:id="@+id/text_to_speech"
-    android:enabled="true"
-    android:visible="false"
-    android:title="@string/ls_text_to_speech"
-    app:showAsAction="never" />
+    android:id="@+id/show_brightness_options"
+    android:icon="@drawable/ic_reader_brightness"
+    android:title="@string/ls_brightness"
+    app:showAsAction="ifRoom" />
+
+  <item
+    android:id="@+id/show_book_content"
+    android:icon="@drawable/ic_reader_index"
+    android:title="@string/ls_contents"
+    app:showAsAction="ifRoom" />
+
+  <!--<item-->
+    <!--android:id="@+id/text_to_speech"-->
+    <!--android:enabled="true"-->
+    <!--android:title="@string/ls_text_to_speech"-->
+    <!--android:visible="false"-->
+    <!--app:showAsAction="never" />-->
 </menu>

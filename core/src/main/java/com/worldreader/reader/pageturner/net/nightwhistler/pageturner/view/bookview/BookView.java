@@ -318,6 +318,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.book = null;
     this.fileName = null;
     this.strategy.reset();
+    this.spine = null;
   }
 
   public void startLoadingText() {

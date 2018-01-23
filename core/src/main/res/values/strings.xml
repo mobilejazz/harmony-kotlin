@@ -126,9 +126,11 @@
   <string name="ls_text_to_speech">Read out loud</string>
   <string name="ls_display_options">Display options</string>
   <string name="ls_contents">Contents</string>
-  <string name="ls_book_reading_select_one_word">Please select one word to search in the
-        dictionary.
-    </string>
+  <string name="ls_brightness">Brightness</string>
+  <string name="ls_font">Font</string>
+  <string name="ls_font_size">Font Size</string>
+  <string name="ls_background_color">Background Color</string>
+  <string name="ls_book_reading_select_one_word">Please select one word to search in the dictionary.</string>
   <string name="ls_book_reading_font_family_open_sans">Open Sans</string>
   <string name="ls_book_reading_font_family_lora">Lora</string>
   <string name="ls_book_reading_font_family_poppins">Poppins</string>
