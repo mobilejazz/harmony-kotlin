@@ -21,7 +21,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -85,7 +84,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
-// TODO: 27/11/2017 Move interactors to concrete implementations
 // TODO: 27/11/2017 Prepare design to be the same as Pablo's invision
 // TODO: 27/11/2017 Fix dagger injection on all projects
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
@@ -337,25 +335,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
       return true;
-    } else if (itemId == R.id.display_options) {
-      final ReaderSettingsDialog d = new ReaderSettingsDialog();
-      d.setBrightnessManager(di.brightnessManager);
-      d.setConfiguration(di.config);
-      d.setOnModifyReaderSettingsListener(new ReaderSettingsDialog.ModifyReaderSettingsListener() {
-        @Override public void onReaderSettingsModified(ReaderSettingsDialog.Action action) {
-          switch (action) {
-            case MODIFIED:
-              updateFromPrefs();
-              break;
-          }
-        }
-      });
-      final FragmentManager fm = getFragmentManager();
-      d.show(fm, ReaderSettingsDialog.TAG);
+    } else if (itemId == R.id.show_reader_options) {
       return true;
-    } else if (itemId == R.id.text_to_speech) {
-      onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
+    } else if (itemId == R.id.show_brightness_options) {
       return true;
+    //} else if (itemId == R.id.text_to_speech) {
+    //  onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
+    //  return true;
     } else if (itemId == android.R.id.home) {
       if (isPhotoViewerDisplayed()) {
         hidePhotoViewer();
