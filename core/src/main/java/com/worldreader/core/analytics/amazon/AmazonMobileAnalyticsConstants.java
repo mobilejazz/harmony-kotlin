@@ -2,6 +2,8 @@ package com.worldreader.core.analytics.amazon;
 
 public final class AmazonMobileAnalyticsConstants {
 
+  public static final String GRADE_SELECTED_EVENT = "SelectedGrade";
+  public static final String SELECTED_GRADE = "Grade";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";
