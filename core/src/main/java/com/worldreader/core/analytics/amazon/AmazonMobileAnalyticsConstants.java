@@ -80,6 +80,11 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String MILESTONE_STATE_ATTRIBUTE = "milestoneState";
   public static final String MILESTONE_DESC_ATTRIBUTE ="milestoneDesc";
 
+  public static final String REFERRER_DEVICE_ID_ATTRIBUTE ="referrer_device_id";
+  public static final String REFERRER_USER_ID_ATTRIBUTE ="referrer_user_id";
+
+
+
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;
   }
