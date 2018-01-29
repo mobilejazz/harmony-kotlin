@@ -24,6 +24,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageOffsets;
 import jedi.option.Option;
@@ -158,8 +160,14 @@ public class Configuration {
   }
 
   public ReadingDirection getReadingDirection() {
-    String value = settings.getString(KEY_READING_DIRECTION, ReadingDirection.LEFT_TO_RIGHT.name());
+    String value = settings.getString(KEY_READING_DIRECTION, isLayoutDirectionRTL()
+                                                             ? ReadingDirection.RIGHT_TO_LEFT.name() :
+                                                             ReadingDirection.LEFT_TO_RIGHT.name());
     return ReadingDirection.valueOf(value.toUpperCase(Locale.US));
+  }
+
+  private boolean isLayoutDirectionRTL() {
+    return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 
   public void setLastPosition(String fileName, int position) {

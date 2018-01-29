@@ -30,6 +30,7 @@ import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;
+import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
 import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
 
@@ -212,10 +213,12 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private Drawable getColoredArrow(int color) {
-    final Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
+    Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
+
     Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
     if (arrowDrawable != null && wrapped != null) {
       arrowDrawable.mutate();
+      wrapped = LayoutDirectionHelper.mirrorDrawableIfNeeded(this, arrowDrawable);
       DrawableCompat.setTint(wrapped, getResources().getColor(color));
     }
 

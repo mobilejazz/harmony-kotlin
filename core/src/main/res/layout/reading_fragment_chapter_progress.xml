@@ -42,6 +42,7 @@
       app:dsb_indicatorPopupEnabled="false"
       app:dsb_max="100"
       app:dsb_min="0"
+      app:dsb_mirrorForRtl="true"
       app:dsb_progressColor="@color/primary" />
 
     <TextView
