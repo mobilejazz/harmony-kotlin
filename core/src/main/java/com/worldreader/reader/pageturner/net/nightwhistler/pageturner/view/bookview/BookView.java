@@ -193,6 +193,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     progressUpdate();
   }
 
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
+
   public List<ClickableSpan> getLinkAt(float x, float y) {
     return getSpansAt(x, y, ClickableSpan.class);
   }

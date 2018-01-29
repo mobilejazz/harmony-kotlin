@@ -11,8 +11,7 @@
   android:elevation="8dp"
   android:focusable="true"
   android:orientation="vertical"
-  android:padding="8dp"
-  tools:layout_editor_absoluteY="81dp">
+  android:padding="8dp">
 
   <ImageButton
     android:id="@+id/arrow_left_iv"

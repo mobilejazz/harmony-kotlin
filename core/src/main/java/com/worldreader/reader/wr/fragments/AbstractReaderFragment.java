@@ -120,6 +120,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected TutorialView tutorialView;
   protected View containerTutorialView;
   protected View progressContainer;
+  protected TextView readerOptionsTv;
   public MaterialDialog progressDialog;
 
   protected DICompanion di;
@@ -160,6 +161,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.tutorialView = view.findViewById(R.id.reading_fragment_tutorial_view);
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
     this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
+    this.readerOptionsTv = view.findViewById(R.id.reader_options_tv);
 
     // Call injector
     di = onProvideDICompanionObject();
@@ -365,6 +367,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     view.findViewById(R.id.arrow_left_iv).setOnClickListener(prevNextClickListener);
     view.findViewById(R.id.arrow_right_iv).setOnClickListener(prevNextClickListener);
 
+    // Setup listener for reader options
+    readerOptionsTv.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        final SystemUiHelper systemUiHelper = getSystemUiHelper();
+        if (systemUiHelper != null && !systemUiHelper.isShowing()) {
+          systemUiHelper.show();
+        }
+      }
+    });
+
     // Obtain display metrics from current display
     final DisplayMetrics metrics = new DisplayMetrics();
     windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -505,9 +517,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     fontOptionsContainer.setVisibility(fontsItem.isChecked() ? View.VISIBLE : View.GONE);
     brightnessOptionsContainer.setVisibility(brightnessItem.isChecked() ? View.VISIBLE : View.GONE);
-
-    //this.expandableLayout.moveChild(0);
-    //this.expandableLayout.expand();
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
