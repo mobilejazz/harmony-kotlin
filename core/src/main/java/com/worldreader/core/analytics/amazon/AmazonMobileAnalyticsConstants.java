@@ -2,6 +2,8 @@ package com.worldreader.core.analytics.amazon;
 
 public final class AmazonMobileAnalyticsConstants {
 
+  public static final String GRADE_SELECTED_EVENT = "SelectedGrade";
+  public static final String SELECTED_GRADE = "Grade";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";
@@ -77,6 +79,11 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String MILESTONE_ATTRIBUTE ="milestone";
   public static final String MILESTONE_STATE_ATTRIBUTE = "milestoneState";
   public static final String MILESTONE_DESC_ATTRIBUTE ="milestoneDesc";
+
+  public static final String REFERRER_DEVICE_ID_ATTRIBUTE ="referrer_device_id";
+  public static final String REFERRER_USER_ID_ATTRIBUTE ="referrer_user_id";
+
+
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;

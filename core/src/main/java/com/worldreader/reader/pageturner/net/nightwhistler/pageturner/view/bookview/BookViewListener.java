@@ -31,7 +31,7 @@ public interface BookViewListener {
   /**
    * Called after the Bookview has successfully parsed the book.
    */
-  void onBookOpened(Book book);
+  void onBookParsed(Book book);
 
   /**
    * Event indicating text rendering has started

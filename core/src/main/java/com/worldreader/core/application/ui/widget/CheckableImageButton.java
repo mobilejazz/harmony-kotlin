@@ -26,14 +26,13 @@ package com.worldreader.core.application.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-import android.widget.ImageButton;
 
-public class CheckableImageButton extends ImageButton implements Checkable {
+public class CheckableImageButton extends android.support.v7.widget.AppCompatImageButton implements Checkable {
 
-  private boolean mChecked;
-  private boolean mBroadcasting;
+  private boolean checked;
+  private boolean broadcasting;
 
-  private OnCheckedChangeListener mOnCheckedChangeListener;
+  private OnCheckedChangeListener onCheckedChangeListener;
 
   private static final int[] CHECKED_STATE_SET = {
       android.R.attr.state_checked
@@ -42,7 +41,7 @@ public class CheckableImageButton extends ImageButton implements Checkable {
   /**
    * Interface definition for a callback to be invoked when the checked state changed.
    */
-  public static interface OnCheckedChangeListener {
+  public interface OnCheckedChangeListener {
 
     /**
      * Called when the checked state has changed.
@@ -77,7 +76,7 @@ public class CheckableImageButton extends ImageButton implements Checkable {
    * @param listener the callback to call on checked state change
    */
   public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
-    mOnCheckedChangeListener = listener;
+    onCheckedChangeListener = listener;
   }
 
   /**
@@ -86,30 +85,30 @@ public class CheckableImageButton extends ImageButton implements Checkable {
    * @param checked true to check the button, false to uncheck it
    */
   public void setChecked(boolean checked) {
-    if (mChecked != checked) {
-      mChecked = checked;
+    if (this.checked != checked) {
+      this.checked = checked;
       refreshDrawableState();
 
       // Avoid infinite recursions if setChecked() is called from a listener
-      if (mBroadcasting) {
+      if (broadcasting) {
         return;
       }
 
-      mBroadcasting = true;
-      if (mOnCheckedChangeListener != null) {
-        mOnCheckedChangeListener.onCheckedChanged(this, mChecked);
+      broadcasting = true;
+      if (onCheckedChangeListener != null) {
+        onCheckedChangeListener.onCheckedChanged(this, this.checked);
       }
 
-      mBroadcasting = false;
+      broadcasting = false;
     }
   }
 
   @Override public boolean isChecked() {
-    return mChecked;
+    return checked;
   }
 
   @Override public void toggle() {
-    setChecked(!mChecked);
+    setChecked(!checked);
   }
 
   @Override public int[] onCreateDrawableState(int extraSpace) {

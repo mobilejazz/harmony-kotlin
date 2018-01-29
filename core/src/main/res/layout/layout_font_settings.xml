@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  tools:ignore="HardcodedText">
+
+  <TextView
+    android:id="@+id/font_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:text="@string/ls_font"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <RadioGroup
+    android:id="@+id/fonts_rg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:minHeight="32dp"
+    android:orientation="horizontal"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/font_tv">
+
+    <com.worldreader.reader.wr.widget.FontRadioButton
+      android:id="@+id/open_sans_rb"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="center_vertical"
+      android:text="@string/ls_book_reading_font_family_open_sans"
+      app:buttonTint="@color/primary_dark"
+      app:custom_typeface="fonts/OpenSans.ttf" />
+
+    <com.worldreader.reader.wr.widget.FontRadioButton
+      android:id="@+id/popins_rb"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="center_vertical"
+      android:text="@string/ls_book_reading_font_family_poppins"
+      app:buttonTint="@color/primary_dark"
+      app:custom_typeface="fonts/Poppins.ttf" />
+
+    <com.worldreader.reader.wr.widget.FontRadioButton
+      android:id="@+id/lora_rb"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="center_vertical"
+      android:text="@string/ls_book_reading_font_family_lora"
+      app:buttonTint="@color/primary_dark"
+      app:custom_typeface="fonts/Lora.ttf" />
+  </RadioGroup>
+
+  <TextView
+    android:id="@+id/font_size_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:text="@string/ls_font_size"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/fonts_rg" />
+
+  <LinearLayout
+    android:id="@+id/font_sizes_container_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:minHeight="32dp"
+    android:orientation="horizontal"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/font_size_tv">
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+      android:id="@+id/size_1"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:focusable="true"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:gravity="bottom"
+      android:tag="12"
+      android:text="a"
+      android:textSize="12sp" />
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+      android:id="@+id/size_2"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:focusable="true"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:gravity="bottom"
+      android:text="a"
+      android:tag="14"
+      android:textSize="14sp" />
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+      android:id="@+id/size_3"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:focusable="true"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:gravity="bottom"
+      android:text="a"
+      android:tag="18"
+      android:textSize="18sp" />
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+      android:id="@+id/size_4"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:focusable="true"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:gravity="bottom"
+      android:text="a"
+      android:tag="20"
+      android:textSize="20sp" />
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+      android:id="@+id/size_5"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:focusable="true"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:gravity="bottom"
+      android:text="a"
+      android:tag="24"
+      android:textSize="24sp" />
+  </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

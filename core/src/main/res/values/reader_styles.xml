@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <style name="WorldReader.Widget.ActionBarStyle" parent="Widget.AppCompat.ActionBar">
-    <item name="android:displayOptions">showHome|useLogo|homeAsUp</item>
-    <item name="displayOptions">showHome|useLogo|homeAsUp</item>
-  </style>
-
-</resources>

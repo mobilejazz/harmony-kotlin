@@ -58,6 +58,7 @@ dependencies {
   compile dependencies.recyclerView
   compile dependencies.cardView
   compile dependencies.design
+  compile dependencies.constraintLayout
 
   compile dependencies.picasso
   compile dependencies.picassoOkhttp3
@@ -116,5 +117,7 @@ dependencies {
 
   compile dependencies.networkConnectionClass
 
-  compile group: 'com.squareup', name: 'javapoet', version: '1.7.0'
+  compile dependencies.javaPoet
+  compile dependencies.systemUiHelper
+  compile dependencies.expandableLayout
 }

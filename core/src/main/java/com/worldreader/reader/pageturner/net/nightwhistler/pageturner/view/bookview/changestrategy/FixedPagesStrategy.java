@@ -149,18 +149,18 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       int startOffset = pageOffsets.get(pageOffsets.size() - 1);
 
       if (startOffset >= 0 && startOffset <= text.length() - 1) {
-        return some(applySpans(this.text.subSequence(startOffset, text.length()), startOffset));
+        return some(applySpans(this.text.subSequence(startOffset, text.length())));
       } else {
-        return some(applySpans(text, 0));
+        return some(applySpans(text));
       }
     } else {
       int start = this.pageOffsets.get(page);
       int end = this.pageOffsets.get(page + 1);
-      return some(applySpans(this.text.subSequence(start, end), start));
+      return some(applySpans(this.text.subSequence(start, end)));
     }
   }
 
-  private CharSequence applySpans(CharSequence text, int offset) {
+  private CharSequence applySpans(CharSequence text) {
     return text;
   }
 

@@ -13,33 +13,33 @@
     android:paddingTop="@dimen/span_8">
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_day_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Day"
+      android:id="@+id/day_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:contentDescription="@null"
-      android:minHeight="50dp"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:minHeight="48dp"
       android:src="@drawable/ic_reader_a_black_wrapper" />
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_night_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Night"
+      android:id="@+id/night_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:contentDescription="@null"
-      android:minHeight="50dp"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:minHeight="48dp"
       android:src="@drawable/ic_reader_a_white_wrapper" />
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_cream_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Cream"
+      android:id="@+id/cream_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:contentDescription="@null"
-      android:minHeight="50dp"
+      android:foreground="?attr/selectableItemBackgroundBorderless"
+      android:minHeight="48dp"
       android:src="@drawable/ic_reader_a_sepia_wrapper" />
 
   </LinearLayout>
@@ -53,20 +53,17 @@
     android:paddingTop="@dimen/span_8">
 
     <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
-      android:id="@+id/display_options_brightness_seekbar"
+      android:id="@+id/brightness_sb"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/span_8"
       android:layout_marginLeft="@dimen/span_8"
       android:layout_marginRight="@dimen/span_8"
-      android:layout_marginStart="@dimen/span_8"
       android:layout_weight="1"
       app:dsb_indicatorColor="@color/primary"
       app:dsb_indicatorPopupEnabled="false"
       app:dsb_max="100"
       app:dsb_min="0"
-      app:dsb_mirrorForRtl="true"
-      app:dsb_progressColor="@color/primary" />
+      app:dsb_progressColor="@color/primary"       app:dsb_mirrorForRtl="true" />
   </LinearLayout>
 
   <LinearLayout

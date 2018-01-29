@@ -126,21 +126,20 @@
   <string name="ls_text_to_speech">Read out loud</string>
   <string name="ls_display_options">Display options</string>
   <string name="ls_contents">Contents</string>
-  <string name="ls_book_reading_select_one_word">Please select one word to search in the
-        dictionary.
-    </string>
+  <string name="ls_brightness">Brightness</string>
+  <string name="ls_font">Font</string>
+  <string name="ls_font_size">Font Size</string>
+  <string name="ls_background_color">Background Color</string>
+  <string name="ls_book_reading_select_one_word">Please select one word to search in the dictionary.</string>
   <string name="ls_book_reading_font_family_open_sans">Open Sans</string>
   <string name="ls_book_reading_font_family_lora">Lora</string>
   <string name="ls_book_reading_font_family_poppins">Poppins</string>
   <string name="ls_loading_text">Loading text…</string>
   <string name="ls_reader_set_your_goals_title">Set your goals</string>
-  <string name="ls_reader_set_your_goals_message">Set a reading goal and see how you compare to
-        other readers. Let\'s do it now.
-    </string>
+  <string name="ls_reader_set_your_goals_message">Set a reading goal and see how you compare to other readers. Let\'s do it now.</string>
   <string name="ls_reader_reminder_set_your_goals_title">Set your reading goal?</string>
-  <string name="ls_reader_reminder_set_your_goals_message">Let\'s do it now so you can compare
-        your progress with other readers.
-    </string>
+  <string name="ls_reader_reminder_set_your_goals_message">Let\'s do it now so you can compare your progress with other readers.</string>
+  <string name="ls_reader_options">Reader Options</string>
   <!--#DefintionView-->
   <string name="ls_definition_view_no_definitions_found">No definition found</string>
   <string name="ls_definition_view_adjective">adjective</string>

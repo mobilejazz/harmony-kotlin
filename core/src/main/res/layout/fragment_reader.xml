@@ -13,10 +13,11 @@
     <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView
       android:id="@+id/reading_fragment_bookView"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:paddingTop="22dp">
 
       <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookTextView
-        android:id="@id/bookview_inner"
+        android:id="@id/book_view_inner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -37,7 +38,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:visibility="gone" />
+    android:visibility="visible" />
 
   <com.worldreader.reader.wr.widget.DefinitionView
     android:id="@+id/reading_fragment_word_definition_dv"
@@ -59,8 +60,27 @@
       android:layout_centerInParent="true"
       android:clickable="true"
       android:focusable="true"
-      android:visibility="gone"/>
+      android:visibility="gone" />
 
   </RelativeLayout>
+
+  <TextView
+    android:id="@+id/reader_options_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="18dp"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    android:layout_gravity="center_horizontal|top"
+    android:background="@drawable/shape_button_read_options_background"
+    android:gravity="center"
+    android:paddingBottom="2dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="2dp"
+    android:text="@string/ls_reader_options"
+    android:textAllCaps="true"
+    android:textColor="@color/font_white"
+    android:textSize="10sp"
+    android:textStyle="bold" />
 
 </RelativeLayout>

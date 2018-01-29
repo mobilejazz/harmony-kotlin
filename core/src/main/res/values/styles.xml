@@ -72,18 +72,6 @@
 
   <style name="Widget.Worldreader.Core.Button.Reader.Profile" />
 
-  <style name="Widget.Worldreader.Core.Button.Reader.Cream">
-    <item name="android:background">@drawable/modify_reader_settings_reader_button_cream</item>
-  </style>
-
-  <style name="Widget.Worldreader.Core.Button.Reader.Night">
-    <item name="android:background">@drawable/modify_reader_settings_reader_button_night</item>
-  </style>
-
-  <style name="Widget.Worldreader.Core.Button.Reader.Day">
-    <item name="android:background">@drawable/modify_reader_settings_reader_button_light</item>
-  </style>
-
   <style name="Widget.Worldreader.Core.Button.Reader.Brightness">
     <item name="android:background">@drawable/modify_reader_settings_reader_brightness_button
     </item>

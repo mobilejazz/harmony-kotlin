@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <declare-styleable name="Theme">
     <attr name="discreteSeekBarStyle" format="reference" />
   </declare-styleable>
+
   <!-- DiscreteSeekBar -->
   <declare-styleable name="DiscreteSeekBar">
     <attr name="dsb_min" format="integer|dimension" />
@@ -21,4 +23,9 @@
     <attr name="dsb_textIndicatorSize" format="dimension" />
     <attr name="dsb_textIndicatorColor" format="color" />
   </declare-styleable>
+
+  <declare-styleable name="CustomTypeface">
+    <attr name="custom_typeface" format="string" />
+  </declare-styleable>
+
 </resources>

@@ -11,7 +11,19 @@
     <android.support.v7.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      android:elevation="2dp" />
+
+    <include
+      android:id="@+id/font_options_container"
+      layout="@layout/layout_font_settings"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/brightness_options_container"
+      layout="@layout/layout_brightness_settings"
+      android:visibility="gone" />
+
   </android.support.design.widget.AppBarLayout>
 
   <FrameLayout
@@ -76,5 +88,6 @@
 
       </FrameLayout>
     </FrameLayout>
+
   </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>
