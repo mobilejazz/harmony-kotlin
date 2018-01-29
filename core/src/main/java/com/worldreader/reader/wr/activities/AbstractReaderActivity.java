@@ -1,10 +1,13 @@
 package com.worldreader.reader.wr.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -30,8 +34,8 @@ import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;
-import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
+import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -48,14 +52,24 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
 
   private AppBarLayout toolbarLayout;
   private Toolbar toolbar;
+
   private View readingContainer;
   private View bookIndexContainer;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
+    onSetupFullScreenStableView();
     super.onCreate(savedInstanceState);
     onSetupSystemUiHelper();
     setContentView(R.layout.activity_reader);
     onPostCreate();
+  }
+
+  private void onSetupFullScreenStableView() {
+    final View decorView = getWindow().getDecorView();
+    final int systemUiVisibility = decorView.getSystemUiVisibility();
+    decorView.setSystemUiVisibility(
+        systemUiVisibility | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    );
   }
 
   private void onPostCreate() {
@@ -98,10 +112,12 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
 
   private void onSetupSystemUiHelper() {
     this.systemUiHelper =
-        new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, SystemUiHelper.FLAG_IMMERSIVE_STICKY, new SystemUiHelper.OnVisibilityChangeListener() {
+        new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
           @Override public void onVisibilityChange(boolean visible) {
             if (abstractReaderFragment != null && isVisibleReadingFragment()) {
-              abstractReaderFragment.onVisibilityChange(visible);
+              if (abstractReaderFragment.progressDialog == null) {
+                abstractReaderFragment.onVisibilityChange(visible);
+              }
             }
           }
         });
@@ -165,12 +181,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     readingContainer.setVisibility(View.VISIBLE);
     bookIndexContainer.setVisibility(View.GONE);
 
-    final View decorView = getWindow().getDecorView();
-    decorView.setSystemUiVisibility(decorView.getSystemUiVisibility()
-        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
     invalidateOptionsMenu();
   }
 
@@ -179,21 +189,55 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   @Override public void onWindowFocusChanged(boolean hasFocus) {
-    if (isVisibleReadingFragment()) {
-      abstractReaderFragment.onWindowFocusChanged(hasFocus);
-    }
   }
 
-  @Override public boolean onCreateOptionsMenu(Menu menu) {
+  @SuppressLint("RestrictedApi") @Override public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    MenuInflater menuInflater = getMenuInflater();
+
+    final MenuInflater inflater = getMenuInflater();
+
     if (isVisibleReadingFragment()) {
-      menuInflater.inflate(R.menu.menu_reading, menu);
+      MenuItem brightnessItem = null;
+      MenuItem fontsItem = null;
+
+      if (menu instanceof MenuBuilder) {
+        // As the menu is cleared at this point, we can retrieve previous items if we cast to MenuBuilder
+        final MenuBuilder menuBuilder = (MenuBuilder) menu;
+
+        for (MenuItem item : menuBuilder.getActionItems()) {
+          if (item.getItemId() == R.id.show_brightness_options) {
+            brightnessItem = item;
+          }
+
+          if (item.getItemId() == R.id.show_font_options) {
+            fontsItem = item;
+          }
+        }
+      }
+
+      // Create a new instance of the menu
+      inflater.inflate(R.menu.menu_reading, menu);
+
+      // If those are not null, then restore its state in the new menu instance
+      if (brightnessItem != null && fontsItem != null) {
+        final MenuItem newBrightnessItem = menu.findItem(R.id.show_brightness_options);
+        final MenuItem newFontsItem = menu.findItem(R.id.show_font_options);
+
+        // Setup previous state
+        newBrightnessItem.setChecked(brightnessItem.isChecked());
+        newFontsItem.setChecked(fontsItem.isChecked());
+
+        // Setup drawable state depending on current status
+        newBrightnessItem.setIcon(getTintDrawable(newBrightnessItem.getIcon(), newBrightnessItem.isChecked() ? R.color.primary : R.color.reader_icon_color));
+        newFontsItem.setIcon(getTintDrawable(newFontsItem.getIcon(), newFontsItem.isChecked() ? R.color.primary : R.color.reader_icon_color));
+      }
+
       changeActionBarColor(R.color.reader_actionbar_color, R.color.reader_statusbar_color, R.color.reader_actionbar_arrow_color);
     } else {
       changeActionBarColor(R.color.reader_book_index_actionbar_color, R.color.reader_book_index_statusbar_color,
           R.color.reader_book_index_actionbar_arrow_color);
     }
+
     return true;
   }
 
@@ -201,7 +245,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     final ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
-      actionBar.setHomeAsUpIndicator(getColoredArrow(arrowColor));
+      actionBar.setHomeAsUpIndicator(getTintDrawable(R.drawable.ic_arrow_back_black_24dp, arrowColor));
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       final Window window = getWindow();
@@ -211,15 +255,20 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     }
   }
 
-  private Drawable getColoredArrow(int color) {
-    final Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
-    Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
-    if (arrowDrawable != null && wrapped != null) {
-      arrowDrawable.mutate();
-      DrawableCompat.setTint(wrapped, getResources().getColor(color));
+  private Drawable getTintDrawable(@DrawableRes int drawableRes, @ColorRes int color) {
+    final Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+    return getTintDrawable(drawable, color);
+  }
+
+  private Drawable getTintDrawable(Drawable drawable, @ColorRes int color) {
+    final Drawable tintedDrawable = DrawableCompat.wrap(drawable);
+
+    if (drawable != null && tintedDrawable != null) {
+      drawable.mutate();
+      DrawableCompat.setTint(tintedDrawable, getResources().getColor(color));
     }
 
-    return wrapped;
+    return tintedDrawable;
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
@@ -251,10 +300,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
       bookTocFragment.onOptionsMenuClosed(menu);
     }
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // Private methods
-  ///////////////////////////////////////////////////////////////////////////
 
   @Override public void onBookTableOfContentsLoaded(Option<List<TocEntry>> tocEntries) {
     this.bookTocFragment.onBookTableOfContentsLoaded(tocEntries);

@@ -5,9 +5,9 @@ import android.text.SpannableStringBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.DICompanion;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
-import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import org.htmlcleaner.TagNode;
@@ -17,10 +17,10 @@ public abstract class ImageTagHandler extends TagNodeHandler implements ImageRes
   private final Context context;
   private final BookMetadata bm;
   private final ResourcesLoader resourcesLoader;
-  private final AbstractReaderFragment.DICompanion di;
+  private final DICompanion di;
   private final Logger logger;
 
-  public ImageTagHandler(final Context context, final BookMetadata bm, final ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, final Logger logger) {
+  public ImageTagHandler(final Context context, final BookMetadata bm, final ResourcesLoader resourcesLoader, DICompanion di, final Logger logger) {
     this.context = context.getApplicationContext();
     this.bm = bm;
     this.resourcesLoader = resourcesLoader;

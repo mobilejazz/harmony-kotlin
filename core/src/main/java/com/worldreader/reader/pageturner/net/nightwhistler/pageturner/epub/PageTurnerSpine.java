@@ -158,6 +158,10 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return getResourceForIndex(position + 1);
   }
 
+  public Option<Resource> getPreviousResource() {
+    return getResourceForIndex(position - 1);
+  }
+
   private Option<Resource> getResourceForIndex(int index) {
     if (entries.isEmpty() || index < 0 || index >= entries.size()) {
       return none();

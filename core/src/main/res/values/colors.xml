@@ -54,6 +54,7 @@
   <color name="ic_reader_menu">#9B9B9B</color>
   <color name="reader_actionbar_color">#fff5f5f5</color>
   <color name="reader_statusbar_color">#ff757575</color>
+  <color name="reader_icon_color">#9B9B9B</color>
   <color name="reader_actionbar_arrow_color">#ff5a595b</color>
   <color name="reader_book_index_actionbar_color">@color/primary</color>
   <color name="reader_book_index_statusbar_color">@color/secondary_dark</color>

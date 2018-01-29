@@ -1,16 +1,16 @@
 package com.worldreader.reader.wr.fragments;
 
+import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +21,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,59 +33,62 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.internal.MDTintHelper;
 import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.R;
-import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.reader.ReaderAnalytics;
 import com.worldreader.core.application.helper.AndroidFutures;
-import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.application.helper.ui.Dimens;
 import com.worldreader.core.application.ui.dialog.DialogFactory;
+import com.worldreader.core.application.ui.widget.CheckableImageButton;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
-import com.worldreader.core.common.date.Dates;
-import com.worldreader.core.datasource.StreamingBookDataSource;
-import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.FontFamilies;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookViewListener;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.DICompanion;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ReaderSavedConfigState;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.TextSelectionCallback;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoaderFactory;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
-import com.worldreader.reader.wr.helper.BrightnessManager;
-import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
+import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
-import javax.inject.Inject;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
-// TODO: 27/11/2017 Prepare design to be the same as Pablo's invision
 // TODO: 27/11/2017 Fix dagger injection on all projects
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
@@ -97,7 +101,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private static final String IDX_KEY = "index:";
 
   private final Handler handler = new Handler(Looper.getMainLooper());
-  private final SavedConfigState savedConfigState = new SavedConfigState();
+  private final ReaderSavedConfigState savedConfigState = new ReaderSavedConfigState();
 
   private Context context;
 
@@ -116,9 +120,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected TutorialView tutorialView;
   protected View containerTutorialView;
   protected View progressContainer;
-  protected ProgressDialog progressDialog;
+  public MaterialDialog progressDialog;
 
   protected DICompanion di;
+
+  private Menu menu;
 
   protected int currentScrolledPages = 0;
   private boolean hasSharedText;
@@ -139,7 +145,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   @SuppressLint("ClickableViewAccessibility") @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
 
-    this.context = getActivity();
+    final Activity activity = getActivity();
+    final WindowManager windowManager = activity.getWindowManager();
+
+    this.context = activity;
 
     // Inject views
     final View view = getView();
@@ -199,7 +208,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     this.chapterProgressDsb.setEnabled(true);
     this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
-
       private int seekValue;
 
       @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -212,8 +220,154 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
+    // Setup default enabled font in RadioGroup
+    final String family = di.config.getSerifFontFamilyString();
+    int radioBtnId = 0;
+    if (FontFamilies.LORA.DEFAULT.fontName.equals(family)) {
+      radioBtnId = R.id.lora_rb;
+    } else if (FontFamilies.OPEN_SANS.DEFAULT.fontName.equals(family)) {
+      radioBtnId = R.id.open_sans_rb;
+    } else if (FontFamilies.POPPINS.DEFAULT.fontName.equals(family)) {
+      radioBtnId = R.id.popins_rb;
+    }
+
+    final RadioGroup fontsRg = activity.findViewById(R.id.fonts_rg);
+    fontsRg.check(radioBtnId);
+    fontsRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+      @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+        FontFamilies.FontFamily fontFamily = null;
+        if (checkedId == R.id.open_sans_rb) {
+          fontFamily = FontFamilies.OPEN_SANS.DEFAULT;
+        } else if (checkedId == R.id.popins_rb) {
+          fontFamily = FontFamilies.POPPINS.DEFAULT;
+        } else if (checkedId == R.id.lora_rb) {
+          fontFamily = FontFamilies.LORA.DEFAULT;
+        }
+        di.config.setSerifFontFamily(fontFamily);
+        updateReaderFromPreferences();
+      }
+    });
+
+    // Setup listeners for reader font sizes
+    final int textSize = di.config.getTextSize();
+
+    final LinearLayout fontSizesContainerLl = activity.findViewById(R.id.font_sizes_container_ll);
+    final int childCount = fontSizesContainerLl.getChildCount();
+
+    // Setup fake radio group listener for font sizes
+    final View.OnClickListener textSizeChangeListener = new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        final int id = v.getId();
+
+        for (int i = 0; i < childCount; i++) {
+          final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
+          final boolean checked = child.getId() == id;
+          child.setChecked(checked);
+          final int color = checked ? R.color.primary_dark : R.color.font_gray;
+          child.setTextColor(ContextCompat.getColor(activity, color));
+        }
+
+        final String rawSize = ((String) v.getTag());
+        di.config.setTextSize(Integer.valueOf(rawSize));
+        updateReaderFromPreferences();
+      }
+    };
+
+    for (int i = 0; i < childCount; i++) {
+      final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
+      final Integer viewFontSize = Integer.valueOf((String) child.getTag());
+      child.setTextColor(ContextCompat.getColor(activity, viewFontSize == textSize ? R.color.primary_dark : R.color.font_gray));
+      child.setOnClickListener(textSizeChangeListener);
+    }
+
+    // Setup listeners for reader profile colors
+    final DiscreteSeekBar brightnessSb = activity.findViewById(R.id.brightness_sb);
+    brightnessSb.setProgress(di.config.getBrightness());
+    brightnessSb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
+      private int level;
+
+      @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+        final Window window = getActivity().getWindow();
+        di.brightnessManager.setBrightness(window, value);
+        this.level = value;
+      }
+
+      @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+        di.config.setBrightness(level);
+      }
+    });
+
+    final CheckableImageButton dayProfileBtn = activity.findViewById(R.id.day_profile_btn);
+    final CheckableImageButton nightProfileBtn = activity.findViewById(R.id.night_profile_btn);
+    final CheckableImageButton creamProfileBtn = activity.findViewById(R.id.cream_profile_btn);
+
+    // Setup initial checked element for color profile
+    final Configuration.ColorProfile profile = di.config.getColourProfile();
+    switch (profile) {
+      case DAY:
+        dayProfileBtn.setChecked(true);
+        break;
+      case NIGHT:
+        nightProfileBtn.setChecked(true);
+        break;
+      case CREAM:
+        creamProfileBtn.setChecked(true);
+        break;
+    }
+
+    // Create "fake" radio button group
+    final View.OnClickListener readerProfileChangeListener = new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        final int id = v.getId();
+        if (id == R.id.day_profile_btn) {
+          di.config.setColorProfile(Configuration.ColorProfile.DAY);
+          dayProfileBtn.setChecked(true);
+          nightProfileBtn.setChecked(false);
+          creamProfileBtn.setChecked(false);
+        } else if (id == R.id.night_profile_btn) {
+          di.config.setColorProfile(Configuration.ColorProfile.NIGHT);
+          dayProfileBtn.setChecked(false);
+          nightProfileBtn.setChecked(true);
+          creamProfileBtn.setChecked(false);
+        } else if (id == R.id.cream_profile_btn) {
+          di.config.setColorProfile(Configuration.ColorProfile.CREAM);
+          dayProfileBtn.setChecked(false);
+          nightProfileBtn.setChecked(false);
+          creamProfileBtn.setChecked(true);
+        }
+        updateReaderFromPreferences();
+      }
+    };
+
+    dayProfileBtn.setOnClickListener(readerProfileChangeListener);
+    nightProfileBtn.setOnClickListener(readerProfileChangeListener);
+    creamProfileBtn.setOnClickListener(readerProfileChangeListener);
+
+    // Setup navigation forward and backward listener
+
+    final View.OnClickListener prevNextClickListener = new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        final PageTurnerSpine spine = bookView.getSpine();
+        if (spine != null) {
+          final int id = v.getId();
+          Resource resource;
+          if (id == R.id.arrow_left_iv) {
+            resource = spine.getPreviousResource().unsafeGet();
+          } else {
+            resource = spine.getNextResource().unsafeGet();
+          }
+          if (resource != null) {
+            bookView.navigateTo(resource.getHref());
+          }
+        }
+      }
+    };
+    view.findViewById(R.id.arrow_left_iv).setOnClickListener(prevNextClickListener);
+    view.findViewById(R.id.arrow_right_iv).setOnClickListener(prevNextClickListener);
+
+    // Obtain display metrics from current display
     final DisplayMetrics metrics = new DisplayMetrics();
-    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    windowManager.getDefaultDisplay().getMetrics(metrics);
 
     // Setup our special gesture detector to be aware of user movements in the reader
     final GestureDetector gestureDetector = new GestureDetector(context, new BookNavigationGestureDetector(bookView, metrics, this));
@@ -231,7 +385,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     saveConfigState();
 
     // Load state in reader
-    updateFromPrefs();
+    updateReaderFromPreferences();
 
     // Try to restore last read position
     restoreLastReadPosition(savedInstanceState);
@@ -246,34 +400,32 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onPause() {
-    Log.d(TAG, "onPause() called.");
     saveReadingPosition();
     onReaderFragmentEvent(BookReaderEvents.READ_PAGE_ANALYTICS_EVENT);
     super.onPause();
   }
 
   @Override public void onStop() {
-    super.onStop();
-    Log.d(TAG, "onStop() called.");
     dismissProgressDialog();
+    super.onStop();
   }
 
   @Override public void onDestroy() {
-    this.bookView.releaseResources();
-    this.dismissProgressDialog();
+    bookView.releaseResources();
+    dismissProgressDialog();
     super.onDestroy();
   }
 
   @Override public void onLowMemory() {
+    textLoader.clearCachedText();
     super.onLowMemory();
-    this.textLoader.clearCachedText();
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     onFragmentActivityResult(requestCode, resultCode, data);
   }
 
-  @Override public void onSaveInstanceState(final Bundle outState) {
+  @Override public void onSaveInstanceState(@NonNull final Bundle outState) {
     if (this.bookView != null) {
       outState.putInt(POS_KEY, this.bookView.getProgressPosition());
       outState.putInt(IDX_KEY, this.bookView.getIndex());
@@ -284,6 +436,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final AbstractReaderActivity activity = ((AbstractReaderActivity) getActivity());
     if (activity == null) {
       return;
+    }
+
+    // Check if PhotoViewer is being displayed, and if it is, hide the photo viewer
+    if (isPhotoViewerDisplayed()) {
+      hidePhotoViewer();
     }
 
     final AppBarLayout toolbarLayout = activity.getToolbarLayout();
@@ -329,25 +486,56 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     set.start();
   }
 
+  @Override public void onPrepareOptionsMenu(Menu menu) {
+    this.menu = menu;
+
+    // Check that activity is in good shape
+    final FragmentActivity activity = getActivity();
+    if (activity == null || activity.isFinishing()) {
+      return;
+    }
+
+    // Obtain the views from the activity
+    final View fontOptionsContainer = activity.findViewById(R.id.font_options_container);
+    final View brightnessOptionsContainer = activity.findViewById(R.id.brightness_options_container);
+
+    // Retrieve menu items
+    final MenuItem fontsItem = menu.findItem(R.id.show_font_options);
+    final MenuItem brightnessItem = menu.findItem(R.id.show_brightness_options);
+
+    fontOptionsContainer.setVisibility(fontsItem.isChecked() ? View.VISIBLE : View.GONE);
+    brightnessOptionsContainer.setVisibility(brightnessItem.isChecked() ? View.VISIBLE : View.GONE);
+
+    //this.expandableLayout.moveChild(0);
+    //this.expandableLayout.expand();
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     final int itemId = item.getItemId();
+    final AbstractReaderActivity activity = ((AbstractReaderActivity) getActivity());
+
+    // Before doing anything else, we have to hide the photo viewer if is being displayed
+    if (isPhotoViewerDisplayed()) {
+      hidePhotoViewer();
+      if (itemId == android.R.id.home) { // If for some reason, the user clicks on back, don't send him to previous activity, but should not be needed
+        return true;
+      }
+    }
 
     if (itemId == R.id.show_book_content) {
       bookTocEntryListener.displayBookTableOfContents();
       return true;
-    } else if (itemId == R.id.show_reader_options) {
-      return true;
-    } else if (itemId == R.id.show_brightness_options) {
-      return true;
-    //} else if (itemId == R.id.text_to_speech) {
-    //  onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT);
-    //  return true;
-    } else if (itemId == android.R.id.home) {
-      if (isPhotoViewerDisplayed()) {
-        hidePhotoViewer();
-        return false;
+    } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
+      item.setChecked(!item.isChecked());
+      menu.findItem(itemId == R.id.show_font_options ? R.id.show_brightness_options : R.id.show_font_options).setChecked(false);
+      if (activity != null) {
+        activity.invalidateOptionsMenu();
       }
-      getActivity().finish();
+      return true;
+    } else if (itemId == android.R.id.home) {
+      if (activity != null) {
+        activity.finish();
+      }
       return true;
     } else {
       return super.onOptionsItemSelected(item);
@@ -367,7 +555,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  private void updateFromPrefs() {
+  private void updateReaderFromPreferences() {
     final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
@@ -392,12 +580,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setTitle("");
 
-    final SystemUiHelper systemUiHelper = getSystemUiHelper();
-    if (systemUiHelper != null) {
+    final Window window = activity.getWindow();
+    if (window != null) {
       if (di.config.isKeepScreenOn()) {
-        systemUiHelper.keepScreenOn();
+        keepScreenOn(window);
       } else {
-        systemUiHelper.keepScreenOff();
+        keepScreenOff(window);
       }
     }
 
@@ -405,13 +593,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Check if we need a restart
 
+    final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
     final boolean isFontChanged = !di.config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
     final boolean isBackgroundChanged = di.config.getColourProfile() != savedConfigState.colorProfile;
     final boolean isStripWhiteSpaceEnabled = di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
-    final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
     final boolean isSansSerifFontNameEqual = di.config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
-    if (!savedConfigState.usePageNum
-        || isStripWhiteSpaceEnabled
+
+    if (isStripWhiteSpaceEnabled
         || !fontNameChanged
         || isFontChanged
         || !isSansSerifFontNameEqual
@@ -424,6 +612,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       textLoader.invalidateCachedText();
       restartActivity(isFontChanged, isBackgroundChanged);
     }
+  }
+
+  private void keepScreenOff(Window window) {
+    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+
+  private void keepScreenOn(Window window) {
+    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
   @Nullable private SystemUiHelper getSystemUiHelper() {
@@ -503,8 +699,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Cache old settings to check if we'll need a restart later
     savedConfigState.stripWhiteSpace = di.config.isStripWhiteSpaceEnabled();
 
-    savedConfigState.usePageNum = true;
-
     savedConfigState.hMargin = di.config.getHorizontalMargin();
     savedConfigState.vMargin = di.config.getVerticalMargin();
 
@@ -533,25 +727,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.bookView.setIndex(lastIndex);
   }
 
-  public void onWindowFocusChanged(boolean hasFocus) {
-    final SystemUiHelper systemUiHelper = getSystemUiHelper();
-    if (hasFocus) {
-      updateFromPrefs();
-      if (systemUiHelper != null && systemUiHelper.isShowing()) {
-        systemUiHelper.delayHide(SystemUiHelper.SHORT_DELAY);
-      }
-    } else {
-      if (systemUiHelper != null) {
-        systemUiHelper.keepScreenOff();
-      }
-    }
-  }
-
   public boolean onTouchEvent(MotionEvent event) {
     return bookView.onTouchEvent(event);
   }
 
-  @Override public void onBookOpened(final Book book) {
+  @Override public void onBookParsed(final Book book) {
     final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
@@ -563,12 +743,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       bookTocEntryListener.onBookTableOfContentsLoaded(optionalToc);
     }
 
-    updateFromPrefs();
+    final SystemUiHelper uiHelper = getSystemUiHelper();
+    if (uiHelper != null) {
+      uiHelper.delayHide(300);
+    }
+
+    updateReaderFromPreferences();
   }
 
   @Override public void onStartRenderingText() {
     if (isAdded()) {
-      final ProgressDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
+      final MaterialDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
       progressDialog.show();
     }
   }
@@ -584,7 +769,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     restoreColorProfile();
 
-    final ProgressDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
+    final MaterialDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
     progressDialog.show();
   }
 
@@ -732,12 +917,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onBookImageClicked(final Drawable drawable) {
-    displayPhotoViewer((AbstractFastBitmapDrawable) drawable);
+    showPhotoViewer((AbstractFastBitmapDrawable) drawable);
   }
 
-  private void displayPhotoViewer(final AbstractFastBitmapDrawable drawable) {
+  private void showPhotoViewer(final AbstractFastBitmapDrawable drawable) {
     final FragmentActivity activity = getActivity();
-    if (activity != null && !activity.isFinishing()) {
+    final SystemUiHelper systemUiHelper = getSystemUiHelper();
+
+    if (activity != null && !activity.isFinishing() && systemUiHelper != null) {
+      // Hide always
+      systemUiHelper.hide();
+
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
       closeButton.setOnClickListener(new View.OnClickListener() {
@@ -752,7 +942,19 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
         imageScaleView.setImage(imageSource);
         imageScaleView.setMaxScale(3);
+
+        imageViewContainer.setAlpha(0);
         imageViewContainer.setVisibility(View.VISIBLE);
+
+        final ObjectAnimator animator = ViewPropertyObjectAnimator.animate(imageViewContainer)
+            .alpha(1)
+            .setDuration(300)
+            .setInterpolator(new FastOutSlowInInterpolator())
+            .get();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+          animator.setAutoCancel(true);
+        }
+        animator.start();
       }
     }
   }
@@ -760,11 +962,25 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private void hidePhotoViewer() {
     final FragmentActivity activity = getActivity();
     if (activity != null) {
-      final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
-      imageViewContainer.setVisibility(View.GONE);
-
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
       closeButton.setOnClickListener(null);
+
+      final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
+      final ObjectAnimator animator = ViewPropertyObjectAnimator.animate(imageViewContainer)
+          .alpha(0)
+          .setDuration(300)
+          .setInterpolator(new FastOutSlowInInterpolator())
+          .addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(Animator animation) {
+              imageViewContainer.setVisibility(View.GONE);
+              imageViewContainer.setAlpha(1);
+            }
+          })
+          .get();
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        animator.setAutoCancel(true);
+      }
+      animator.start();
 
       final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
       imageScaleView.recycle();
@@ -793,17 +1009,32 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     definitionView.setVisibility(View.GONE);
   }
 
-  private ProgressDialog getProgressDialog(@StringRes int message) {
+  private MaterialDialog getProgressDialog(@StringRes int message) {
     if (this.progressDialog == null) {
-      this.progressDialog = new ProgressDialog(context);
-      this.progressDialog.setOwnerActivity(getActivity());
-      this.progressDialog.setCancelable(false);
-      this.progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-        @Override public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-          return true;
-        }
-      });
-      this.progressDialog.setMessage(getString(message));
+      final MaterialDialog dialog = new MaterialDialog.Builder(context)
+          .progress(true, 100)
+          .cancelable(false)
+          .content(getString(message))
+          .build();
+
+      MDTintHelper.setTint(dialog.getProgressBar(), ContextCompat.getColor(context, R.color.primary_dark));
+
+      final View decorView = dialog.getWindow().getDecorView();
+
+      final int systemUiVisibility = decorView.getSystemUiVisibility();
+      decorView.setSystemUiVisibility(
+          systemUiVisibility
+              | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+              | View.SYSTEM_UI_FLAG_LOW_PROFILE
+      );
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        decorView.setSystemUiVisibility(decorView.getWindowSystemUiVisibility() | View.SYSTEM_UI_FLAG_IMMERSIVE);
+      }
+
+      this.progressDialog = dialog;
     }
 
     return this.progressDialog;
@@ -992,34 +1223,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         uiHelper.hide();
       }
     }
-  }
-
-  private static class SavedConfigState {
-
-    private boolean stripWhiteSpace;
-    private String fontName;
-    private String serifFontName;
-    private String sansSerifFontName;
-    private boolean usePageNum;
-    private int vMargin;
-    private int hMargin;
-    private int textSize;
-    private boolean scrolling;
-    private boolean allowColoursFromCSS;
-    private Configuration.ColorProfile colorProfile;
-  }
-
-  public static class DICompanion {
-
-    @Inject public StreamingBookDataSource streamingBookDataSource;
-    @Inject public GetWordDefinitionInteractor getWordDefinitionInteractor;
-
-    @Inject public Configuration config;
-    @Inject public BrightnessManager brightnessManager;
-    @Inject public Dates dateUtils;
-    @Inject public Reachability reachability;
-    @Inject public Analytics analytics;
-    @Inject public Logger logger;
   }
 
   public static class BookReaderEvents {

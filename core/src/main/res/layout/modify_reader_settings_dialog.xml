@@ -13,8 +13,7 @@
     android:paddingTop="@dimen/span_8">
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_day_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Day"
+      android:id="@+id/day_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
@@ -24,8 +23,7 @@
       android:src="@drawable/ic_reader_a_black_wrapper" />
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_night_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Night"
+      android:id="@+id/night_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
@@ -35,8 +33,7 @@
       android:src="@drawable/ic_reader_a_white_wrapper" />
 
     <com.worldreader.core.application.ui.widget.CheckableImageButton
-      android:id="@+id/display_options_dialog_cream_profile_button"
-      style="@style/Widget.Worldreader.Core.Button.Reader.Cream"
+      android:id="@+id/cream_profile_btn"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"

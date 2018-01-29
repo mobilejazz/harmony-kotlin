@@ -231,7 +231,7 @@ public class Configuration {
     return ColorProfile.valueOf(stringValue);
   }
 
-  public void setColourProfile(ColorProfile profile) {
+  public void setColorProfile(ColorProfile profile) {
     if (profile == ColorProfile.DAY) {
       updateValue(KEY_NIGHT_MODE, ColorProfile.DAY.toString());
     } else if (profile == ColorProfile.NIGHT) {

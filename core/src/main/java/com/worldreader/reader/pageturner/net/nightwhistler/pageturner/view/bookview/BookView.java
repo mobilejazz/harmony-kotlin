@@ -59,7 +59,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadNextResourceTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.TasksFactory;
-import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -125,7 +124,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super(context, attributes);
   }
 
-  public void init(AbstractReaderFragment.DICompanion di, BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader) {
+  public void init(DICompanion di, BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader) {
     final Context context = getContext();
 
     this.bookMetadata = bookMetadata;
@@ -136,7 +135,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     // Prepare other stuff needed for this view to work
     this.configuration = new Configuration(context);
 
-    this.childView = findViewById(R.id.bookview_inner);
+    this.childView = findViewById(R.id.book_view_inner);
     this.childView.setBookView(this);
     this.childView.setMovementMethod(new BookViewMovementMethod());
 
@@ -175,6 +174,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public PageChangeStrategy getStrategy() {
     return this.strategy;
+  }
+
+  public PageTurnerSpine getSpinner() {
+    return this.spine;
   }
 
   public boolean isAtStart() {
@@ -473,7 +476,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     navigateTo(tocEntry.getHref());
   }
 
-  private void navigateTo(String rawHref) {
+  public void navigateTo(String rawHref) {
     this.prevIndex = this.getIndex();
     this.prevPos = this.getProgressPosition();
 
@@ -640,7 +643,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private void notifyOnBookOpened(Book book) {
     if (listener != null) {
-      listener.onBookOpened(book);
+      listener.onBookParsed(book);
     }
   }
 
@@ -749,7 +752,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private class BookViewImageTagHandler extends ImageTagHandler {
 
-    BookViewImageTagHandler(Context context, BookMetadata bm, ResourcesLoader resourcesLoader, AbstractReaderFragment.DICompanion di, Logger logger) {
+    BookViewImageTagHandler(Context context, BookMetadata bm, ResourcesLoader resourcesLoader, DICompanion di, Logger logger) {
       super(context, bm, resourcesLoader, di, logger);
     }
 

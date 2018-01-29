@@ -16,7 +16,7 @@
       android:layout_height="match_parent">
 
       <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookTextView
-        android:id="@id/bookview_inner"
+        android:id="@id/book_view_inner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -37,7 +37,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:visibility="gone" />
+    android:visibility="visible" />
 
   <com.worldreader.reader.wr.widget.DefinitionView
     android:id="@+id/reading_fragment_word_definition_dv"
