@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item android:state_pressed="true">
-    <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
-      <layer-list>
-        <item>
-          <shape android:shape="rectangle">
-            <corners android:radius="@dimen/span_8" />
-            <solid android:color="@color/reader_settings_night_profile" />
-          </shape>
-        </item>
-        <item>
-          <shape android:tint="@color/reader_settings_color_normal_profile">
-            <corners android:radius="@dimen/span_8" />
-          </shape>
-        </item>
-      </layer-list>
-    </inset>
-  </item>
-
   <item android:state_checked="true">
     <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
       <shape android:shape="rectangle">
@@ -34,6 +16,7 @@
     <inset android:insetBottom="@dimen/span_4" android:insetLeft="@dimen/span_4" android:insetRight="@dimen/span_4" android:insetTop="@dimen/span_4">
       <shape android:shape="rectangle">
         <corners android:radius="@dimen/span_8" />
+        <stroke android:width="@dimen/span_2" android:color="@color/reader_settings_night_profile_lighter" />
         <solid android:color="@color/reader_settings_night_profile" />
         <padding android:bottom="@dimen/span_8" android:left="@dimen/span_8" android:right="@dimen/span_8" android:top="@dimen/span_8" />
       </shape>

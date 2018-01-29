@@ -22,6 +22,7 @@ import com.worldreader.reader.wr.helper.BrightnessManager;
 
 import java.util.*;
 
+@Deprecated
 public class ReaderSettingsDialog extends DialogFragment {
 
   public static final String TAG = ReaderSettingsDialog.class.getSimpleName();
@@ -60,7 +61,7 @@ public class ReaderSettingsDialog extends DialogFragment {
     this.dayProfileButton = view.findViewById(R.id.display_options_dialog_day_profile_button);
     this.nightProfileButton = view.findViewById(R.id.display_options_dialog_night_profile_button);
     this.creamProfileButton = view.findViewById(R.id.display_options_dialog_cream_profile_button);
-    this.brightnessSeekBar = view.findViewById(R.id.display_options_brightness_seekbar);
+    this.brightnessSeekBar = view.findViewById(R.id.brightness_sb);
     this.fontFamilySpinner = view.findViewById(R.id.display_options_font_family_spinner);
     this.fontSizesSpinner = view.findViewById(R.id.display_options_font_sizes_spinner);
 

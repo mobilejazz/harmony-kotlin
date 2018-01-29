@@ -68,26 +68,6 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
-  //@Override public ListenableFuture<Void> execute(final String bookId, final String version, Executor executor) {
-  //  this.bookId = bookId;
-  //  this.version = version;
-  //  this.forceBookMetadataRefresh = false;
-  //
-  //  final SettableFuture<Void> settableFuture = SettableFuture.create();
-  //  executor.execute(new SafeRunnable() {
-  //    @Override protected void safeRun() throws Throwable {
-  //      final BookMetadata bookMetadata = getBookMetadataInteractor.execute(bookId, version, false, MoreExecutors.directExecutor()).get();
-  //      downloadBookResources(bookMetadata, false);
-  //      settableFuture.set(null);
-  //    }
-  //
-  //    @Override protected void onExceptionThrown(Throwable t) {
-  //      settableFuture.setException(t);
-  //    }
-  //  });
-  //  return settableFuture;
-  //}
-
   @Override public void run() {
     getBookMetadataInteractor.execute(bookId, version, forceBookMetadataRefresh, new DomainBackgroundCallback<BookMetadata, ErrorCore<?>>() {
       @Override public void onSuccess(BookMetadata bookMetadata) {
@@ -114,20 +94,15 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
       int count = 0;
 
       streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.contentOpfName);
-
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
-
       streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.tocResourceName);
-
       shouldNotifySuccessfulResponse(shouldNotifyResponses, count++, numberOfResources);
 
       for (int position = 0; position < resources.size(); position++) {
         String resource = resources.get(position);
-
         logger.d(TAG, "Downloading current resource: " + resource);
-
         try {
-          streamingBookRepository.getBookResource(bookId, bookMetadata, resource);
+          streamingBookRepository.getBookResource(bookId, bookMetadata, bookMetadata.contentOpfPath + resource);
         } catch (Exception e) {
           if (e instanceof UnknownHostException) {
             // If we have problems with the network we rethrow the exception (causing the download to stop)

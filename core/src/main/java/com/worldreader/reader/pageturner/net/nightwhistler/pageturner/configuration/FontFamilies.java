@@ -23,9 +23,6 @@ public class FontFamilies {
     public static final String SERIF = "serif";
     public static final String MONO = "mono";
     public static final String DEFAULT = "default";
-    public static final String LORA = "lora";
-    public static final String OPEN_SANS = "open_sans";
-    public static final String POPPINS = "poppins";
 
     private FAMILIES() {
       throw new AssertionError("Not intended for instantiation!");
@@ -58,29 +55,6 @@ public class FontFamilies {
         new FontFamily("Poppins", FontExtension.TTF, "Bold", "Light", null);
 
     public POPPINS() {
-      throw new AssertionError("Not intended for instantiation!");
-    }
-  }
-
-  public static final class SANS {
-
-    public static final FontFamily DEFAULT = new FontFamily("sans", null, null, null, null);
-
-    private SANS() {
-      throw new AssertionError("Not intended for instantiation!");
-    }
-  }
-
-  public static final class SERIF {
-
-    public static final FontFamily GENTIUM_BOOK_BASIC =
-        new FontFamily("GentiumBookBasic", FontExtension.OTF, "Bold", "Italic", "BoldItalic");
-    public static final FontFamily GENTIUM_BASIC =
-        new FontFamily("GentiumBasic", FontExtension.OTF, "Bold", "Italic", "BoldItalic");
-    public static final FontFamily FRANK_RUEHL =
-        new FontFamily("FrankRuehl", FontExtension.OTF, "Bold", "Italic", "BoldItalic");
-
-    public SERIF() {
       throw new AssertionError("Not intended for instantiation!");
     }
   }

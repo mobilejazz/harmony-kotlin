@@ -1,58 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout android:id="@+id/linearLayout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:background="?android:colorBackground"
   android:clickable="true"
+  android:elevation="8dp"
   android:focusable="true"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:padding="8dp"
+  tools:layout_editor_absoluteY="81dp">
 
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/span_4"
-    android:background="@drawable/definition_view_shadow_background" />
+  <ImageButton
+    android:id="@+id/arrow_left_iv"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginStart="8dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:clickable="true"
+    android:contentDescription="@null"
+    android:focusable="true"
+    app:layout_constraintBottom_toTopOf="@+id/chapter_progress_dsb"
+    app:layout_constraintHorizontal_chainStyle="spread_inside"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/ic_arrow_left_reader" />
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:padding="@dimen/span_16">
+  <ImageButton
+    android:id="@+id/arrow_right_iv"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:clickable="true"
+    android:contentDescription="@null"
+    android:focusable="true"
+    app:layout_constraintBottom_toBottomOf="@+id/title_chapter_tv"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/title_chapter_tv"
+    app:srcCompat="@drawable/ic_arrow_right_reader" />
 
-    <TextView
-      android:id="@+id/title_chapter_tv"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:gravity="center"
-      android:minHeight="@dimen/span_32"
-      android:singleLine="true"
-      android:textColor="@color/primary"
-      android:textStyle="bold"
-      tools:text="Once upon a time" />
+  <TextView
+    android:id="@+id/title_chapter_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:maxLines="1"
+    android:minHeight="@dimen/span_32"
+    android:singleLine="true"
+    android:textColor="@color/primary"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/arrow_left_iv"
+    app:layout_constraintEnd_toStartOf="@+id/arrow_right_iv"
+    app:layout_constraintStart_toEndOf="@+id/arrow_left_iv"
+    app:layout_constraintTop_toTopOf="@+id/arrow_left_iv"
+    tools:text="Once upon a time" />
 
-    <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
-      android:id="@+id/chapter_progress_dsb"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:clickable="false"
-      android:focusable="false"
-      app:dsb_indicatorColor="@color/primary"
-      app:dsb_indicatorPopupEnabled="false"
-      app:dsb_max="100"
-      app:dsb_min="0"
-      app:dsb_progressColor="@color/primary" />
+  <com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar
+    android:id="@+id/chapter_progress_dsb"
+    android:layout_width="0dp"
+    android:layout_height="32dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:clickable="false"
+    android:focusable="false"
+    app:dsb_indicatorColor="@color/primary"
+    app:dsb_indicatorPopupEnabled="false"
+    app:dsb_max="100"
+    app:dsb_min="0"
+    app:dsb_progressColor="@color/primary"
+    app:dsb_trackColor="#DFDFDF"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/title_chapter_tv" />
 
-    <TextView
-      android:id="@+id/chapter_progress_pages_tv"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:gravity="center"
-      android:singleLine="true"
-      android:textStyle="bold"
-      tools:text="1 / 20" />
+  <TextView
+    android:id="@+id/chapter_progress_pages_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:singleLine="true"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/chapter_progress_dsb"
+    tools:text="1 / 20" />
 
-  </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -58,6 +58,7 @@ dependencies {
   compile dependencies.recyclerView
   compile dependencies.cardView
   compile dependencies.design
+  compile dependencies.constraintLayout
 
   compile dependencies.picasso
   compile dependencies.picassoOkhttp3
