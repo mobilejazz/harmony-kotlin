@@ -45,8 +45,9 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   private final Resource resource;
   private final Logger logger;
 
-  private boolean isLoaded;
-  private boolean isProcessing;
+  private volatile ListenableFuture<StreamingResource> future;
+  private volatile boolean isLoaded;
+  private volatile boolean isProcessing;
 
   public StreamingFastBitmapDrawable(int width, int height, BookMetadata metadata, StreamingBookRepository repository, Resource resource, Logger logger) {
     super(width, height);
@@ -110,7 +111,7 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   }
 
   private void retrieveDrawableFromRepository() {
-    final ListenableFuture<StreamingResource> future = repository.getBookResourceFuture(bm.bookId, bm, URLDecoder.decode(resource.getHref()));
+    this.future = repository.getBookResourceFuture(bm.bookId, bm, URLDecoder.decode(resource.getHref()));
     Futures.addCallback(future, new FutureCallback<StreamingResource>() {
       @Override public void onSuccess(final StreamingResource result) {
         final InputStream inputStream = result.getInputStream();
@@ -123,6 +124,7 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
     }, MoreExecutors.directExecutor());
   }
 
+  // WorkerThread
   private void markAsError(@NonNull Throwable t) {
     if (t instanceof CancellationException) {
       return;
@@ -135,16 +137,20 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
     });
   }
 
+  // Worker Thread
   private void convertToDrawable(InputStream inputStream) {
     generateDrawable(inputStream);
     handler.post(new Runnable() {
       @Override public void run() {
+        // UI Thread
         isProcessing = false;
+        future = null;
         invalidateSelf();
       }
     });
   }
 
+  // WorkerThread
   private void generateDrawable(final InputStream inputStream) {
     try {
       final Bitmap localBitmap = decodeBitmap(inputStream);
@@ -167,6 +173,16 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
     }
 
     this.bitmap = null;
+  }
+
+  @Override public void recycleForReuse() {
+    if (future != null) {
+      future.cancel(true);
+      future = null;
+    }
+    recycle();
+    isLoaded = false;
+    isProcessing = false;
   }
 
 }

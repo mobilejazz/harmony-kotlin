@@ -104,6 +104,10 @@ public class FileFastBitmapDrawable extends AbstractFastBitmapDrawable {
     super.destroy();
   }
 
+  @Override public void recycleForReuse() {
+    recycle();
+  }
+
   private void displayBitmap(Bitmap b) {
     try {
       if (b == null || b.getHeight() < 1 || b.getWidth() < 1) {
