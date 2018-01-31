@@ -78,6 +78,7 @@
     app:dsb_min="0"
     app:dsb_progressColor="@color/primary"
     app:dsb_trackColor="#DFDFDF"
+    app:dsb_allowTrackClickToDrag="false"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
