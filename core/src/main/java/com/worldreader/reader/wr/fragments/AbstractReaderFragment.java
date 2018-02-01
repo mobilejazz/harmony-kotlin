@@ -253,7 +253,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
+
     // Setup gravity for the font RadioButtons based on layout direction
+    // For some reason system RTL support does not configure it in a proper way
     final RadioButton openSansRb = activity.findViewById(R.id.open_sans_rb);
     final RadioButton poppinsRb = activity.findViewById(R.id.popins_rb);
     final RadioButton loraRb = activity.findViewById(R.id.lora_rb);

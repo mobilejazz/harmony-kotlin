@@ -8,7 +8,7 @@
     android:checked="false"
     android:icon="@drawable/ic_reader_style"
     android:title="@string/ls_display_options"
-    app:showAsAction="ifRoom" />
+    app:showAsAction="always" />
 
   <item
     android:id="@+id/show_brightness_options"
@@ -16,13 +16,13 @@
     android:checked="false"
     android:icon="@drawable/ic_reader_brightness"
     android:title="@string/ls_brightness"
-    app:showAsAction="ifRoom" />
+    app:showAsAction="always" />
 
   <item
     android:id="@+id/show_book_content"
     android:icon="@drawable/ic_reader_index"
     android:title="@string/ls_contents"
-    app:showAsAction="ifRoom" />
+    app:showAsAction="always" />
 
   <!--<item-->
   <!--android:id="@+id/text_to_speech"-->

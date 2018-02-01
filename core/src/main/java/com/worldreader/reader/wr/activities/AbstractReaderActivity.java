@@ -34,7 +34,6 @@ import com.worldreader.core.R;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;
-import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
@@ -266,7 +265,6 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
 
     if (drawable != null && tintedDrawable != null) {
       drawable.mutate();
-      tintedDrawable = LayoutDirectionHelper.mirrorDrawableIfNeeded(this, drawable);
       DrawableCompat.setTint(tintedDrawable, getResources().getColor(color));
     }
 
