@@ -245,7 +245,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     final ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
-      actionBar.setHomeAsUpIndicator(getTintDrawable(R.drawable.ic_arrow_back_black_24dp, arrowColor));
+      actionBar.setHomeAsUpIndicator(getTintDrawable(R.drawable.ic_arrow_back_white_24dp, arrowColor));
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       final Window window = getWindow();
