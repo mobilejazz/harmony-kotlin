@@ -35,7 +35,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEn
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;
 import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
-import com.worldreader.reader.wr.helper.systemUi.SystemUiHelper;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
@@ -261,21 +260,13 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     final Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
     return getTintDrawable(drawable, color);
   }
-  private Drawable getColoredArrow(int color) {
-    Drawable arrowDrawable = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
-
-    Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
-    if (arrowDrawable != null && wrapped != null) {
-      arrowDrawable.mutate();
-      wrapped = LayoutDirectionHelper.mirrorDrawableIfNeeded(this, arrowDrawable);
-      DrawableCompat.setTint(wrapped, getResources().getColor(color));
-    }
 
   private Drawable getTintDrawable(Drawable drawable, @ColorRes int color) {
-    final Drawable tintedDrawable = DrawableCompat.wrap(drawable);
+    Drawable tintedDrawable = DrawableCompat.wrap(drawable);
 
     if (drawable != null && tintedDrawable != null) {
       drawable.mutate();
+      tintedDrawable = LayoutDirectionHelper.mirrorDrawableIfNeeded(this, drawable);
       DrawableCompat.setTint(tintedDrawable, getResources().getColor(color));
     }
 

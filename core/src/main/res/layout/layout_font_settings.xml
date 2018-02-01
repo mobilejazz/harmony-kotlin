@@ -113,8 +113,8 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:text="a"
       android:tag="14"
+      android:text="a"
       android:textSize="14sp" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
@@ -126,8 +126,8 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:text="a"
       android:tag="18"
+      android:text="a"
       android:textSize="18sp" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
@@ -139,8 +139,8 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:text="a"
       android:tag="20"
+      android:text="a"
       android:textSize="20sp" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
@@ -152,8 +152,8 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:text="a"
       android:tag="24"
+      android:text="a"
       android:textSize="24sp" />
   </LinearLayout>
 

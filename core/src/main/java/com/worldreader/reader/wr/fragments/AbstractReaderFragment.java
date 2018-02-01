@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +43,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +83,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
+import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
@@ -249,6 +252,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         updateReaderFromPreferences();
       }
     });
+
+    // Setup gravity for the font RadioButtons based on layout direction
+    final RadioButton openSansRb = activity.findViewById(R.id.open_sans_rb);
+    final RadioButton poppinsRb = activity.findViewById(R.id.popins_rb);
+    final RadioButton loraRb = activity.findViewById(R.id.lora_rb);
+
+    if (LayoutDirectionHelper.isAppLayoutRTL()) {
+      openSansRb.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+      poppinsRb.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+      loraRb.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+    }
 
     // Setup listeners for reader font sizes
     final int textSize = di.config.getTextSize();

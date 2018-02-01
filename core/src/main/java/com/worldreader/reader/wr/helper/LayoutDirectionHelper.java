@@ -19,7 +19,7 @@ public class LayoutDirectionHelper {
     return context.getResources().getBoolean(R.bool.is_layout_direction_rtl);
   }
 
-  private static boolean isAppLayoutRTL() {
+  public static boolean isAppLayoutRTL() {
     return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 
