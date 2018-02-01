@@ -45,4 +45,7 @@ public class InlineFastBitmapDrawable extends AbstractFastBitmapDrawable {
     }
   }
 
+  @Override public void recycleForReuse() {
+    recycle();
+  }
 }

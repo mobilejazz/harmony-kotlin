@@ -3,29 +3,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <android.support.design.widget.AppBarLayout
-    android:id="@+id/appbar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <android.support.v7.widget.Toolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:elevation="2dp" />
-
-    <include
-      android:id="@+id/font_options_container"
-      layout="@layout/layout_font_settings"
-      android:visibility="gone" />
-
-    <include
-      android:id="@+id/brightness_options_container"
-      layout="@layout/layout_brightness_settings"
-      android:visibility="gone" />
-
-  </android.support.design.widget.AppBarLayout>
-
   <FrameLayout
     android:id="@+id/content_container"
     android:layout_width="match_parent"
@@ -90,4 +67,29 @@
     </FrameLayout>
 
   </FrameLayout>
+
+  <!-- Contrary to what should believed, this AppBarLayout is left here to avoid bug in API 19 where the CoordinatorLayout doesn't draw correctly the order -->
+  <android.support.design.widget.AppBarLayout
+    android:id="@+id/appbar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="2dp" />
+
+    <include
+      android:id="@+id/font_options_container"
+      layout="@layout/layout_font_settings"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/brightness_options_container"
+      layout="@layout/layout_brightness_settings"
+      android:visibility="gone" />
+
+  </android.support.design.widget.AppBarLayout>
+
 </android.support.design.widget.CoordinatorLayout>

@@ -68,6 +68,8 @@ public abstract class AbstractFastBitmapDrawable extends Drawable {
     this.setCallback(null);
   }
 
+  public abstract void recycleForReuse();
+
   @Nullable protected Bitmap decodeBitmap(InputStream is) throws IOException {
     final Bitmap originalBitmap = BitmapFactory.decodeStream(is);
     return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
