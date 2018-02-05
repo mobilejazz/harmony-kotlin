@@ -9,4 +9,6 @@ public interface ImageDownloader {
   boolean delete(String key);
 
   File getImage(String key);
+
+  boolean hasImage(String key);
 }
