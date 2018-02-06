@@ -556,6 +556,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (itemId == R.id.show_book_content) {
+      menu.findItem(R.id.show_font_options).setChecked(false);
+      menu.findItem(R.id.show_brightness_options).setChecked(false);
+      activity.findViewById(R.id.font_options_container).setVisibility(View.GONE);
+      activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
