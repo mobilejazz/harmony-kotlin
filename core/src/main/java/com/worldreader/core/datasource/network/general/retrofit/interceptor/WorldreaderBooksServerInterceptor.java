@@ -32,26 +32,16 @@ public class WorldreaderBooksServerInterceptor implements Interceptor {
     Request request = chain.request();
 
     //Build new request
-    Request.Builder builder = request.newBuilder();
-
     try {
       String timestamp = String.valueOf(System.currentTimeMillis());
       String hash = buildRequestHash(request.url(), timestamp);
 
-      builder.url(request.url()
-          .toString()
-          .replaceAll("\\s", "%20")
-          .replaceAll("\\+", "%20")
-          .replaceAll("!", "%21")
-          .replaceAll("'", "%27")
-          .replaceAll("\\(", "%28")
-          .replaceAll("\\)", "%29")
-          .replaceAll("~", "%7E"));
-
-      builder.addHeader("X-Worldreader-Client", WORLDREADER_ANDROID_CLIENT);
-      builder.addHeader("X-Worldreader-Timestamp", timestamp);
-      builder.addHeader("X-Worldreader-Hash", hash);
-      request = builder.build();
+      request = request.newBuilder()
+          .url(request.url())
+          .addHeader("X-Worldreader-Client", WORLDREADER_ANDROID_CLIENT)
+          .addHeader("X-Worldreader-Timestamp", timestamp)
+          .addHeader("X-Worldreader-Hash", hash)
+          .build();
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
@@ -67,26 +57,18 @@ public class WorldreaderBooksServerInterceptor implements Interceptor {
    * @return Full path request
    */
   @NonNull private String buildPath(HttpUrl httpUrl) {
-    String path = httpUrl.encodedPath();
-    String query = httpUrl.query();
-
     StringBuilder encodedPathBuilder = new StringBuilder();
-    encodedPathBuilder.append(path);
 
+    encodedPathBuilder.append(httpUrl.encodedPath());
+
+    String query = httpUrl.encodedQuery();
     if (query != null && query.length() > 0) {
       encodedPathBuilder.append("?");
       encodedPathBuilder.append(query);
     }
 
     // Custom fix for known characters that we know for sure that it should be properly encoded
-    return encodedPathBuilder.toString()
-        .replaceAll("\\s", "%20")
-        .replaceAll("\\+", "%20")
-        .replaceAll("!", "%21")
-        .replaceAll("'", "%27")
-        .replaceAll("\\(", "%28")
-        .replaceAll("\\)", "%29")
-        .replaceAll("~", "%7E");
+    return encodedPathBuilder.toString();
   }
 
   /**
