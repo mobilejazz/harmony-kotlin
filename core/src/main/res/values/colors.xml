@@ -49,9 +49,6 @@
   <color name="global_signup_btn_dark_blue">#0d3584</color>
 
   <!-- Reader -->
-  <color name="ic_reader_a_sepia">#6F431C</color>
-  <color name="ic_reader_font">#4A4A4A</color>
-  <color name="ic_reader_menu">#9B9B9B</color>
   <color name="reader_actionbar_color">#fff5f5f5</color>
   <color name="reader_statusbar_color">#ff757575</color>
   <color name="reader_icon_color">#9B9B9B</color>
@@ -62,16 +59,19 @@
   <color name="reader_settings_cream_profile">#F6F2E5</color>
   <color name="reader_settings_cream_profile_darker">#C3BFB2</color>
   <color name="reader_settings_light_profile">@color/white</color>
-  <color name="reader_settings_color_normal_profile">#ffd6d7d7</color>
   <color name="reader_settings_light_profile_border">#D2D2D2</color>
   <color name="reader_settings_night_profile">#000</color>
   <color name="reader_settings_night_profile_lighter">#808080</color>
-  <color name="reader_settings_accept">#518B0E</color>
-  <color name="reader_settings_cancel">#D0021B</color>
   <color name="reader_settings_brightness_manual">@color/font_gray</color>
   <color name="reader_settings_brightness_automatic">@color/primary</color>
   <color name="reader_settings_status_pressed">#664A4A4A</color>
+  <color name="reader_opaque_white">#ffffff</color>
+  <color name="reader_translucent_black">#C0000000</color>
+  <color name="reader_opaque_black">#000000</color>
+
   <color name="ic_selector">#4A90E2</color>
+  <color name="ic_reader_a_sepia">#6F431C</color>
+  <color name="ic_reader_font">#4A4A4A</color>
 
   <!--Tutorial -->
   <color name="tutorial_button_one_blue">#103E99</color>

@@ -238,6 +238,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
 
       this.clearText();
       this.pageNum = 0;
+
       bookView.loadText();
     } else {
       this.pageNum = Math.min(pageNum + 1, this.pageOffsets.size() - 1);

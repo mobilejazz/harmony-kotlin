@@ -13,16 +13,16 @@
     android:layout_width="match_parent"
     android:layout_height="0dip"
     android:layout_weight="1"
-    android:background="@color/translucent_black" />
+    android:background="@color/reader_translucent_black" />
 
   <TextView
     android:id="@+id/reading_fragment_word_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/opaque_black"
+    android:background="@color/reader_opaque_black"
     android:padding="@dimen/span_16"
     android:textAppearance="?android:attr/textAppearanceLarge"
-    android:textColor="@color/opaque_white"
+    android:textColor="@color/reader_opaque_white"
     tools:text="Now hands are wanted here, and then again hands are wanted there." />
 
   <LinearLayout

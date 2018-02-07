@@ -49,7 +49,6 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEn
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.PageChangeStrategy;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.helper.TocUtils;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.ImageTagHandler;
@@ -95,10 +94,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private Book book;
   private String fileName;
   private PageTurnerSpine spine;
-  private PageChangeStrategy strategy;
-
-  private int prevIndex = -1;
-  private int prevPos = -1;
+  private FixedPagesStrategy strategy;
 
   private int horizontalMargin = 0;
   private int verticalMargin = 0;
@@ -172,7 +168,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.fileName = fileName;
   }
 
-  public PageChangeStrategy getStrategy() {
+  public FixedPagesStrategy getStrategy() {
     return this.strategy;
   }
 
@@ -201,15 +197,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     return getSpansAt(x, y, ClickableSpan.class);
   }
 
-  /**
-   * Returns all the spans of a specific class at a specific location.
-   *
-   * @param x the X coordinate
-   * @param y the Y coordinate
-   * @param spanClass the class of span to filter for
-   *
-   * @return a List of spans of type A, may be empty.
-   */
   private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
     final Option<Integer> offsetOption = findOffsetForPosition(x, y);
     final CharSequence text = childView.getText();
@@ -228,11 +215,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   @Override public boolean onTouchEvent(MotionEvent ev) {
-    if (strategy.isScrolling()) {
-      return super.onTouchEvent(ev);
-    } else {
-      return childView.onTouchEvent(ev);
-    }
+    return strategy.isScrolling() ? super.onTouchEvent(ev) : childView.onTouchEvent(ev);
   }
 
   @Override public void fling(int velocityY) {
@@ -481,9 +464,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void navigateTo(String rawHref) {
-    this.prevIndex = this.getIndex();
-    this.prevPos = this.getProgressPosition();
-
     // Default Charset for android is UTF-8
     // http://developer.android.com/reference/java/nio/charset/Charset.html#defaultCharset()
     String charsetName = Charset.defaultCharset().name();
@@ -564,8 +544,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       progressUpdate();
       return;
     }
-
-    this.prevIndex = this.getIndex();
 
     this.storedIndex = index;
     this.strategy.clearText();
@@ -694,7 +672,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       }
     }).forEach(new Command<Spanned>() {
       @Override public void execute(Spanned text) {
-        final FixedPagesStrategy strategy = (FixedPagesStrategy) getStrategy();
+        final FixedPagesStrategy strategy = getStrategy();
         int pagesOffset = strategy.getPageOffsets().size();
         int currentPage = strategy.getCurrentPage();
         int progressPercentage = (int) Math.floor(((double) currentPage / pagesOffset) * 100);
@@ -708,7 +686,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public int getPagesForResource() {
     if (spine != null) {
-      return ((FixedPagesStrategy) BookView.this.getStrategy()).getPageOffsets().size();
+      return BookView.this.getStrategy().getPageOffsets().size();
     }
 
     return -1;
@@ -716,7 +694,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public int getCurrentPage() {
     if (spine != null) {
-      return ((FixedPagesStrategy) BookView.this.getStrategy()).getCurrentPage() + 1;
+      return BookView.this.getStrategy().getCurrentPage() + 1;
     }
 
     return -1;

@@ -115,7 +115,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
         new SystemUiHelper(this, SystemUiHelper.LEVEL_IMMERSIVE, 0, new SystemUiHelper.OnVisibilityChangeListener() {
           @Override public void onVisibilityChange(boolean visible) {
             if (abstractReaderFragment != null && isVisibleReadingFragment()) {
-              if (abstractReaderFragment.progressDialog == null) {
+              if (abstractReaderFragment.dialog == null) {
                 abstractReaderFragment.onVisibilityChange(visible);
               }
             }

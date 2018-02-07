@@ -86,7 +86,6 @@ import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
-import jedi.option.OptionMatcher;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
 import java.lang.annotation.Retention;
@@ -126,7 +125,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected TextView readerOptionsTv;
   protected View arrowLeftIv;
   protected View arrowRightIv;
-  public MaterialDialog progressDialog;
+  public MaterialDialog dialog;
 
   protected DICompanion di;
 
@@ -219,6 +218,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
         this.seekValue = value;
+        if (!fromUser) {
+          formatPageChapterProgress();
+        }
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
@@ -251,7 +253,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           fontFamily = FontFamilies.LORA.DEFAULT;
         }
         di.config.setSerifFontFamily(fontFamily);
-        updateReaderFromPreferences();
+        updateReaderState();
       }
     });
 
@@ -288,7 +290,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
         final String rawSize = ((String) v.getTag());
         di.config.setTextSize(Integer.valueOf(rawSize));
-        updateReaderFromPreferences();
+        updateReaderState();
       }
     };
 
@@ -354,7 +356,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(true);
         }
-        updateReaderFromPreferences();
+        updateReaderState();
       }
     };
 
@@ -372,19 +374,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         if (spine != null) {
           final int id = v.getId();
           final boolean toNextChapter = id == R.id.arrow_right_iv;
-          final Option<Resource> resourceOption = toNextChapter ? spine.getNextResource() : spine.getPreviousResource();
-          resourceOption.match(new OptionMatcher<Resource>() {
-            @Override public void caseSome(Resource value) {
-              final String href = value.getHref();
-              bookView.navigateTo(href);
-            }
-
-            @Override public void caseNone() {
-              if (toNextChapter && bookView.isAtEnd()) {
-                pageDown();
-              }
-            }
-          });
+          if (toNextChapter) {
+            bookView.pageDown();
+          } else {
+            bookView.pageUp();
+          }
         }
       }
     };
@@ -421,7 +415,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     saveConfigState();
 
     // Load state in reader
-    updateReaderFromPreferences();
+    updateReaderState();
 
     // Try to restore last read position
     restoreLastReadPosition(savedInstanceState);
@@ -592,7 +586,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  private void updateReaderFromPreferences() {
+  private void updateReaderState() {
     final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity == null) {
       return;
@@ -612,21 +606,22 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     bookView.setEnableScrolling(di.config.isScrollingEnabled());
     bookView.setLineSpacing(di.config.getLineSpacing());
 
+    final Window window = getActivity().getWindow();
+    final int brightness = di.config.getBrightness();
+    di.brightnessManager.setBrightness(window, brightness);
+
     final ActionBar actionBar = activity.getSupportActionBar();
     actionBar.setHomeButtonEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setTitle("");
 
-    final Window window = activity.getWindow();
-    if (window != null) {
-      if (di.config.isKeepScreenOn()) {
-        keepScreenOn(window);
-      } else {
-        keepScreenOff(window);
-      }
+    if (di.config.isKeepScreenOn()) {
+      keepScreenOn(window);
+    } else {
+      keepScreenOff(window);
     }
 
-    restoreColorProfile();
+    updateReaderColorProfile();
 
     // Check if we need a restart
 
@@ -666,7 +661,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     return null;
   }
 
-  private void restoreColorProfile() {
+  private void updateReaderColorProfile() {
     this.bookView.setBackgroundColor(di.config.getBackgroundColor());
     this.bookView.setTextColor(di.config.getTextColor());
     this.bookView.setLinkColor(di.config.getLinkColor());
@@ -686,10 +681,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         break;
     }
     this.readerOptionsTv.setBackgroundResource(readerOptionsDrawableRes);
-
-    final Window window = getActivity().getWindow();
-    final int brightness = di.config.getBrightness();
-    di.brightnessManager.setBrightness(window, brightness);
+    this.bookView.getInnerView().setHighlightColor();
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
@@ -704,17 +696,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
 
-    AppCompatActivity activity = (AppCompatActivity) getActivity();
-
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
     if (activity != null) {
       activity.finish();
     }
   }
 
   private void dismissProgressDialog() {
-    if (progressDialog != null) {
-      this.progressDialog.dismiss();
-      this.progressDialog = null;
+    if (dialog != null) {
+      this.dialog.dismiss();
+      this.dialog = null;
     }
   }
 
@@ -802,7 +793,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       uiHelper.delayHide(300);
     }
 
-    updateReaderFromPreferences();
+    updateReaderState();
   }
 
   @Override public void onStartRenderingText() {
@@ -821,7 +812,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    restoreColorProfile();
+    updateReaderColorProfile();
 
     final MaterialDialog progressDialog = getProgressDialog(R.string.ls_loading_text);
     progressDialog.show();
@@ -1068,7 +1059,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private MaterialDialog getProgressDialog(@StringRes int message) {
-    if (this.progressDialog == null) {
+    if (this.dialog == null) {
       final MaterialDialog dialog = new MaterialDialog.Builder(context)
           .progress(true, 100)
           .cancelable(false)
@@ -1092,10 +1083,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         decorView.setSystemUiVisibility(decorView.getWindowSystemUiVisibility() | View.SYSTEM_UI_FLAG_IMMERSIVE);
       }
 
-      this.progressDialog = dialog;
+      this.dialog = dialog;
     }
 
-    return this.progressDialog;
+    return this.dialog;
   }
 
   private void setShareFlag() {
@@ -1176,7 +1167,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
 
-    final String chapterProgress = pagesForResource <= currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource);
+    final String chapterProgress = pagesForResource != 0 ? String.format("%s / %s", currentPage, pagesForResource) : "";
     chapterProgressPagesTv.setText(chapterProgress);
 
     // Notify analytics
