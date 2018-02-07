@@ -321,7 +321,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final CheckableImageButton creamProfileBtn = activity.findViewById(R.id.cream_profile_btn);
 
     // Setup initial checked element for color profile
-    final Configuration.ColorProfile profile = di.config.getColourProfile();
+    final Configuration.ColorProfile profile = di.config.getColorProfile();
     switch (profile) {
       case DAY:
         dayProfileBtn.setChecked(true);
@@ -632,7 +632,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
     final boolean isFontChanged = !di.config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
-    final boolean isBackgroundChanged = di.config.getColourProfile() != savedConfigState.colorProfile;
+    final boolean isBackgroundChanged = di.config.getColorProfile() != savedConfigState.colorProfile;
     final boolean isStripWhiteSpaceEnabled = di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
     final boolean isSansSerifFontNameEqual = di.config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
 
@@ -671,8 +671,25 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.bookView.setTextColor(di.config.getTextColor());
     this.bookView.setLinkColor(di.config.getLinkColor());
 
-    int brightness = di.config.getBrightness();
-    di.brightnessManager.setBrightness(getActivity().getWindow(), brightness);
+    final Configuration.ColorProfile profile = di.config.getColorProfile();
+    int readerOptionsDrawableRes;
+    switch (profile) {
+      case DAY:
+      default:
+        readerOptionsDrawableRes = R.drawable.shape_button_read_options_white_background;
+        break;
+      case NIGHT:
+        readerOptionsDrawableRes = R.drawable.shape_button_read_options_black_background;
+        break;
+      case CREAM:
+        readerOptionsDrawableRes = R.drawable.shape_button_read_options_cream_background;
+        break;
+    }
+    this.readerOptionsTv.setBackgroundResource(readerOptionsDrawableRes);
+
+    final Window window = getActivity().getWindow();
+    final int brightness = di.config.getBrightness();
+    di.brightnessManager.setBrightness(window, brightness);
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
@@ -747,7 +764,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     savedConfigState.scrolling = di.config.isScrollingEnabled();
     savedConfigState.allowColoursFromCSS = di.config.isUseColoursFromCSS();
 
-    savedConfigState.colorProfile = di.config.getColourProfile();
+    savedConfigState.colorProfile = di.config.getColorProfile();
   }
 
   private void restoreLastReadPosition(Bundle savedInstanceState) {

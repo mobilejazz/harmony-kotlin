@@ -234,7 +234,7 @@ public class Configuration {
     return settings.getBoolean(KEY_KEEP_SCREEN_ON, true);
   }
 
-  public ColorProfile getColourProfile() {
+  public ColorProfile getColorProfile() {
     String stringValue = settings.getString(KEY_NIGHT_MODE, ColorProfile.DAY.toString());
     return ColorProfile.valueOf(stringValue);
   }
@@ -339,7 +339,7 @@ public class Configuration {
   }
 
   public void setBrightness(int brightness) {
-    if (getColourProfile() == ColorProfile.DAY) {
+    if (getColorProfile() == ColorProfile.DAY) {
       updateValue("day_bright", brightness);
     } else {
       updateValue("night_bright", brightness);
@@ -363,7 +363,7 @@ public class Configuration {
     final boolean nightDefault = false;
     final boolean creamDefault = false;
     final boolean dayDefault = true;
-    final ColorProfile colorProfile = getColourProfile();
+    final ColorProfile colorProfile = getColorProfile();
 
     if (colorProfile == ColorProfile.NIGHT) {
       return settings.getBoolean(PREFIX_NIGHT + "_" + setting, nightDefault);
@@ -375,9 +375,9 @@ public class Configuration {
   }
 
   private int getProfileSetting(String setting, int dayDefault, int nightDefault, int creamDefault) {
-    if (getColourProfile() == ColorProfile.NIGHT) {
+    if (getColorProfile() == ColorProfile.NIGHT) {
       return settings.getInt(PREFIX_NIGHT + "_" + setting, nightDefault);
-    } else if (getColourProfile() == ColorProfile.CREAM) {
+    } else if (getColorProfile() == ColorProfile.CREAM) {
       return settings.getInt(PREFIX_CREAM + "_" + setting, creamDefault);
     } else {
       return settings.getInt(PREFIX_DAY + "_" + setting, dayDefault);

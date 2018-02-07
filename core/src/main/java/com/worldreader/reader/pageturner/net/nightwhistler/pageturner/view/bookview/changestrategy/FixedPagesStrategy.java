@@ -27,6 +27,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
+import com.google.common.base.Throwables;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
@@ -64,7 +65,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   public List<Integer> getPageOffsets() {
-    return new ArrayList<>(this.pageOffsets);
+    return new ArrayList<>(pageOffsets);
   }
 
   public List<Integer> getPageOffsets(CharSequence text) {
@@ -77,29 +78,24 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     final TextPaint textPaint = bookView.getInnerView().getPaint();
     final int boundedWidth = bookView.getInnerView().getMeasuredWidth();
 
-    Log.d(TAG, "OFFSET Page width: " + boundedWidth);
-
     final StaticLayout layout = layoutFactory.create(text, textPaint, boundedWidth, bookView.getLineSpacing());
-
     if (layout == null) {
       return emptyList();
     }
 
-    Log.d(TAG, "OFFSET Layout height: " + layout.getHeight());
-    Log.d(TAG, "OFFSET bookView.getMeasuredHeight(): " + bookView.getMeasuredHeight());
-    Log.d(TAG, "OFFSET bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
-    Log.d(TAG, "OFFSET bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
+    Log.d(TAG, "Page width: " + boundedWidth);
+    Log.d(TAG, "Layout height: " + layout.getHeight());
+    Log.d(TAG, "bookView.getMeasuredHeight(): " + bookView.getMeasuredHeight());
+    Log.d(TAG, "bookView.getMeasuredHeightAndState: " + bookView.getMeasuredHeightAndState());
+    Log.d(TAG, "bookView.getVerticalMargin(): " + bookView.getVerticalMargin());
 
     layout.draw(new Canvas());
 
-    //Subtract the height of the top margin
-    int pageHeight = bookView.getMeasuredHeight() - bookView.getVerticalMargin();
-    Log.d(TAG, "OFFSET FIRST pageHeight " + pageHeight);
+    //Subtract the height of the top margin and the padding
+    final int pageHeight =
+        bookView.getMeasuredHeight() - bookView.getVerticalMargin() - bookView.getPaddingTop() - bookView.getVerticalMargin() - bookView.getPaddingBottom();
 
-    //Just subtract the bottom margin
-    pageHeight = pageHeight - bookView.getVerticalMargin();
-
-    Log.d(TAG, "OFFSET Got pageHeight " + pageHeight);
+    Log.d(TAG, "Got pageHeight " + pageHeight);
 
     int totalLines = layout.getLineCount();
     int topLineNextPage = -1;
@@ -132,8 +128,8 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   private void updatePageNumber() {
-    for (int i = 0; i < this.pageOffsets.size(); i++) {
-      if (this.pageOffsets.get(i) > this.storedPosition) {
+    for (int i = 0; i < pageOffsets.size(); i++) {
+      if (pageOffsets.get(i) > storedPosition) {
         this.pageNum = i - 1;
         return;
       }
@@ -146,17 +142,17 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     if (pageOffsets.size() < 1 || page < 0) {
       return none();
     } else if (page >= pageOffsets.size() - 1) {
-      int startOffset = pageOffsets.get(pageOffsets.size() - 1);
+      final int startOffset = pageOffsets.get(pageOffsets.size() - 1);
 
       if (startOffset >= 0 && startOffset <= text.length() - 1) {
-        return some(applySpans(this.text.subSequence(startOffset, text.length())));
+        return some(applySpans(text.subSequence(startOffset, text.length())));
       } else {
         return some(applySpans(text));
       }
     } else {
-      int start = this.pageOffsets.get(page);
-      int end = this.pageOffsets.get(page + 1);
-      return some(applySpans(this.text.subSequence(start, end)));
+      int start = pageOffsets.get(page);
+      int end = pageOffsets.get(page + 1);
+      return some(applySpans(text.subSequence(start, end)));
     }
   }
 
@@ -235,8 +231,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     this.storedPosition = -1;
 
     if (isAtEnd()) {
-      PageTurnerSpine spine = bookView.getSpine();
-
+      final PageTurnerSpine spine = bookView.getSpine();
       if (spine == null || !spine.navigateForward()) {
         return;
       }
@@ -275,7 +270,6 @@ public class FixedPagesStrategy implements PageChangeStrategy {
     }
 
     CharSequence sequence = getTextForPage(pageNum).getOrElse("");
-
     if (sequence.length() > 0) {
       // #555 Remove \n at the end of sequence which get InnerView size changed
       int endIndex = sequence.length();
@@ -308,6 +302,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
       //strip formatting and try again.
 
     } catch (IndexOutOfBoundsException ie) {
+      Log.e(TAG, "IndexOutOfBoundsException while updating position:" + Throwables.getStackTraceAsString(ie));
       this.childView.setText(sequence.toString());
     }
   }
