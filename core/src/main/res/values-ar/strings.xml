@@ -1,6 +1,127 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <resources>
+  <!-- Generics -->
+  <string name="ls_generic_cancel">إلغاء</string>
+  <string name="ls_generic_accept">نعم</string>
+  <string name="ls_generic_delete">مسح</string>
+  <string name="ls_generic_done">إنهاء</string>
+  <string name="ls_generic_dismiss">رفض</string>
+  <string name="ls_generic_save">احفظ</string>
+  <string name="ls_generic_close">أغلق</string>
+  <string name="ls_generic_yes">نعم</string>
+  <string name="ls_generic_no">لا</string>
+  <string name="ls_generic_quit">خروج</string>
+  <string name="ls_generic_retry">إعادة المحاولة</string>
+  <string name="ls_generic_back">رجوع</string>
+  <string name="ls_generic_next">التالي</string>
+  <string name="ls_generic_search">البحث</string>
+  <string name="ls_generic_share">مشاركة</string>
+  <string name="ls_generic_settings">الإعدادات</string>
+  <string name="ls_generic_skip">أغلق</string>
+  <string name="ls_generic_edit">تعديل</string>
+  <string name="ls_my_library_view_all">المزيد</string>
+  <string name="ls_offline_books_screen_title">كتب بدون الإتصال بالإنترنت</string>
+  <!-- Book Detail Layout-->
+  <string name="ls_generic_like">إعجاب</string>
+  <string name="ls_generic_liked">تم الإعجاب</string>
+  <string name="ls_book_detail_add_to_currently_reading">إضافة إلى كتبي</string>
+  <string name="ls_book_detail_added_to_currently_reading">مضاف إلى كتبي</string>
+  <string name="ls_book_detail_download_book">تنزيل الكتاب (قراءة بدون الإتصال بالإنترنت)</string>
+  <string name="ls_book_detail_number_of_likes">إعجابات %1$d</string>
+  <string name="ls_book_detail_number_of_times_read">قُرء %1$d</string>
+  <string name="ls_delete_book_dialog_title">حذف الكتاب</string>
+  <string name="ls_delete_book_dialog_message">هل انت متأكد انك تريد حذف الكتاب؟</string>
+  <string name="ls_download_book_exceeded_limit_title">تحميل الكتاب</string>
+  <string name="ls_download_book_exceeded_limit_message">لقد تجاوزت الحد اليومي لتنزيل الكتب.
+ يمكنك تحميل المزيد غدا.</string>
+  <string name="ls_open_book_not_internet">"عليك تحميل كتاب لقراءته بدون
+الإتصال بالإنترنت."</string>
+  <!-- View all layout & My books layout-->
+  <string name="ls_view_all_delete_book_title">هل تريد حذف الكتاب؟</string>
+  <string name="ls_view_all_delete_book_message">هل انت متأكد انك تريد حذف الكتاب؟
+سيتم إزالة كل  بيانات التقدم المحفوظة كذلك.</string>
+  <string name="ls_view_all_delete_book_error">عذراً، حدث خلل أثناء حذف كتابك.
+يرجى المحاولة مرة اخرى.</string>
+  <!-- Settings -->
+  <string name="ls_settings_profile_settings">إعدادات الملف الشخصي</string>
+  <string name="ls_settings_my_goals">أهدافي</string>
+  <!-- User Profile Layout -->
+  <string name="ls_user_not_registered_register_now">سجّل الآن</string>
+  <!-- Register layout -->
+  <string name="ls_signup_login_btn">تسجيل الدخول</string>
+  <string name="ls_signup_no_register">سجّل لاحقاً</string>
+  <string name="ls_signup_message">احصل على المزيد من القراءة الخاصة بك. اشتراك للحصول على الميزات الحصرية
+وتوصيّات الكتب.</string>
+  <string name="ls_signup_username">اسم المستخدم</string>
+  <string name="ls_signup_password">كلمة المرور</string>
+  <string name="ls_signup_repeat_password">إعادة كلمة المرور</string>
+  <string name="ls_signup_terms_and_conditions">الموافقة على الأحكام و الشروط</string>
+  <string name="ls_signup_register_now_btn">سجّل الآن</string>
+  <string name="ls_signup_accept_terms_conditions">الموافقة على الأحكام و الشروط</string>
+  <string name="ls_signup_email">البريد الإلكتروني</string>
+  <!-- Loading book layout -->
+  <string name="ls_loading_book_message">جار التحميل</string>
+  <string name="ls_loading_book_please_wait">يرجى الإنتظار</string>
+  <!-- Book finished layout -->
+  <string name="ls_congratulations_title">توتة توتة</string>
+  <string name="ls_congratulations_finished_book">خلصت الحدوتة!</string>
+  <string name="ls_congratulations_back_to_book_detai">الرجوع لمكتبتي</string>
+  <!--#Tutorial Home Screen-->
+  <!--#Tutorial Reader Screen-->
+  <!--#Tutorial Default texts-->
+  <!--#Book Reading Screen-->
+  <!--#DefintionView-->
+  <string name="ls_offline_books_catalog_outdated_description">كتبك التي بدون إتصال بالإنترنت قديمة. لمتابعة القراءة في وضع عدم الاتصال، يجب التحديث الآن أو عندما يكون لديك اتصال بإنترنت جيد. \n \n <b> ملاحظة: </b> إذا اخترت التحديث لاحقا، فسيتم إزالة الكتب القديمة. الكتب سوف تكون متاحة للتحميل مرة أخرى إذا اخترت.</string>
+  <string name="ls_offline_books_catalog_outdated_update">تحديث</string>
+  <!--#Not registered dialog-->
+  <string name="ls_not_registered_dialog_title">جاهز لمتابعة تقدمك؟</string>
+  <string name="ls_not_registered_dialog_message">اعرف أي نوع من القُرّاء أنت واعرف ماذا يقرأون الناس الآخرين.</string>
+  <string name="ls_error_signup_network_title">الشبكة غير متوفرة</string>
+  <string name="ls_error_definition_not_internet">عذراً، عليك الإتصال بالإنترنت للبحث عن تعريف.</string>
+  <string name="ls_error_tts_not_internet">عذراً، عليك الإتصال بالإنترنت للقرأة بصوت مرتفع.</string>
+  <string name="ls_book_detail_recommended">من نفس الفئة</string>
+  <string name="ls_my_library_currently_reading">كتبي</string>
+  <string name="ls_login_forgot_password">نسيت كلمة المرور؟</string>
+  <string name="ls_login_btn_title">ابدء بالقرأة</string>
+  <string name="ls_category_detail_most_popular">الأكثر شُهرة</string>
+  <string name="ls_category_detail_highest_rated">الأعلى تقيّماً</string>
+  <string name="ls_my_library_new_releases">الإصدارات الحديثة</string>
+  <string name="ls_toc">جدول المحتويات</string>
+  <string name="ls_copy">حقوق النشر</string>
+  <string name="ls_title">عنوان</string>
+  <string name="ls_dedi">الإهداء</string>
+  <string name="ls_epilogue">الخاتمه</string>
+  <string name="ls_ack">شكر وتقدير</string>
+  <string name="ls_back">الغلاف الخلفي</string>
+  <string name="ls_index">فهرس</string>
+  <string name="ls_credits">ينّسب إلى</string>
   <string name="ls_reader_options">خيارات القارئ</string>
-  <string name="ls_brightness">سطوع</string>
-
+  <string name="ls_brightness">السطوع</string>
+  <string name="ls_font">الخط</string>
+  <string name="ls_font_size">حجم الخط</string>
+  <string name="ls_background_color">لون الخلفية</string>
+  <string name="ls_definition">التعريف</string>
+  <string name="ls_init_tts">جارِ تهيئة النص إلى كلام ...\nيرجى الإنتظار.</string>
+  <string name="ls_tts_failed">فشل تحميل النص إلى كلام.</string>
+  <string name="ls_moreByAuthor">المزيد من هذا المؤلف</string>
+  <string name="ls_moreByPublisher">المزيد من هذا الناشر</string>
+  <string name="ls_home_invite_friends">دعوة الأصدقاء</string>
+  <string name="ls_invite_friends_hint">شارك الرمز الخاص بك او قم بدعوة اصدقائك من خلال التطبيق المفضل</string>
+  <string name="ls_invite_friends_code_title">رمز الدعوة الخاص بك:</string>
+  <string name="ls_invite_friends_share">نشر الرابط</string>
+  <string name="ls_error_network_first_part_title">أسف</string>
+  <string name="ls_error_network_second_part_title">ليس متوفر بدون إتصال بالإنترنت، يرجى الإتصال بالإنترنت لرؤية الشاشة.</string>
+  <string name="ls_error_network_title">"خلل في الشبكة
+"</string>
+  <string name="ls_error_network_generic_screen_title">الشاشة</string>
+  <string name="ls_error_invalid_username_password_combination">اسم المستخدم و كلمة المرور غير صالحة</string>
+  <string name="ls_error_common_network_message">خلل في الشبكة، يرجى التأكد من الإتصال بالإنترنت.</string>
+  <string name="ls_error_username_taken_message">اسم المستخدم مستعمل</string>
+  <string name="ls_error_register_google_message">هذا البريد الإلكتروني مسجّل مسبقاً مع جوجل.</string>
+  <string name="ls_error_register_facebook_message">هذا البريد الإلكتروني مسجّل مسبقاً مع فيسبوك.</string>
+  <string name="ls_user_profile_invalid_duplicated_email">"هذا البريد الإلكتروني مستعمل.
+يرجى إعادة الإختيار. "</string>
+  <string name="ls_user_profile_username_already_taken">اسم المستخدم مستعمل. يرجى إعادة الإختيار.</string>
+  <string name="ls_forgot_password_account_not_exits">الحساب غير موجود.</string>
+  <string name="ls_error_fatal_error_message">عفوا! هناك خطأ</string>
 </resources>

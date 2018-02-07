@@ -13,8 +13,7 @@
     <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView
       android:id="@+id/reading_fragment_bookView"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingTop="22dp">
+      android:layout_height="match_parent">
 
       <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookTextView
         android:id="@id/book_view_inner"
@@ -26,7 +25,8 @@
         android:linksClickable="true"
         android:longClickable="true"
         android:textColorHighlight="@color/gray_profile_screen"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:paddingTop="32dp"/>
 
     </com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView>
 
@@ -67,20 +67,21 @@
   <TextView
     android:id="@+id/reader_options_tv"
     android:layout_width="wrap_content"
-    android:layout_height="18dp"
+    android:layout_height="24dp"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
     android:layout_gravity="center_horizontal|top"
-    android:background="@drawable/shape_button_read_options_background"
+    android:background="@drawable/shape_button_read_options_white_background"
+    android:foreground="?attr/selectableItemBackground"
     android:gravity="center"
-    android:paddingBottom="2dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="2dp"
+    android:paddingBottom="4dp"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    android:paddingTop="4dp"
     android:text="@string/ls_reader_options"
     android:textAllCaps="true"
     android:textColor="@color/font_white"
-    android:textSize="10sp"
+    android:textSize="12sp"
     android:textStyle="bold" />
 
 </RelativeLayout>
