@@ -14,7 +14,8 @@
       android:id="@+id/reading_fragment_bookView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="22dp">
+      android:paddingTop="32dp"
+      android:background="@color/black">
 
       <com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookTextView
         android:id="@id/book_view_inner"
@@ -67,7 +68,7 @@
   <TextView
     android:id="@+id/reader_options_tv"
     android:layout_width="wrap_content"
-    android:layout_height="18dp"
+    android:layout_height="24dp"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
     android:layout_gravity="center_horizontal|top"

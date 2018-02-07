@@ -282,7 +282,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
           final boolean checked = child.getId() == id;
           child.setChecked(checked);
-          final int color = checked ? R.color.primary_dark : R.color.font_gray;
+          final int color = checked ? R.color.primary : R.color.font_gray;
           child.setTextColor(ContextCompat.getColor(activity, color));
         }
 
@@ -295,7 +295,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     for (int i = 0; i < childCount; i++) {
       final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
       final Integer viewFontSize = Integer.valueOf((String) child.getTag());
-      child.setTextColor(ContextCompat.getColor(activity, viewFontSize == textSize ? R.color.primary_dark : R.color.font_gray));
+      child.setTextColor(ContextCompat.getColor(activity, viewFontSize == textSize ? R.color.primary : R.color.font_gray));
       child.setOnClickListener(textSizeChangeListener);
     }
 
