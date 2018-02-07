@@ -2,6 +2,8 @@ package com.worldreader.core.application.helper.image.downloader;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import com.mobilejazz.logger.library.Logger;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -15,13 +17,17 @@ import java.util.*;
 
 public class PicassoImageDownloader implements ImageDownloader {
 
-  private static final String IMAGE_CACHE_FOLDER = "image-cache";
   private static final String TAG = ImageLoader.class.getSimpleName();
 
+  public static final String IMAGE_CACHE_FOLDER = "image-cache";
+
+  private final Handler handler = new Handler(Looper.getMainLooper());
+
   private final Picasso picasso;
-  private String endpoint;
   private final Storage storage;
   private final Logger logger;
+
+  private String endpoint;
   private Map<String, Target> targets;
 
   @Inject public PicassoImageDownloader(Picasso picasso, String endpoint, Storage storage, Logger logger) {
@@ -34,7 +40,6 @@ public class PicassoImageDownloader implements ImageDownloader {
 
   @Override public void download(final String key, final String url) {
     final String fixedUrl = fixUrl(url);
-
     final Target target = new Target() {
       @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
         logger.d(TAG, "Imaged loaded" + " {url: " + fixedUrl + ", from: " + from.toString() + "}");
@@ -58,8 +63,13 @@ public class PicassoImageDownloader implements ImageDownloader {
       }
     };
     targets.put(key, target);
-    picasso.load(fixedUrl).into(target);
 
+    // Ensure the call is done on the main thread to avoid picasso complaining
+    handler.post(new Runnable() {
+      @Override public void run() {
+        picasso.load(fixedUrl).into(target);
+      }
+    });
   }
 
   @Override public boolean delete(String key) {
@@ -69,6 +79,10 @@ public class PicassoImageDownloader implements ImageDownloader {
 
   @Override public File getImage(String key) {
     return storage.getFile(IMAGE_CACHE_FOLDER, getImageFileName(key));
+  }
+
+  @Override public boolean hasImage(String key) {
+    return storage.getFile(IMAGE_CACHE_FOLDER, getImageFileName(key)) != null;
   }
 
   //region Private methods

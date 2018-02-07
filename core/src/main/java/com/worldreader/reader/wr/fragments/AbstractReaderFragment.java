@@ -86,13 +86,13 @@ import com.worldreader.reader.wr.activities.AbstractReaderActivity;
 import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
+import jedi.option.OptionMatcher;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
-// TODO: 27/11/2017 Fix dagger injection on all projects
 public abstract class AbstractReaderFragment extends Fragment implements BookViewListener, SystemUiHelper.OnVisibilityChangeListener {
 
   public static final String CHANGE_FONT_KEY = "change_font_key";
@@ -124,6 +124,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected View containerTutorialView;
   protected View progressContainer;
   protected TextView readerOptionsTv;
+  protected View arrowLeftIv;
+  protected View arrowRightIv;
   public MaterialDialog progressDialog;
 
   protected DICompanion di;
@@ -253,7 +255,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     });
 
-
     // Setup gravity for the font RadioButtons based on layout direction
     // For some reason system RTL support does not configure it in a proper way
     final RadioButton openSansRb = activity.findViewById(R.id.open_sans_rb);
@@ -281,7 +282,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
           final boolean checked = child.getId() == id;
           child.setChecked(checked);
-          final int color = checked ? R.color.primary_dark : R.color.font_gray;
+          final int color = checked ? R.color.primary : R.color.font_gray;
           child.setTextColor(ContextCompat.getColor(activity, color));
         }
 
@@ -294,7 +295,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     for (int i = 0; i < childCount; i++) {
       final CheckedTextView child = ((android.support.v7.widget.AppCompatCheckedTextView) fontSizesContainerLl.getChildAt(i));
       final Integer viewFontSize = Integer.valueOf((String) child.getTag());
-      child.setTextColor(ContextCompat.getColor(activity, viewFontSize == textSize ? R.color.primary_dark : R.color.font_gray));
+      child.setTextColor(ContextCompat.getColor(activity, viewFontSize == textSize ? R.color.primary : R.color.font_gray));
       child.setOnClickListener(textSizeChangeListener);
     }
 
@@ -362,26 +363,33 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     creamProfileBtn.setOnClickListener(readerProfileChangeListener);
 
     // Setup navigation forward and backward listener
+    this.arrowLeftIv = view.findViewById(R.id.arrow_left_iv);
+    this.arrowRightIv = view.findViewById(R.id.arrow_right_iv);
 
     final View.OnClickListener prevNextClickListener = new View.OnClickListener() {
       @Override public void onClick(View v) {
         final PageTurnerSpine spine = bookView.getSpine();
         if (spine != null) {
           final int id = v.getId();
-          Resource resource;
-          if (id == R.id.arrow_left_iv) {
-            resource = spine.getPreviousResource().unsafeGet();
-          } else {
-            resource = spine.getNextResource().unsafeGet();
-          }
-          if (resource != null) {
-            bookView.navigateTo(resource.getHref());
-          }
+          final boolean toNextChapter = id == R.id.arrow_right_iv;
+          final Option<Resource> resourceOption = toNextChapter ? spine.getNextResource() : spine.getPreviousResource();
+          resourceOption.match(new OptionMatcher<Resource>() {
+            @Override public void caseSome(Resource value) {
+              final String href = value.getHref();
+              bookView.navigateTo(href);
+            }
+
+            @Override public void caseNone() {
+              if (toNextChapter && bookView.isAtEnd()) {
+                pageDown();
+              }
+            }
+          });
         }
       }
     };
-    view.findViewById(R.id.arrow_left_iv).setOnClickListener(prevNextClickListener);
-    view.findViewById(R.id.arrow_right_iv).setOnClickListener(prevNextClickListener);
+    this.arrowLeftIv.setOnClickListener(prevNextClickListener);
+    this.arrowRightIv.setOnClickListener(prevNextClickListener);
 
     // Setup listener for reader options
     readerOptionsTv.setOnClickListener(new View.OnClickListener() {
@@ -548,6 +556,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (itemId == R.id.show_book_content) {
+      menu.findItem(R.id.show_font_options).setChecked(false);
+      menu.findItem(R.id.show_brightness_options).setChecked(false);
+      activity.findViewById(R.id.font_options_container).setVisibility(View.GONE);
+      activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
@@ -804,7 +816,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    dismissProgressDialog();
+    // Enable/Disable chapter arrows
+    final boolean atStart = bookView.isAtStart();
+    arrowLeftIv.setEnabled(!atStart);
 
     // Set chapter
     String currentChapter = null;
@@ -818,8 +832,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     }
 
-    readingTitleProgressTv.setText(currentChapter != null ? currentChapter : bookMetadata.title);
+    readingTitleProgressTv.setText(TextUtils.isEmpty(currentChapter) ? currentChapter : bookMetadata.title);
     formatPageChapterProgress();
+
+    dismissProgressDialog();
 
     onReaderFragmentEvent(BookReaderEvents.READER_PARSE_ENTRY_FINISHED_EVENT);
   }
@@ -1139,9 +1155,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void formatPageChapterProgress() {
+    // Format chapter progress in pages
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
-    chapterProgressPagesTv.setText(pagesForResource < currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource));
+
+    final String chapterProgress = pagesForResource <= currentPage ? "" : String.format("%s / %s", currentPage, pagesForResource);
+    chapterProgressPagesTv.setText(chapterProgress);
 
     // Notify analytics
     onNotifyPageProgressAnalytics(pagesForResource, currentPage);
