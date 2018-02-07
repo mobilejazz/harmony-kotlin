@@ -681,7 +681,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         break;
     }
     this.readerOptionsTv.setBackgroundResource(readerOptionsDrawableRes);
-    this.bookView.getInnerView().setHighlightColor();
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
