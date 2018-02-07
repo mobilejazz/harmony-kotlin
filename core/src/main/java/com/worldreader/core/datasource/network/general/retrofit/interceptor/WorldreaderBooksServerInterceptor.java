@@ -67,7 +67,6 @@ public class WorldreaderBooksServerInterceptor implements Interceptor {
       encodedPathBuilder.append(query);
     }
 
-    // Custom fix for known characters that we know for sure that it should be properly encoded
     return encodedPathBuilder.toString();
   }
 
