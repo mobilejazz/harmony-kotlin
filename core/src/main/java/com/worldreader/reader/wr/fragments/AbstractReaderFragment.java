@@ -781,6 +781,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
+    this.bookView.setFileName(bookMetadata.bookId);
+
     if (bookTocEntryListener != null) {
       final Option<List<TocEntry>> optionalToc = bookView.getTableOfContents();
       tableOfContents = optionalToc.unsafeGet();
