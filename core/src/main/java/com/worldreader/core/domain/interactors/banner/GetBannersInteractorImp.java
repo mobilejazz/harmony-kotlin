@@ -54,7 +54,7 @@ public class GetBannersInteractorImp extends AbstractInteractor<List<Banner>, Er
 
     executor.execute(new Runnable() {
       @Override public void run() {
-        bannerRepository.getAll(Banner.READ_TO_KIDS_BANNER_IDENTIFIER, index, limit,
+        bannerRepository.getAll(identifier, index, limit,
             new Callback<List<Banner>>() {
               @Override public void onSuccess(List<Banner> banners) {
                 settableFuture.set(Optional.fromNullable(banners));
