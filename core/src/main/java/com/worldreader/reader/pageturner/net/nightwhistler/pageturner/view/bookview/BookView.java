@@ -392,8 +392,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void pageDown() {
-    boolean isAtStart = isAtStart();
-    if (isAtStart) {
+    if (isAtEnd()) {
+      notifyListenersLastPageDownEvent();
+      return;
+    }
+
+    if (isAtStart()) {
       notifyListenersPageDownFirstPageEvent();
     }
 
@@ -402,11 +406,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     notifyListenersPageDownEvent();
   }
 
-  public void lastPageDown() {
-    notifyListenersLastPageDownEvent();
-  }
-
   public void pageUp() {
+    if (isAtStart()) {
+      return;
+    }
+
     strategy.pageUp();
     progressUpdate();
     deselectText();

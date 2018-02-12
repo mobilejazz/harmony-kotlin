@@ -825,10 +825,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    // Enable/Disable chapter arrows
-    final boolean atStart = bookView.isAtStart();
-    arrowLeftIv.setEnabled(!atStart);
-
     // Set chapter
     String currentChapter = null;
     if (resource != null && resource.getHref() != null && tableOfContents != null) {
@@ -850,6 +846,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onProgressUpdate(int progressPercentage) {
+    // Enable/Disable chapter arrows
+    final boolean atStart = bookView.isAtStart();
+    arrowLeftIv.setEnabled(!atStart);
+
     chapterProgressDsb.setProgress(progressPercentage);
   }
 
@@ -1141,20 +1141,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void pageDown() {
-    if (bookView.isAtEnd()) {
-      bookView.lastPageDown();
-      return;
-    }
-
     bookView.pageDown();
     formatPageChapterProgress();
   }
 
   private void pageUp() {
-    if (bookView.isAtStart()) {
-      return;
-    }
-
     bookView.pageUp();
     formatPageChapterProgress();
   }
