@@ -209,7 +209,7 @@ public class DiscreteSeekBar extends View {
     int thumbSize = (int) (density * ThumbDrawable.DEFAULT_SIZE_DP);
 
     //Extra pixels for a touch area of 48dp
-    int touchBounds = (int) (density * 32);
+    int touchBounds = (int) (density * 24);
     mAddedTouchBounds = (touchBounds - thumbSize) / 2;
     mTrackTextBounds = (int) (density * DEFAULT_INDICATOR_TEXT_SIZE_SP);
 

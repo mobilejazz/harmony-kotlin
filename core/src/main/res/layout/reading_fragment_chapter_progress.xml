@@ -15,8 +15,8 @@
 
   <ImageButton
     android:id="@+id/arrow_left_iv"
-    android:layout_width="24dp"
-    android:layout_height="24dp"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
     android:layout_marginLeft="8dp"
     android:layout_marginStart="8dp"
     android:background="?attr/selectableItemBackgroundBorderless"
@@ -31,8 +31,8 @@
 
   <ImageButton
     android:id="@+id/arrow_right_iv"
-    android:layout_width="24dp"
-    android:layout_height="24dp"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
     android:layout_marginEnd="8dp"
     android:layout_marginRight="8dp"
     android:background="?attr/selectableItemBackgroundBorderless"
@@ -69,7 +69,7 @@
     android:layout_height="32dp"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="16dp"
     android:clickable="false"
     android:focusable="false"
     app:dsb_allowTrackClickToDrag="false"
