@@ -4,11 +4,6 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 
 import java.io.*;
 
-/**
- * Represents one of the authors of the book
- *
- * @author paul
- */
 public class Author implements Serializable {
 
   private static final long serialVersionUID = 6663408501416574200L;

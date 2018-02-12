@@ -90,7 +90,9 @@ public class BookTocFragment extends Fragment implements TocEntriesAdapter.OnCli
   }
 
   private void fillRecyclerViewWithEntries(Option<List<TocEntry>> tocEntries) {
-    bookIndexRv.setAdapter(new TocEntriesAdapter(getContext(), tocEntries.getOrElse(new ArrayList<TocEntry>()), this));
+    final Context context = getContext();
+    final List<TocEntry> entries = tocEntries.getOrElse(new ArrayList<TocEntry>());
+    bookIndexRv.setAdapter(new TocEntriesAdapter(context, entries, this));
   }
 
   private void showBookIndexContentView() {

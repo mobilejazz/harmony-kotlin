@@ -24,6 +24,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
 import jedi.option.Option;
 
 import java.net.URI;
@@ -38,8 +39,6 @@ import static jedi.option.Options.option;
  * Special spine class which handles navigation and provides a custom cover.
  */
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
-
-  private static final String COVER_HREF = "PageTurnerCover";
 
   private final Book book;
   private final List<SpineEntry> entries;
@@ -58,28 +57,31 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.position = 0;
     this.blacklist = blacklist;
 
-    String coverHref = null;
-    if (!entries.isEmpty() && !entries.get(0).href.equals(COVER_HREF)) {
-      coverHref = book.getCoverPage().getHref();
+    final Resource ncxResource = book.getNcxResource();
+    if (ncxResource != null) {
+      this.tocHref = ncxResource.getHref();
     }
 
-    for (SpineReference reference : book.getSpine().getSpineReferences()) {
+    // Filter and clean entries that we don't want to show directly
+    final Resource coverPage = book.getCoverPage();
+    final String coverHref = coverPage != null ? coverPage.getHref() : "";
+
+    final List<SpineReference> spineReferences = book.getSpine().getSpineReferences();
+    for (SpineReference reference : spineReferences) {
       final Resource res = reference.getResource();
       if (!isBlackListed(res)) {
-        if (coverHref == null || !(coverHref.equals(res.getHref()))) {
+        final String resHref = res.getHref();
+        if (TextUtils.isEmpty(coverHref) || !coverHref.equals(resHref)) {
           addResource(res);
         }
       } else {
         final String resourceId = res.getId();
-        final String blackListResource = this.blacklist.containsKey(resourceId) ? this.blacklist.get(resourceId) : "";
+        final String blackListResource = blacklist.containsKey(resourceId) ? blacklist.get(resourceId) : "";
         if (!TextUtils.isEmpty(blackListResource)) {
-          book.getTableOfContents().addTOCReference(new TOCReference(blackListResource, res));
+          final TableOfContents toc = book.getTableOfContents();
+          toc.addTOCReference(new TOCReference(blackListResource, res));
         }
       }
-    }
-
-    if (book.getNcxResource() != null) {
-      this.tocHref = book.getNcxResource().getHref();
     }
   }
 
@@ -174,16 +176,13 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * Resolves a href relative to the current resource.
    */
   public String resolveHref(String href) {
-    Option<Resource> res = getCurrentResource();
-
+    final Option<Resource> res = getCurrentResource();
     if (!isEmpty(res)) {
-      Resource actualResource = res.unsafeGet();
-
+      final Resource actualResource = res.unsafeGet();
       if (actualResource.getHref() != null) {
         return resolveHref(href, actualResource.getHref());
       }
     }
-
     return href;
   }
 
@@ -286,11 +285,9 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   public Long getSizeForCurrentResource() {
     final Option<Resource> currentResource = getCurrentResource();
-
     if (currentResource == null) {
       return null;
     }
-
     return currentResource.unsafeGet().getSize();
   }
 

@@ -1,5 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.helper;
 
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
@@ -26,19 +27,26 @@ public class TocUtils {
     }
 
     for (TOCReference ref : refs) {
-      StringBuilder title = new StringBuilder();
+      final StringBuilder builder = new StringBuilder();
 
       for (int i = 0; i < level; i++) {
-        title.append("  ");
+        builder.append("  ");
       }
 
-      title.append(ref.getTitle());
+      final String title = ref.getTitle();
+      builder.append(title);
 
-      if (ref.getResource() != null) {
-        entries.add(new TocEntry(title.toString(), spine.resolveTocHref(ref.getCompleteHref())));
+      final Resource resource = ref.getResource();
+      if (resource != null) {
+        final String completeHref = ref.getCompleteHref();
+        //final String resolvedTocHref = spine.resolveTocHref(completeHref);
+        final String href = completeHref;
+        final TocEntry tocEntry = new TocEntry(builder.toString(), href);
+        entries.add(tocEntry);
       }
 
-      flatten(spine, ref.getChildren(), entries, level + 1);
+      final List<TOCReference> children = ref.getChildren();
+      flatten(spine, children, entries, level + 1);
     }
   }
 
