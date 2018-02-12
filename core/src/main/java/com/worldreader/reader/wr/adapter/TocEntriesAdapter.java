@@ -13,20 +13,10 @@ import java.util.*;
 
 public class TocEntriesAdapter extends RecyclerView.Adapter<TocEntriesAdapter.TocEntriesHolder> {
 
-  public interface OnClickBookSectionListener {
-
-    void onBookSectionSelected(TocEntry tocEntry);
-  }
+  private final Context context;
+  private final List<TocEntry> tocEntries;
 
   private OnClickBookSectionListener listener;
-
-  private final Context context;
-
-  private List<TocEntry> tocEntries;
-
-  public TocEntriesAdapter(Context context) {
-    this(context, null, null);
-  }
 
   public TocEntriesAdapter(Context context, List<TocEntry> tocEntries, OnClickBookSectionListener listener) {
     this.context = context;
@@ -35,7 +25,7 @@ public class TocEntriesAdapter extends RecyclerView.Adapter<TocEntriesAdapter.To
   }
 
   @Override public TocEntriesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View v = LayoutInflater.from(context).inflate(R.layout.toc_entries_adapter, parent, false);
+    final View v = LayoutInflater.from(context).inflate(R.layout.toc_entries_adapter, parent, false);
     return new TocEntriesHolder(v);
   }
 
@@ -55,14 +45,18 @@ public class TocEntriesAdapter extends RecyclerView.Adapter<TocEntriesAdapter.To
     return tocEntries.size();
   }
 
-  public static class TocEntriesHolder extends RecyclerView.ViewHolder {
+  public interface OnClickBookSectionListener {
+
+    void onBookSectionSelected(TocEntry tocEntry);
+  }
+
+  static class TocEntriesHolder extends RecyclerView.ViewHolder {
 
     TextView sectionTv;
 
-    public TocEntriesHolder(View itemView) {
+    TocEntriesHolder(View itemView) {
       super(itemView);
-      this.sectionTv = ((TextView) itemView.findViewById(R.id.toc_entries_adapter_section_tv));
+      this.sectionTv = itemView.findViewById(R.id.toc_entries_adapter_section_tv);
     }
-
   }
 }

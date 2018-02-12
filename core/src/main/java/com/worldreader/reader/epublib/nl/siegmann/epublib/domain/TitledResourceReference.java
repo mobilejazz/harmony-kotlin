@@ -7,20 +7,10 @@ import java.io.*;
 
 public class TitledResourceReference extends ResourceReference implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 3918155020095190080L;
+
   private String fragmentId;
   private String title;
-
-  public TitledResourceReference(Resource resource) {
-    this(resource, null);
-  }
-
-  public TitledResourceReference(Resource resource, String title) {
-    this(resource, title, null);
-  }
 
   public TitledResourceReference(Resource resource, String title, String fragmentId) {
     super(resource);
