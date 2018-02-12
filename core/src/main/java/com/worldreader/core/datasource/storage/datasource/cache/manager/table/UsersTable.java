@@ -69,7 +69,7 @@ public class UsersTable {
   }
 
   @NonNull public static String createTableQuery() {
-    return "CREATE TABLE "
+    return "CREATE TABLE IF NOT EXISTS "
         + TABLE
         + "("
         + COLUMN_ID

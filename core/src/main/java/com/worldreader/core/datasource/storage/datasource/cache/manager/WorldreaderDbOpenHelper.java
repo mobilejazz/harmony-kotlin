@@ -3,6 +3,7 @@ package com.worldreader.core.datasource.storage.datasource.cache.manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBookLikesTable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserBooksTable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UserMilestonesTable;
@@ -11,6 +12,7 @@ import com.worldreader.core.datasource.storage.datasource.cache.manager.table.Us
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.*;
 
 @Singleton public class WorldreaderDbOpenHelper extends SQLiteOpenHelper {
 
@@ -18,24 +20,40 @@ import javax.inject.Singleton;
   private static final int DB_VERSION = 1;
 
   private static final String PRAGMA_FOREIGN_KEY_SUPPORT = "PRAGMA foreign_keys = ON;";
+  private final Logger logger;
 
-  @Inject public WorldreaderDbOpenHelper(final Context context) {
+  private static final String TAG = "DB-Open-Helper";
+
+  @Inject public WorldreaderDbOpenHelper(final Context context, final Logger logger) {
     super(context, DB_NAME, null, DB_VERSION);
+    this.logger = logger;
   }
 
   @Override public void onCreate(final SQLiteDatabase db) {
+
+  }
+
+  @Override
+  public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+
+  }
+
+  @Override public void onOpen(final SQLiteDatabase db) {
+    final long start = System.nanoTime();
+    logger.d(TAG, "onOpen() - Start at " + start);
+
     db.execSQL(UsersTable.createTableQuery());
     db.execSQL(UserBooksTable.createTableQuery());
     db.execSQL(UserMilestonesTable.createTableQuery());
     db.execSQL(UserScoreTable.createTableQuery());
     db.execSQL(UserBookLikesTable.createTableQuery());
-  }
 
-  @Override public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+    final long end = System.nanoTime();
+    logger.d(TAG, "onOpen() - End at " + end);
 
-  }
+    final long diff = end - start;
+    logger.d(TAG, "onOpen() - Diff = " + TimeUnit.NANOSECONDS.toMillis(diff));
 
-  @Override public void onOpen(final SQLiteDatabase db) {
     db.execSQL(PRAGMA_FOREIGN_KEY_SUPPORT);
   }
 }

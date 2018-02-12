@@ -16,7 +16,7 @@ public class UserScoreTable {
   public static final String COLUMN_UPDATED_AT = "updatedAt";
 
   @NonNull public static String createTableQuery() {
-    return "CREATE TABLE "
+    return "CREATE TABLE IF NOT EXISTS "
         + TABLE
         + "("
         + COLUMN_USER_ID

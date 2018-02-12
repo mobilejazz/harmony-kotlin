@@ -13,7 +13,7 @@ public class UserBookLikesTable {
   public static final String COLUMN_LIKED_AT = "likedAt";
 
   @NonNull public static String createTableQuery() {
-    return "CREATE TABLE "
+    return "CREATE TABLE IF NOT EXISTS "
         + TABLE
         + "("
         + COLUMN_BOOK_ID
