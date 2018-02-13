@@ -15,14 +15,7 @@ public class WordDefinitionEntityDataMapper
   }
 
   @Override public WordDefinition transform(WordDefinitionEntity data) {
-    WordDefinition wordDefinition = new WordDefinition();
-
-    wordDefinition.setEntry(data.getEntry());
-    wordDefinition.setRequest(data.getRequest());
-    wordDefinition.setResponse(data.getResponse());
-    wordDefinition.setMeaning(transformType(data.getMeaning()));
-
-    return wordDefinition;
+    return new WordDefinition(data.getEntry(), transformType(data.getMeaning()));
   }
 
   @Override public List<WordDefinition> transform(List<WordDefinitionEntity> data) {

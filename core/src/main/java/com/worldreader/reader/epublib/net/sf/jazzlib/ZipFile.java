@@ -408,7 +408,7 @@ public class ZipFile implements ZipConstants {
 
   /**
    * Creates an input stream reading the given zip entry as uncompressed data.
-   * Normally zip entry should be an entry returned by getEntry() or
+   * Normally zip entry should be an entry returned by getWord() or
    * entries().
    *
    * @param entry

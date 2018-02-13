@@ -14,7 +14,6 @@ import com.worldreader.core.R;
 import com.worldreader.core.domain.model.WordDefinition;
 
 import java.util.*;
-import java.util.regex.*;
 
 public class DefinitionView extends LinearLayout {
 
@@ -27,8 +26,6 @@ public class DefinitionView extends LinearLayout {
   private LinearLayout adjectiveContainer;
   private LinearLayout adverbContainer;
   private TextView noResultsContainer;
-
-  private ImageButton closeBtn;
 
   private TextView definitionWordTv;
   private TextView nounDefinitionTv;
@@ -85,16 +82,17 @@ public class DefinitionView extends LinearLayout {
   public void setWordDefinition(WordDefinition wordDefinition) {
     this.wordDefinition = wordDefinition;
 
-    definitionWordTv.setText(wordDefinition.getEntry());
+    definitionWordTv.setText(wordDefinition.getWord());
 
     // Fill view data
-    Map<WordDefinition.WordType, String> definitions = wordDefinition.getMeaning();
+    final Map<WordDefinition.WordType, String> definitions = wordDefinition.getMeanings();
 
     String noun = definitions.get(WordDefinition.WordType.NOUN);
     if (!TextUtils.isEmpty(noun)) {
       noun = Cleaner.clean(noun);
       nounDefinitionTv.setText(noun);
       nounContainer.setVisibility(View.VISIBLE);
+      findViewById(R.id.noun_title_tv).setVisibility(View.VISIBLE);
     } else {
       nounContainer.setVisibility(View.GONE);
     }
@@ -126,6 +124,13 @@ public class DefinitionView extends LinearLayout {
       adverbContainer.setVisibility(View.GONE);
     }
 
+    final String unknown = definitions.get(WordDefinition.WordType.UNKNOWN);
+    if (!TextUtils.isEmpty(unknown)) {
+      nounDefinitionTv.setText(unknown);
+      nounContainer.setVisibility(View.VISIBLE);
+      findViewById(R.id.noun_title_tv).setVisibility(View.GONE);
+    }
+
     if (nounContainer.getVisibility() == View.GONE
         && adjectiveContainer.getVisibility() == View.GONE
         && verbContainer.getVisibility() == View.GONE
@@ -138,10 +143,6 @@ public class DefinitionView extends LinearLayout {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  // Private methods
-  ///////////////////////////////////////////////////////////////////////////
-
   private void init() {
     LayoutInflater.from(getContext()).inflate(R.layout.definition_view, this, true);
 
@@ -149,19 +150,19 @@ public class DefinitionView extends LinearLayout {
     this.definitionContainer = findViewById(R.id.definition_view_definition_container);
     this.wordDefinitionsContainer = findViewById(R.id.definition_view_word_definitions_sv);
 
-    this.nounContainer = (LinearLayout) findViewById(R.id.definition_view_noun_container);
-    this.verbContainer = (LinearLayout) findViewById(R.id.definition_view_verb_container);
-    this.adjectiveContainer = (LinearLayout) findViewById(R.id.definition_view_adjective_container);
-    this.adverbContainer = (LinearLayout) findViewById(R.id.definition_view_adverb_container);
-    this.noResultsContainer = (TextView) findViewById(R.id.definition_view_no_results_container);
+    this.nounContainer = findViewById(R.id.definition_view_noun_container);
+    this.verbContainer = findViewById(R.id.definition_view_verb_container);
+    this.adjectiveContainer = findViewById(R.id.definition_view_adjective_container);
+    this.adverbContainer = findViewById(R.id.definition_view_adverb_container);
+    this.noResultsContainer = findViewById(R.id.definition_view_no_results_container);
 
-    this.closeBtn = (ImageButton) findViewById(R.id.definition_view_close_button);
+    final ImageButton closeBtn = findViewById(R.id.definition_view_close_button);
 
-    this.definitionWordTv = (TextView) findViewById(R.id.definition_view_title_tv);
-    this.nounDefinitionTv = (TextView) findViewById(R.id.definition_view_noun_definition_tv);
-    this.verbDefinitionTv = (TextView) findViewById(R.id.definition_view_verb_definition_tv);
-    this.adjectiveDefinitionTv = (TextView) findViewById(R.id.definition_view_adjective_definition_tv);
-    this.adverbDefinitionTv = (TextView) findViewById(R.id.definition_view_adverb_definition_tv);
+    this.definitionWordTv = findViewById(R.id.definition_view_title_tv);
+    this.nounDefinitionTv = findViewById(R.id.definition_view_noun_definition_tv);
+    this.verbDefinitionTv = findViewById(R.id.definition_view_verb_definition_tv);
+    this.adjectiveDefinitionTv = findViewById(R.id.definition_view_adjective_definition_tv);
+    this.adverbDefinitionTv = findViewById(R.id.definition_view_adverb_definition_tv);
 
     // Configuration of the view
     setOrientation(VERTICAL);
@@ -177,16 +178,11 @@ public class DefinitionView extends LinearLayout {
     });
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  // Helper classes
-  ///////////////////////////////////////////////////////////////////////////
-
   private static class Cleaner {
 
     private static String CLEANER_PATTERN_STRING = "\\((?:nou|vrb|adj|adv)\\)\\s";
-    private static Pattern CLEANER_PATTERN = Pattern.compile(CLEANER_PATTERN_STRING);
 
-    public static String clean(String originalText) {
+    static String clean(String originalText) {
       return "\u2022\u0020" + originalText.replaceAll(CLEANER_PATTERN_STRING, "")
           .replaceAll("\\n", "\n\u2022\u0020")
           .trim();

@@ -8,54 +8,29 @@ public class WordDefinition {
     NOUN,
     VERB,
     ADVERB,
-    ADJECTIVE
+    ADJECTIVE,
+    UNKNOWN
   }
 
-  private String entry;
-  private String request;
-  private String response;
-  private Map<WordType, String> meaning;
+  private final String word;
+  private final Map<WordType, String> meanings;
 
   public WordDefinition() {
+    this.word = "";
+    this.meanings = new HashMap<>();
   }
 
-  public WordDefinition(String entry, String request, String response,
-      Map<WordType, String> meaning) {
-    this.entry = entry;
-    this.request = request;
-    this.response = response;
-    this.meaning = meaning;
+  public WordDefinition(String entry, Map<WordType, String> meaning) {
+    this.word = entry;
+    this.meanings = meaning;
   }
 
-  public String getEntry() {
-    return entry;
+  public String getWord() {
+    return word;
   }
 
-  public void setEntry(String entry) {
-    this.entry = entry;
+  public Map<WordType, String> getMeanings() {
+    return meanings;
   }
 
-  public String getRequest() {
-    return request;
-  }
-
-  public void setRequest(String request) {
-    this.request = request;
-  }
-
-  public String getResponse() {
-    return response;
-  }
-
-  public void setResponse(String response) {
-    this.response = response;
-  }
-
-  public Map<WordType, String> getMeaning() {
-    return meaning;
-  }
-
-  public void setMeaning(Map<WordType, String> meaning) {
-    this.meaning = meaning;
-  }
 }
