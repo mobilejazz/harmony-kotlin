@@ -555,6 +555,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       activity.findViewById(R.id.font_options_container).setVisibility(View.GONE);
       activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
+      ReaderAnalytics.sendOpenTocEvent(di.analytics, bookMetadata.bookId, bookMetadata.title);
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
       item.setChecked(!item.isChecked());
@@ -1152,6 +1153,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
     this.bookView.navigateTo(tocEntry);
+    ReaderAnalytics.sendOpenTocEntryEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, tocEntry.getTitle(), tocEntry.getHref());
   }
 
   private void formatPageChapterProgress() {

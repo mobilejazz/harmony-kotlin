@@ -31,6 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 import com.worldreader.core.R;
+import com.worldreader.core.analytics.reader.ReaderAnalytics;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;

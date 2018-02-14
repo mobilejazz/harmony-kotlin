@@ -10,6 +10,7 @@ public class AnalyticsEventConstants {
   public static final String BOOK_SPINE_SIZE = "bookSpineSize";
   public static final String BOOK_OPEN_TOC_EVENT = "BookOpenToc";
   public static final String TOC_ENTRY_TITLE_ATTRIBUTE = "tocEntryTitle";
+  public static final String TOC_ENTRY_HREF = "tocEntryHref";
   public static final String TOC_ENTRY_SELECTED_EVENT = "GoToTocEntry";
 
   public static final String BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION = "bookCurrentlyReadingSpineElement";
