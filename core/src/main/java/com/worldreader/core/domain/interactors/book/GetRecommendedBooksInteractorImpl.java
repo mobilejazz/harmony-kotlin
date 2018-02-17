@@ -1,6 +1,9 @@
 package com.worldreader.core.domain.interactors.book;
 
+import android.support.v4.util.ArraySet;
+
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.common.callback.Callback;
@@ -30,6 +33,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
   private int limit;
   private Book book;
   private DomainCallback<List<Book>, ErrorCore> callback;
+  private Set<Integer> rootCategoriesIds;
 
   @Inject public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository,
       @Named("locale.provider") final Provider<String> localeProvider) {
@@ -38,24 +42,25 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
     this.localeProvider = localeProvider;
   }
 
-  @Override public void execute(int offset, int limit, Book book, DomainCallback<List<Book>, ErrorCore> callback) {
+  @Override public void execute(int offset, int limit, Book book, DomainCallback<List<Book>, ErrorCore> callback, Set<Integer> rootCategoriesIds) {
     this.offset = offset;
     this.limit = limit;
     this.book = book;
     this.callback = callback;
     this.executor.run(this);
+    this.rootCategoriesIds = rootCategoriesIds;
   }
 
-  @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit) {
-    return execute(book, offset, limit, getExecutor());
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit,Set<Integer> rootCategoriesIds) {
+    return execute(book, offset, limit, getExecutor(), rootCategoriesIds);
   }
 
-  @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Executor executor) {
-    return execute(book, offset, limit, null, executor);
+  @Override public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Executor executor, Set<Integer> rootCategoriesIds)  {
+    return execute(book, offset, limit, null, executor, rootCategoriesIds);
   }
 
   @Override
-  public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, final String language, Executor executor) {
+  public ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, final String language, Executor executor, final Set<Integer> rootCategoriesIds) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
 
     executor.execute(new Runnable() {
@@ -68,7 +73,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
           @Override public void onError(Throwable e) {
             settableFuture.setException(e);
           }
-        });
+        }, rootCategoriesIds);
       }
     });
 
@@ -84,19 +89,28 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
       @Override public void onError(Throwable e) {
         performErrorCallback(callback, ErrorCore.of(e));
       }
-    });
+    },rootCategoriesIds);
   }
 
-  private void execute(Book book, int offset, int limit, String language, final Callback<List<Book>> callback) {
+  private void execute(Book book, int offset, int limit, String language, final Callback<List<Book>> callback, Set<Integer> rootCategoriesIds) {
     final List<BookSort> bookSorts = Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC),
         BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-    final List<Integer> categoriesIds = new ArrayList<>(book.getCategories().size());
+
+    final List<Integer> filteredBookCategories;
+    final Set<Integer> categoriesIds = new ArraySet<>(book.getCategories().size());
     for (Category category : book.getCategories()) {
       categoriesIds.add(category.getId());
     }
 
-    bookRepository.books(categoriesIds, null /*list*/, bookSorts, false/*open country*/, language == null ? localeProvider.get() : language, offset, limit,
+    if(!rootCategoriesIds.isEmpty()){
+      final Sets.SetView<Integer> intersection = Sets.intersection(rootCategoriesIds, categoriesIds);
+      filteredBookCategories = new ArrayList<>(intersection);
+    }else {
+      filteredBookCategories = new ArrayList<>(categoriesIds);
+    }
+
+    bookRepository.books(filteredBookCategories, null /*list*/, bookSorts, false/*open country*/, language == null ? localeProvider.get() : language, offset, limit,
         new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             if (callback != null) {
