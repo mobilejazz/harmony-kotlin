@@ -84,6 +84,7 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String REFERRER_USER_ID_ATTRIBUTE ="referrer_user_id";
 
 
+  public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;
