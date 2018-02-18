@@ -11,13 +11,11 @@ import java.util.concurrent.*;
 
 public interface GetRecommendedBooksInteractor {
 
-  void execute(int offset, int limit, Book book, DomainCallback<List<Book>, ErrorCore> callback, Set<Integer> rootCategoriesIds);
+  void execute(int offset, int limit, Book book, DomainCallback<List<Book>, ErrorCore> callback);
 
-  ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, Executor executor, Set<Integer> rootCategoriesIds);
+  ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, Executor executor);
 
-  ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Set<Integer> rootCategoriesIds);
+  ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit);
 
-  ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, String language, Executor executor, Set<Integer> rootCategoriesIds);
-    
   ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, String language, Executor executor);
 }
