@@ -92,11 +92,9 @@ public class PicassoImageDownloader implements ImageDownloader {
     return storage.getFile(IMAGE_CACHE_FOLDER, getImageFileName(key)) != null;
   }
 
-  //region Private methods
   private String getImageFileName(String key) {
     return key + ".jpg";
   }
-  //endregion
 
   private String fixUrl(String url) {
     if (url != null && url.startsWith("/")) {
