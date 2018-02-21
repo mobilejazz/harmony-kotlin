@@ -16,6 +16,10 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String MORE_BOOKS_EVENT = "More";
   public static final String LOAD_MORE_BOOKS_EVENT = "LoadMore";//Scrolling down the list of books
   public static final String CATEGORY_EVENT = "CategoryDetails";
+  public static final String CLICK_BANNER_EVENT = "ClickBanner";
+  public static final String BANNER_TITLE_ATTRIBUTE = "BannerTitle";
+  public static final String BANNER_ID_ATTRIBUTE = "BannerId";
+
 
   public static final String SEARCH_EVENT = "Search";//Test against prod books API
   public static final String SIGNUP_EVENT = "Signup";
