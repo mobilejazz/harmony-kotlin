@@ -196,7 +196,7 @@ public class FixedPagesStrategy implements PageChangeStrategy {
   }
 
   public boolean isAtEnd() {
-    return pageNum == this.pageOffsets.size() - 1;
+    return pageNum == pageOffsets.size() - 1;
   }
 
   @Override public void setPosition(int pos) {
