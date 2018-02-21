@@ -62,6 +62,7 @@ import com.worldreader.core.application.ui.dialog.DialogFactory;
 import com.worldreader.core.application.ui.widget.CheckableImageButton;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
+import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionWordnikInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
@@ -1202,10 +1203,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private class ReaderTextSelectionCallback implements TextSelectionCallback {
 
     @Override public void lookupDictionary(String text) {
-      if (di.reachability.isReachable()) {
-        if (text != null) {
+      final boolean isLocalDictionary = !(di.getWordDefinitionInteractor instanceof GetWordDefinitionWordnikInteractor);
+      final boolean isNetworkReachable = di.reachability.isReachable();
+      if (isLocalDictionary || isNetworkReachable) {
+        if (!TextUtils.isEmpty(text)) {
           text = text.trim();
-
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
             definitionView.showLoading();
