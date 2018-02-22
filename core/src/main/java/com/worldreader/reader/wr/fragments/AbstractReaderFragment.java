@@ -222,6 +222,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         if (!fromUser) {
           formatPageChapterProgress();
         }
+
+        // Notify analytics
+        onNotifyPageProgressAnalytics();
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
@@ -1165,14 +1168,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final String chapterProgress = pagesForResource != 0 ? String.format("%s / %s", currentPage, pagesForResource) : "";
     chapterProgressPagesTv.setText(chapterProgress);
 
-    // Notify analytics
-    onNotifyPageProgressAnalytics(pagesForResource, currentPage);
-
     // Tell implementors about event
     onReaderFragmentEvent(BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT);
   }
 
-  private void onNotifyPageProgressAnalytics(int pagesForResource, int currentPage) {
+  private void onNotifyPageProgressAnalytics() {
+    final int pagesForResource = bookView.getPagesForResource();
+    final int currentPage = bookView.getCurrentPage();
+
     final Option<Spanned> text = bookView.getStrategy().getText();
     final Spanned spanned = text.getOrElse(new SpannableString(""));
     final int tocSize = bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size();
