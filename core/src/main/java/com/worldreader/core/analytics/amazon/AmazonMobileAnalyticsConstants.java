@@ -4,7 +4,11 @@ public final class AmazonMobileAnalyticsConstants {
 
   public static final String GRADE_SELECTED_EVENT = "SelectedGrade";
   public static final String SELECTED_GRADE = "Grade";
+  public static final String SELECTED_GRADE_ID = "GradeId";
+  public static final String SELECTED_GRADE_SET_ID = "GradeSetId";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
+  public static final String BOOK_LOADING_EVENT ="BookLoading";
+  public static final String GO_TO_SEARCH_EVENT = "GoToSearch";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";
   public static final String BOOK_ADD_TO_LIBRARY_EVENT = "AddUserBook";
