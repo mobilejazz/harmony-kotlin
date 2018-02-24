@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+
+android {
+  compileSdkVersion 27
+
+
+
+  defaultConfig {
+    minSdkVersion 16
+    targetSdkVersion 27
+    versionCode 1
+    versionName "1.0"
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  // Kotlin
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.21'
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.2.21'
+
+  // Support
+  implementation 'com.android.support:appcompat-v7:27.0.2'
+
+  // Presentation
+  implementation 'com.jakewharton:butterknife:8.8.1'
+  annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+  // Architecture
+  api 'com.google.guava:guava:24.0-android'
+
+  kapt 'com.google.dagger:dagger-compiler:2.14.1'
+  kapt 'com.google.dagger:dagger-android-processor:2.14.1'
+  implementation 'com.google.dagger:dagger:2.14.1'
+  implementation 'com.google.dagger:dagger-android:2.14.1'
+  implementation 'com.google.dagger:dagger-android-support:2.14.1'
+  //  implementation 'javax.inject:javax.inject:1'
+
+
+  // Data
+  implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+  implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+
+  // Testing
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'com.android.support.test:runner:1.0.1'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
