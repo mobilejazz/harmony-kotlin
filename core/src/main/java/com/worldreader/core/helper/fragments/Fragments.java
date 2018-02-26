@@ -53,6 +53,19 @@ import android.support.v4.app.FragmentManager;
     fm.beginTransaction().replace(container, f).commit();
   }
 
+  public static void safeReplaceNow(@NonNull final FragmentActivity activity, @NonNull final Fragment f, @IdRes final int container, final String tag) {
+    final FragmentManager fm = activity.getSupportFragmentManager();
+    safeReplaceNow(fm, f, container, tag);
+  }
+
+  public static void safeReplaceNow(final FragmentManager fm, final Fragment f, @IdRes final int container, final String tag) {
+    try {
+      fm.beginTransaction().replace(container, f, tag).commitNow();
+    } catch (Exception e) {
+      fm.beginTransaction().replace(container, f, tag).commit();
+    }
+  }
+
   @Nullable public static Fragment findByTag(final FragmentActivity activity, final String tag) {
     return activity.getSupportFragmentManager().findFragmentByTag(tag);
   }

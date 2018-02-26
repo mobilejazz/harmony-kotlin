@@ -441,7 +441,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onDestroy() {
-    bookView.releaseResources();
+    releaseBookViewResources();
     dismissProgressDialog();
     super.onDestroy();
   }
@@ -574,6 +574,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
+
+  private void releaseBookViewResources() {
+    if (bookView != null) {
+      bookView.releaseResources();
+    }
+  }
 
   private void checkIfHasBeenSharedQuote() {
     if (hasSharedText) {

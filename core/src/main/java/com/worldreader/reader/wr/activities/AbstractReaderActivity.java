@@ -20,6 +20,7 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,7 +31,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.google.common.base.Throwables;
 import com.worldreader.core.R;
+import com.worldreader.core.helper.fragments.Fragments;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.BookTocFragment;
@@ -88,7 +91,9 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
 
   private boolean onCheckIfIntentProvidedIsGood() {
     final Intent intent = getIntent();
-    return intent != null && intent.hasExtra(AbstractReaderActivity.BOOK_METADATA_KEY) && intent.hasExtra(AbstractReaderActivity.READING_FRAGMENT_CLASS_KEY);
+    final boolean hasBookMetadataKey = intent != null && intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY) != null;
+    final boolean hasReadingFragmentKey = intent != null && !TextUtils.isEmpty(intent.getStringExtra(AbstractReaderActivity.READING_FRAGMENT_CLASS_KEY));
+    return hasBookMetadataKey && hasReadingFragmentKey;
   }
 
   protected void onSetupInjector() {
@@ -130,10 +135,9 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
       final Class<?> clazz = Class.forName(fragmentClass);
       final Constructor<?> constructor = clazz.getConstructor();
       final AbstractReaderFragment fragment = ((AbstractReaderFragment) constructor.newInstance());
-      final FragmentManager fm = getSupportFragmentManager();
-      fm.beginTransaction().replace(R.id.fragment_reading, fragment).commitNow();
+      Fragments.safeReplaceNow(this, fragment, R.id.fragment_reading, null);
     } catch (Exception e) {
-      throw new RuntimeException("Problem with instantiation for the fragment specified!", e);
+      throw new RuntimeException("Setup for ReadingFragment failed! Exception: " + Throwables.getStackTraceAsString(e));
     }
   }
 
