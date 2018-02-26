@@ -4,7 +4,11 @@ public final class AmazonMobileAnalyticsConstants {
 
   public static final String GRADE_SELECTED_EVENT = "SelectedGrade";
   public static final String SELECTED_GRADE = "Grade";
+  public static final String SELECTED_GRADE_ID = "GradeId";
+  public static final String SELECTED_GRADE_SET_ID = "GradeSetId";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
+  public static final String BOOK_LOADING_EVENT ="BookLoading";
+  public static final String GO_TO_SEARCH_EVENT = "GoToSearch";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";
   public static final String BOOK_ADD_TO_LIBRARY_EVENT = "AddUserBook";
@@ -16,6 +20,10 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String MORE_BOOKS_EVENT = "More";
   public static final String LOAD_MORE_BOOKS_EVENT = "LoadMore";//Scrolling down the list of books
   public static final String CATEGORY_EVENT = "CategoryDetails";
+  public static final String CLICK_BANNER_EVENT = "ClickBanner";
+  public static final String BANNER_TITLE_ATTRIBUTE = "BannerTitle";
+  public static final String BANNER_ID_ATTRIBUTE = "BannerId";
+
 
   public static final String SEARCH_EVENT = "Search";//Test against prod books API
   public static final String SIGNUP_EVENT = "Signup";
@@ -84,6 +92,7 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String REFERRER_USER_ID_ATTRIBUTE ="referrer_user_id";
 
 
+  public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;

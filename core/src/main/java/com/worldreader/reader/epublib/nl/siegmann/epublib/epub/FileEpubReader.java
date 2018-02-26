@@ -152,7 +152,9 @@ public class FileEpubReader {
 
     for (ContentOpfEntity.Item entry : manifestEntries) {
       final Resource resource = resources.getByHref(entry.href);
-      resource.setId(entry.id);
+      if (resource != null) {
+        resource.setId(entry.id);
+      }
     }
 
     return resources;

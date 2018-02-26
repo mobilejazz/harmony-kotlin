@@ -17,7 +17,7 @@ public class ReaderAnalytics {
         put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES, String.valueOf(tocSize));
 
         // Book spine size
-        put(AnalyticsEventConstants.BOOK_SPINE_SIZE, String.valueOf(spineSize));
+        put(AnalyticsEventConstants. BOOK_SPINE_SIZE, String.valueOf(spineSize));
 
         //Currently reading toc entry number
         put(AnalyticsEventConstants.BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION, String.valueOf(spinePosition));
@@ -31,6 +31,29 @@ public class ReaderAnalytics {
 
       analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, attrs));
     }
+  }
+
+
+  public static void sendOpenTocEvent(Analytics analytics, final String bookId, final String title){
+    final Map<String, String> attrs = new HashMap<String, String>() {{
+      put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
+      put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
+    }};
+
+    analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.BOOK_OPEN_TOC_EVENT, attrs));
+
+  }
+
+  public static void sendOpenTocEntryEvent(Analytics analytics, final String bookId, final String title, final String tocEntryTitle, final String tocEntryHref){
+    final Map<String, String> attrs = new HashMap<String, String>() {{
+      put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
+      put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
+      put(AnalyticsEventConstants.TOC_ENTRY_TITLE_ATTRIBUTE, tocEntryTitle);
+      put(AnalyticsEventConstants.TOC_ENTRY_HREF, tocEntryHref);
+
+    }};
+
+    analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.TOC_ENTRY_SELECTED_EVENT, attrs));
   }
 
 }
