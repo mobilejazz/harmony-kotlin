@@ -65,7 +65,7 @@ public final class AmazonMobileAnalyticsConstants {
   // Examples of use of this attribute. BookDetails can be accessed from many different places. When click in on a book on ReadingTips page,
   // I'll add this attribute with value ReadingTips. We can messure the amount of people accessing book details from there.
   public static final String REFERRING_SCREEN = "referringScreen";
-
+  public static final String SCREEN_AREA = "screenArea";
   public static final String REFERRING_META = "referringMeta";
 
   public static final String IN_SCREEN = "inScreen";
