@@ -178,7 +178,6 @@ public class BooksAdapter extends HeaderRecyclerViewAdapter {
 
   public void setUseFooter(boolean useFooter) {
     this.useFooter = useFooter;
-    notifyDataSetChanged();
   }
 
   public void setBookViewPlaceholder(@DrawableRes int placeholder) {
