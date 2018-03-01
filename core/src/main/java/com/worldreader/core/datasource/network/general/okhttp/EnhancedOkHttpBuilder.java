@@ -130,6 +130,21 @@ public class EnhancedOkHttpBuilder {
     return this;
   }
 
+  public EnhancedOkHttpBuilder connectTimeout(long timeout, TimeUnit timeUnit) {
+    delegate.connectTimeout(timeout, timeUnit);
+    return this;
+  }
+
+  public EnhancedOkHttpBuilder readTimeout(long timeout, TimeUnit timeUnit) {
+    delegate.readTimeout(timeout, timeUnit);
+    return this;
+  }
+
+  public EnhancedOkHttpBuilder writeTimeout(long timeout, TimeUnit timeUnit) {
+    delegate.writeTimeout(timeout, timeUnit);
+    return this;
+  }
+
   public OkHttpClient build() {
     if (enableLog) {
       loggingInterceptor.setLevel(loglevel.toInterceptorLevel());

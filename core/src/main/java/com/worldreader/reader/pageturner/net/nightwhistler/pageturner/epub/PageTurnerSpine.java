@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Alex Kuiper
- * 
+ *
  * This file is part of PageTurner
  *
  * PageTurner is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private String tocHref;
   private int position;
 
-
   /**
    * Creates a new Spine from this book.
    */
@@ -57,23 +56,15 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     this.position = 0;
     this.blacklist = blacklist;
 
-    final Resource ncxResource = book.getNcxResource();
-    if (ncxResource != null) {
-      this.tocHref = ncxResource.getHref();
+    if (book.getNcxResource() != null) {
+      this.tocHref = book.getNcxResource().getHref();
     }
-
-    // Filter and clean entries that we don't want to show directly
-    final Resource coverPage = book.getCoverPage();
-    final String coverHref = coverPage != null ? coverPage.getHref() : "";
 
     final List<SpineReference> spineReferences = book.getSpine().getSpineReferences();
     for (SpineReference reference : spineReferences) {
       final Resource res = reference.getResource();
       if (!isBlackListed(res)) {
-        final String resHref = res.getHref();
-        if (TextUtils.isEmpty(coverHref) || !coverHref.equals(resHref)) {
           addResource(res);
-        }
       } else {
         final String resourceId = res.getId();
         final String blackListResource = blacklist.containsKey(resourceId) ? blacklist.get(resourceId) : "";
@@ -83,6 +74,8 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
         }
       }
     }
+
+
   }
 
   private boolean isBlackListed(Resource resource) {

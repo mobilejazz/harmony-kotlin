@@ -73,8 +73,15 @@ public class PicassoImageDownloader implements ImageDownloader {
   }
 
   @Override public boolean delete(String key) {
-    String imageFileName = getImageFileName(key);
-    return storage.deleteFile(IMAGE_CACHE_FOLDER, imageFileName);
+    final String fileName = getImageFileName(key);
+    return storage.deleteFile(IMAGE_CACHE_FOLDER, fileName);
+  }
+
+  @Override public boolean deleteAll() {
+    if (storage.isDirectoryExists(IMAGE_CACHE_FOLDER)) {
+      storage.deleteDirectory(IMAGE_CACHE_FOLDER);
+    }
+    return true;
   }
 
   @Override public File getImage(String key) {
@@ -85,11 +92,9 @@ public class PicassoImageDownloader implements ImageDownloader {
     return storage.getFile(IMAGE_CACHE_FOLDER, getImageFileName(key)) != null;
   }
 
-  //region Private methods
   private String getImageFileName(String key) {
     return key + ".jpg";
   }
-  //endregion
 
   private String fixUrl(String url) {
     if (url != null && url.startsWith("/")) {

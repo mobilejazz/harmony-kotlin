@@ -10,6 +10,7 @@ import android.graphics.drawable.shapes.Shape;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -111,17 +112,21 @@ public class StreamingFastBitmapDrawable extends AbstractFastBitmapDrawable {
   }
 
   private void retrieveDrawableFromRepository() {
-    this.future = repository.getBookResourceFuture(bm.bookId, bm, URLDecoder.decode(resource.getHref()));
-    Futures.addCallback(future, new FutureCallback<StreamingResource>() {
-      @Override public void onSuccess(final StreamingResource result) {
-        final InputStream inputStream = result.getInputStream();
-        convertToDrawable(inputStream);
-      }
+    final String href = resource != null ? resource.getHref() : "";
+    if (!TextUtils.isEmpty(href)) {
+      final String uri = URLDecoder.decode(href);
+      this.future = repository.getBookResourceFuture(bm.bookId, bm, uri);
+      Futures.addCallback(future, new FutureCallback<StreamingResource>() {
+        @Override public void onSuccess(final StreamingResource result) {
+          final InputStream inputStream = result.getInputStream();
+          convertToDrawable(inputStream);
+        }
 
-      @Override public void onFailure(@NonNull final Throwable t) {
-        markAsError(t);
-      }
-    }, MoreExecutors.directExecutor());
+        @Override public void onFailure(@NonNull final Throwable t) {
+          markAsError(t);
+        }
+      }, MoreExecutors.directExecutor());
+    }
   }
 
   // WorkerThread

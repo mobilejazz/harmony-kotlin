@@ -62,6 +62,7 @@ import com.worldreader.core.application.ui.dialog.DialogFactory;
 import com.worldreader.core.application.ui.widget.CheckableImageButton;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
+import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionWordnikInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
@@ -143,7 +144,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
   }
 
-  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+  @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_reader, container, false);
   }
 
@@ -221,6 +222,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         if (!fromUser) {
           formatPageChapterProgress();
         }
+
+        // Notify analytics
+        onNotifyPageProgressAnalytics();
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
@@ -441,7 +445,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   @Override public void onDestroy() {
-    bookView.releaseResources();
+    releaseBookViewResources();
     dismissProgressDialog();
     super.onDestroy();
   }
@@ -555,6 +559,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       activity.findViewById(R.id.font_options_container).setVisibility(View.GONE);
       activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
+      ReaderAnalytics.sendOpenTocEvent(di.analytics, bookMetadata.bookId, bookMetadata.title);
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
       item.setChecked(!item.isChecked());
@@ -574,6 +579,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   protected abstract void onFragmentActivityResult(final int requestCode, final int resultCode, final Intent data);
+
+  private void releaseBookViewResources() {
+    if (bookView != null) {
+      bookView.releaseResources();
+    }
+  }
 
   private void checkIfHasBeenSharedQuote() {
     if (hasSharedText) {
@@ -1152,6 +1163,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
     this.bookView.navigateTo(tocEntry);
+    ReaderAnalytics.sendOpenTocEntryEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, tocEntry.getTitle(), tocEntry.getHref());
   }
 
   private void formatPageChapterProgress() {
@@ -1162,14 +1174,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final String chapterProgress = pagesForResource != 0 ? String.format("%s / %s", currentPage, pagesForResource) : "";
     chapterProgressPagesTv.setText(chapterProgress);
 
-    // Notify analytics
-    onNotifyPageProgressAnalytics(pagesForResource, currentPage);
-
     // Tell implementors about event
     onReaderFragmentEvent(BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT);
   }
 
-  private void onNotifyPageProgressAnalytics(int pagesForResource, int currentPage) {
+  private void onNotifyPageProgressAnalytics() {
+    final int pagesForResource = bookView.getPagesForResource();
+    final int currentPage = bookView.getCurrentPage();
+
     final Option<Spanned> text = bookView.getStrategy().getText();
     final Spanned spanned = text.getOrElse(new SpannableString(""));
     final int tocSize = bookView.getTableOfContents().getOrElse(new ArrayList<TocEntry>()).size();
@@ -1200,10 +1212,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private class ReaderTextSelectionCallback implements TextSelectionCallback {
 
     @Override public void lookupDictionary(String text) {
-      if (di.reachability.isReachable()) {
-        if (text != null) {
+      final boolean isLocalDictionary = !(di.getWordDefinitionInteractor instanceof GetWordDefinitionWordnikInteractor);
+      final boolean isNetworkReachable = di.reachability.isReachable();
+      if (isLocalDictionary || isNetworkReachable) {
+        if (!TextUtils.isEmpty(text)) {
           text = text.trim();
-
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
             definitionView.showLoading();

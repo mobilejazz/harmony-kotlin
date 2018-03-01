@@ -8,6 +8,8 @@ public interface ImageDownloader {
 
   boolean delete(String key);
 
+  boolean deleteAll();
+
   File getImage(String key);
 
   boolean hasImage(String key);
