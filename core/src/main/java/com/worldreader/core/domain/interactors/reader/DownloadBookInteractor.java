@@ -10,9 +10,9 @@ import java.util.concurrent.*;
 
 public interface DownloadBookInteractor {
 
-  void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback);
-
-  void execute(String bookId, boolean forceBookMetadataRefresh, DomainBackgroundCallback<Void, ErrorCore<?>> callback);
+  //void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback);
+  //
+  void execute(String bookId, String version, boolean forceBookMetadataRefresh, DomainBackgroundCallback<Void, ErrorCore<?>> callback);
 
   void execute(final String bookId, final String version, final DomainCallback<Integer, ErrorCore<?>> callback);
 

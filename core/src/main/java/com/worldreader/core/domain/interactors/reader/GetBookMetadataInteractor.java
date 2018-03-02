@@ -14,7 +14,7 @@ public interface GetBookMetadataInteractor {
   void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata,
       final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 
-  void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
+  //void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback);
 
   ListenableFuture<BookMetadata> execute(final String bookId, final String version);
 

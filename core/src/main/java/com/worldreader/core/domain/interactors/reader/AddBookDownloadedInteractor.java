@@ -9,9 +9,9 @@ import java.util.concurrent.*;
 
 public interface AddBookDownloadedInteractor {
 
-  void execute(String bookId, Date time, DomainCallback<Boolean, ErrorCore<?>> callback);
+  void execute(String bookId, String bookVersion, Date time, DomainCallback<Boolean, ErrorCore<?>> callback);
 
-  ListenableFuture<Boolean> execute(final String bookId);
+  ListenableFuture<Boolean> execute(String bookId, String bookVersion);
 
-  ListenableFuture<Boolean> execute(final String bookId, final Executor executor);
+  ListenableFuture<Boolean> execute(String bookId, String bookVersion, Executor executor);
 }

@@ -5,10 +5,12 @@ import java.util.*;
 public class BookDownloaded {
 
   private String bookId;
+  private String version;
   private Date timestamp;
 
-  private BookDownloaded(String bookId, Date timestamp) {
+  private BookDownloaded(String bookId, String version, Date timestamp) {
     this.bookId = bookId;
+    this.version = version;
     this.timestamp = timestamp;
   }
 
@@ -20,8 +22,20 @@ public class BookDownloaded {
     return timestamp;
   }
 
-  public static BookDownloaded create(String bookId, Date timestamp) {
-    return new BookDownloaded(bookId, timestamp);
+  public String getVersion() {
+    return version;
+  }
+
+  /**
+   * In old days we where not saving the version number
+   * @return
+   */
+  public boolean hasVersion() {
+    return version != null && !version.isEmpty();
+  }
+
+  public static BookDownloaded create(String bookId, String version, Date timestamp) {
+    return new BookDownloaded(bookId, version, timestamp);
   }
 
   @Override public boolean equals(final Object o) {

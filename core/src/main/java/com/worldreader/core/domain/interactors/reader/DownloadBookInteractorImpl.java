@@ -53,16 +53,18 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     return null;
   }
 
-  @Override public void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback) {
-    this.bookId = bookId;
-    this.version = "latest";
-    this.forceBookMetadataRefresh = false;
-    this.callback = callback;
-    this.executor.run(this);
-  }
+  //@Override public void execute(String bookId, DomainCallback<Integer, ErrorCore<?>> callback) {
+  //  this.bookId = bookId;
+  //  this.version = "latest";
+  //  this.forceBookMetadataRefresh = false;
+  //  this.callback = callback;
+  //  this.executor.run(this);
+  //}
 
-  @Override public void execute(String bookId, boolean forceBookMetadataRefresh, DomainBackgroundCallback<Void, ErrorCore<?>> backgroundCallback) {
+  @Override public void execute(String bookId, String version, boolean forceBookMetadataRefresh, DomainBackgroundCallback<Void, ErrorCore<?>>
+      backgroundCallback) {
     this.bookId = bookId;
+    this.version = version;
     this.forceBookMetadataRefresh = forceBookMetadataRefresh;
     this.backgroundCallback = backgroundCallback;
     this.executor.run(this);

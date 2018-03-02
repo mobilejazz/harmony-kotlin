@@ -24,6 +24,7 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   private final Dates dates;
 
   private String bookId;
+  private String bookVersion;
   private Date time;
   private DomainCallback<Boolean, ErrorCore<?>> callback;
 
@@ -35,23 +36,24 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   }
 
   @Override
-  public void execute(String bookId, Date time, DomainCallback<Boolean, ErrorCore<?>> callback) {
+  public void execute(String bookId, String bookVersion, Date time, DomainCallback<Boolean, ErrorCore<?>> callback) {
     this.bookId = bookId;
+    this.bookVersion = bookVersion;
     this.time = time;
     this.callback = callback;
     this.executor.run(this);
   }
 
-  @Override public ListenableFuture<Boolean> execute(final String bookId) {
-    return execute(bookId, getExecutor());
+  @Override public ListenableFuture<Boolean> execute(final String bookId, final String bookVersion) {
+    return execute(bookId, bookVersion, getExecutor());
   }
 
-  @Override public ListenableFuture<Boolean> execute(final String bookId, final Executor executor) {
+  @Override public ListenableFuture<Boolean> execute(final String bookId, final String bookVersion, final Executor executor) {
     final SettableFuture<Boolean> settableFuture = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final BookDownloaded bookDownloaded = BookDownloaded.create(bookId, dates.today());
+        final BookDownloaded bookDownloaded = BookDownloaded.create(bookId, bookVersion, dates.today());
 
         final boolean isAdded = addBookDownloadedAction.perform(bookDownloaded);
 
@@ -67,7 +69,7 @@ public class AddBookDownloadedInteractorImpl extends AbstractInteractor<Boolean,
   }
 
   @Override public void run() {
-    BookDownloaded bookDownloaded = BookDownloaded.create(bookId, time);
+    BookDownloaded bookDownloaded = BookDownloaded.create(bookId, bookVersion, time);
 
     boolean isAdded = addBookDownloadedAction.perform(bookDownloaded);
 

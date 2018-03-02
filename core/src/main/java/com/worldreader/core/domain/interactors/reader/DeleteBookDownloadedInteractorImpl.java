@@ -119,7 +119,7 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
         if (bookMetadata != null && bookMetadata.resources != null) {
           performDeleteAllResources(bookMetadata);
-          performDeleteBookIdFromBookDownloadedList(bookId, callback);
+          performDeleteBookIdFromBookDownloadedList(bookId, version, callback);
           imageDownloader.delete(bookId);
         } else {
           if (callback != null) {
@@ -137,8 +137,8 @@ public class DeleteBookDownloadedInteractorImpl extends AbstractInteractor<Boole
 
   }
 
-  private void performDeleteBookIdFromBookDownloadedList(final String bookId, Callback<Boolean> callback) {
-    BookDownloaded bookDownloaded = BookDownloaded.create(bookId, new Date());
+  private void performDeleteBookIdFromBookDownloadedList(final String bookId, String version, Callback<Boolean> callback) {
+    BookDownloaded bookDownloaded = BookDownloaded.create(bookId, version, new Date());
 
     boolean isDeleted = deleteBookDownloadedAction.perform(bookDownloaded);
 

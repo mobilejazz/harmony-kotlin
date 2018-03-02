@@ -44,13 +44,13 @@ public class GetBookMetadataInteractorImpl extends AbstractInteractor<BookMetada
     this.executor.run(this);
   }
 
-  @Override public void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
-    this.bookId = bookId;
-    this.version = "latest";
-    this.forceBookMetadataRefresh = forceRefreshBookMetadata;
-    this.backgroundCallback = callback;
-    this.executor.run(this);
-  }
+  //@Override public void execute(String bookId, boolean forceRefreshBookMetadata, DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
+  //  this.bookId = bookId;
+  //  this.version = "latest";
+  //  this.forceBookMetadataRefresh = forceRefreshBookMetadata;
+  //  this.backgroundCallback = callback;
+  //  this.executor.run(this);
+  //}
 
   @Override public void execute(final String bookId, final String version, final boolean forceRefreshBookMetadata,
       final DomainBackgroundCallback<BookMetadata, ErrorCore<?>> callback) {
