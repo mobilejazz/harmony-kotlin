@@ -11,6 +11,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
+import com.worldreader.reader.wr.helper.WasabiManager;
 import jedi.option.Option;
 import org.javatuples.Pair;
 
@@ -26,21 +27,32 @@ public class OpenFileEpubBookTask extends QueueableAsyncTask<Void, Void, Pair<Bo
 
   @SuppressLint("StaticFieldLeak") private final Context context;
   private final BookMetadata bookMetadata;
+  private final WasabiManager wasabiManager;
   private final TextLoader textLoader;
   private final int storedIndex;
   private final Logger logger;
 
-  public OpenFileEpubBookTask(final Context context, final BookMetadata bm, final TextLoader textLoader, final int storedIndex, final Logger logger) {
+  public OpenFileEpubBookTask(final Context context, final WasabiManager wasabiManager, final BookMetadata bm, final TextLoader textLoader,
+      final int storedIndex, final Logger logger) {
     this.context = context.getApplicationContext();
+    this.wasabiManager = wasabiManager;
     this.bookMetadata = bm;
     this.textLoader = textLoader;
     this.storedIndex = storedIndex;
     this.logger = logger;
   }
 
-  @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(Void... paramses) {
+  @Override public Option<Pair<Book, PageTurnerSpine>> doInBackground(Void... params) {
     try {
-      final File file = ((File) bookMetadata.extras.get(BookMetadata.BOOK_FILE_EXTRA));
+      File file = ((File) bookMetadata.extras.get(BookMetadata.BOOK_FILE_EXTRA));
+
+      final Boolean isEncrypted = (Boolean) bookMetadata.extras.get(BookMetadata.BOOK_ENCRYPTED_EXTRA);
+      if (isEncrypted != null && isEncrypted) {
+        if (!wasabiManager.isPersonalized()) { // Lazy init wasabi SDK the very first time we encounter a DRM book
+          wasabiManager.personalize();
+        }
+        file = wasabiManager.decrypt(bookMetadata.bookId, file); // Proceed to decrypt the content
+      }
 
       final Book book = textLoader.initBook(file);
 

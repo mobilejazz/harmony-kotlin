@@ -447,7 +447,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   @Override public void onDestroy() {
     releaseBookViewResources();
     dismissProgressDialog();
+    clearWasabiIfNecessary();
     super.onDestroy();
+  }
+
+  private void clearWasabiIfNecessary() {
+    di.wasabiManager.clearTmp();
   }
 
   @Override public void onLowMemory() {

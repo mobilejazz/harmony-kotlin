@@ -15,6 +15,7 @@ public class BookMetadata implements Serializable {
   public static final int STREAMING_MODE = 1;
 
   public static final String BOOK_FILE_EXTRA = "book.file.extra";
+  public static final String BOOK_ENCRYPTED_EXTRA = "book.encrypted";
 
   // Mandatory params
   @BookMetadataMode public int mode;

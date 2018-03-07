@@ -120,4 +120,6 @@ dependencies {
   compile dependencies.javaPoet
   compile dependencies.systemUiHelper
   compile dependencies.expandableLayout
+
+  compile files('libs/wasabi.jar')
 }

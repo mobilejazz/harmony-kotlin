@@ -58,6 +58,7 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.PreLoadNextResourceTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks.TasksFactory;
+import com.worldreader.reader.wr.helper.WasabiManager;
 import jedi.functional.Command;
 import jedi.functional.Command0;
 import jedi.functional.Filter;
@@ -90,6 +91,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private BookTextView childView;
 
+  private DICompanion di;
   private BookMetadata bookMetadata;
   private Book book;
   private String fileName;
@@ -123,6 +125,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   public void init(DICompanion di, BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader) {
     final Context context = getContext();
 
+    this.di = di;
     this.bookMetadata = bookMetadata;
     this.resourcesLoader = resourcesLoader;
     this.textLoader = textLoader;
@@ -318,7 +321,9 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public void loadText() {
     if (spine == null) {
-      final QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> task = TasksFactory.createOpenBookTask(getContext(), bookMetadata, textLoader, storedIndex, logger);
+      final Context c = getContext();
+      final WasabiManager w = di.wasabiManager;
+      final QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> task = TasksFactory.createOpenBookTask(c, w, bookMetadata, textLoader, storedIndex, logger);
       task.setOnCompletedCallback(new QueueableAsyncTask.QueueCallback() {
         @Override public void onTaskCompleted(QueueableAsyncTask<?, ?, ?> task, boolean canceled, Option<?> result) {
           result.match(new Command<Object>() {
