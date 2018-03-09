@@ -4,6 +4,7 @@ import android.content.Context;
 import com.google.common.base.Throwables;
 import com.intertrust.wasabi.ErrorCodeException;
 import com.intertrust.wasabi.Runtime;
+import com.intertrust.wasabi.jni.ErrorCodeHelper;
 import com.intertrust.wasabi.media.MediaStream;
 import com.mobilejazz.logger.library.Logger;
 
@@ -36,6 +37,7 @@ import java.security.NoSuchAlgorithmException;
       Runtime.initialize(storeFile.getAbsolutePath());
     } catch (ErrorCodeException e) {
       logger.d(TAG, "Something went wrong while initializing the SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
 
@@ -48,6 +50,7 @@ import java.security.NoSuchAlgorithmException;
       Runtime.personalize();
     } catch (ErrorCodeException e) {
       logger.d(TAG, "Something went wrong while personalizing the SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
 
@@ -56,6 +59,7 @@ import java.security.NoSuchAlgorithmException;
       Runtime.processServiceToken(token);
     } catch (ErrorCodeException e) {
       logger.d(TAG, "Something went wrong while processing the token. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
 
@@ -85,6 +89,9 @@ import java.security.NoSuchAlgorithmException;
       return tmp;
     } catch (NullPointerException | ErrorCodeException | IOException e) {
       logger.e(TAG, "Problem while decrypting book! Error: " + Throwables.getStackTraceAsString(e));
+      if (e instanceof ErrorCodeException) {
+        logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()));
+      }
       return null;
     }
   }
@@ -100,6 +107,7 @@ import java.security.NoSuchAlgorithmException;
       clearDirectoryContent(storeFile);
     } catch (ErrorCodeException e) {
       logger.e(TAG, "Problem while trying to nuke Wasabi SDK! Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
 
