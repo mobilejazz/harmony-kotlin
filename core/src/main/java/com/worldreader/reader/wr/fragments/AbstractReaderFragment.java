@@ -452,7 +452,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void clearWasabiIfNecessary() {
-    di.wasabiManager.clearTmp();
+    if (di.wasabiManager != null) {
+      di.wasabiManager.clearTmp();
+    }
   }
 
   @Override public void onLowMemory() {

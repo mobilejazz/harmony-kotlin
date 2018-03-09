@@ -36,7 +36,7 @@ import java.security.NoSuchAlgorithmException;
       // Initialize Wasabi SDK
       Runtime.initialize(storeFile.getAbsolutePath());
     } catch (ErrorCodeException e) {
-      logger.d(TAG, "Something went wrong while initializing the SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Something went wrong while initializing the SDK. Error: " + Throwables.getStackTraceAsString(e));
       logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
@@ -49,7 +49,7 @@ import java.security.NoSuchAlgorithmException;
     try {
       Runtime.personalize();
     } catch (ErrorCodeException e) {
-      logger.d(TAG, "Something went wrong while personalizing the SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Something went wrong while personalizing the SDK. Error: " + Throwables.getStackTraceAsString(e));
       logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
@@ -58,7 +58,7 @@ import java.security.NoSuchAlgorithmException;
     try {
       Runtime.processServiceToken(token);
     } catch (ErrorCodeException e) {
-      logger.d(TAG, "Something went wrong while processing the token. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Something went wrong while processing the token. Error: " + Throwables.getStackTraceAsString(e));
       logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
   }
@@ -74,7 +74,7 @@ import java.security.NoSuchAlgorithmException;
       final MediaStream ms = new MediaStream("file://" + file.getAbsolutePath(), MediaStream.SourceType.AES128CBC, fi);
 
       // Create tmp file
-      final File tmp = File.createTempFile(bookId, "tmp", storeTmpFile);
+      final File tmp = File.createTempFile(bookId, ".tmp", storeTmpFile);
 
       // Decrypt content
       final byte[] buffer = new byte[4096];
@@ -88,7 +88,7 @@ import java.security.NoSuchAlgorithmException;
 
       return tmp;
     } catch (NullPointerException | ErrorCodeException | IOException e) {
-      logger.e(TAG, "Problem while decrypting book! Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Problem while decrypting book with id: " + bookId + "! Error: " + Throwables.getStackTraceAsString(e));
       if (e instanceof ErrorCodeException) {
         logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()));
       }
@@ -104,11 +104,15 @@ import java.security.NoSuchAlgorithmException;
     try {
       Runtime.shutdown();
       clearTmp();
-      clearDirectoryContent(storeFile);
+      clearStore();
     } catch (ErrorCodeException e) {
       logger.e(TAG, "Problem while trying to nuke Wasabi SDK! Error: " + Throwables.getStackTraceAsString(e));
       logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
     }
+  }
+
+  private void clearStore() {
+    clearDirectoryContent(storeFile);
   }
 
   private void clearDirectoryContent(File file) {

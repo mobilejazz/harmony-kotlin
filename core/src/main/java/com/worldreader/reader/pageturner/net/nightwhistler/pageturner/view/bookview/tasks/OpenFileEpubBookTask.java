@@ -61,7 +61,7 @@ public class OpenFileEpubBookTask extends QueueableAsyncTask<Void, Void, Pair<Bo
 
       return some(Pair.with(book, spine));
     } catch (Exception e) {
-      logger.sendIssue(TAG, "Exception while trying to open book. Current exception: " + Throwables.getStackTraceAsString(e));
+      logger.sendIssue(TAG, "Exception opening file book with id: " + bookMetadata.bookId + " . Current exception: " + Throwables.getStackTraceAsString(e));
       return none();
     }
   }
