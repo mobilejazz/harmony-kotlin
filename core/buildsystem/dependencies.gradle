@@ -25,7 +25,7 @@ ext {
       storioAnnotation          : "com.pushtorefresh.storio:sqlite-annotations:1.11.0",
       storioAnnotationProcessor : "com.pushtorefresh.storio:sqlite-annotations-processor:1.11.0",
 
-      sqlcipher                 : "net.zetetic:android-database-sqlcipher:3.5.1",
+      sqlcipher                 : "net.zetetic:android-database-sqlcipher:3.5.9",
       simpleStorage             : "com.sromku:simple-storage:1.2.0",
 
       vastra                    : "com.mobilejazz.vastra:library:1.1.0-SNAPSHOT",
