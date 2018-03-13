@@ -197,7 +197,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Initialize BookView
     this.bookView.init(di, bookMetadata, resourcesLoader, textLoader);
     this.bookView.setListener(this);
-    this.bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener());
+    this.bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener(), di.config);
 
     // Setup definitionView listener
     this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {

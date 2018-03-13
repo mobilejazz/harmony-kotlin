@@ -231,8 +231,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setOnTouchListener(l);
   }
 
-  public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener) {
-    this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(listener, callback, this));
+  public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener, Configuration c) {
+    this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(listener, callback, this, c));
   }
 
   public int getLineSpacing() {

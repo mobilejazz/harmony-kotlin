@@ -25,19 +25,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import com.worldreader.core.R;
+import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
 import jedi.functional.Command;
 import jedi.option.Option;
 
 public class TextSelectionActions implements ActionMode.Callback {
 
-  private TextSelectionCallback callBack;
-  private ActionModeListener actionModeListener;
-  private SelectedTextProvider selectedTextProvider;
+  private final TextSelectionCallback callBack;
+  private final ActionModeListener actionModeListener;
+  private final SelectedTextProvider selectedTextProvider;
+  private final Configuration c;
 
-  TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider) {
+  TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider, Configuration c) {
     this.callBack = callBack;
     this.actionModeListener = actionModeListener;
     this.selectedTextProvider = selectedTextProvider;
+    this.c = c;
   }
 
   @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -57,11 +60,13 @@ public class TextSelectionActions implements ActionMode.Callback {
       menu.removeItem(android.R.id.shareText);
     }
 
-    menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new Action() {
-      @Override public void perform() {
-        callBack.share(selectedTextProvider.getSelectedText().getOrElse(""));
-      }
-    })).setIcon(R.drawable.ic_share_dark);
+    if (c.isShareEnabled()) {
+      menu.add(R.string.ls_generic_share).setOnMenuItemClickListener(react(mode, new Action() {
+        @Override public void perform() {
+          callBack.share(selectedTextProvider.getSelectedText().getOrElse(""));
+        }
+      })).setIcon(R.drawable.ic_share_dark);
+    }
 
     menu.add(R.string.ls_definition).setOnMenuItemClickListener(react(mode, new Action() {
       @Override public void perform() {

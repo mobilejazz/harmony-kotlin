@@ -1,22 +1,3 @@
-/*
- * Copyright (C) 2012 Alex Kuiper
- *
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
-
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration;
 
 import android.content.Context;
@@ -37,9 +18,6 @@ import java.util.*;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-/**
- * Application configuration class which provides a friendly API to the various settings available.
- */
 public class Configuration {
 
   public static final String TAG = Configuration.class.getSimpleName();
@@ -48,6 +26,7 @@ public class Configuration {
   private static final String KEY_IDX = "index:";
   private static final String KEY_STRIP_WHITESPACE = "strip_whitespace";
   private static final String KEY_SCROLLING = "scrolling";
+  private static final String KEY_SHARE_ENABLED = "share";
   private static final String KEY_TEXT_SIZE = "itext_size";
   private static final String KEY_MARGIN_H = "margin_h";
   private static final String KEY_MARGIN_V = "margin_v";
@@ -78,10 +57,6 @@ public class Configuration {
 
   public enum ReadingDirection {
     LEFT_TO_RIGHT, RIGHT_TO_LEFT
-  }
-
-  public enum ScrollStyle {
-    ROLLING_BLIND, PAGE_TIMER
   }
 
   public static class FontSizes {
@@ -208,6 +183,14 @@ public class Configuration {
 
   public boolean isScrollingEnabled() {
     return settings.getBoolean(KEY_SCROLLING, false);
+  }
+
+  public boolean isShareEnabled() {
+    return settings.getBoolean(KEY_SHARE_ENABLED, true);
+  }
+
+  public void setShareEnabled(boolean enabled) {
+    updateValue(KEY_SHARE_ENABLED, enabled);
   }
 
   public int getTextSize() {
