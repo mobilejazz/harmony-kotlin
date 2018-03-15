@@ -998,11 +998,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
-      closeButton.setOnClickListener(new View.OnClickListener() {
+      final View crossButton = activity.findViewById(R.id.photo_viewer_close_cross_btn);
+
+      final View.OnClickListener closeListener = new View.OnClickListener() {
         @Override public void onClick(final View v) {
           hidePhotoViewer();
         }
-      });
+      };
+
+      closeButton.setOnClickListener(closeListener);
+      crossButton.setOnClickListener(closeListener);
 
       final Bitmap bitmap = drawable.getBitmap();
       if (bitmap != null) {
@@ -1031,7 +1036,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final FragmentActivity activity = getActivity();
     if (activity != null) {
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
+      final View crossButton = activity.findViewById(R.id.photo_viewer_close_cross_btn);
       closeButton.setOnClickListener(null);
+      crossButton.setOnClickListener(null);
 
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final ObjectAnimator animator = ViewPropertyObjectAnimator.animate(imageViewContainer)
