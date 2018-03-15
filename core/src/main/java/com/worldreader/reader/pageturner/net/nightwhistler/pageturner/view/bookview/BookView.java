@@ -196,23 +196,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
   }
 
-  public List<ClickableSpan> getLinkAt(float x, float y) {
-    return getSpansAt(x, y, ClickableSpan.class);
-  }
-
-  private <A> List<A> getSpansAt(float x, float y, Class<A> spanClass) {
-    final Option<Integer> offsetOption = findOffsetForPosition(x, y);
-    final CharSequence text = childView.getText();
-
-    if (isEmpty(offsetOption) || !(text instanceof Spanned)) {
-      return Collections.emptyList();
-    }
-
-    final int offset = offsetOption.getOrElse(0);
-
-    return asList(((Spanned) text).getSpans(offset, offset, spanClass));
-  }
-
   public void blockInnerViewFor(long time) {
     this.childView.setBlockUntil(System.currentTimeMillis() + time);
   }
@@ -382,7 +365,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private void loadText(Spanned text) {
     strategy.loadText(text);
     restorePosition();
-    strategy.updateGUI();
+    strategy.updatePosition();
     progressUpdate();
     final Resource resource = spine.getCurrentResource().unsafeGet();
     parseEntryComplete(resource);
@@ -524,7 +507,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     // We navigate to next chapter
     if (percentage >= 100) {
-      Resource resource = this.spine.getNextResource().unsafeGet();
+      final Resource resource = spine.getNextResource().unsafeGet();
       if (resource != null) {
         navigateTo(resource.getHref());
       }
@@ -532,7 +515,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     // First we check if we have a size for a resource
-    Long relativeSizeForChapter = this.spine.getSizeForCurrentResource();
+    final Long relativeSizeForChapter = spine.getSizeForCurrentResource();
 
     // If is null, do nothing
     if (relativeSizeForChapter == null) {
@@ -540,9 +523,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     double progressPercentage = (double) percentage / 100;
-
-    this.strategy.setRelativePosition(progressPercentage);
-
+    strategy.setRelativePosition(progressPercentage);
     doNavigation(getIndex());
   }
 
@@ -822,7 +803,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public void doOnPostExecute(Option<Spanned> result) {
       restorePosition();
-      strategy.updateGUI();
+      strategy.updatePosition();
       progressUpdate();
 
       if (spine != null) { // Spine should not be null (check properly with refactor)
