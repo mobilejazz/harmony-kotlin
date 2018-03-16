@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -63,6 +64,24 @@
           android:text="@string/ls_generic_close"
           android:textColor="@color/white" />
 
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/photo_viewer_close_cross_btn"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless">
+
+        <ImageView
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_gravity="end"
+          android:contentDescription="@null"
+          android:paddingEnd="16dp"
+          android:paddingRight="16dp"
+          app:srcCompat="@drawable/ic_close" />
       </FrameLayout>
     </FrameLayout>
 

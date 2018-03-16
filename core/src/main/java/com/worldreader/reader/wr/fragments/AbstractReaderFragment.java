@@ -118,7 +118,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected BookView bookView;
   protected TextView readingTitleProgressTv;
   protected DiscreteSeekBar chapterProgressDsb;
-  protected TextView chapterProgressPagesTv;
+  protected TextView chapterProgressTv;
   protected DefinitionView definitionView;
   protected TutorialView tutorialView;
   protected View containerTutorialView;
@@ -161,7 +161,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     this.bookView = view.findViewById(R.id.reading_fragment_bookView);
     this.readingTitleProgressTv = view.findViewById(R.id.title_chapter_tv);
     this.chapterProgressDsb = view.findViewById(R.id.chapter_progress_dsb);
-    this.chapterProgressPagesTv = view.findViewById(R.id.chapter_progress_pages_tv);
+    this.chapterProgressTv = view.findViewById(R.id.chapter_progress_pages_tv);
     this.definitionView = view.findViewById(R.id.reading_fragment_word_definition_dv);
     this.tutorialView = view.findViewById(R.id.reading_fragment_tutorial_view);
     this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
@@ -215,12 +215,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     this.chapterProgressDsb.setEnabled(true);
     this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
-      private int seekValue;
+      private int progress;
 
       @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-        this.seekValue = value;
-        if (!fromUser) {
-          formatPageChapterProgress();
+        progress = value;
+
+        if (fromUser) { // User is sliding the view, so we update the number without relying on bookview
+          final int total = bookView.getPagesForResource();
+          final int current = (int) Math.floor(((double) value / 100)  * total) + 1;
+          updateChapterProgress(current, total);
+        } else {
+          updateChapterProgress();
         }
 
         // Notify analytics
@@ -228,8 +233,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-        bookView.navigateToPercentageInChapter(this.seekValue);
-        formatPageChapterProgress();
+        bookView.navigateToPercentageInChapter(progress);
+        updateChapterProgress();
       }
     });
 
@@ -856,7 +861,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     readingTitleProgressTv.setText(TextUtils.isEmpty(currentChapter) ? currentChapter : bookMetadata.title);
-    formatPageChapterProgress();
+    updateChapterProgress();
 
     dismissProgressDialog();
 
@@ -998,11 +1003,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
-      closeButton.setOnClickListener(new View.OnClickListener() {
+      final View crossButton = activity.findViewById(R.id.photo_viewer_close_cross_btn);
+
+      final View.OnClickListener closeListener = new View.OnClickListener() {
         @Override public void onClick(final View v) {
           hidePhotoViewer();
         }
-      });
+      };
+
+      closeButton.setOnClickListener(closeListener);
+      crossButton.setOnClickListener(closeListener);
 
       final Bitmap bitmap = drawable.getBitmap();
       if (bitmap != null) {
@@ -1031,7 +1041,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final FragmentActivity activity = getActivity();
     if (activity != null) {
       final View closeButton = activity.findViewById(R.id.photo_viewer_close_btn);
+      final View crossButton = activity.findViewById(R.id.photo_viewer_close_cross_btn);
       closeButton.setOnClickListener(null);
+      crossButton.setOnClickListener(null);
 
       final View imageViewContainer = activity.findViewById(R.id.photo_viewer);
       final ObjectAnimator animator = ViewPropertyObjectAnimator.animate(imageViewContainer)
@@ -1160,12 +1172,12 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private void pageDown() {
     bookView.pageDown();
-    formatPageChapterProgress();
+    updateChapterProgress();
   }
 
   private void pageUp() {
     bookView.pageUp();
-    formatPageChapterProgress();
+    updateChapterProgress();
   }
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
@@ -1173,16 +1185,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     ReaderAnalytics.sendOpenTocEntryEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, tocEntry.getTitle(), tocEntry.getHref());
   }
 
-  private void formatPageChapterProgress() {
-    // Format chapter progress in pages
-    final int pagesForResource = bookView.getPagesForResource();
-    final int currentPage = bookView.getCurrentPage();
+  private void updateChapterProgress(final int current, final int total) {
+    final String chapterProgress = current != 0 ? current + " / " + total : "";
+    chapterProgressTv.setText(chapterProgress);
+  }
 
-    final String chapterProgress = pagesForResource != 0 ? String.format("%s / %s", currentPage, pagesForResource) : "";
-    chapterProgressPagesTv.setText(chapterProgress);
-
-    // Tell implementors about event
-    onReaderFragmentEvent(BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT);
+  private void updateChapterProgress() {
+    final int current = bookView.getCurrentPage();
+    final int total = bookView.getPagesForResource();
+    updateChapterProgress(current, total);
   }
 
   private void onNotifyPageProgressAnalytics() {
@@ -1306,7 +1317,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     public static final int SAVE_CURRENTLY_BOOK_READING_EVENT = 12;
     public static final int READER_PARSE_ENTRY_FINISHED_EVENT = 13;
     public static final int READER_FINISHED_BOOK_EVENT = 14;
-    public static final int READER_FORMATTED_PAGE_CHAPTER_EVENT = 15;
   }
 
   @IntDef({
@@ -1316,7 +1326,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       BookReaderEvents.GAMIFICATION_TEXT_TO_SPEECH_ACTIVATED_EVENT, BookReaderEvents.GAMIFICATION_PAGE_DOWN_EVENT,
       BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT, BookReaderEvents.NAVIGATION_TO_GOALS_SCREEN_EVENT,
       BookReaderEvents.NAVIGATION_TO_SIGNUP_SCREEN_EVENT, BookReaderEvents.READ_PAGE_ANALYTICS_EVENT, BookReaderEvents.SAVE_CURRENTLY_BOOK_READING_EVENT,
-      BookReaderEvents.READER_PARSE_ENTRY_FINISHED_EVENT, BookReaderEvents.READER_FINISHED_BOOK_EVENT, BookReaderEvents.READER_FORMATTED_PAGE_CHAPTER_EVENT
+      BookReaderEvents.READER_PARSE_ENTRY_FINISHED_EVENT, BookReaderEvents.READER_FINISHED_BOOK_EVENT
   }) @Retention(RetentionPolicy.SOURCE) @interface BookReaderFragmentEvent {
 
   }

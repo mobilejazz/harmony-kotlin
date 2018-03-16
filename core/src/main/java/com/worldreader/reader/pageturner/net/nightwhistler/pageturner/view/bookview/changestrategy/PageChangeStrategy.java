@@ -32,11 +32,6 @@ public interface PageChangeStrategy {
   void loadText(Spanned text);
 
   /**
-   * Called on the main thread to actually update the TextView
-   */
-  void updateGUI();
-
-  /**
    * Returns the text-offset of the top-left character on the screen.
    */
   int getTopLeftPosition();

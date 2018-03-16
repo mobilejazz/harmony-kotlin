@@ -47,17 +47,17 @@ public class BookNavigationGestureDetector extends GestureDetector.SimpleOnGestu
     }
 
     // If not, maybe the user wants to click on a link
-    final List<ClickableSpan> spans = bookView.getLinkAt(x, y);
-
-    Log.d(TAG, "Got " + spans.size() + " ClickableSpans.");
-
-    if (!spans.isEmpty()) {
-      for (ClickableSpan span : spans) {
-        span.onClick(bookView);
-      }
-
-      return true;
-    }
+    //final List<ClickableSpan> spans = bookView.getLinkAt(x, y);
+    //
+    //Log.d(TAG, "Got " + spans.size() + " ClickableSpans.");
+    //
+    //if (!spans.isEmpty()) {
+    //  for (ClickableSpan span : spans) {
+    //    span.onClick(bookView);
+    //  }
+    //
+    //  return true;
+    //}
 
     this.bookViewListener.onScreenTap();
 
