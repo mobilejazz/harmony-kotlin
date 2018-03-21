@@ -53,9 +53,6 @@ public class TextSelectionActions implements ActionMode.Callback {
       actionModeListener.onCreateActionMode();
     }
 
-    menu.removeItem(android.R.id.selectAll);
-    menu.removeItem(android.R.id.copy);
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       menu.removeItem(android.R.id.shareText);
     }
@@ -91,6 +88,9 @@ public class TextSelectionActions implements ActionMode.Callback {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       mode.setType(ActionMode.TYPE_PRIMARY);
     }
+
+    menu.removeItem(android.R.id.selectAll);
+    menu.removeItem(android.R.id.copy);
 
     return true;
   }
