@@ -732,16 +732,21 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void saveReadingPosition() {
-    if (this.bookView != null) {
-      int index = this.bookView.getIndex();
-      int position = this.bookView.getProgressPosition();
+    if (bookView != null) {
+      final int index = bookView.getIndex();
+      final int position = bookView.getProgressPosition();
+      final String bookId = bookMetadata.bookId;
+      final boolean isAtEnd = bookView.isAtEnd();
 
-      if (index != -1 && position != -1 && !bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.bookId, position);
-        di.config.setLastIndex(this.bookMetadata.bookId, index);
-      } else if (bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.bookId, -1);
-        di.config.setLastIndex(this.bookMetadata.bookId, -1);
+      if (!isAtEnd && index != -1 && position != -1) {
+        di.config.setLastPosition(bookId, position);
+        di.config.setLastIndex(bookId, index);
+        return;
+      }
+
+      if (isAtEnd) {
+        di.config.setLastPosition(bookId, -1);
+        di.config.setLastIndex(bookId, -1);
       }
     }
   }
@@ -789,9 +794,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    this.bookView.setFileName(bookMetadata.bookId);
-    this.bookView.setPosition(lastPos);
-    this.bookView.setIndex(lastIndex);
+    bookView.setFileName(bookMetadata.bookId);
+    bookView.setPosition(lastPos);
+    bookView.setIndex(lastIndex);
   }
 
   public boolean onTouchEvent(MotionEvent event) {
