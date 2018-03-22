@@ -1,27 +1,13 @@
-/*
- * Copyright (C) 2011 Alex Kuiper
- *
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import com.worldreader.core.R;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
@@ -35,51 +21,85 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-/**
- * Special spine class which handles navigation and provides a custom cover.
- */
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private final Book book;
   private final List<SpineEntry> entries;
-  private final Map<String, String> blacklist;
 
   private String tocHref;
   private int position;
 
-  /**
-   * Creates a new Spine from this book.
-   */
-  public PageTurnerSpine(Book book, Map<String, String> blacklist) {
+  public PageTurnerSpine(Context c, Book book) {
     this.book = book;
     this.entries = new ArrayList<>();
     this.position = 0;
-    this.blacklist = blacklist;
 
-    if (book.getNcxResource() != null) {
-      this.tocHref = book.getNcxResource().getHref();
+    final Resource ncxResource = book.getNcxResource();
+    if (ncxResource != null) {
+      this.tocHref = ncxResource.getHref();
     }
 
-    final List<SpineReference> spineReferences = book.getSpine().getSpineReferences();
-    for (SpineReference reference : spineReferences) {
-      final Resource res = reference.getResource();
-      if (!isBlackListed(res)) {
-          addResource(res);
+    final Map<String, String> blacklist = createBlackList(c);
+    final Set<String> blacklistKeys = blacklist.keySet();
+
+    final Spine spine = book.getSpine();
+    final List<SpineReference> spineReferences = spine.getSpineReferences();
+
+    for (SpineReference ref : spineReferences) {
+      final Resource res = ref.getResource();
+      final String resourceId = res.getId();
+
+      final String blacklistKey = isBlackListed(blacklistKeys, resourceId);
+      if (TextUtils.isEmpty(blacklistKey)) {
+        addResource(res);
       } else {
-        final String resourceId = res.getId();
-        final String blackListResource = blacklist.containsKey(resourceId) ? blacklist.get(resourceId) : "";
-        if (!TextUtils.isEmpty(blackListResource)) {
+        final String name = blacklist.get(blacklistKey);
+        if (!TextUtils.isEmpty(name)) {
           final TableOfContents toc = book.getTableOfContents();
-          toc.addTOCReference(new TOCReference(blackListResource, res));
+          toc.addTOCReference(new TOCReference(name, res));
         }
       }
     }
-
-
   }
 
-  private boolean isBlackListed(Resource resource) {
-    return blacklist.keySet().contains(resource.getId());
+  private Map<String, String> createBlackList(Context c) {
+    final Resources r = c.getResources();
+
+    return new HashMap<String, String>() {{
+      put("toc", r.getString(R.string.ls_toc));
+      put("nav", r.getString(R.string.ls_toc));
+      put("copy", r.getString(R.string.ls_copy));
+      put("copyright", r.getString(R.string.ls_copy));
+      put("title", r.getString(R.string.ls_title));
+      put("dedi", r.getString(R.string.ls_dedi));
+      put("dedication", r.getString(R.string.ls_dedi));
+      put("epilogue", r.getString(R.string.ls_epilogue));
+      put("ack", r.getString(R.string.ls_ack));
+      put("acknowledgements", r.getString(R.string.ls_ack));
+      put("backcover", r.getString(R.string.ls_back));
+      put("back", r.getString(R.string.ls_back));
+      put("bcover", r.getString(R.string.ls_back));
+      put("index", r.getString(R.string.ls_index));
+      put("contents", r.getString(R.string.ls_toc));
+      put("credits", r.getString(R.string.ls_credits));
+      put("morebyauthor", r.getString(R.string.ls_moreByAuthor));
+      put("morebypublisher", r.getString(R.string.ls_moreByPublisher));
+    }};
+  }
+
+  private String isBlackListed(Set<String> keySet, String resourceId) {
+    if (TextUtils.isEmpty(resourceId)) {
+      return null;
+    }
+
+    for (String key : keySet) {
+      final boolean startsWith = resourceId.startsWith(key);
+      if (startsWith) {
+        return key;
+      }
+    }
+
+    return null;
   }
 
   @NonNull @Override public Iterator<SpineEntry> iterator() {
