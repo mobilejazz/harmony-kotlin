@@ -297,7 +297,7 @@ public class Configuration {
   }
 
   public FontFamily getSerifFontFamily() {
-    return getFontFamily(KEY_SERIF_FONT, FontFamilies.LORA.DEFAULT);
+    return getFontFamily(KEY_SERIF_FONT, FontFamilies.POPPINS.DEFAULT);
   }
 
   public void setSerifFontFamily(FontFamilies.FontFamily fontFamily) {
@@ -305,7 +305,7 @@ public class Configuration {
   }
 
   public String getSerifFontFamilyString() {
-    return settings.getString(KEY_SERIF_FONT, FontFamilies.LORA.DEFAULT.fontName);
+    return settings.getString(KEY_SERIF_FONT, FontFamilies.POPPINS.DEFAULT.fontName);
   }
 
   public FontFamily getSansSerifFontFamily() {
@@ -313,7 +313,7 @@ public class Configuration {
   }
 
   public FontFamily getDefaultFontFamily() {
-    return getFontFamily(KEY_FONT_FACE, FontFamilies.LORA.DEFAULT);
+    return getFontFamily(KEY_FONT_FACE, FontFamilies.POPPINS.DEFAULT);
   }
 
   public int getBrightness() {
