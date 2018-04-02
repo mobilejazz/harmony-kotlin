@@ -41,7 +41,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_open_sans"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/OpenSans.ttf" />
+      app:custom_typeface="OpenSans" />
 
     <com.worldreader.reader.wr.widget.FontRadioButton
       android:id="@+id/popins_rb"
@@ -51,7 +51,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_poppins"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/Poppins.ttf" />
+      app:custom_typeface="Poppins" />
 
     <com.worldreader.reader.wr.widget.FontRadioButton
       android:id="@+id/lora_rb"
@@ -61,7 +61,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_lora"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/Lora.ttf" />
+      app:custom_typeface="Lora" />
   </RadioGroup>
 
   <TextView
@@ -103,8 +103,8 @@
       android:gravity="bottom"
       android:tag="12"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="12sp" />
+      android:textSize="12sp"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_2"
@@ -117,8 +117,8 @@
       android:gravity="bottom"
       android:tag="14"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="18sp" />
+      android:textSize="18sp"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_3"
@@ -131,8 +131,8 @@
       android:gravity="bottom"
       android:tag="18"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="22sp" />
+      android:textSize="22sp"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_4"
@@ -145,8 +145,8 @@
       android:gravity="bottom"
       android:tag="20"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="28sp" />
+      android:textSize="28sp"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_5"
@@ -159,8 +159,8 @@
       android:gravity="bottom"
       android:tag="24"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="32sp" />
+      android:textSize="32sp"
+      android:textStyle="bold" />
   </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

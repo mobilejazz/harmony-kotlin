@@ -28,7 +28,6 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,7 +42,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
@@ -75,7 +74,6 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static java.util.Arrays.*;
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.*;
 
@@ -102,7 +100,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private int verticalMargin = 0;
   private int lineSpacing = 0;
 
-  private Configuration configuration;
+  private ReaderConfig config;
 
   private TextLoader textLoader;
   private ResourcesLoader resourcesLoader;
@@ -123,31 +121,29 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void init(DICompanion di, BookMetadata bookMetadata, ResourcesLoader resourcesLoader, TextLoader textLoader) {
-    final Context context = getContext();
-
     this.di = di;
     this.bookMetadata = bookMetadata;
     this.resourcesLoader = resourcesLoader;
     this.textLoader = textLoader;
-    this.logger = di.logger;
+    logger = di.logger;
 
     // Prepare other stuff needed for this view to work
-    this.configuration = new Configuration(context);
+    config = di.config;
 
-    this.childView = findViewById(R.id.book_view_inner);
-    this.childView.setBookView(this);
-    this.childView.setMovementMethod(new BookViewMovementMethod());
+    childView = findViewById(R.id.book_view_inner);
+    childView.setBookView(this);
+    childView.setMovementMethod(new BookViewMovementMethod());
 
-    this.setVerticalFadingEdgeEnabled(false);
-    this.setSmoothScrollingEnabled(false);
+    setVerticalFadingEdgeEnabled(false);
+    setSmoothScrollingEnabled(false);
 
-    this.textLoader.registerTagNodeHandler("table", new TableHandler());
+    textLoader.registerTagNodeHandler("table", new TableHandler());
 
     final ImageTagHandler imgHandler = new BookViewImageTagHandler(getContext(), bookMetadata, resourcesLoader, di, logger);
-    this.textLoader.registerTagNodeHandler("img", imgHandler);
-    this.textLoader.registerTagNodeHandler("image", imgHandler);
+    textLoader.registerTagNodeHandler("img", imgHandler);
+    textLoader.registerTagNodeHandler("image", imgHandler);
 
-    this.textLoader.setLinkTagCallBack(new LinkTagHandler.LinkTagCallBack() {
+    textLoader.setLinkTagCallBack(new LinkTagHandler.LinkTagCallBack() {
       @Override public void onLinkClicked(String href) {
         navigateTo(spine.resolveHref(href));
       }
@@ -214,7 +210,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.childView.setOnTouchListener(l);
   }
 
-  public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener, Configuration c) {
+  public void setTextSelectionCallback(TextSelectionCallback callback, ActionModeListener listener, ReaderConfig c) {
     this.childView.setCustomSelectionActionModeCallback(new TextSelectionActions(listener, callback, this, c));
   }
 
@@ -233,10 +229,10 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
   }
 
-  public void setHorizontalMargin(int horizontalMargin) {
-    if (horizontalMargin != this.horizontalMargin) {
-      this.horizontalMargin = horizontalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
+  public void setHorizontalMargin(int margin) {
+    if (margin != horizontalMargin) {
+      horizontalMargin = margin;
+      setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -244,23 +240,23 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void releaseResources() {
-    this.strategy.clearText();
-    this.textLoader.closeCurrentBook();
-    this.taskQueue.clear();
+    strategy.clearText();
+    textLoader.closeCurrentBook();
+    taskQueue.clear();
   }
 
   public void setLinkColor(int color) {
-    this.childView.setLinkTextColor(color);
+    childView.setLinkTextColor(color);
   }
 
   public int getVerticalMargin() {
     return verticalMargin;
   }
 
-  public void setVerticalMargin(int verticalMargin) {
-    if (verticalMargin != this.verticalMargin) {
-      this.verticalMargin = verticalMargin;
-      setPadding(this.horizontalMargin, this.verticalMargin, this.horizontalMargin, this.verticalMargin);
+  public void setVerticalMargin(int margin) {
+    if (margin != margin) {
+      verticalMargin = margin;
+      setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
       if (strategy != null) {
         strategy.updatePosition();
       }
@@ -691,33 +687,33 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private boolean needsPageNumberCalculation() {
-    final Option<List<List<Integer>>> offsets = configuration.getPageOffsets(fileName);
+    final Option<List<List<Integer>>> offsets = config.getPageOffsets(fileName);
     return isEmpty(offsets) || offsets.unsafeGet().size() == 0;
   }
 
   public void setEnableScrolling(boolean enableScrolling) {
-    if (this.strategy == null || this.strategy.isScrolling() != enableScrolling) {
+    if (strategy == null || strategy.isScrolling() != enableScrolling) {
       int pos = -1;
       boolean wasNull = true;
 
       Spanned text = null;
 
-      if (this.strategy != null) {
-        pos = this.strategy.getTopLeftPosition();
-        text = this.strategy.getText().unsafeGet();
+      if (strategy != null) {
+        pos = strategy.getTopLeftPosition();
+        text = strategy.getText().unsafeGet();
         this.strategy.clearText();
         wasNull = false;
       }
 
-      this.strategy = new FixedPagesStrategy();
+      strategy = new FixedPagesStrategy();
       strategy.setBookView(this);
 
       if (!wasNull) {
-        this.strategy.setPosition(pos);
+        strategy.setPosition(pos);
       }
 
       if (text != null && text.length() > 0) {
-        this.strategy.loadText(text);
+        strategy.loadText(text);
       }
     }
   }
@@ -831,7 +827,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         final Option<List<List<Integer>>> offsets = getOffsets();
         offsets.forEach(new Command<List<List<Integer>>>() {
           @Override public void execute(List<List<Integer>> o) {
-            configuration.setPageOffsets(fileName, o);
+            config.setPageOffsets(fileName, o);
           }
         });
         logger.d(TAG, "Calculated offsets: " + offsets);

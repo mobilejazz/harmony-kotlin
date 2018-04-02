@@ -1,6 +1,6 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner;
 
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
@@ -12,7 +12,7 @@ import org.htmlcleaner.HtmlCleaner;
 // Creates a configured HtmlSpanner tailored to Book reading
 public class HtmlSpannerFactory {
 
-  public static HtmlSpanner create(final Configuration config) {
+  public static HtmlSpanner create(final ReaderConfig config) {
     final HtmlSpanner htmlSpanner = new HtmlSpanner(createHtmlCleaner(), new SystemFontResolver());
 
     // Register special Html handlers (wraps common tags with AnchorHandler to capture anchors)

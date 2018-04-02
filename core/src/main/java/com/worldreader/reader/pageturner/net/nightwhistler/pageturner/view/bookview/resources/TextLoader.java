@@ -12,7 +12,7 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.StreamingResour
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.FileEpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.epub.StreamingEpubReader;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.IOUtil;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
@@ -172,23 +172,26 @@ public class TextLoader {
   }
 
   private void setFontFamily(FontFamily family) {
-    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setDefaultFont(family);
+    final SystemFontResolver r = (SystemFontResolver) htmlSpanner.getFontResolver();
+    r.setDefaultFont(family);
   }
 
   private void setSerifFontFamily(FontFamily family) {
-    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSerifFont(family);
+    final SystemFontResolver r = (SystemFontResolver) htmlSpanner.getFontResolver();
+    r.setSerifFont(family);
   }
 
   private void setSansSerifFontFamily(FontFamily family) {
-    ((SystemFontResolver) this.htmlSpanner.getFontResolver()).setSansSerifFont(family);
+    final SystemFontResolver r = (SystemFontResolver) htmlSpanner.getFontResolver();
+    r.setSansSerifFont(family);
   }
 
   private void setStripWhiteSpace(boolean stripWhiteSpace) {
     this.htmlSpanner.setStripExtraWhiteSpace(stripWhiteSpace);
   }
 
-  private void setUseColoursFromCSS(boolean useColours) {
-    this.htmlSpanner.setUseColoursFromStyle(useColours);
+  private void setUseColorsFromCSS(boolean useColours) {
+    htmlSpanner.setUseColoursFromStyle(useColours);
   }
 
   private void registerNewAnchor(String href, String anchor, int position) {
@@ -313,12 +316,17 @@ public class TextLoader {
     return handlerFor instanceof AnchorHandler ? (T) ((AnchorHandler) handlerFor).getWrappedHandler() : (T) handlerFor;
   }
 
-  public void fromConfiguration(Configuration config) {
-    setFontFamily(config.getSerifFontFamily());
-    setSansSerifFontFamily(config.getSansSerifFontFamily());
-    setSerifFontFamily(config.getSerifFontFamily());
-    setStripWhiteSpace(config.isStripWhiteSpaceEnabled());
-    setUseColoursFromCSS(config.isUseColoursFromCSS());
+  public void fromConfiguration(ReaderConfig config) {
+    final FontFamily serifFontFamily = config.getSerifFontFamily();
+    final FontFamily sansSerifFontFamily = config.getSansSerifFontFamily();
+    final boolean stripWhiteSpaceEnabled = config.isStripWhiteSpaceEnabled();
+    final boolean cssEnabled = config.isBookCssStylesEnabled();
+
+    setFontFamily(serifFontFamily);
+    setSerifFontFamily(serifFontFamily);
+    setSansSerifFontFamily(sansSerifFontFamily);
+    setStripWhiteSpace(stripWhiteSpaceEnabled);
+    setUseColorsFromCSS(cssEnabled);
   }
 }
 

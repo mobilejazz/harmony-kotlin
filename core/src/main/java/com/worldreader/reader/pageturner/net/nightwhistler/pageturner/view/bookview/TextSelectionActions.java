@@ -25,7 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import com.worldreader.core.R;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import jedi.functional.Command;
 import jedi.option.Option;
 
@@ -34,9 +34,9 @@ public class TextSelectionActions implements ActionMode.Callback {
   private final TextSelectionCallback callBack;
   private final ActionModeListener actionModeListener;
   private final SelectedTextProvider selectedTextProvider;
-  private final Configuration c;
+  private final ReaderConfig c;
 
-  TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider, Configuration c) {
+  TextSelectionActions(ActionModeListener actionModeListener, TextSelectionCallback callBack, SelectedTextProvider selectedTextProvider, ReaderConfig c) {
     this.callBack = callBack;
     this.actionModeListener = actionModeListener;
     this.selectedTextProvider = selectedTextProvider;

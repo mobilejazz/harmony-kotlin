@@ -6,7 +6,7 @@ import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.WasabiManager;
 
@@ -17,7 +17,7 @@ public class DICompanion {
   @Inject public StreamingBookDataSource streamingBookDataSource;
   @Inject public GetWordDefinitionInteractor getWordDefinitionInteractor;
 
-  @Inject public Configuration config;
+  @Inject public ReaderConfig config;
   @Inject public BrightnessManager brightnessManager;
   @Inject public WasabiManager wasabiManager;
   @Inject public Dates dateUtils;

@@ -1,24 +1,6 @@
-/*
- * Copyright (C) 2012 Alex Kuiper
- * 
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +14,10 @@ import java.util.*;
  * calculated with: if text-size, page-margins, etc. change, they
  * must be re-calculated. This class allows checks for this.
  *
- * @author Alex Kuiper
  */
 public class PageOffsets {
 
-  public static int ALGORITHM_VERSION = 3;
+  private static int ALGORITHM_VERSION = 3;
 
   private int fontSize;
   private String fontFamily;
@@ -61,7 +42,7 @@ public class PageOffsets {
   private PageOffsets() {
   }
 
-  public boolean isValid(Configuration config) {
+  public boolean isValid(ReaderConfig config) {
     return this.fontFamily.equals(config.getDefaultFontFamily().getName())
         && this.fontSize == config.getTextSize()
         && this.vMargin == config.getVerticalMargin()
@@ -74,7 +55,7 @@ public class PageOffsets {
     return offsets;
   }
 
-  public static PageOffsets fromValues(Configuration config, List<List<Integer>> offsets) {
+  public static PageOffsets fromValues(ReaderConfig config, List<List<Integer>> offsets) {
     final PageOffsets result = new PageOffsets();
     result.fontFamily = config.getDefaultFontFamily().getName();
     result.fontSize = config.getTextSize();
@@ -103,19 +84,16 @@ public class PageOffsets {
   }
 
   public String toJSON() throws JSONException {
-    JSONObject jsonObject = new JSONObject();
-
-    jsonObject.put(Fields.fontFamily.name(), this.fontFamily);
-    jsonObject.put(Fields.fontSize.name(), this.fontSize);
-    jsonObject.put(Fields.vMargin.name(), this.vMargin);
-    jsonObject.put(Fields.hMargin.name(), this.hMargin);
-    jsonObject.put(Fields.lineSpacing.name(), this.lineSpacing);
-    jsonObject.put(Fields.fullScreen.name(), this.fullScreen);
-    jsonObject.put(Fields.allowStyling.name(), this.allowStyling);
-    jsonObject.put(Fields.algorithmVersion.name(), this.algorithmVersion);
-
-    jsonObject.put(Fields.offsets.name(), new JSONArray(this.offsets));
-
+    final JSONObject jsonObject = new JSONObject();
+    jsonObject.put(Fields.fontFamily.name(), fontFamily);
+    jsonObject.put(Fields.fontSize.name(), fontSize);
+    jsonObject.put(Fields.vMargin.name(), vMargin);
+    jsonObject.put(Fields.hMargin.name(), hMargin);
+    jsonObject.put(Fields.lineSpacing.name(), lineSpacing);
+    jsonObject.put(Fields.fullScreen.name(), fullScreen);
+    jsonObject.put(Fields.allowStyling.name(), allowStyling);
+    jsonObject.put(Fields.algorithmVersion.name(), algorithmVersion);
+    jsonObject.put(Fields.offsets.name(), new JSONArray(offsets));
     return jsonObject.toString();
   }
 

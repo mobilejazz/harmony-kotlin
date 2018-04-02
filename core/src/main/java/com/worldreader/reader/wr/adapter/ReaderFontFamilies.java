@@ -2,7 +2,7 @@ package com.worldreader.reader.wr.adapter;
 
 import android.support.annotation.StringRes;
 import com.worldreader.core.R;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.FontFamilies;
+import com.worldreader.reader.wr.configuration.FontFamilies;
 
 public enum ReaderFontFamilies {
 
