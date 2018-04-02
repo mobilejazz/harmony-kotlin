@@ -131,16 +131,23 @@ public class DefinitionView extends LinearLayout {
       findViewById(R.id.noun_title_tv).setVisibility(View.GONE);
     }
 
-    if (nounContainer.getVisibility() == View.GONE
-        && adjectiveContainer.getVisibility() == View.GONE
-        && verbContainer.getVisibility() == View.GONE
-        && adverbContainer.getVisibility() == View.GONE) {
+    if (isDefinitionInvisible()) {
       noResultsContainer.setVisibility(View.VISIBLE);
       wordDefinitionsContainer.setVisibility(View.GONE);
     } else {
       noResultsContainer.setVisibility(View.GONE);
       wordDefinitionsContainer.setVisibility(View.VISIBLE);
     }
+  }
+
+  public boolean isDefinitionInvisible(){
+    if (nounContainer.getVisibility() == View.GONE
+        && adjectiveContainer.getVisibility() == View.GONE
+        && verbContainer.getVisibility() == View.GONE
+        && adverbContainer.getVisibility() == View.GONE) {
+      return true;
+    }
+    return false;
   }
 
   private void init() {

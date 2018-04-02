@@ -62,6 +62,7 @@ import com.worldreader.core.application.ui.dialog.DialogFactory;
 import com.worldreader.core.application.ui.widget.CheckableImageButton;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
+import com.worldreader.core.datasource.model.WordDefinitionEntity;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionWordnikInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
@@ -1237,6 +1238,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           text = text.trim();
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
+            ReaderAnalytics.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
             definitionView.showLoading();
             showDefinitionView();
             final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
@@ -1245,6 +1247,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                 if (isAdded()) {
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
+                  if(definitionView.isDefinitionInvisible()){
+                    ReaderAnalytics.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
+                  }
                 }
               }
 
