@@ -7,12 +7,10 @@ import java.io.*;
 
 public class TitledResourceReference extends ResourceReference implements Serializable {
 
-  private static final long serialVersionUID = 3918155020095190080L;
-
   private String fragmentId;
   private String title;
 
-  public TitledResourceReference(Resource resource, String title, String fragmentId) {
+  TitledResourceReference(Resource resource, String title, String fragmentId) {
     super(resource);
     this.title = title;
     this.fragmentId = fragmentId;
@@ -35,8 +33,7 @@ public class TitledResourceReference extends ResourceReference implements Serial
   }
 
   /**
-   * If the fragmentId is blank it returns the resource href, otherwise it returns the resource href
-   * + '#' + the fragmentId.
+   * If the fragmentId is blank it returns the resource href, otherwise it returns the resource href '#' + the fragmentId.
    */
   public String getCompleteHref() {
     if (StringUtil.isBlank(fragmentId)) {

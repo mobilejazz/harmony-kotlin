@@ -1,16 +1,14 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.util.*;
 
-public class ResourceReference implements Serializable {
+public abstract class ResourceReference implements Serializable {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 2596967243557743048L;
   protected Resource resource;
 
-  public ResourceReference(Resource resource) {
+  ResourceReference(Resource resource) {
     this.resource = resource;
   }
 
@@ -18,22 +16,15 @@ public class ResourceReference implements Serializable {
     return resource;
   }
 
-  /**
-   * Besides setting the resource it also sets the fragmentId to null.
-   */
   public void setResource(Resource resource) {
     this.resource = resource;
   }
 
-  /**
-   * The id of the reference referred to.
-   *
-   * null of the reference is null or has a null id itself.
-   */
-  public String getResourceId() {
-    if (resource != null) {
-      return resource.getId();
-    }
-    return null;
+  @Nullable public String getResourceId() {
+    return resource != null ? resource.getId() : null;
+  }
+
+  @Override public int hashCode() {
+    return 31 + (resource == null ? 0 : resource.hashCode());
   }
 }

@@ -29,13 +29,11 @@ import java.util.*;
  */
 public class Book implements Serializable {
 
-  private static final long serialVersionUID = 2068355170895770100L;
-
-  private Resources resources = new Resources();
-  private Metadata metadata = new Metadata();
-  private Spine spine = new Spine();
-  private TableOfContents tableOfContents = new TableOfContents();
-  private Guide guide = new Guide();
+  private Resources resources;
+  private Metadata metadata;
+  private Spine spine;
+  private TableOfContents tableOfContents;
+  private Guide guide;
   private Resource opfResource;
   private Resource ncxResource;
 
@@ -202,6 +200,26 @@ public class Book implements Serializable {
     }
 
     public Book build() {
+      if (resources == null) {
+        resources = new Resources();
+      }
+
+      if (metadata == null) {
+        metadata = new Metadata();
+      }
+
+      if (spine == null) {
+        spine = new Spine();
+      }
+
+      if (tableOfContents == null) {
+        tableOfContents = new TableOfContents();
+      }
+
+      if (guide == null) {
+        guide = new Guide();
+      }
+
       return new Book(this);
     }
   }

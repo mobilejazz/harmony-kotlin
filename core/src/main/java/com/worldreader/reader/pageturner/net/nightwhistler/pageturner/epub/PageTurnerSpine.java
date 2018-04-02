@@ -26,21 +26,17 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   private final Book book;
   private final List<SpineEntry> entries;
 
-  private String tocHref;
   private int position;
 
   public PageTurnerSpine(Context c, Book book) {
     this.book = book;
-    this.entries = new ArrayList<>();
-    this.position = 0;
-
-    final Resource ncxResource = book.getNcxResource();
-    if (ncxResource != null) {
-      this.tocHref = ncxResource.getHref();
-    }
+    entries = new ArrayList<>();
+    position = 0;
 
     final Map<String, String> blacklist = createBlackList(c);
     final Set<String> blacklistKeys = blacklist.keySet();
+
+    final TableOfContents toc = book.getTableOfContents();
 
     final Spine spine = book.getSpine();
     final List<SpineReference> spineReferences = spine.getSpineReferences();
@@ -52,12 +48,13 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
       final String blacklistKey = isBlackListed(blacklistKeys, resourceId);
       if (TextUtils.isEmpty(blacklistKey)) {
         addResource(res);
-      } else {
-        final String name = blacklist.get(blacklistKey);
-        if (!TextUtils.isEmpty(name)) {
-          final TableOfContents toc = book.getTableOfContents();
-          toc.addTOCReference(new TOCReference(name, res));
-        }
+        continue;
+      }
+
+      final String name = blacklist.get(blacklistKey);
+      if (!TextUtils.isEmpty(name)) {
+        final TOCReference tocReference = new TOCReference(name, res);
+        toc.addTOCReference(tocReference);
       }
     }
   }
@@ -103,16 +100,16 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   @NonNull @Override public Iterator<SpineEntry> iterator() {
-    return this.entries.iterator();
+    return entries.iterator();
   }
 
   private void addResource(Resource resource) {
-    final SpineEntry newEntry = new SpineEntry();
-    newEntry.title = resource.getTitle();
-    newEntry.resource = resource;
-    newEntry.href = resource.getHref();
-    newEntry.size = (int) resource.getSize();
-    entries.add(newEntry);
+    final SpineEntry e = new SpineEntry();
+    e.title = resource.getTitle();
+    e.resource = resource;
+    e.href = resource.getHref();
+    e.size = (int) resource.getSize();
+    entries.add(e);
   }
 
   /**
@@ -120,7 +117,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * This includes the generated cover.
    */
   public int size() {
-    return this.entries.size();
+    return entries.size();
   }
 
   /**
@@ -129,11 +126,11 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if we're already at the end.
    */
   public boolean navigateForward() {
-    if (this.position == size() - 1) {
+    if (position == size() - 1) {
       return false;
     }
 
-    this.position++;
+    position++;
     return true;
   }
 
@@ -143,19 +140,12 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if we're already at the start
    */
   public boolean navigateBack() {
-    if (this.position == 0) {
+    if (position == 0) {
       return false;
     }
 
-    this.position--;
+    position--;
     return true;
-  }
-
-  /**
-   * Checks if the current entry is the cover page.
-   */
-  public boolean isCover() {
-    return this.position == 0;
   }
 
   /**
@@ -199,17 +189,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return href;
   }
 
-  /**
-   * Resolves a HREF relative to the Table of Contents
-   */
-  public String resolveTocHref(String href) {
-    if (this.tocHref != null) {
-      return resolveHref(href, tocHref);
-    }
-
-    return href;
-  }
-
   private static String resolveHref(String href, String against) {
     try {
       return new URI(encode(against)).resolve(encode(href)).getPath();
@@ -221,7 +200,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   private static String encode(String input) {
-    StringBuilder resultStr = new StringBuilder();
+    final StringBuilder resultStr = new StringBuilder();
     for (char ch : input.toCharArray()) {
       if (ch == '\\') { //Some books use \ as a separator... invalid, but we'll try to fix it
         resultStr.append('/');
@@ -266,8 +245,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     if (index < 0 || index >= size()) {
       return;
     }
-
-    this.position = index;
+    position = index;
   }
 
   /**
@@ -283,16 +261,15 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if that point did not exist.
    */
   public boolean navigateByHref(String href) {
-    String encodedHref = encode(href);
-
-    for (int i = 0; i < size(); i++) {
-      String entryHref = encode(entries.get(i).href);
-      if (entryHref.equals(encodedHref)) {
-        this.position = i;
+    final String encodedHref = encode(href);
+    final int size = size();
+    for (int i = 0; i < size; i++) {
+      final String entry = encode(entries.get(i).href);
+      if (entry.equals(encodedHref)) {
+        position = i;
         return true;
       }
     }
-
     return false;
   }
 

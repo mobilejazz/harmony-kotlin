@@ -17,20 +17,18 @@ import java.util.*;
  */
 public class TableOfContents implements Serializable {
 
-  private static final long serialVersionUID = -3147391239966275152L;
+  private final Set<TOCReference> tocReferences;
 
-  private final List<TOCReference> tocReferences;
-
-  public TableOfContents() {
+  TableOfContents() {
     this(new ArrayList<TOCReference>());
   }
 
   public TableOfContents(List<TOCReference> tocReferences) {
-    this.tocReferences = tocReferences == null ? new ArrayList<TOCReference>() : tocReferences;
+    this.tocReferences = tocReferences == null ? new LinkedHashSet<TOCReference>() : new LinkedHashSet<>(tocReferences);
   }
 
   public List<TOCReference> getTocReferences() {
-    return tocReferences;
+    return new ArrayList<>(tocReferences);
   }
 
   /**
@@ -40,7 +38,8 @@ public class TableOfContents implements Serializable {
   public List<Resource> getAllUniqueResources() {
     final Set<String> uniqueHrefs = new HashSet<>();
     final List<Resource> result = new ArrayList<>();
-    getAllUniqueResources(uniqueHrefs, result, tocReferences);
+    final ArrayList<TOCReference> references = new ArrayList<>(tocReferences);
+    getAllUniqueResources(uniqueHrefs, result, references);
     return result;
   }
 
@@ -55,9 +54,6 @@ public class TableOfContents implements Serializable {
     }
   }
 
-  /**
-   * The total number of references in this table of contents.
-   */
   public int size() {
     return getTotalSize(tocReferences);
   }
@@ -71,10 +67,8 @@ public class TableOfContents implements Serializable {
   }
 
   public TOCReference addTOCReference(TOCReference tocReference) {
-    if (!tocReferences.contains(tocReference)) {
-      tocReferences.add(tocReference);
-    }
-
+    tocReferences.remove(tocReference);
+    tocReferences.add(tocReference);
     return tocReference;
   }
 }

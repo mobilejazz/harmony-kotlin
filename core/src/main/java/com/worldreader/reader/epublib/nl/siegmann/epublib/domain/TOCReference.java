@@ -5,8 +5,6 @@ import java.util.*;
 
 public class TOCReference extends TitledResourceReference implements Serializable {
 
-  private static final long serialVersionUID = 5787958246077042456L;
-
   private List<TOCReference> children;
 
   public TOCReference(String name, Resource resource) {
@@ -17,7 +15,7 @@ public class TOCReference extends TitledResourceReference implements Serializabl
     this(name, resource, fragmentId, new ArrayList<TOCReference>());
   }
 
-  public TOCReference(String title, Resource resource, String fragmentId, List<TOCReference> children) {
+  private TOCReference(String title, Resource resource, String fragmentId, List<TOCReference> children) {
     super(resource, title, fragmentId);
     this.children = children;
   }
@@ -39,7 +37,11 @@ public class TOCReference extends TitledResourceReference implements Serializabl
       return false;
     }
 
-    final TOCReference tocReference = (TOCReference) o;
-    return this.getResource().getId().equals(tocReference.getResource().getId());
+    final String thisId = getResourceId();
+
+    final TOCReference other = (TOCReference) o;
+    final String otherId = other.getResourceId();
+
+    return thisId != null && thisId.equalsIgnoreCase(otherId);
   }
 }
