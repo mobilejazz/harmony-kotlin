@@ -1,27 +1,13 @@
-/*
- * Copyright (C) 2011 Alex Kuiper
- *
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import com.worldreader.core.R;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
+import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
@@ -35,64 +21,95 @@ import static jedi.functional.FunctionalPrimitives.isEmpty;
 import static jedi.option.Options.none;
 import static jedi.option.Options.option;
 
-/**
- * Special spine class which handles navigation and provides a custom cover.
- */
 public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private final Book book;
   private final List<SpineEntry> entries;
-  private final Map<String, String> blacklist;
 
-  private String tocHref;
   private int position;
 
-  /**
-   * Creates a new Spine from this book.
-   */
-  public PageTurnerSpine(Book book, Map<String, String> blacklist) {
+  public PageTurnerSpine(Context c, Book book) {
     this.book = book;
-    this.entries = new ArrayList<>();
-    this.position = 0;
-    this.blacklist = blacklist;
+    entries = new ArrayList<>();
+    position = 0;
 
-    if (book.getNcxResource() != null) {
-      this.tocHref = book.getNcxResource().getHref();
+    final Map<String, String> blacklist = createBlackList(c);
+    final Set<String> blacklistKeys = blacklist.keySet();
+
+    final TableOfContents toc = book.getTableOfContents();
+
+    final Spine spine = book.getSpine();
+    final List<SpineReference> spineReferences = spine.getSpineReferences();
+
+    for (SpineReference ref : spineReferences) {
+      final Resource res = ref.getResource();
+      final String resourceId = res.getId();
+
+      final String blacklistKey = isBlackListed(blacklistKeys, resourceId);
+      if (TextUtils.isEmpty(blacklistKey)) {
+        addResource(res);
+        continue;
+      }
+
+      final String name = blacklist.get(blacklistKey);
+      if (!TextUtils.isEmpty(name)) {
+        final TOCReference tocReference = new TOCReference(name, res);
+        toc.addTOCReference(tocReference);
+      }
+    }
+  }
+
+  private Map<String, String> createBlackList(Context c) {
+    final Resources r = c.getResources();
+
+    return new HashMap<String, String>() {{
+      put("toc", r.getString(R.string.ls_toc));
+      put("nav", r.getString(R.string.ls_toc));
+      put("copy", r.getString(R.string.ls_copy));
+      put("copyright", r.getString(R.string.ls_copy));
+      put("title", r.getString(R.string.ls_title));
+      put("dedi", r.getString(R.string.ls_dedi));
+      put("dedication", r.getString(R.string.ls_dedi));
+      put("epilogue", r.getString(R.string.ls_epilogue));
+      put("ack", r.getString(R.string.ls_ack));
+      put("acknowledgements", r.getString(R.string.ls_ack));
+      put("backcover", r.getString(R.string.ls_back));
+      put("back", r.getString(R.string.ls_back));
+      put("bcover", r.getString(R.string.ls_back));
+      put("index", r.getString(R.string.ls_index));
+      put("contents", r.getString(R.string.ls_toc));
+      put("credits", r.getString(R.string.ls_credits));
+      put("morebyauthor", r.getString(R.string.ls_moreByAuthor));
+      put("morebypublisher", r.getString(R.string.ls_moreByPublisher));
+    }};
+  }
+
+  private String isBlackListed(Set<String> keySet, String resourceId) {
+    if (TextUtils.isEmpty(resourceId)) {
+      return null;
     }
 
-    final List<SpineReference> spineReferences = book.getSpine().getSpineReferences();
-    for (SpineReference reference : spineReferences) {
-      final Resource res = reference.getResource();
-      if (!isBlackListed(res)) {
-          addResource(res);
-      } else {
-        final String resourceId = res.getId();
-        final String blackListResource = blacklist.containsKey(resourceId) ? blacklist.get(resourceId) : "";
-        if (!TextUtils.isEmpty(blackListResource)) {
-          final TableOfContents toc = book.getTableOfContents();
-          toc.addTOCReference(new TOCReference(blackListResource, res));
-        }
+    for (String key : keySet) {
+      final boolean startsWith = resourceId.startsWith(key);
+      if (startsWith) {
+        return key;
       }
     }
 
-
-  }
-
-  private boolean isBlackListed(Resource resource) {
-    return blacklist.keySet().contains(resource.getId());
+    return null;
   }
 
   @NonNull @Override public Iterator<SpineEntry> iterator() {
-    return this.entries.iterator();
+    return entries.iterator();
   }
 
   private void addResource(Resource resource) {
-    final SpineEntry newEntry = new SpineEntry();
-    newEntry.title = resource.getTitle();
-    newEntry.resource = resource;
-    newEntry.href = resource.getHref();
-    newEntry.size = (int) resource.getSize();
-    entries.add(newEntry);
+    final SpineEntry e = new SpineEntry();
+    e.title = resource.getTitle();
+    e.resource = resource;
+    e.href = resource.getHref();
+    e.size = (int) resource.getSize();
+    entries.add(e);
   }
 
   /**
@@ -100,7 +117,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * This includes the generated cover.
    */
   public int size() {
-    return this.entries.size();
+    return entries.size();
   }
 
   /**
@@ -109,11 +126,11 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if we're already at the end.
    */
   public boolean navigateForward() {
-    if (this.position == size() - 1) {
+    if (position == size() - 1) {
       return false;
     }
 
-    this.position++;
+    position++;
     return true;
   }
 
@@ -123,19 +140,12 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if we're already at the start
    */
   public boolean navigateBack() {
-    if (this.position == 0) {
+    if (position == 0) {
       return false;
     }
 
-    this.position--;
+    position--;
     return true;
-  }
-
-  /**
-   * Checks if the current entry is the cover page.
-   */
-  public boolean isCover() {
-    return this.position == 0;
   }
 
   /**
@@ -179,17 +189,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     return href;
   }
 
-  /**
-   * Resolves a HREF relative to the Table of Contents
-   */
-  public String resolveTocHref(String href) {
-    if (this.tocHref != null) {
-      return resolveHref(href, tocHref);
-    }
-
-    return href;
-  }
-
   private static String resolveHref(String href, String against) {
     try {
       return new URI(encode(against)).resolve(encode(href)).getPath();
@@ -201,7 +200,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
   }
 
   private static String encode(String input) {
-    StringBuilder resultStr = new StringBuilder();
+    final StringBuilder resultStr = new StringBuilder();
     for (char ch : input.toCharArray()) {
       if (ch == '\\') { //Some books use \ as a separator... invalid, but we'll try to fix it
         resultStr.append('/');
@@ -246,8 +245,7 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
     if (index < 0 || index >= size()) {
       return;
     }
-
-    this.position = index;
+    position = index;
   }
 
   /**
@@ -263,16 +261,15 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
    * @return false if that point did not exist.
    */
   public boolean navigateByHref(String href) {
-    String encodedHref = encode(href);
-
-    for (int i = 0; i < size(); i++) {
-      String entryHref = encode(entries.get(i).href);
-      if (entryHref.equals(encodedHref)) {
-        this.position = i;
+    final String encodedHref = encode(href);
+    final int size = size();
+    for (int i = 0; i < size; i++) {
+      final String entry = encode(entries.get(i).href);
+      if (entry.equals(encodedHref)) {
+        position = i;
         return true;
       }
     }
-
     return false;
   }
 

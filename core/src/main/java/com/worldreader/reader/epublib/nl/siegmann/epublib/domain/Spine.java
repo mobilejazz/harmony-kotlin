@@ -1,5 +1,6 @@
 package com.worldreader.reader.epublib.nl.siegmann.epublib.domain;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
@@ -10,10 +11,8 @@ import java.util.*;
  */
 public class Spine implements Serializable {
 
-  private static final long serialVersionUID = 3878483958947357246L;
-
+  private final List<SpineReference> spineReferences;
   private Resource tocResource;
-  private List<SpineReference> spineReferences;
 
   public Spine() {
     this(new ArrayList<SpineReference>());
@@ -27,37 +26,23 @@ public class Spine implements Serializable {
     return spineReferences;
   }
 
-  /**
-   * Gets the resource at the given index.
-   * Null if not found.
-   */
-  public Resource getResource(int index) {
+  @Nullable public Resource getResource(int index) {
     if (index < 0 || index >= spineReferences.size()) {
       return null;
     }
     return spineReferences.get(index).getResource();
   }
 
-  /**
-   * The number of elements in the spine.
-   */
-  public int size() {
-    return spineReferences.size();
-  }
-
-  /**
-   * As per the epub file format the spine officially maintains a reference to the Table of
-   * Contents.
-   * The epubwriter will look for it here first, followed by some clever tricks to find it elsewhere
-   * if not found.
-   * Put it here to be sure of the expected behaviours.
-   */
   public void setTocResource(Resource tocResource) {
     this.tocResource = tocResource;
   }
 
   public Resource getTocResource() {
     return tocResource;
+  }
+
+  public int size() {
+    return spineReferences.size();
   }
 
   public boolean isEmpty() {

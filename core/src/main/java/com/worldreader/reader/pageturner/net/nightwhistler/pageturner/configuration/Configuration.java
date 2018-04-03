@@ -73,28 +73,6 @@ public class Configuration {
     this.context = context;
   }
 
-  public int getLastPosition(String fileName) {
-    SharedPreferences bookPrefs = getPrefsForBook(fileName);
-
-    int pos = bookPrefs.getInt(KEY_POS, -1);
-
-    if (pos != -1) {
-      return pos;
-    }
-
-    //Fall-back to older settings
-    String bookHash = Integer.toHexString(fileName.hashCode());
-
-    pos = settings.getInt(KEY_POS + bookHash, -1);
-
-    if (pos != -1) {
-      return pos;
-    }
-
-    // Fall-back for even older settings.
-    return settings.getInt(KEY_POS + fileName, -1);
-  }
-
   private SharedPreferences getPrefsForBook(final String fileName) {
     final String bookHash = Integer.toHexString(fileName.hashCode());
     return context.getSharedPreferences(bookHash, 0);
@@ -145,36 +123,24 @@ public class Configuration {
     return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 
-  public void setLastPosition(String fileName, int position) {
-    SharedPreferences bookPrefs = getPrefsForBook(fileName);
-
+  public void setLastPosition(String bookId, int position) {
+    final SharedPreferences bookPrefs = getPrefsForBook(bookId);
     updateValue(bookPrefs, KEY_POS, position);
+  }
+
+  public int getLastPosition(String bookId) {
+    final SharedPreferences bookPrefs = getPrefsForBook(bookId);
+    return bookPrefs.getInt(KEY_POS, -1);
+  }
+
+  public void setLastIndex(String bookId, int index) {
+    final SharedPreferences bookPrefs = getPrefsForBook(bookId);
+    updateValue(bookPrefs, KEY_IDX, index);
   }
 
   public int getLastIndex(String fileName) {
     final SharedPreferences bookPrefs = getPrefsForBook(fileName);
-
-    int pos = bookPrefs.getInt(KEY_IDX, -1);
-    if (pos != -1) {
-      return pos;
-    }
-
-    //Fall-backs to older setting in central file
-    String bookHash = Integer.toHexString(fileName.hashCode());
-
-    pos = settings.getInt(KEY_IDX + bookHash, -1);
-
-    if (pos != -1) {
-      return pos;
-    }
-
-    // Fall-back for even older settings.
-    return settings.getInt(KEY_IDX + fileName, -1);
-  }
-
-  public void setLastIndex(String fileName, int index) {
-    SharedPreferences bookPrefs = getPrefsForBook(fileName);
-    updateValue(bookPrefs, KEY_IDX, index);
+    return bookPrefs.getInt(KEY_IDX, -1);
   }
 
   public boolean isStripWhiteSpaceEnabled() {

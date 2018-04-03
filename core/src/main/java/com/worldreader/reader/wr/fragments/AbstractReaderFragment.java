@@ -62,6 +62,7 @@ import com.worldreader.core.application.ui.dialog.DialogFactory;
 import com.worldreader.core.application.ui.widget.CheckableImageButton;
 import com.worldreader.core.application.ui.widget.TutorialView;
 import com.worldreader.core.application.ui.widget.discretebar.DiscreteSeekBar;
+import com.worldreader.core.datasource.model.WordDefinitionEntity;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionWordnikInteractor;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
@@ -732,16 +733,21 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   public void saveReadingPosition() {
-    if (this.bookView != null) {
-      int index = this.bookView.getIndex();
-      int position = this.bookView.getProgressPosition();
+    if (bookView != null) {
+      final int index = bookView.getIndex();
+      final int position = bookView.getProgressPosition();
+      final String bookId = bookMetadata.bookId;
+      final boolean isAtEnd = bookView.isAtEnd();
 
-      if (index != -1 && position != -1 && !bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.bookId, position);
-        di.config.setLastIndex(this.bookMetadata.bookId, index);
-      } else if (bookView.isAtEnd()) {
-        di.config.setLastPosition(this.bookMetadata.bookId, -1);
-        di.config.setLastIndex(this.bookMetadata.bookId, -1);
+      if (!isAtEnd && index != -1 && position != -1) {
+        di.config.setLastPosition(bookId, position);
+        di.config.setLastIndex(bookId, index);
+        return;
+      }
+
+      if (isAtEnd) {
+        di.config.setLastPosition(bookId, -1);
+        di.config.setLastIndex(bookId, -1);
       }
     }
   }
@@ -789,9 +795,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    this.bookView.setFileName(bookMetadata.bookId);
-    this.bookView.setPosition(lastPos);
-    this.bookView.setIndex(lastIndex);
+    bookView.setFileName(bookMetadata.bookId);
+    bookView.setPosition(lastPos);
+    bookView.setIndex(lastIndex);
   }
 
   public boolean onTouchEvent(MotionEvent event) {
@@ -1237,6 +1243,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           text = text.trim();
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
+            ReaderAnalytics.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
             definitionView.showLoading();
             showDefinitionView();
             final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
@@ -1245,6 +1252,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                 if (isAdded()) {
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
+                  if(definitionView.isDefinitionInvisible()){
+                    ReaderAnalytics.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
+                  }
                 }
               }
 
