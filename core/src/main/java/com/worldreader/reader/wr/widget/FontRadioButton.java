@@ -36,7 +36,7 @@ public class FontRadioButton extends AppCompatRadioButton {
 
   private boolean applyCustomTypeface(Context context, String font) {
     final FontManager fm = FontManager.getInstance(context);
-    final FontFamily family = fm.getFontFamily(null);
+    final FontFamily family = fm.getFontFamily(font);
     setTypeface(family.getDefaultTypeface());
     return true;
   }

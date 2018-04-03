@@ -3,8 +3,8 @@ package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.book
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
+import com.worldreader.reader.wr.models.TocEntry;
 
 import java.util.*;
 

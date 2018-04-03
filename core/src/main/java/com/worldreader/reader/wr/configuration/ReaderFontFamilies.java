@@ -2,13 +2,15 @@ package com.worldreader.reader.wr.configuration;
 
 import android.text.TextUtils;
 
-public class FontFamilies {
+import java.io.*;
+
+public class ReaderFontFamilies {
 
   public static final FontFamily POPPINS = new FontFamily("Poppins", "ttf", "Regular", "Bold", "Light");
   public static final FontFamily OPEN_SANS = new FontFamily("OpenSans", "ttf", "Regular", "Bold", "Italic");
   public static final FontFamily LORA = new FontFamily("Lora", "ttf", "Regular", "Bold", "Italic");
 
-  public FontFamily fromName(String name) {
+  public static FontFamily fromName(String name) {
     if (TextUtils.isEmpty(name)) {
       throw new IllegalArgumentException("Font name is not valid!");
     }
@@ -27,7 +29,7 @@ public class FontFamilies {
     }
   }
 
-  public static class FontFamily {
+  public static class FontFamily implements Serializable {
 
     private final String name;
     private final String extension;
@@ -48,19 +50,19 @@ public class FontFamilies {
     }
 
     public String getRegularFont() {
-      return regular + "." + extension;
+      return name + "-" + regular + "." + extension;
     }
 
     public String getBoldFont() {
-      return regular + "-" + bold + "." + extension;
+      return name + "-" + bold + "." + extension;
     }
 
     public String getItalicFont() {
-      return regular + "-" + italic + "." + extension;
+      return name + "-" + italic + "." + extension;
     }
   }
 
-  private FontFamilies() {
-    throw new AssertionError("FontFamilies not intended fo instantiation!");
+  private ReaderFontFamilies() {
+    throw new AssertionError("ReaderFontFamilies not intended fo instantiation!");
   }
 }

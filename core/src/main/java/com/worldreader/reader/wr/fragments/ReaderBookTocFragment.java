@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.worldreader.core.R;
 import com.worldreader.core.application.helper.ui.adapters.decoration.ItemDividerDecoration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.wr.adapter.TocEntriesAdapter;
 import jedi.option.Option;
 
@@ -20,9 +20,9 @@ import java.util.*;
 
 import static jedi.functional.FunctionalPrimitives.isEmpty;
 
-public class BookTocFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
+public class ReaderBookTocFragment extends Fragment implements TocEntriesAdapter.OnClickBookSectionListener {
 
-  public static final String TAG = BookTocFragment.class.getSimpleName();
+  public static final String TAG = ReaderBookTocFragment.class.getSimpleName();
 
   private BookIndexListener listener;
 
@@ -37,7 +37,7 @@ public class BookTocFragment extends Fragment implements TocEntriesAdapter.OnCli
     void onClickBackButton();
   }
 
-  public BookTocFragment() {
+  public ReaderBookTocFragment() {
   }
 
   @Override public void onAttach(Context context) {

@@ -68,9 +68,9 @@ import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.wr.configuration.ReaderConfig;
-import com.worldreader.reader.wr.configuration.FontFamilies;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.wr.configuration.ReaderFontFamilies;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
@@ -243,13 +243,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     });
 
     // Setup default enabled font in RadioGroup
-    final String family = config.getSerifFontFamilyString();
     int radioBtnId = 0;
-    if (FontFamilies.LORA.getName().equals(family)) {
+    final FontFamily fontFamily = config.getDefaultFontFamily();
+    final String family = fontFamily.getName();
+    if (ReaderFontFamilies.LORA.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.lora_rb;
-    } else if (FontFamilies.OPEN_SANS.getName().equals(family)) {
+    } else if (ReaderFontFamilies.OPEN_SANS.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.open_sans_rb;
-    } else if (FontFamilies.POPPINS.getName().equals(family)) {
+    } else if (ReaderFontFamilies.POPPINS.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.popins_rb;
     }
 
@@ -257,15 +258,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     fontsRg.check(radioBtnId);
     fontsRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
       @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
-        FontFamilies.FontFamily fontFamily = null;
+        ReaderFontFamilies.FontFamily fontFamily = null;
         if (checkedId == R.id.open_sans_rb) {
-          fontFamily = FontFamilies.OPEN_SANS;
+          fontFamily = ReaderFontFamilies.OPEN_SANS;
         } else if (checkedId == R.id.popins_rb) {
-          fontFamily = FontFamilies.POPPINS;
+          fontFamily = ReaderFontFamilies.POPPINS;
         } else if (checkedId == R.id.lora_rb) {
-          fontFamily = FontFamilies.LORA;
+          fontFamily = ReaderFontFamilies.LORA;
         }
-        config.setSerifFontFamily(fontFamily);
+        config.setDefaultFontFamily(fontFamily);
         updateReaderState();
       }
     });
@@ -724,14 +725,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       final boolean isAtEnd = bookView.isAtEnd();
 
       if (!isAtEnd && index != -1 && position != -1) {
-        di.config.setLastPosition(bookId, position);
-        di.config.setLastIndex(bookId, index);
+        di.readerBookMetadataManager.saveLastPositionRead(di.config, bookId, position);
+        di.readerBookMetadataManager.saveLastIndex(di.config, bookId, index);
         return;
       }
 
       if (isAtEnd) {
-        di.config.setLastPosition(bookId, -1);
-        di.config.setLastIndex(bookId, -1);
+        di.readerBookMetadataManager.removeReaderBookMetadata(bookId);
       }
     }
   }
@@ -768,15 +768,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void restoreLastReadPosition(Bundle savedInstanceState) {
-    int lastPos = di.config.getLastPosition(bookMetadata.bookId);
-    int lastIndex = di.config.getLastIndex(bookMetadata.bookId);
+    int lastPos = di.readerBookMetadataManager.retrieveLastPositionRead(di.config, bookMetadata.bookId);
+    int lastIndex = di.readerBookMetadataManager.retrieveLastIndex(di.config, bookMetadata.bookId);
 
     if (savedInstanceState != null) {
       lastPos = savedInstanceState.getInt(POS_KEY, lastPos);
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    bookView.setFileName(bookMetadata.bookId);
     bookView.setPosition(lastPos);
     bookView.setIndex(lastIndex);
   }
@@ -790,8 +789,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     if (activity == null) {
       return;
     }
-
-    this.bookView.setFileName(bookMetadata.bookId);
 
     if (bookTocEntryListener != null) {
       final Option<List<TocEntry>> optionalToc = bookView.getTableOfContents();

@@ -10,7 +10,7 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.widget.TextView;
 import com.google.common.base.Throwables;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;

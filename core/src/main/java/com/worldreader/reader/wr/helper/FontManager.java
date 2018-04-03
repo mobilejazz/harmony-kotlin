@@ -3,7 +3,7 @@ package com.worldreader.reader.wr.helper;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import com.worldreader.reader.wr.configuration.FontFamilies;
+import com.worldreader.reader.wr.configuration.ReaderFontFamilies;
 import net.nightwhistler.htmlspanner.FontFamily;
 
 import java.io.*;
@@ -30,11 +30,12 @@ public class FontManager {
     this.manager = context.getAssets();
   }
 
-  public FontFamily getFontFamily(String family) {
-
+  public FontFamily getFontFamily(String f) {
+    final ReaderFontFamilies.FontFamily family = ReaderFontFamilies.fromName(f);
+    return getFontFamily(family);
   }
 
-  public FontFamily getFontFamily(FontFamilies.FontFamily f) {
+  public FontFamily getFontFamily(ReaderFontFamilies.FontFamily f) {
     final String key = f.getName();
 
     if (!FONT_CACHE.containsKey(key)) {
@@ -45,7 +46,7 @@ public class FontManager {
     return FONT_CACHE.get(key);
   }
 
-  private FontFamily loadFontFamilyFromAssets(String name, FontFamilies.FontFamily f) {
+  private FontFamily loadFontFamilyFromAssets(String name, ReaderFontFamilies.FontFamily f) {
     final Typeface regular = Typeface.createFromAsset(manager, FOLDER + File.separator + f.getRegularFont());
     final Typeface bold = Typeface.createFromAsset(manager, FOLDER + File.separator + f.getBoldFont());
     final Typeface italic = Typeface.createFromAsset(manager, FOLDER + File.separator + f.getItalicFont());

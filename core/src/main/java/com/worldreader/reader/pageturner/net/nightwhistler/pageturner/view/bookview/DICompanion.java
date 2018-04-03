@@ -8,6 +8,7 @@ import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.domain.interactors.dictionary.GetWordDefinitionInteractor;
 import com.worldreader.reader.wr.configuration.ReaderConfig;
 import com.worldreader.reader.wr.helper.BrightnessManager;
+import com.worldreader.reader.wr.helper.ReaderBookMetadataManager;
 import com.worldreader.reader.wr.helper.WasabiManager;
 
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ public class DICompanion {
   @Inject public GetWordDefinitionInteractor getWordDefinitionInteractor;
 
   @Inject public ReaderConfig config;
+  @Inject public ReaderBookMetadataManager readerBookMetadataManager;
   @Inject public BrightnessManager brightnessManager;
   @Inject public WasabiManager wasabiManager;
   @Inject public Dates dateUtils;

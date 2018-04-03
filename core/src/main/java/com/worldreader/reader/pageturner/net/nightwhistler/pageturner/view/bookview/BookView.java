@@ -1,22 +1,3 @@
-/*
- * Copyright (C) 2011 Alex Kuiper
- * 
- * This file is part of PageTurner
- *
- * PageTurner is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PageTurner is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PageTurner.  If not, see <http://www.gnu.org/licenses/>.*
- */
-
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
 
 import android.content.Context;
@@ -24,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -43,8 +23,8 @@ import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resources;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.util.StringUtil;
 import com.worldreader.reader.wr.configuration.ReaderConfig;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.TaskQueue;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy.FixedPagesStrategy;
@@ -92,15 +72,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   private DICompanion di;
   private BookMetadata bookMetadata;
   private Book book;
-  private String fileName;
   private PageTurnerSpine spine;
   private FixedPagesStrategy strategy;
 
   private int horizontalMargin = 0;
   private int verticalMargin = 0;
   private int lineSpacing = 0;
-
-  private ReaderConfig config;
 
   private TextLoader textLoader;
   private ResourcesLoader resourcesLoader;
@@ -126,9 +103,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.resourcesLoader = resourcesLoader;
     this.textLoader = textLoader;
     logger = di.logger;
-
-    // Prepare other stuff needed for this view to work
-    config = di.config;
 
     childView = findViewById(R.id.book_view_inner);
     childView.setBookView(this);
@@ -161,10 +135,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public int getSpineSize() {
     return spine != null ? spine.size() : 0;
-  }
-
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
   }
 
   public FixedPagesStrategy getStrategy() {
@@ -254,7 +224,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void setVerticalMargin(int margin) {
-    if (margin != margin) {
+    if (verticalMargin != margin) {
       verticalMargin = margin;
       setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
       if (strategy != null) {
@@ -288,7 +258,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     this.storedAnchor = null;
     this.storedIndex = -1;
     this.book = null;
-    this.fileName = null;
     this.strategy.reset();
     this.spine = null;
   }
@@ -435,18 +404,6 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     return this.spine;
   }
 
-  private Option<Integer> findOffsetForPosition(float x, float y) {
-    if (childView == null || childView.getLayout() == null) {
-      return none();
-    }
-
-    final Layout layout = this.childView.getLayout();
-    final int line = layout.getLineForVertical((int) y);
-    final int horizontalOffset = layout.getOffsetForHorizontal(line, x);
-
-    return option(horizontalOffset);
-  }
-
   public void navigateTo(TocEntry tocEntry) {
     navigateTo(tocEntry.getHref());
   }
@@ -474,17 +431,17 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     String anchor = StringUtil.substringAfterLast(rawHref, Constants.FRAGMENT_SEPARATOR_CHAR);
 
     if (!"".equals(anchor)) {
-      this.storedAnchor = anchor;
+      storedAnchor = anchor;
     }
 
     // Just an anchor and no href; resolve it on this page
     if (href.length() == 0) {
       restorePosition();
     } else {
-      this.strategy.clearText();
-      this.strategy.setPosition(0);
+      strategy.clearText();
+      strategy.setPosition(0);
 
-      if (this.spine.navigateByHref(href)) {
+      if (spine.navigateByHref(href)) {
         loadText();
       } else {
         final Resource resource = book.getResources().getByHref(href);
@@ -525,15 +482,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   private void doNavigation(int index) {
     // Check if we're already in the right part of the book
-    if (index == this.getIndex()) {
+    if (index == getIndex()) {
       restorePosition();
       progressUpdate();
       return;
     }
 
-    this.storedIndex = index;
-    this.strategy.clearText();
-    this.spine.navigateByIndex(index);
+    storedIndex = index;
+    strategy.clearText();
+    spine.navigateByIndex(index);
 
     loadText();
   }
@@ -547,15 +504,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public int getIndex() {
-    if (this.spine == null) {
+    if (spine == null) {
       return storedIndex;
     }
 
-    return this.spine.getPosition();
+    return spine.getPosition();
   }
 
   public void setIndex(int index) {
-    this.storedIndex = index;
+    storedIndex = index;
   }
 
   public int getProgressPosition() {
@@ -563,11 +520,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void setPosition(int pos) {
-    this.strategy.setPosition(pos);
+    strategy.setPosition(pos);
   }
 
   private void restorePosition() {
-    if (this.storedAnchor != null) {
+    if (storedAnchor != null) {
       spine.getCurrentHref().forEach(new Command<String>() {
         @Override public void execute(String href) {
           final Option<Integer> anchorValue = textLoader.getAnchor(href, storedAnchor);
@@ -586,8 +543,8 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void setTextColor(int color) {
-    if (this.childView != null) {
-      this.childView.setTextColor(color);
+    if (childView != null) {
+      childView.setTextColor(color);
     }
 
     final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
@@ -597,7 +554,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   public void setTextSize(float textSize) {
-    this.childView.setTextSize(textSize);
+    childView.setTextSize(textSize);
 
     final TableHandler tableNodeHandler = textLoader.getHtmlTagHandler("table");
     if (tableNodeHandler != null) {
@@ -637,7 +594,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     super.setBackgroundColor(color);
 
     if (childView != null) {
-      this.childView.setBackgroundColor(color);
+      childView.setBackgroundColor(color);
     }
   }
 
@@ -648,11 +605,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
   }
 
   private void progressUpdate() {
-    if (this.spine == null) {
+    if (spine == null) {
       return;
     }
 
-    this.strategy.getText().filter(new Filter<Spanned>() {
+    strategy.getText().filter(new Filter<Spanned>() {
       @Override public Boolean execute(Spanned t) {
         return t.length() > 0;
       }
@@ -672,7 +629,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public int getPagesForResource() {
     if (spine != null) {
-      return BookView.this.getStrategy().getPageOffsets().size();
+      return getStrategy().getPageOffsets().size();
     }
 
     return -1;
@@ -680,15 +637,15 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
   public int getCurrentPage() {
     if (spine != null) {
-      return BookView.this.getStrategy().getCurrentPage() + 1;
+      return getStrategy().getCurrentPage() + 1;
     }
 
     return -1;
   }
 
   private boolean needsPageNumberCalculation() {
-    final Option<List<List<Integer>>> offsets = config.getPageOffsets(fileName);
-    return isEmpty(offsets) || offsets.unsafeGet().size() == 0;
+    final List<List<Integer>> offsets = di.readerBookMetadataManager.retrievePageOffsets(di.config, bookMetadata.bookId);
+    return offsets.isEmpty();
   }
 
   public void setEnableScrolling(boolean enableScrolling) {
@@ -701,7 +658,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       if (strategy != null) {
         pos = strategy.getTopLeftPosition();
         text = strategy.getText().unsafeGet();
-        this.strategy.clearText();
+        strategy.clearText();
         wasNull = false;
       }
 
@@ -811,7 +768,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       if (strategy.isScrolling()) {
         scrollHandler.postDelayed(new Runnable() {
           @Override public void run() {
-            BookView.this.restorePosition();
+            restorePosition();
           }
         }, 100);
       }
@@ -824,19 +781,14 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
 
     @Override public Option<List<List<Integer>>> doInBackground(Object... params) {
       try {
-        final Option<List<List<Integer>>> offsets = getOffsets();
-        offsets.forEach(new Command<List<List<Integer>>>() {
-          @Override public void execute(List<List<Integer>> o) {
-            config.setPageOffsets(fileName, o);
-          }
-        });
+        final List<List<Integer>> offsets = getOffsets();
+        di.readerBookMetadataManager.savePageOffsets(di.config, bookMetadata.bookId, offsets);
         logger.d(TAG, "Calculated offsets: " + offsets);
-        return offsets;
+        return option(offsets);
       } catch (OutOfMemoryError | Exception e) {
         logger.sendIssue(TAG, "Exception while trying to calculate page. Current exception: " + Throwables.getStackTraceAsString(e));
+        return none();
       }
-
-      return none();
     }
 
     @Override public void doOnPostExecute(Option<List<List<Integer>>> result) {
@@ -853,7 +805,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
     }
 
     // Loads the text offsets for the whole book, with minimal use of resources.
-    private Option<List<List<Integer>>> getOffsets() throws IOException {
+    private List<List<Integer>> getOffsets() {
       final List<List<Integer>> result = new ArrayList<>();
 
       final HtmlSpanner mySpanner = new HtmlSpanner();
@@ -876,7 +828,7 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         }
       }
 
-      return some(result);
+      return result;
     }
   }
 }

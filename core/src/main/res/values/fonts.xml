@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="reader_font_size_1">16</string>
+  <string name="reader_font_size_2">20</string>
+  <string name="reader_font_size_3">24</string>
+  <string name="reader_font_size_4">28</string>
+  <string name="reader_font_size_5">32</string>
+
+  <dimen name="reader_font_size_1">16sp</dimen>
+  <dimen name="reader_font_size_2">20sp</dimen>
+  <dimen name="reader_font_size_3">24sp</dimen>
+  <dimen name="reader_font_size_4">28sp</dimen>
+  <dimen name="reader_font_size_5">32sp</dimen>
+
+  <integer name="default_reader_font_size">20</integer>
+</resources>
