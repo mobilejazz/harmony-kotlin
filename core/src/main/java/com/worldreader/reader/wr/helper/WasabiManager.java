@@ -36,8 +36,9 @@ import java.security.NoSuchAlgorithmException;
       // Initialize Wasabi SDK
       Runtime.initialize(storeFile.getAbsolutePath());
     } catch (ErrorCodeException e) {
-      logger.e(TAG, "Something went wrong while initializing the SDK. Error: " + Throwables.getStackTraceAsString(e));
-      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
+      logger.e(TAG, "Something went wrong while initializing Wasabi SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Error code: " + e.getErrorCode());
+      logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()).getRecommendationText());
     }
   }
 
@@ -49,8 +50,9 @@ import java.security.NoSuchAlgorithmException;
     try {
       Runtime.personalize();
     } catch (ErrorCodeException e) {
-      logger.e(TAG, "Something went wrong while personalizing the SDK. Error: " + Throwables.getStackTraceAsString(e));
-      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
+      logger.e(TAG, "Something went wrong while personalizing Wasabi SDK. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Error code: " + e.getErrorCode());
+      logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()).getRecommendationText());
     }
   }
 
@@ -58,8 +60,9 @@ import java.security.NoSuchAlgorithmException;
     try {
       Runtime.processServiceToken(token);
     } catch (ErrorCodeException e) {
-      logger.e(TAG, "Something went wrong while processing the token. Error: " + Throwables.getStackTraceAsString(e));
-      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
+      logger.e(TAG, "Error while processing token. Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Error code: " + e.getErrorCode());
+      logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()).getRecommendationText());
     }
   }
 
@@ -90,7 +93,9 @@ import java.security.NoSuchAlgorithmException;
     } catch (NullPointerException | ErrorCodeException | IOException e) {
       logger.e(TAG, "Problem while decrypting book with id: " + bookId + "! Error: " + Throwables.getStackTraceAsString(e));
       if (e instanceof ErrorCodeException) {
-        logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()));
+        logger.e(TAG, "Error while decrypting the book");
+        logger.e(TAG, "Error code: " + ((ErrorCodeException) e).getErrorCode());
+        logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()));
       }
       return null;
     }
@@ -107,7 +112,8 @@ import java.security.NoSuchAlgorithmException;
       clearStore();
     } catch (ErrorCodeException e) {
       logger.e(TAG, "Problem while trying to nuke Wasabi SDK! Error: " + Throwables.getStackTraceAsString(e));
-      logger.e(TAG, "Possible explanation for this exception. Explanation: " + ErrorCodeHelper.explainErrorCode(e.getErrorCode()));
+      logger.e(TAG, "Error code: " + e.getErrorCode());
+      logger.e(TAG, "Error explanation: " + e.getExplanation().getRecommendationText());
     }
   }
 
