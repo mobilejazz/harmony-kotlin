@@ -95,7 +95,7 @@ import java.security.NoSuchAlgorithmException;
       if (e instanceof ErrorCodeException) {
         logger.e(TAG, "Error while decrypting the book");
         logger.e(TAG, "Error code: " + ((ErrorCodeException) e).getErrorCode());
-        logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()));
+        logger.e(TAG, "Explanation: " + ErrorCodeHelper.explainErrorCode(((ErrorCodeException) e).getErrorCode()).getRecommendationText());
       }
       return null;
     }
@@ -148,7 +148,8 @@ import java.security.NoSuchAlgorithmException;
       // Create Hex String
       final StringBuilder hexString = new StringBuilder();
       for (byte aMessageDigest : messageDigest) {
-        hexString.append(Integer.toHexString(0xFF & aMessageDigest));
+        //hexString.append(Integer.toHexString(0xFF & aMessageDigest));
+        hexString.append(String.format("%02X", (0xFF & aMessageDigest)));
       }
 
       return hexString.toString();
