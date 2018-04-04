@@ -1,6 +1,7 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.util.Log;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
@@ -29,13 +30,13 @@ public class CSSLinkHandler extends TagNodeHandler {
 
     Log.d(TAG, "Found link tag: type=" + type + " and href=" + href);
 
-    if (type == null || !type.equals("text/css")) {
+    if (TextUtils.isEmpty(type) || !type.equals("text/css")) {
       Log.d(TAG, "Ignoring link of type " + type);
+      return;
     }
 
     if (textLoader != null) {
       final List<CompiledRule> rules = textLoader.getCSSRules(href);
-
       for (CompiledRule rule : rules) {
         spanStack.registerCompiledRule(rule);
       }
