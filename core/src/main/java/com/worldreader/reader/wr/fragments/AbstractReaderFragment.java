@@ -67,10 +67,6 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.Configuration;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.configuration.FontFamilies;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
@@ -84,10 +80,16 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
+import com.worldreader.reader.wr.configuration.ReaderFontFamilies;
+import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
+import net.nightwhistler.htmlspanner.FontFamily;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -154,26 +156,28 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final Activity activity = getActivity();
     final WindowManager windowManager = activity.getWindowManager();
 
-    this.context = activity;
+    context = activity;
 
     // Inject views
     final View view = getView();
-    this.bookView = view.findViewById(R.id.reading_fragment_bookView);
-    this.readingTitleProgressTv = view.findViewById(R.id.title_chapter_tv);
-    this.chapterProgressDsb = view.findViewById(R.id.chapter_progress_dsb);
-    this.chapterProgressTv = view.findViewById(R.id.chapter_progress_pages_tv);
-    this.definitionView = view.findViewById(R.id.reading_fragment_word_definition_dv);
-    this.tutorialView = view.findViewById(R.id.reading_fragment_tutorial_view);
-    this.containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
-    this.progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
-    this.readerOptionsTv = view.findViewById(R.id.reader_options_tv);
+    bookView = view.findViewById(R.id.reading_fragment_bookView);
+    readingTitleProgressTv = view.findViewById(R.id.title_chapter_tv);
+    chapterProgressDsb = view.findViewById(R.id.chapter_progress_dsb);
+    chapterProgressTv = view.findViewById(R.id.chapter_progress_pages_tv);
+    definitionView = view.findViewById(R.id.reading_fragment_word_definition_dv);
+    tutorialView = view.findViewById(R.id.reading_fragment_tutorial_view);
+    containerTutorialView = view.findViewById(R.id.reading_fragment_container_tutorial_view);
+    progressContainer = view.findViewById(R.id.reading_fragment_chapter_progress_container);
+    readerOptionsTv = view.findViewById(R.id.reader_options_tv);
 
     // Call injector
     di = onProvideDICompanionObject();
 
+    final ReaderConfig config = di.config;
+
     // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
     final Intent intent = getActivity().getIntent();
-    this.bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
+    bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
 
     // Gather status variables for the reader
     final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
@@ -192,15 +196,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final ResourcesLoader resourcesLoader = ResourcesLoaderFactory.create(bookMetadata, di);
 
     // Prepare resources loader
-    this.textLoader = new TextLoader(bookMetadata.contentOpfPath, HtmlSpannerFactory.create(di.config), resourcesLoader);
+    textLoader = new TextLoader(bookMetadata.contentOpfPath, HtmlSpannerFactory.create(config), resourcesLoader);
 
     // Initialize BookView
-    this.bookView.init(di, bookMetadata, resourcesLoader, textLoader);
-    this.bookView.setListener(this);
-    this.bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener(), di.config);
+    bookView.init(di, bookMetadata, resourcesLoader, textLoader);
+    bookView.setListener(this);
+    bookView.setTextSelectionCallback(new ReaderTextSelectionCallback(), new ReaderActionModeListener(), config);
 
     // Setup definitionView listener
-    this.definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
+    definitionView.setOnClickCrossListener(new DefinitionView.OnClickCrossListener() {
       @Override public void onClick(DefinitionView view) {
         hideDefinitionView();
       }
@@ -211,10 +215,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int pt = progressContainer.getPaddingTop();
     final int pr = progressContainer.getPaddingRight();
     final int pb = progressContainer.getPaddingBottom() + Dimens.obtainNavBarHeight(context);
-    this.progressContainer.setPadding(pl, pt, pr, pb);
+    progressContainer.setPadding(pl, pt, pr, pb);
 
-    this.chapterProgressDsb.setEnabled(true);
-    this.chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
+    chapterProgressDsb.setEnabled(true);
+    chapterProgressDsb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
       private int progress;
 
       @Override public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -222,7 +226,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
         if (fromUser) { // User is sliding the view, so we update the number without relying on bookview
           final int total = bookView.getPagesForResource();
-          final int current = (int) Math.floor(((double) value / 100)  * total) + 1;
+          final int current = (int) Math.floor(((double) value / 100) * total) + 1;
           updateChapterProgress(current, total);
         } else {
           updateChapterProgress();
@@ -239,13 +243,14 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     });
 
     // Setup default enabled font in RadioGroup
-    final String family = di.config.getSerifFontFamilyString();
     int radioBtnId = 0;
-    if (FontFamilies.LORA.DEFAULT.fontName.equals(family)) {
+    final FontFamily fontFamily = config.getDefaultFontFamily();
+    final String family = fontFamily.getName();
+    if (ReaderFontFamilies.LORA.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.lora_rb;
-    } else if (FontFamilies.OPEN_SANS.DEFAULT.fontName.equals(family)) {
+    } else if (ReaderFontFamilies.OPEN_SANS.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.open_sans_rb;
-    } else if (FontFamilies.POPPINS.DEFAULT.fontName.equals(family)) {
+    } else if (ReaderFontFamilies.POPPINS.getName().equalsIgnoreCase(family)) {
       radioBtnId = R.id.popins_rb;
     }
 
@@ -253,15 +258,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     fontsRg.check(radioBtnId);
     fontsRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
       @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
-        FontFamilies.FontFamily fontFamily = null;
+        ReaderFontFamilies.FontFamily fontFamily = null;
         if (checkedId == R.id.open_sans_rb) {
-          fontFamily = FontFamilies.OPEN_SANS.DEFAULT;
+          fontFamily = ReaderFontFamilies.OPEN_SANS;
         } else if (checkedId == R.id.popins_rb) {
-          fontFamily = FontFamilies.POPPINS.DEFAULT;
+          fontFamily = ReaderFontFamilies.POPPINS;
         } else if (checkedId == R.id.lora_rb) {
-          fontFamily = FontFamilies.LORA.DEFAULT;
+          fontFamily = ReaderFontFamilies.LORA;
         }
-        di.config.setSerifFontFamily(fontFamily);
+        config.setDefaultFontFamily(fontFamily);
         updateReaderState();
       }
     });
@@ -279,7 +284,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     // Setup listeners for reader font sizes
-    final int textSize = di.config.getTextSize();
+    final int textSize = config.getTextSize();
 
     final LinearLayout fontSizesContainerLl = activity.findViewById(R.id.font_sizes_container_ll);
     final int childCount = fontSizesContainerLl.getChildCount();
@@ -298,7 +303,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         }
 
         final String rawSize = ((String) v.getTag());
-        di.config.setTextSize(Integer.valueOf(rawSize));
+        final Integer size = Integer.valueOf(rawSize);
+        config.setTextSize(size);
+
         updateReaderState();
       }
     };
@@ -312,7 +319,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Setup listeners for reader profile colors
     final DiscreteSeekBar brightnessSb = activity.findViewById(R.id.brightness_sb);
-    brightnessSb.setProgress(di.config.getBrightness());
+    final int brightness = config.getBrightness();
+    brightnessSb.setProgress(brightness);
     brightnessSb.setOnProgressChangeListener(new DiscreteSeekBar.SimpleOnProgressChangeListener() {
       private int level;
 
@@ -323,7 +331,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-        di.config.setBrightness(level);
+        config.setBrightness(level);
       }
     });
 
@@ -332,16 +340,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final CheckableImageButton creamProfileBtn = activity.findViewById(R.id.cream_profile_btn);
 
     // Setup initial checked element for color profile
-    final Configuration.ColorProfile profile = di.config.getColorProfile();
-    switch (profile) {
+    final ReaderConfig.Theme theme = config.getTheme();
+    switch (theme) {
       case DAY:
         dayProfileBtn.setChecked(true);
         break;
-      case NIGHT:
-        nightProfileBtn.setChecked(true);
-        break;
       case CREAM:
         creamProfileBtn.setChecked(true);
+        break;
+      case NIGHT:
+        nightProfileBtn.setChecked(true);
         break;
     }
 
@@ -350,17 +358,17 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       @Override public void onClick(View v) {
         final int id = v.getId();
         if (id == R.id.day_profile_btn) {
-          di.config.setColorProfile(Configuration.ColorProfile.DAY);
+          config.setTheme(ReaderConfig.Theme.DAY);
           dayProfileBtn.setChecked(true);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(false);
         } else if (id == R.id.night_profile_btn) {
-          di.config.setColorProfile(Configuration.ColorProfile.NIGHT);
+          config.setTheme(ReaderConfig.Theme.NIGHT);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(true);
           creamProfileBtn.setChecked(false);
         } else if (id == R.id.cream_profile_btn) {
-          di.config.setColorProfile(Configuration.ColorProfile.CREAM);
+          config.setTheme(ReaderConfig.Theme.CREAM);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(true);
@@ -374,8 +382,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     creamProfileBtn.setOnClickListener(readerProfileChangeListener);
 
     // Setup navigation forward and backward listener
-    this.arrowLeftIv = view.findViewById(R.id.arrow_left_iv);
-    this.arrowRightIv = view.findViewById(R.id.arrow_right_iv);
+    arrowLeftIv = view.findViewById(R.id.arrow_left_iv);
+    arrowRightIv = view.findViewById(R.id.arrow_right_iv);
 
     final View.OnClickListener prevNextClickListener = new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -391,8 +399,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         }
       }
     };
-    this.arrowLeftIv.setOnClickListener(prevNextClickListener);
-    this.arrowRightIv.setOnClickListener(prevNextClickListener);
+    arrowLeftIv.setOnClickListener(prevNextClickListener);
+    arrowRightIv.setOnClickListener(prevNextClickListener);
 
     // Setup listener for reader options
     readerOptionsTv.setOnClickListener(new View.OnClickListener() {
@@ -615,66 +623,49 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return;
     }
 
-    bookView.setTextSize(di.config.getTextSize());
+    final ReaderConfig config = di.config;
 
-    int marginH = di.config.getHorizontalMargin();
-    int marginV = di.config.getVerticalMargin();
+    final int textSize = config.getTextSize();
+    final FontFamily serifFontFamily = config.getDefaultFontFamily();
+    final int lineSpacing = config.getLineSpacing();
+    final int marginH = config.getHorizontalMargin();
+    final int marginV = config.getVerticalMargin();
+    final int brightness = config.getBrightness();
 
-    bookView.setFontFamily(di.config.getSerifFontFamily());
-
-    textLoader.fromConfiguration(di.config);
-
+    bookView.setTextSize(textSize);
+    bookView.setFontFamily(serifFontFamily);
     bookView.setHorizontalMargin(marginH);
     bookView.setVerticalMargin(marginV);
-    bookView.setEnableScrolling(di.config.isScrollingEnabled());
-    bookView.setLineSpacing(di.config.getLineSpacing());
+    bookView.setEnableScrolling(false);
+    bookView.setLineSpacing(lineSpacing);
+
+    textLoader.fromConfiguration(config);
 
     final Window window = getActivity().getWindow();
-    final int brightness = di.config.getBrightness();
-    di.brightnessManager.setBrightness(window, brightness);
+    final BrightnessManager brightnessManager = di.brightnessManager;
+    brightnessManager.setBrightness(window, brightness);
+    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     final ActionBar actionBar = activity.getSupportActionBar();
     actionBar.setHomeButtonEnabled(true);
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setTitle("");
 
-    if (di.config.isKeepScreenOn()) {
-      keepScreenOn(window);
-    } else {
-      keepScreenOff(window);
-    }
-
     updateReaderColorProfile();
 
     // Check if we need a restart
 
-    final boolean fontNameChanged = di.config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
-    final boolean isFontChanged = !di.config.getSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.serifFontName);
-    final boolean isBackgroundChanged = di.config.getColorProfile() != savedConfigState.colorProfile;
-    final boolean isStripWhiteSpaceEnabled = di.config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
-    final boolean isSansSerifFontNameEqual = di.config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
+    final boolean hasFontChanged = config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
+    final boolean hasBackgroundChanged = config.getTheme() != savedConfigState.theme;
 
-    if (isStripWhiteSpaceEnabled
-        || !fontNameChanged
-        || isFontChanged
-        || !isSansSerifFontNameEqual
-        || di.config.getHorizontalMargin() != savedConfigState.hMargin
-        || di.config.getVerticalMargin() != savedConfigState.vMargin
-        || di.config.getTextSize() != savedConfigState.textSize
-        || di.config.isScrollingEnabled() != savedConfigState.scrolling
-        || di.config.isUseColoursFromCSS() != savedConfigState.allowColoursFromCSS) {
-
+    if (hasFontChanged
+        || config.getHorizontalMargin() != savedConfigState.hMargin
+        || config.getVerticalMargin() != savedConfigState.vMargin
+        || config.getTextSize() != savedConfigState.textSize
+        || config.isBookCssStylesEnabled() != savedConfigState.allowColorsFromCSS) {
       textLoader.invalidateCachedText();
-      restartActivity(isFontChanged, isBackgroundChanged);
+      restartActivity(hasFontChanged, hasBackgroundChanged);
     }
-  }
-
-  private void keepScreenOff(Window window) {
-    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-  }
-
-  private void keepScreenOn(Window window) {
-    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
   @Nullable private SystemUiHelper getSystemUiHelper() {
@@ -685,25 +676,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void updateReaderColorProfile() {
-    this.bookView.setBackgroundColor(di.config.getBackgroundColor());
-    this.bookView.setTextColor(di.config.getTextColor());
-    this.bookView.setLinkColor(di.config.getLinkColor());
+    final ReaderConfig.Theme theme = di.config.getTheme();
 
-    final Configuration.ColorProfile profile = di.config.getColorProfile();
-    int readerOptionsDrawableRes;
-    switch (profile) {
-      case DAY:
-      default:
-        readerOptionsDrawableRes = R.drawable.shape_button_read_options_white_background;
-        break;
-      case NIGHT:
-        readerOptionsDrawableRes = R.drawable.shape_button_read_options_black_background;
-        break;
-      case CREAM:
-        readerOptionsDrawableRes = R.drawable.shape_button_read_options_cream_background;
-        break;
-    }
-    this.readerOptionsTv.setBackgroundResource(readerOptionsDrawableRes);
+    bookView.setBackgroundColor(theme.bgColor);
+    bookView.setTextColor(theme.textColor);
+    bookView.setLinkColor(theme.linkColor);
+
+    readerOptionsTv.setBackgroundResource(theme.drawableRes);
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
@@ -739,14 +718,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       final boolean isAtEnd = bookView.isAtEnd();
 
       if (!isAtEnd && index != -1 && position != -1) {
-        di.config.setLastPosition(bookId, position);
-        di.config.setLastIndex(bookId, index);
+        di.readerBookMetadataManager.saveLastPositionRead(di.config, bookId, position);
+        di.readerBookMetadataManager.saveLastIndex(di.config, bookId, index);
         return;
       }
 
       if (isAtEnd) {
-        di.config.setLastPosition(bookId, -1);
-        di.config.setLastIndex(bookId, -1);
+        di.readerBookMetadataManager.removeReaderBookMetadata(bookId);
       }
     }
   }
@@ -768,33 +746,26 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected abstract void onReaderFragmentEvent(@BookReaderFragmentEvent int event);
 
   public void saveConfigState() {
+    final ReaderConfig config = di.config;
+
     // Cache old settings to check if we'll need a restart later
-    savedConfigState.stripWhiteSpace = di.config.isStripWhiteSpaceEnabled();
-
-    savedConfigState.hMargin = di.config.getHorizontalMargin();
-    savedConfigState.vMargin = di.config.getVerticalMargin();
-
-    savedConfigState.textSize = di.config.getTextSize();
-    savedConfigState.fontName = di.config.getDefaultFontFamily().getName();
-    savedConfigState.serifFontName = di.config.getSerifFontFamily().getName();
-    savedConfigState.sansSerifFontName = di.config.getSansSerifFontFamily().getName();
-
-    savedConfigState.scrolling = di.config.isScrollingEnabled();
-    savedConfigState.allowColoursFromCSS = di.config.isUseColoursFromCSS();
-
-    savedConfigState.colorProfile = di.config.getColorProfile();
+    savedConfigState.hMargin = config.getHorizontalMargin();
+    savedConfigState.vMargin = config.getVerticalMargin();
+    savedConfigState.textSize = config.getTextSize();
+    savedConfigState.fontName = config.getDefaultFontFamily().getName();
+    savedConfigState.allowColorsFromCSS = config.isBookCssStylesEnabled();
+    savedConfigState.theme = config.getTheme();
   }
 
   private void restoreLastReadPosition(Bundle savedInstanceState) {
-    int lastPos = di.config.getLastPosition(bookMetadata.bookId);
-    int lastIndex = di.config.getLastIndex(bookMetadata.bookId);
+    int lastPos = di.readerBookMetadataManager.retrieveLastPositionRead(di.config, bookMetadata.bookId);
+    int lastIndex = di.readerBookMetadataManager.retrieveLastIndex(di.config, bookMetadata.bookId);
 
     if (savedInstanceState != null) {
       lastPos = savedInstanceState.getInt(POS_KEY, lastPos);
       lastIndex = savedInstanceState.getInt(IDX_KEY, lastIndex);
     }
 
-    bookView.setFileName(bookMetadata.bookId);
     bookView.setPosition(lastPos);
     bookView.setIndex(lastIndex);
   }
@@ -808,8 +779,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     if (activity == null) {
       return;
     }
-
-    this.bookView.setFileName(bookMetadata.bookId);
 
     if (bookTocEntryListener != null) {
       final Option<List<TocEntry>> optionalToc = bookView.getTableOfContents();
@@ -887,7 +856,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
       pageDown();
     } else {
       pageUp();
@@ -906,7 +875,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
       pageUp();
     } else {
       pageDown();
@@ -921,7 +890,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
       pageUp();
     } else {
       pageDown();
@@ -936,7 +905,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       systemUiHelper.hide();
     }
 
-    if (di.config.getReadingDirection() == Configuration.ReadingDirection.LEFT_TO_RIGHT) {
+    if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
       pageDown();
     } else {
       pageUp();
@@ -1081,10 +1050,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       return false;
     }
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // BookViewListener Callbacks
-  ///////////////////////////////////////////////////////////////////////////
 
   private boolean isDefinitionViewDisplayed() {
     return definitionView.getVisibility() == View.VISIBLE;
@@ -1251,7 +1216,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                 if (isAdded()) {
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
-                  if(definitionView.isDefinitionInvisible()){
+                  if (definitionView.isDefinitionInvisible()) {
                     ReaderAnalytics.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
                   }
                 }

@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub;
+package com.worldreader.reader.wr.models;
 
 /**
  * Entry in a Table of Contents

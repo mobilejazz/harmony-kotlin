@@ -6,6 +6,8 @@ import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import com.worldreader.core.R;
+import com.worldreader.reader.wr.helper.FontManager;
+import net.nightwhistler.htmlspanner.FontFamily;
 
 import java.util.*;
 
@@ -32,26 +34,10 @@ public class FontRadioButton extends AppCompatRadioButton {
     typedArray.recycle();
   }
 
-  private boolean applyCustomTypeface(Context context, String asset) {
-    setTypeface(FontCache.getTypeface(context, asset));
+  private boolean applyCustomTypeface(Context context, String font) {
+    final FontManager fm = FontManager.getInstance(context);
+    final FontFamily family = fm.getFontFamily(font);
+    setTypeface(family.getDefaultTypeface());
     return true;
-  }
-
-  public static class FontCache {
-
-    private static final HashMap<String, Typeface> FONT_CACHE = new HashMap<>();
-
-    public static Typeface getTypeface(Context context, String customFont) {
-      Typeface typeface = FONT_CACHE.get(customFont);
-      if (typeface == null) {
-        try {
-          typeface = Typeface.createFromAsset(context.getAssets(), customFont);
-        } catch (Exception e) {
-          return null;
-        }
-        FONT_CACHE.put(customFont, typeface);
-      }
-      return typeface;
-    }
   }
 }

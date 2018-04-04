@@ -5,7 +5,6 @@
     <attr name="discreteSeekBarStyle" format="reference" />
   </declare-styleable>
 
-  <!-- DiscreteSeekBar -->
   <declare-styleable name="DiscreteSeekBar">
     <attr name="dsb_min" format="integer|dimension" />
     <attr name="dsb_max" format="integer|dimension" />
@@ -26,6 +25,13 @@
 
   <declare-styleable name="CustomTypeface">
     <attr name="custom_typeface" format="string" />
+  </declare-styleable>
+
+  <declare-styleable name="DrawableTextView">
+    <attr name="drawableLeftCompat" format="reference" />
+    <attr name="drawableRightCompat" format="reference" />
+    <attr name="drawableTopCompat" format="reference" />
+    <attr name="drawableBottomCompat" format="reference" />
   </declare-styleable>
 
 </resources>

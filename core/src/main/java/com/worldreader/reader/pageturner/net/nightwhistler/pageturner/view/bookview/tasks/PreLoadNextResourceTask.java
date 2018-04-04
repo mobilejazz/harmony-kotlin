@@ -1,7 +1,7 @@
 package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks;
 
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.PageTurnerSpine;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import jedi.functional.Command;

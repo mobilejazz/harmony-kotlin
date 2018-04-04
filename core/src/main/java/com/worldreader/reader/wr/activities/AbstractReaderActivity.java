@@ -34,9 +34,9 @@ import android.widget.Toast;
 import com.google.common.base.Throwables;
 import com.worldreader.core.R;
 import com.worldreader.core.helper.fragments.Fragments;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.epub.TocEntry;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
-import com.worldreader.reader.wr.fragments.BookTocFragment;
+import com.worldreader.reader.wr.fragments.ReaderBookTocFragment;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 
@@ -44,14 +44,14 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 public abstract class AbstractReaderActivity extends AppCompatActivity
-    implements AbstractReaderFragment.OnBookTocEntryListener, BookTocFragment.BookIndexListener {
+    implements AbstractReaderFragment.OnBookTocEntryListener, ReaderBookTocFragment.BookIndexListener {
 
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
 
   private SystemUiHelper systemUiHelper;
   private AbstractReaderFragment abstractReaderFragment;
-  private BookTocFragment bookTocFragment;
+  private ReaderBookTocFragment readerBookTocFragment;
 
   private AppBarLayout toolbarLayout;
   private Toolbar toolbar;
@@ -142,15 +142,15 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   private void onSetupBookIndexFragment() {
-    final Fragment fragment = new BookTocFragment();
+    final Fragment fragment = new ReaderBookTocFragment();
     final FragmentManager fm = getSupportFragmentManager();
-    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, BookTocFragment.TAG).commitNow();
+    fm.beginTransaction().replace(R.id.fragment_book_index, fragment, ReaderBookTocFragment.TAG).commitNow();
   }
 
   private void onSetupBindViews() {
     final FragmentManager fm = getSupportFragmentManager();
     abstractReaderFragment = (AbstractReaderFragment) fm.findFragmentById(R.id.fragment_reading);
-    bookTocFragment = (BookTocFragment) fm.findFragmentById(R.id.fragment_book_index);
+    readerBookTocFragment = (ReaderBookTocFragment) fm.findFragmentById(R.id.fragment_book_index);
 
     this.readingContainer = findViewById(R.id.fragment_reading);
     this.bookIndexContainer = findViewById(R.id.content_book_index);
@@ -276,14 +276,14 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
-    if (abstractReaderFragment == null || bookTocFragment == null) {
+    if (abstractReaderFragment == null || readerBookTocFragment == null) {
       return false;
     }
 
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onPrepareOptionsMenu(menu);
     } else {
-      bookTocFragment.onPrepareOptionsMenu(menu);
+      readerBookTocFragment.onPrepareOptionsMenu(menu);
     }
 
     return true;
@@ -293,7 +293,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     if (isVisibleReadingFragment()) {
       return abstractReaderFragment.onOptionsItemSelected(item);
     } else {
-      return bookTocFragment.onOptionsItemSelected(item);
+      return readerBookTocFragment.onOptionsItemSelected(item);
     }
   }
 
@@ -301,12 +301,12 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
     if (isVisibleReadingFragment()) {
       abstractReaderFragment.onOptionsMenuClosed(menu);
     } else {
-      bookTocFragment.onOptionsMenuClosed(menu);
+      readerBookTocFragment.onOptionsMenuClosed(menu);
     }
   }
 
   @Override public void onBookTableOfContentsLoaded(Option<List<TocEntry>> tocEntries) {
-    this.bookTocFragment.onBookTableOfContentsLoaded(tocEntries);
+    this.readerBookTocFragment.onBookTableOfContentsLoaded(tocEntries);
   }
 
   @Override public void displayBookTableOfContents() {

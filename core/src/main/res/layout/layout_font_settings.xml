@@ -41,7 +41,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_open_sans"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/OpenSans.ttf" />
+      app:custom_typeface="Open_Sans" />
 
     <com.worldreader.reader.wr.widget.FontRadioButton
       android:id="@+id/popins_rb"
@@ -51,7 +51,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_poppins"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/Poppins.ttf" />
+      app:custom_typeface="Poppins" />
 
     <com.worldreader.reader.wr.widget.FontRadioButton
       android:id="@+id/lora_rb"
@@ -61,7 +61,7 @@
       android:gravity="center_vertical"
       android:text="@string/ls_book_reading_font_family_lora"
       app:buttonTint="@color/primary"
-      app:custom_typeface="fonts/Lora.ttf" />
+      app:custom_typeface="Lora" />
   </RadioGroup>
 
   <TextView
@@ -101,10 +101,10 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:tag="12"
+      android:tag="@string/reader_font_size_1"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="12sp" />
+      android:textSize="@dimen/reader_font_size_1"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_2"
@@ -115,10 +115,10 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:tag="14"
+      android:tag="@string/reader_font_size_2"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="18sp" />
+      android:textSize="@dimen/reader_font_size_2"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_3"
@@ -129,10 +129,10 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:tag="18"
+      android:tag="@string/reader_font_size_3"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="22sp" />
+      android:textSize="@dimen/reader_font_size_3"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_4"
@@ -143,10 +143,10 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:tag="20"
+      android:tag="@string/reader_font_size_4"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="28sp" />
+      android:textSize="@dimen/reader_font_size_4"
+      android:textStyle="bold" />
 
     <android.support.v7.widget.AppCompatCheckedTextView
       android:id="@+id/size_5"
@@ -157,10 +157,10 @@
       android:focusable="true"
       android:foreground="?attr/selectableItemBackgroundBorderless"
       android:gravity="bottom"
-      android:tag="24"
+      android:tag="@string/reader_font_size_5"
       android:text="a"
-      android:textStyle="bold"
-      android:textSize="32sp" />
+      android:textSize="@dimen/reader_font_size_5"
+      android:textStyle="bold" />
   </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
