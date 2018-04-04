@@ -56,4 +56,21 @@ public class ReaderAnalytics {
     analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.TOC_ENTRY_SELECTED_EVENT, attrs));
   }
 
+  public static void sendDictionaryWordLookupEvent(Analytics analytics, final String bookId, final String title, final String word){
+    final Map<String, String> attrs = new HashMap<String, String>() {{
+      put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
+      put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
+      put(AnalyticsEventConstants.LOOKUP_WORD_ATTRIBUTE, word);
+    }};
+    analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_LOOKUP_EVENT, attrs));
+  }
+
+  public static void sendDictionaryWordDefinitionNotFoundEvent(Analytics analytics, final String bookId, final String title, final String word){
+    final Map<String, String> attrs = new HashMap<String, String>() {{
+      put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
+      put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
+      put(AnalyticsEventConstants.LOOKUP_WORD_ATTRIBUTE, word);
+    }};
+    analytics.sendEvent(new BasicAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_DEFINITION_NOT_FOUND_EVENT, attrs));
+  }
 }

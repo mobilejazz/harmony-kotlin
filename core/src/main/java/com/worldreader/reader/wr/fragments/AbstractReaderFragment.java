@@ -67,10 +67,6 @@ import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.WordDefinition;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.wr.configuration.ReaderConfig;
-import com.worldreader.reader.wr.configuration.ReaderFontFamilies;
-import com.worldreader.reader.wr.models.PageTurnerSpine;
-import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.ActionModeListener;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookNavigationGestureDetector;
@@ -84,8 +80,12 @@ import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookv
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner.HtmlSpannerFactory;
 import com.worldreader.reader.wr.activities.AbstractReaderActivity;
+import com.worldreader.reader.wr.configuration.ReaderConfig;
+import com.worldreader.reader.wr.configuration.ReaderFontFamilies;
 import com.worldreader.reader.wr.helper.BrightnessManager;
 import com.worldreader.reader.wr.helper.LayoutDirectionHelper;
+import com.worldreader.reader.wr.models.PageTurnerSpine;
+import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.wr.widget.DefinitionView;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
@@ -226,7 +226,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
         if (fromUser) { // User is sliding the view, so we update the number without relying on bookview
           final int total = bookView.getPagesForResource();
-          final int current = (int) Math.floor(((double) value / 100)  * total) + 1;
+          final int current = (int) Math.floor(((double) value / 100) * total) + 1;
           updateChapterProgress(current, total);
         } else {
           updateChapterProgress();
@@ -626,7 +626,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final ReaderConfig config = di.config;
 
     final int textSize = config.getTextSize();
-    final FontFamily serifFontFamily = config.getSerifFontFamily();
+    final FontFamily serifFontFamily = config.getDefaultFontFamily();
     final int lineSpacing = config.getLineSpacing();
     final int marginH = config.getHorizontalMargin();
     final int marginV = config.getVerticalMargin();
@@ -655,23 +655,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Check if we need a restart
 
-    final boolean fontNameChanged = config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
-    final boolean isFontChanged = !serifFontFamily.getName().equalsIgnoreCase(savedConfigState.serifFontName);
-    final boolean isBackgroundChanged = config.getTheme() != savedConfigState.theme;
-    final boolean isStripWhiteSpaceEnabled = config.isStripWhiteSpaceEnabled() != savedConfigState.stripWhiteSpace;
-    final boolean isSansSerifFontNameEqual = config.getSansSerifFontFamily().getName().equalsIgnoreCase(savedConfigState.sansSerifFontName);
+    final boolean hasFontChanged = config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
+    final boolean hasBackgroundChanged = config.getTheme() != savedConfigState.theme;
 
-    if (isStripWhiteSpaceEnabled
-        || !fontNameChanged
-        || isFontChanged
-        || !isSansSerifFontNameEqual
+    if (hasFontChanged
         || config.getHorizontalMargin() != savedConfigState.hMargin
         || config.getVerticalMargin() != savedConfigState.vMargin
         || config.getTextSize() != savedConfigState.textSize
         || config.isBookCssStylesEnabled() != savedConfigState.allowColorsFromCSS) {
-
       textLoader.invalidateCachedText();
-      restartActivity(isFontChanged, isBackgroundChanged);
+      restartActivity(hasFontChanged, hasBackgroundChanged);
     }
   }
 
@@ -756,13 +749,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final ReaderConfig config = di.config;
 
     // Cache old settings to check if we'll need a restart later
-    savedConfigState.stripWhiteSpace = config.isStripWhiteSpaceEnabled();
     savedConfigState.hMargin = config.getHorizontalMargin();
     savedConfigState.vMargin = config.getVerticalMargin();
     savedConfigState.textSize = config.getTextSize();
     savedConfigState.fontName = config.getDefaultFontFamily().getName();
-    savedConfigState.serifFontName = config.getSerifFontFamily().getName();
-    savedConfigState.sansSerifFontName = config.getSansSerifFontFamily().getName();
     savedConfigState.allowColorsFromCSS = config.isBookCssStylesEnabled();
     savedConfigState.theme = config.getTheme();
   }
@@ -1214,9 +1204,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       final boolean isNetworkReachable = di.reachability.isReachable();
       if (isLocalDictionary || isNetworkReachable) {
         if (!TextUtils.isEmpty(text)) {
-          text = text.trim();
+          text = text.trim().replaceAll("\\.\\?!\\[];\\(\\)'\"", "");
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
+            ReaderAnalytics.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
             definitionView.showLoading();
             showDefinitionView();
             final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
@@ -1225,6 +1216,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                 if (isAdded()) {
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
+                  if (definitionView.isDefinitionInvisible()) {
+                    ReaderAnalytics.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
+                  }
                 }
               }
 

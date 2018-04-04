@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.worldreader.core.R;
 import com.worldreader.reader.wr.helper.FontManager;
+import com.worldreader.reader.wr.models.ReaderBookMetadata;
 import net.nightwhistler.htmlspanner.FontFamily;
 
 import java.util.*;
@@ -18,8 +21,7 @@ public class ReaderConfig {
   public static final String TAG = ReaderConfig.class.getSimpleName();
 
   private static final String READER_PREFERENCES = "reader.preferences";
-
-  private static Map<String, Object> CURRENT_CONFIG;
+  private static final String KEY_READER_SETTINGS = "KEY.READER.SETTINGS";
 
   private static final String KEY_PERSISTENT_SETTINGS_ENABLED = "KEY.PERSISTENT.SETTINGS.ENABLED";
   private static final String KEY_STRIP_WHITESPACE = "KEY.STRIP.WHITESPACE";
@@ -34,6 +36,8 @@ public class ReaderConfig {
   private static final String KEY_CURRENT_THEME = "KEY.CURRENT.THEME";
   private static final String KEY_SERIF_FONT = "KEY.SERIF.FONT";
   private static final String KEY_SANS_SERIF_FONT = "KEY.SANS.SERIF.FONT";
+
+  private static Map<String, Object> CURRENT_CONFIG;
 
   private final SharedPreferences sp;
   private final Gson gson;
@@ -68,9 +72,7 @@ public class ReaderConfig {
     gson = g;
     fm = FontManager.getInstance(c);
     defaultConfig = defaults;
-    if (CURRENT_CONFIG == null) {
-      CURRENT_CONFIG = new HashMap<>(defaultConfig);
-    }
+    loadCurrentConfig(defaults);
   }
 
   public ReadingDirection getReadingDirection() {
@@ -116,23 +118,20 @@ public class ReaderConfig {
   }
 
   public FontFamily getDefaultFontFamily() {
-    final ReaderFontFamilies.FontFamily currentFontFamily = (ReaderFontFamilies.FontFamily) CURRENT_CONFIG.get(KEY_SERIF_FONT);
+    final String rawFontFamily = (String) CURRENT_CONFIG.get(KEY_SERIF_FONT);
+    final ReaderFontFamilies.FontFamily currentFontFamily = ReaderFontFamilies.fromName(rawFontFamily);
     return fm.getFontFamily(currentFontFamily);
   }
 
   public void setDefaultFontFamily(ReaderFontFamilies.FontFamily f) {
-    CURRENT_CONFIG.put(KEY_SERIF_FONT, f);
+    CURRENT_CONFIG.put(KEY_SERIF_FONT, f.getName());
     save();
   }
 
-  public FontFamily getSerifFontFamily() {
-    final ReaderFontFamilies.FontFamily serifFontFamily = (ReaderFontFamilies.FontFamily) CURRENT_CONFIG.get(KEY_SERIF_FONT);
-    return fm.getFontFamily(serifFontFamily);
-  }
-
   public FontFamily getSansSerifFontFamily() {
-    final ReaderFontFamilies.FontFamily serifFontFamily = (ReaderFontFamilies.FontFamily) CURRENT_CONFIG.get(KEY_SANS_SERIF_FONT);
-    return fm.getFontFamily(serifFontFamily);
+    final String rawFontFamily = (String) CURRENT_CONFIG.get(KEY_SANS_SERIF_FONT);
+    final ReaderFontFamilies.FontFamily sansSerifFontFamily = ReaderFontFamilies.fromName(rawFontFamily);
+    return fm.getFontFamily(sansSerifFontFamily);
   }
 
   public int getBrightness() {
@@ -162,8 +161,23 @@ public class ReaderConfig {
     if (isPersistentSettingsEnabled()) {
       final SharedPreferences.Editor editor = sp.edit();
       final String json = gson.toJson(CURRENT_CONFIG);
-      editor.putString("settings", json);
+      editor.putString(KEY_READER_SETTINGS, json);
       editor.apply();
+    }
+  }
+
+  private void loadCurrentConfig(Map<String, Object> defaults) {
+    final boolean enabled = (boolean) defaults.get(KEY_PERSISTENT_SETTINGS_ENABLED);
+    if (enabled) {
+      final String json = sp.getString(KEY_READER_SETTINGS, "");
+      if (!TextUtils.isEmpty(json) && CURRENT_CONFIG != null) {
+        CURRENT_CONFIG = gson.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+        return;
+      }
+    }
+
+    if (CURRENT_CONFIG == null) {
+      CURRENT_CONFIG = new HashMap<>(defaultConfig);
     }
   }
 
@@ -173,7 +187,7 @@ public class ReaderConfig {
       return Collections.unmodifiableMap(new HashMap<String, Object>(createDefaultConfig(context)) {{
         put(KEY_PERSISTENT_SETTINGS_ENABLED, false);
         put(KEY_SHARE_ENABLED, false);
-        put(KEY_SERIF_FONT, ReaderFontFamilies.POPPINS);
+        put(KEY_SERIF_FONT, ReaderFontFamilies.POPPINS.getName());
       }});
     }
 
@@ -198,8 +212,8 @@ public class ReaderConfig {
         put(KEY_LINE_SPACING, 0);
         put(KEY_READING_DIRECTION, getReadingDirection());
         put(KEY_CURRENT_THEME, Theme.DAY);
-        put(KEY_SERIF_FONT, ReaderFontFamilies.LORA);
-        put(KEY_SANS_SERIF_FONT, ReaderFontFamilies.OPEN_SANS);
+        put(KEY_SERIF_FONT, ReaderFontFamilies.LORA.getName());
+        put(KEY_SANS_SERIF_FONT, ReaderFontFamilies.OPEN_SANS.getName());
       }};
     }
 

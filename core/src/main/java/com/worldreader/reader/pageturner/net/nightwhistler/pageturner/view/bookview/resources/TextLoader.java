@@ -317,7 +317,7 @@ public class TextLoader {
   }
 
   public void fromConfiguration(ReaderConfig config) {
-    final FontFamily serifFontFamily = config.getSerifFontFamily();
+    final FontFamily serifFontFamily = config.getDefaultFontFamily();
     final FontFamily sansSerifFontFamily = config.getSansSerifFontFamily();
     final boolean stripWhiteSpaceEnabled = config.isStripWhiteSpaceEnabled();
     final boolean cssEnabled = config.isBookCssStylesEnabled();
