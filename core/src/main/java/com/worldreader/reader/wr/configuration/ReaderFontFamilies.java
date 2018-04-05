@@ -21,11 +21,12 @@ public class ReaderFontFamilies {
       case "POPPINS":
         return POPPINS;
       case "OPEN_SANS":
+      case "OPENSANS":
         return OPEN_SANS;
       case "LORA":
         return LORA;
       default:
-        throw new IllegalArgumentException("Font name is not valid!");
+        throw new IllegalArgumentException("Font " + name + " is not valid!");
     }
   }
 

@@ -655,13 +655,16 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Check if we need a restart
 
-    final boolean hasFontChanged = config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
+    final boolean hasFontChanged = !config.getDefaultFontFamily().getName().equalsIgnoreCase(savedConfigState.fontName);
     final boolean hasBackgroundChanged = config.getTheme() != savedConfigState.theme;
+    final boolean hasDifferentHMargin = config.getHorizontalMargin() != savedConfigState.hMargin;
+    final boolean hasDifferentVMargin = config.getVerticalMargin() != savedConfigState.vMargin;
+    final boolean hasDifferentTextSize = config.getTextSize() != savedConfigState.textSize;
 
     if (hasFontChanged
-        || config.getHorizontalMargin() != savedConfigState.hMargin
-        || config.getVerticalMargin() != savedConfigState.vMargin
-        || config.getTextSize() != savedConfigState.textSize
+        || hasDifferentHMargin
+        || hasDifferentVMargin
+        || hasDifferentTextSize
         || config.isBookCssStylesEnabled() != savedConfigState.allowColorsFromCSS) {
       textLoader.invalidateCachedText();
       restartActivity(hasFontChanged, hasBackgroundChanged);
