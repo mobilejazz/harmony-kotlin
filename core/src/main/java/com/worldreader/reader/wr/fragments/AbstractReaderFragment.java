@@ -99,6 +99,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   public static final String CHANGE_FONT_KEY = "change_font_key";
   public static final String CHANGE_BACKGROUND_KEY = "change.background.key";
+  public static final String RESTART_KEY = "RESTART.KEY";
 
   private static final String TAG = AbstractReaderFragment.class.getSimpleName();
 
@@ -182,6 +183,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     // Gather status variables for the reader
     final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
     final boolean isBackgroundChanged = intent.getBooleanExtra(CHANGE_BACKGROUND_KEY, false);
+    intent.putExtra(RESTART_KEY, false);
 
     // Call gamification events
     onReaderFragmentEvent(BookReaderEvents.GAMIFICATION_INITIALIZE_EVENT);
@@ -465,8 +467,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void clearWasabiIfNecessary() {
-    if (di.wasabiManager != null) {
-      di.wasabiManager.clearTmp();
+    final FragmentActivity activity = getActivity();
+    if (di.wasabiManager != null && activity != null) {
+      final Intent intent = activity.getIntent();
+      final boolean isRestarting = intent.getBooleanExtra(RESTART_KEY, false);
+      if (!isRestarting) {
+        di.wasabiManager.clearTmp();
+      }
     }
   }
 
@@ -689,21 +696,22 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   }
 
   private void restartActivity(boolean isChangedFont, boolean isBackgroundModified) {
-    onStop();
-
     //Clear any cached text.
     textLoader.closeCurrentBook();
+
+    final AppCompatActivity activity = (AppCompatActivity) getActivity();
+    if (activity != null) {
+      final Intent intent = activity.getIntent();
+      intent.putExtra(RESTART_KEY, true);
+      activity.setIntent(intent);
+      activity.finish();
+    }
 
     final Intent intent = getActivity().getIntent();
     intent.putExtra(AbstractReaderActivity.BOOK_METADATA_KEY, bookMetadata);
     intent.putExtra(CHANGE_FONT_KEY, isChangedFont);
     intent.putExtra(CHANGE_BACKGROUND_KEY, isBackgroundModified);
     startActivity(intent);
-
-    final AppCompatActivity activity = (AppCompatActivity) getActivity();
-    if (activity != null) {
-      activity.finish();
-    }
   }
 
   private void dismissProgressDialog() {
