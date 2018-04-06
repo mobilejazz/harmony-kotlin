@@ -20,7 +20,7 @@ import static jedi.option.Options.some;
 
 public class OpenFileEpubBookTask extends QueueableAsyncTask<Void, Void, Pair<Book, PageTurnerSpine>> {
 
-  private static final String TAG = OpenStreamingBookTask.class.getSimpleName();
+  private static final String TAG = OpenFileEpubBookTask.class.getSimpleName();
 
   private final WeakReference<Context> context;
   private final BookMetadata bookMetadata;
