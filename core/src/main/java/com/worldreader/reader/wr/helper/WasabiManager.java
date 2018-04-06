@@ -106,15 +106,16 @@ import java.security.NoSuchAlgorithmException;
   }
 
   public void nuke() {
-    //try {
-    //  Runtime.shutdown();
+    try {
+      Runtime.shutdown();
       clearTmp();
       clearStore();
-    //} catch (ErrorCodeException e) {
-    //  logger.e(TAG, "Problem while trying to nuke Wasabi SDK! Error: " + Throwables.getStackTraceAsString(e));
-    //  logger.e(TAG, "Error code: " + e.getErrorCode());
-    //  logger.e(TAG, "Error explanation: " + e.getExplanation().getRecommendationText());
-    //}
+      initialize();
+    } catch (ErrorCodeException e) {
+      logger.e(TAG, "Problem while trying to nuke Wasabi SDK! Error: " + Throwables.getStackTraceAsString(e));
+      logger.e(TAG, "Error code: " + e.getErrorCode());
+      logger.e(TAG, "Error explanation: " + e.getExplanation().getRecommendationText());
+    }
   }
 
   private void clearStore() {
