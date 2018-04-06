@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.worldreader.core.R;
 import com.worldreader.reader.wr.helper.FontManager;
-import com.worldreader.reader.wr.models.ReaderBookMetadata;
 import net.nightwhistler.htmlspanner.FontFamily;
 
 import java.util.*;
@@ -54,6 +53,24 @@ public class ReaderConfig {
     public int bgColor;
     public int drawableRes;
 
+    public static Theme fromName(String name) {
+      if (TextUtils.isEmpty(name)) {
+        throw new IllegalArgumentException("Illegal name passed as argument! Current name: " + name);
+      }
+
+      final String n = name.toUpperCase();
+      switch (n) {
+        case "DAY":
+          return Theme.DAY;
+        case "CREAM":
+          return Theme.CREAM;
+        case "NIGHT":
+          return Theme.NIGHT;
+        default:
+          throw new IllegalArgumentException("Illegal name passed as argument! Current name: " + name);
+      }
+    }
+
     Theme(int linkColor, int textColor, int bgColor, @DrawableRes int drawableRes) {
       this.linkColor = linkColor;
       this.textColor = textColor;
@@ -88,7 +105,8 @@ public class ReaderConfig {
   }
 
   public int getTextSize() {
-    return ((int) CURRENT_CONFIG.get(KEY_TEXT_SIZE));
+    final Object o = CURRENT_CONFIG.get(KEY_TEXT_SIZE);
+    return toInt(o);
   }
 
   public void setTextSize(int size) {
@@ -97,19 +115,23 @@ public class ReaderConfig {
   }
 
   public int getHorizontalMargin() {
-    return ((int) CURRENT_CONFIG.get(KEY_MARGIN_H));
+    final Object o = CURRENT_CONFIG.get(KEY_MARGIN_H);
+    return toInt(o);
   }
 
   public int getVerticalMargin() {
-    return ((int) CURRENT_CONFIG.get(KEY_MARGIN_V));
+    final Object o = CURRENT_CONFIG.get(KEY_MARGIN_V);
+    return toInt(o);
   }
 
   public int getLineSpacing() {
-    return ((int) CURRENT_CONFIG.get(KEY_LINE_SPACING));
+    final Object o = CURRENT_CONFIG.get(KEY_LINE_SPACING);
+    return toInt(o);
   }
 
   public Theme getTheme() {
-    return (Theme) CURRENT_CONFIG.get(KEY_CURRENT_THEME);
+    final Object o = CURRENT_CONFIG.get(KEY_CURRENT_THEME);
+    return toTheme(o);
   }
 
   public void setTheme(Theme theme) {
@@ -135,7 +157,8 @@ public class ReaderConfig {
   }
 
   public int getBrightness() {
-    return ((int) CURRENT_CONFIG.get(KEY_BRIGHTNESS));
+    final Object o = CURRENT_CONFIG.get(KEY_BRIGHTNESS);
+    return toInt(o);
   }
 
   public void setBrightness(int level) {
@@ -171,7 +194,8 @@ public class ReaderConfig {
     if (enabled) {
       final String json = sp.getString(KEY_READER_SETTINGS, "");
       if (!TextUtils.isEmpty(json) && CURRENT_CONFIG != null) {
-        CURRENT_CONFIG = gson.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+        CURRENT_CONFIG = gson.fromJson(json, new TypeToken<Map<String, Object>>() {
+        }.getType());
         return;
       }
     }
@@ -179,6 +203,22 @@ public class ReaderConfig {
     if (CURRENT_CONFIG == null) {
       CURRENT_CONFIG = new HashMap<>(defaultConfig);
     }
+  }
+
+  private int toInt(Object raw) {
+    if (raw instanceof Double) {
+      return ((Double) raw).intValue();
+    }
+
+    return (Integer) raw;
+  }
+
+  private Theme toTheme(Object raw) {
+    if (raw instanceof String) {
+      return Theme.fromName((String) raw);
+    }
+
+    return ((Theme) raw);
   }
 
   public static class Factory {
