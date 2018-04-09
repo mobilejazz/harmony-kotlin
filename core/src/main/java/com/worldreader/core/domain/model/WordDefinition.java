@@ -33,4 +33,8 @@ public class WordDefinition {
     return meanings;
   }
 
+  public boolean hasNoMeanings() {
+    return meanings.isEmpty() || (meanings.get(WordType.UNKNOWN) != null);
+  }
+
 }
