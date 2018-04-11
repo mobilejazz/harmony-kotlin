@@ -5,12 +5,12 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import com.worldreader.core.R;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Book;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.Spine;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.SpineReference;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TOCReference;
-import com.worldreader.reader.epublib.nl.siegmann.epublib.domain.TableOfContents;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.domain.Spine;
+import nl.siegmann.epublib.domain.SpineReference;
+import nl.siegmann.epublib.domain.TOCReference;
+import nl.siegmann.epublib.domain.TableOfContents;
 import jedi.option.Option;
 
 import java.net.URI;
