@@ -8,13 +8,7 @@ import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.style.Style;
 import net.nightwhistler.htmlspanner.style.StyleValue;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 6/23/13
- * Time: 3:35 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class BorderSpan implements LineBackgroundSpan {
 
   private int start;

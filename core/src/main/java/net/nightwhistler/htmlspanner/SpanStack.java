@@ -18,20 +18,16 @@ import java.util.*;
  */
 public class SpanStack {
 
-  private Stack<SpanCallback> spanItemStack = new Stack<SpanCallback>();
-
-  private Set<CompiledRule> rules = new HashSet<CompiledRule>();
-
-  private Map<TagNode, List<CompiledRule>> lookupCache = new HashMap<TagNode, List<CompiledRule>>();
+  private Stack<SpanCallback> spanItemStack = new Stack<>();
+  private Set<CompiledRule> rules = new HashSet<>();
+  private Map<TagNode, List<CompiledRule>> lookupCache = new HashMap<>();
 
   public void registerCompiledRule(CompiledRule rule) {
     this.rules.add(rule);
   }
 
   public Style getStyle(TagNode node, Style baseStyle) {
-
     if (!lookupCache.containsKey(node)) {
-
       Log.v("SpanStack", "Looking for matching CSS rules for node: "
           + "<" + node.getName() + " id='" + option(node.getAttributeByName("id"))
           + "' class='" + option(node.getAttributeByName("class")) + "'>");

@@ -64,7 +64,6 @@ public class StyledTextHandler extends TagNodeHandler {
           }
         }
       }
-
     }
 
   }
@@ -105,8 +104,7 @@ public class StyledTextHandler extends TagNodeHandler {
     }
 
     if (builder.length() > start) {
-      stack.pushSpan(new StyleCallback(getSpanner().getFontResolver()
-          .getDefaultFont(), useStyle, start, builder.length()));
+      stack.pushSpan(new StyleCallback(getSpanner().getFontResolver().getDefaultFont(), useStyle, start, builder.length()));
     } else {
       Log.d("StyledTextHandler", "Refusing to push span of length " + (builder.length() - start));
     }

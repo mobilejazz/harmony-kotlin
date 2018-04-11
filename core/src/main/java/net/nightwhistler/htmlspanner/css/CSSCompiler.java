@@ -19,17 +19,15 @@ import java.util.*;
  * The compiler takes the raw parsed form (a Rule) of a CSS rule
  * and transforms it into an executable CompiledRule where all
  * the parsing of values has already been done.
- *
- *
  */
 public class CSSCompiler {
 
-  public static interface StyleUpdater {
+  public interface StyleUpdater {
 
     Style updateStyle(Style style, HtmlSpanner spanner);
   }
 
-  public static interface TagNodeMatcher {
+  public interface TagNodeMatcher {
 
     boolean matches(TagNode tagNode);
   }
@@ -66,7 +64,6 @@ public class CSSCompiler {
   }
 
   public static Integer parseCSSColor(String colorString) {
-
     //Check for CSS short-hand notation: #0fc -> #00ffcc
     if (colorString.length() == 4 && colorString.startsWith("#")) {
       StringBuilder builder = new StringBuilder("#");
@@ -98,7 +95,6 @@ public class CSSCompiler {
   }
 
   private static TagNodeMatcher createMatcherFromPart(String selectorPart) {
-
     //Match by class
     if (selectorPart.indexOf('.') != -1) {
       return new ClassMatcher(selectorPart);
@@ -117,7 +113,6 @@ public class CSSCompiler {
     private String className;
 
     private ClassMatcher(String selectorString) {
-
       String[] elements = selectorString.split("\\.");
 
       if (elements.length == 2) {
@@ -128,7 +123,6 @@ public class CSSCompiler {
 
     @Override
     public boolean matches(TagNode tagNode) {
-
       if (tagNode == null) {
         return false;
       }
@@ -536,7 +530,6 @@ public class CSSCompiler {
     return new StyleUpdater() {
       @Override
       public Style updateStyle(Style style, HtmlSpanner spanner) {
-
         if (finalBorderColor != null) {
           style = style.setBorderColor(finalBorderColor);
         }

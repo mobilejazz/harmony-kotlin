@@ -7,13 +7,6 @@ import net.nightwhistler.htmlspanner.handlers.StyledTextHandler;
 import net.nightwhistler.htmlspanner.style.Style;
 import org.htmlcleaner.TagNode;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 5/6/13
- * Time: 1:46 PM
- * To change this template use File | Settings | File Templates.
- */
 public class WrappingStyleHandler extends StyledTextHandler {
 
   private StyledTextHandler wrappedHandler;

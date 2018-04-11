@@ -16,16 +16,14 @@ import java.util.*;
  */
 public class CompiledRule {
 
-  private List<List<CSSCompiler.TagNodeMatcher>> matchers = new ArrayList<List<CSSCompiler.TagNodeMatcher>>();
-  private List<CSSCompiler.StyleUpdater> styleUpdaters = new ArrayList<CSSCompiler.StyleUpdater>();
+  private List<List<CSSCompiler.TagNodeMatcher>> matchers;
+  private List<CSSCompiler.StyleUpdater> styleUpdaters;
 
   private HtmlSpanner spanner;
 
   private String asText;
 
-  CompiledRule(HtmlSpanner spanner, List<List<CSSCompiler.TagNodeMatcher>> matchers,
-      List<CSSCompiler.StyleUpdater> styleUpdaters, String asText) {
-
+  CompiledRule(HtmlSpanner spanner, List<List<CSSCompiler.TagNodeMatcher>> matchers, List<CSSCompiler.StyleUpdater> styleUpdaters, String asText) {
     this.spanner = spanner;
     this.matchers = matchers;
     this.styleUpdaters = styleUpdaters;
@@ -37,7 +35,6 @@ public class CompiledRule {
   }
 
   public Style applyStyle(final Style style) {
-
     Style result = style;
 
     for (CSSCompiler.StyleUpdater updater : styleUpdaters) {
@@ -48,7 +45,6 @@ public class CompiledRule {
   }
 
   public boolean matches(TagNode tagNode) {
-
     for (List<CSSCompiler.TagNodeMatcher> matcherList : matchers) {
       if (matchesChain(matcherList, tagNode)) {
         return true;
@@ -59,7 +55,6 @@ public class CompiledRule {
   }
 
   private static boolean matchesChain(List<CSSCompiler.TagNodeMatcher> matchers, TagNode tagNode) {
-
     TagNode nodeToMatch = tagNode;
 
     for (CSSCompiler.TagNodeMatcher matcher : matchers) {
