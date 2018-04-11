@@ -1215,7 +1215,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       final boolean isNetworkReachable = di.reachability.isReachable();
       if (isLocalDictionary || isNetworkReachable) {
         if (!TextUtils.isEmpty(text)) {
-          text = text.trim().replaceAll("\\.\\?!\\[];\\(\\)'\"", "");
+          text = text.trim().replaceAll("[^a-zA-Z ]", "");
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
             ReaderAnalytics.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
@@ -1224,6 +1224,15 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
             final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
             AndroidFutures.addCallbackMainThread(getWordDefinitionFuture, new FutureCallback<WordDefinition>() {
               @Override public void onSuccess(@Nullable WordDefinition result) {
+                if (result.hasNoMeanings()) {
+                  String word = result.getWord();
+                  boolean couldBePlural = "s".equalsIgnoreCase(String.valueOf(word.charAt(word.length() - 1)));
+                  if (couldBePlural) {
+                    lookupDictionary(word.substring(0, word.length() - 1));
+                    return;
+                  }
+                }
+
                 if (isAdded()) {
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
