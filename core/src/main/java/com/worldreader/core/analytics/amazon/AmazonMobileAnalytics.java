@@ -10,8 +10,6 @@ public interface AmazonMobileAnalytics extends Analytics {
 
   void onPause();
 
-  void addGlobalProperties(final Map<String, String> attributes);
-
   void addGlobalProperties(final String eventType, final Map<String, String> attributes);
 
 }
