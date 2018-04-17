@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package net.nightwhistler.pageturner.view.bookview;
 
 import android.text.Layout;
 import android.text.Selection;

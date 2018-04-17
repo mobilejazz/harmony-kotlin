@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
+package net.nightwhistler.pageturner.view.bookview.resources;
 
 import nl.siegmann.epublib.domain.Resource;
 

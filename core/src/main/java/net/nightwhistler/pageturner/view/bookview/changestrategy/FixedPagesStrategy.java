@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.changestrategy;
+package net.nightwhistler.pageturner.view.bookview.changestrategy;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -11,10 +11,10 @@ import android.util.Log;
 import android.widget.TextView;
 import com.google.common.base.Throwables;
 import com.worldreader.reader.wr.models.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.BookView;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 import jedi.option.Option;
+import net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
+import net.nightwhistler.pageturner.view.bookview.BookView;
+import net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 
 import java.util.*;
 

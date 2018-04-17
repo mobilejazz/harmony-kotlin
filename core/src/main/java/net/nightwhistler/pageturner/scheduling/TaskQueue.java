@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling;
+package net.nightwhistler.pageturner.scheduling;
 
 import android.util.Log;
 import jedi.functional.Command;

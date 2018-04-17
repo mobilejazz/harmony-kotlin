@@ -1,11 +1,11 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.spanner;
+package net.nightwhistler.pageturner.view.bookview.spanner;
 
 import com.worldreader.reader.wr.configuration.ReaderConfig;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SystemFontResolver;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 

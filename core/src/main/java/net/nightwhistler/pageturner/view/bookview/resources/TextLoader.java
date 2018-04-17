@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
+package net.nightwhistler.pageturner.view.bookview.resources;
 
 import android.support.annotation.Nullable;
 import android.text.Spannable;
@@ -6,16 +6,7 @@ import android.text.SpannableString;
 import android.util.Log;
 import com.osbcp.cssparser.CSSParser;
 import com.osbcp.cssparser.Rule;
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Resource;
-import nl.siegmann.epublib.domain.StreamingResource;
-import nl.siegmann.epublib.epub.FileEpubReader;
-import nl.siegmann.epublib.epub.StreamingEpubReader;
-import nl.siegmann.epublib.util.IOUtil;
 import com.worldreader.reader.wr.configuration.ReaderConfig;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
 import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
@@ -23,6 +14,15 @@ import net.nightwhistler.htmlspanner.SystemFontResolver;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CSSCompiler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
+import net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.domain.StreamingResource;
+import nl.siegmann.epublib.epub.FileEpubReader;
+import nl.siegmann.epublib.epub.StreamingEpubReader;
+import nl.siegmann.epublib.util.IOUtil;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span;
+package net.nightwhistler.pageturner.view.bookview.span;
 
 import android.graphics.drawable.Drawable;
 import android.text.style.ImageSpan;

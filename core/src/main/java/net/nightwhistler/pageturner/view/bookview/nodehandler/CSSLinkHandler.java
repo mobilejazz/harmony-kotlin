@@ -1,12 +1,12 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
+package net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CompiledRule;
+import net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import org.htmlcleaner.TagNode;
 
 import java.util.*;

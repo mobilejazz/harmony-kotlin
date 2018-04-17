@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package net.nightwhistler.pageturner.view.bookview;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
