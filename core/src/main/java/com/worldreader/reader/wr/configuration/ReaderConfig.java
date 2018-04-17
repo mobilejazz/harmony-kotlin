@@ -81,7 +81,18 @@ public class ReaderConfig {
 
   public enum ReadingDirection {
     LEFT_TO_RIGHT,
-    RIGHT_TO_LEFT
+    RIGHT_TO_LEFT;
+
+    static ReadingDirection fromName(String name) {
+      switch (name) {
+        case "LEFT_TO_RIGHT":
+          return LEFT_TO_RIGHT;
+        case "RIGHT_TO_LEFT":
+          return RIGHT_TO_LEFT;
+        default:
+          throw new IllegalArgumentException("Invalid name passed for ReadingDirection");
+      }
+    }
   }
 
   public ReaderConfig(Context c, Gson g, Map<String, Object> defaults) {
@@ -93,7 +104,16 @@ public class ReaderConfig {
   }
 
   public ReadingDirection getReadingDirection() {
-    return (ReadingDirection) CURRENT_CONFIG.get(KEY_READING_DIRECTION);
+    final Object o = CURRENT_CONFIG.get(KEY_READING_DIRECTION);
+    return toReadingDirection(o);
+  }
+
+  private ReadingDirection toReadingDirection(Object o) {
+    if (o instanceof ReadingDirection) {
+      return ((ReadingDirection) o);
+    }
+
+    return ReadingDirection.fromName(((String) o));
   }
 
   public boolean isStripWhiteSpaceEnabled() {
