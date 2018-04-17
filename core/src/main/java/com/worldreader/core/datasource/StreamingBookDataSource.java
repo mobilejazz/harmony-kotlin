@@ -15,7 +15,7 @@ import com.worldreader.core.domain.model.BookImageQuality;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueuedTask;
+import net.nightwhistler.pageturner.scheduling.QueuedTask;
 import org.javatuples.Pair;
 
 import javax.inject.Inject;
