@@ -7,7 +7,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.BuildConfig;
-import com.worldreader.core.analytics.amazon.AmazonMobileAnalytics;
+import com.worldreader.core.analytics.amazon.PinpointAnalytics;
 import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.application.helper.reachability.Reachability;
@@ -25,7 +25,7 @@ public class ConfigAnalyticsAttributesInteractor {
 
   private final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService executorService;
-  private final AmazonMobileAnalytics amazonMobileAnalytics;
+  private final PinpointAnalytics pinpointAnalytics;
   private final CountryCodeProvider countryCodeProvider;
   protected Reachability reachability;
   private final Logger logger;
@@ -34,11 +34,11 @@ public class ConfigAnalyticsAttributesInteractor {
   @Inject public ConfigAnalyticsAttributesInteractor(
       final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor,
       final ListeningExecutorService executorService,
-      final AmazonMobileAnalytics amazonMobileAnalytics, final CountryCodeProvider countryCodeProvider, final Reachability reachability,
+      final PinpointAnalytics pinpointAnalytics, final CountryCodeProvider countryCodeProvider, final Reachability reachability,
       Logger logger, MainThread mainThread) {
     this.getAnalyticsInfoInteractor = getAnalyticsInfoInteractor;
     this.executorService = executorService;
-    this.amazonMobileAnalytics = amazonMobileAnalytics;
+    this.pinpointAnalytics = pinpointAnalytics;
     this.countryCodeProvider = countryCodeProvider;
     this.reachability = reachability;
     this.logger = logger;
@@ -46,10 +46,12 @@ public class ConfigAnalyticsAttributesInteractor {
   }
 
   public ListenableFuture<Void> execute(final Executor executor) {
+
     final SettableFuture<Void> settableFuture = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
+
         final ListenableFuture<AnalyticsInfoModel> getAnalyticsInfoFuture =
             getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
 
@@ -74,7 +76,7 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("deviceIPV6", countryCodeProvider.getIPAddress(false));
         attributes.put("localeLanguageCode", countryCodeProvider.getLanguageIso3Code());
 
-        amazonMobileAnalytics.addGlobalProperties(attributes);
+        pinpointAnalytics.addGlobalProperties(attributes);
 
         settableFuture.set(null);
       }

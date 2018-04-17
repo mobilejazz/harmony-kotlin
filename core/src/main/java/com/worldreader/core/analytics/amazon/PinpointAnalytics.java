@@ -1,17 +1,19 @@
 package com.worldreader.core.analytics.amazon;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.worldreader.core.analytics.Analytics;
 
 import java.util.*;
 
-public interface AmazonMobileAnalytics extends Analytics {
+public interface PinpointAnalytics extends Analytics {
 
   void onResume();
 
   void onPause();
 
-  void addGlobalProperties(final Map<String, String> attributes);
+  void addGlobalProperties(final HashMap<String, String> attributes);
 
   void addGlobalProperties(final String eventType, final Map<String, String> attributes);
+
 
 }
