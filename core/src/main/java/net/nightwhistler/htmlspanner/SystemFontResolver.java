@@ -3,13 +3,6 @@ package net.nightwhistler.htmlspanner;
 import android.graphics.Typeface;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 6/23/13
- * Time: 9:13 AM
- * To change this template use File | Settings | File Templates.
- */
 public class SystemFontResolver implements FontResolver {
 
   private FontFamily defaultFont;
@@ -59,9 +52,8 @@ public class SystemFontResolver implements FontResolver {
 
       String[] parts = name.split(",(\\s)*");
 
-      for (int i = 0; i < parts.length; i++) {
-
-        String fontName = parts[i];
+      for (String part : parts) {
+        String fontName = part;
 
         if (fontName.startsWith("\"") && fontName.endsWith("\"")) {
           fontName = fontName.substring(1, fontName.length() - 1);
@@ -81,8 +73,7 @@ public class SystemFontResolver implements FontResolver {
     return getDefaultFont();
   }
 
-  protected FontFamily resolveFont(String name) {
-
+  private FontFamily resolveFont(String name) {
     Log.d("SystemFontResolver", "Trying to resolve font " + name);
 
     if (name.equalsIgnoreCase("serif")) {

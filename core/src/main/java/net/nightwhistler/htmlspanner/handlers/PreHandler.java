@@ -3,7 +3,6 @@ package net.nightwhistler.htmlspanner.handlers;
 import android.text.SpannableStringBuilder;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.TextUtil;
 import net.nightwhistler.htmlspanner.spans.FontFamilySpan;
 import org.htmlcleaner.ContentNode;

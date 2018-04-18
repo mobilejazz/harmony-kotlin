@@ -9,21 +9,17 @@ import java.util.*;
 /**
  * A Compiled CSS Rule.
  *
- * A CompiledRule consists of a numbers of matchers which can match TagNodes,
+ * A CSSCompiledRule consists of a numbers of matchers which can match TagNodes,
  * and StyleUpdaters which can update a Style object if the rule matches.
- *
- *
  */
-public class CompiledRule {
+public class CSSCompiledRule {
 
-  private List<List<CSSCompiler.TagNodeMatcher>> matchers;
-  private List<CSSCompiler.StyleUpdater> styleUpdaters;
+  private final HtmlSpanner spanner;
+  private final List<List<CSSCompiler.TagNodeMatcher>> matchers;
+  private final List<CSSCompiler.StyleUpdater> styleUpdaters;
+  private final String asText;
 
-  private HtmlSpanner spanner;
-
-  private String asText;
-
-  CompiledRule(HtmlSpanner spanner, List<List<CSSCompiler.TagNodeMatcher>> matchers, List<CSSCompiler.StyleUpdater> styleUpdaters, String asText) {
+  CSSCompiledRule(HtmlSpanner spanner, List<List<CSSCompiler.TagNodeMatcher>> matchers, List<CSSCompiler.StyleUpdater> styleUpdaters, String asText) {
     this.spanner = spanner;
     this.matchers = matchers;
     this.styleUpdaters = styleUpdaters;
@@ -54,7 +50,7 @@ public class CompiledRule {
     return false;
   }
 
-  private static boolean matchesChain(List<CSSCompiler.TagNodeMatcher> matchers, TagNode tagNode) {
+  private boolean matchesChain(List<CSSCompiler.TagNodeMatcher> matchers, TagNode tagNode) {
     TagNode nodeToMatch = tagNode;
 
     for (CSSCompiler.TagNodeMatcher matcher : matchers) {

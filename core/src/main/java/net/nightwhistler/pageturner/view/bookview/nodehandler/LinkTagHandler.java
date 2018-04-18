@@ -7,7 +7,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
+import net.nightwhistler.htmlspanner.handlers.TagNodeHandler;
 import org.htmlcleaner.TagNode;
 
 import java.util.*;

@@ -72,10 +72,6 @@ public class FontFamilySpan extends TypefaceSpan {
         paint.setTypeface(tf.getItalicTypeface());
       }
     }
-
-    if (bold && italic && tf.getBoldItalicTypeface() != null) {
-      paint.setTypeface(tf.getBoldItalicTypeface());
-    }
   }
 
   public String toString() {

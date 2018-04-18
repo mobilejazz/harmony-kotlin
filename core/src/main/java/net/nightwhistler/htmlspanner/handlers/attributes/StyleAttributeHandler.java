@@ -23,7 +23,7 @@ public class StyleAttributeHandler extends WrappingStyleHandler {
 
     String styleAttr = node.getAttributeByName("style");
 
-    if (getSpanner().isAllowStyling() && styleAttr != null) {
+    if (getSpanner().isCSSStylingAllowed() && styleAttr != null) {
       super.handleTagNode(node, builder, start, end,
           parseStyleFromAttribute(useStyle, styleAttr),
           spanStack);

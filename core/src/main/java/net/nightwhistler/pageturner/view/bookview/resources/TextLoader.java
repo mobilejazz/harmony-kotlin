@@ -11,9 +11,9 @@ import jedi.option.Option;
 import net.nightwhistler.htmlspanner.FontFamily;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 import net.nightwhistler.htmlspanner.SystemFontResolver;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
+import net.nightwhistler.htmlspanner.css.CSSCompiledRule;
+import net.nightwhistler.htmlspanner.handlers.TagNodeHandler;
 import net.nightwhistler.htmlspanner.css.CSSCompiler;
-import net.nightwhistler.htmlspanner.css.CompiledRule;
 import net.nightwhistler.pageturner.view.bookview.nodehandler.AnchorHandler;
 import net.nightwhistler.pageturner.view.bookview.nodehandler.CSSLinkHandler;
 import net.nightwhistler.pageturner.view.bookview.nodehandler.LinkTagHandler;
@@ -37,23 +37,23 @@ public class TextLoader {
 
   private static final double CACHE_CLEAR_THRESHOLD = 0.75;
 
-  private Book currentBook;
-  private Map<String, Spannable> renderedText = new HashMap<>();
-  private Map<String, List<CompiledRule>> cssRules = new HashMap<>();
-
-  private Map<String, Map<String, Integer>> anchors = new HashMap<>();
-  private List<AnchorHandler> anchorHandlers = new ArrayList<>();
-
-  private final String rawContentPath;
   private final HtmlSpanner htmlSpanner;
   private final ResourcesLoader resourcesLoader;
+  private final Map<String, Map<String, Integer>> anchors;
+  private final Map<String, Spannable> renderedText;
+  private final Map<String, List<CSSCompiledRule>> cssRules;
+  private final List<AnchorHandler> anchorHandlers;
 
+  private Book currentBook;
   private LinkTagHandler.LinkTagCallBack linkTagCallBack;
 
-  public TextLoader(final String rawContentPath, final HtmlSpanner spanner, final ResourcesLoader resourcesLoader) {
-    this.rawContentPath = rawContentPath;
-    this.htmlSpanner = spanner;
-    this.resourcesLoader = resourcesLoader;
+  public TextLoader(final HtmlSpanner spanner, final ResourcesLoader rl) {
+    htmlSpanner = spanner;
+    resourcesLoader = rl;
+    anchors = new HashMap<>();
+    renderedText = new HashMap<>();
+    cssRules = new HashMap<>();
+    anchorHandlers = new ArrayList<>();
     registerCallbacksSpannerHandlers();
   }
 
@@ -68,12 +68,12 @@ public class TextLoader {
     ((CSSLinkHandler) getHtmlTagHandler("link")).setTextLoader(this);
   }
 
-  public List<CompiledRule> getCSSRules(String href) {
+  public List<CSSCompiledRule> getCSSRules(String href) {
     if (cssRules.containsKey(href)) {
       return Collections.unmodifiableList(cssRules.get(href));
     }
 
-    final List<CompiledRule> result = new ArrayList<>();
+    final List<CSSCompiledRule> result = new ArrayList<>();
 
     if (currentBook == null) {
       return result;
@@ -131,7 +131,7 @@ public class TextLoader {
   }
 
   public void invalidateCachedText() {
-    this.renderedText.clear();
+    renderedText.clear();
   }
 
   private void handleFontLoadingRule(Rule rule) {
@@ -164,11 +164,11 @@ public class TextLoader {
   }
 
   public void setLinkTagCallBack(LinkTagHandler.LinkTagCallBack callBack) {
-    this.linkTagCallBack = callBack;
+    linkTagCallBack = callBack;
   }
 
   public void registerTagNodeHandler(String tag, TagNodeHandler handler) {
-    this.htmlSpanner.registerHandler(tag, handler);
+    htmlSpanner.registerHandler(tag, handler);
   }
 
   private void setFontFamily(FontFamily family) {
@@ -187,7 +187,7 @@ public class TextLoader {
   }
 
   private void setStripWhiteSpace(boolean stripWhiteSpace) {
-    this.htmlSpanner.setStripExtraWhiteSpace(stripWhiteSpace);
+    htmlSpanner.setStripExtraWhiteSpace(stripWhiteSpace);
   }
 
   private void setUseColorsFromCSS(boolean useColours) {
@@ -269,7 +269,7 @@ public class TextLoader {
     closeCurrentBook();
     clearAnchors();
     final Book newBook = FileEpubReader.readFileEpub(file);
-    this.currentBook = newBook;
+    currentBook = newBook;
     return newBook;
   }
 
@@ -281,18 +281,18 @@ public class TextLoader {
     final InputStream tocResourcesIs = resourcesLoader.loadResource(new Resource(tocResourcePath));
 
     final Book newBook = StreamingEpubReader.readStreamingEpub(contentOpfPath, contentOpfIs, tocResourcesIs);
-    this.currentBook = newBook;
+    currentBook = newBook;
 
     return newBook;
   }
 
   private void clearAnchors() {
-    this.anchors = new HashMap<>();
+    anchors.clear();
   }
 
   public Option<Integer> getAnchor(String href, String anchor) {
-    if (this.anchors.containsKey(href)) {
-      Map<String, Integer> nestedMap = this.anchors.get(href);
+    if (anchors.containsKey(href)) {
+      final Map<String, Integer> nestedMap = anchors.get(href);
       return option(nestedMap.get(anchor));
     }
 

@@ -1,6 +1,8 @@
-package net.nightwhistler.htmlspanner;
+package net.nightwhistler.htmlspanner.handlers;
 
 import android.text.SpannableStringBuilder;
+import net.nightwhistler.htmlspanner.HtmlSpanner;
+import net.nightwhistler.htmlspanner.SpanStack;
 import org.htmlcleaner.TagNode;
 
 /**
@@ -80,8 +82,7 @@ public abstract class TagNodeHandler {
    *
    * @param spanStack stack to push new spans on
    */
-  public abstract void handleTagNode(TagNode node,
-      SpannableStringBuilder builder, int start, int end, SpanStack spanStack);
+  public abstract void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack);
 
   /**
    * Utility method to append newlines while making sure that there are never
@@ -92,13 +93,11 @@ public abstract class TagNodeHandler {
    * @return true if a newline was added
    */
   protected boolean appendNewLine(SpannableStringBuilder builder) {
-
     int len = builder.length();
 
-    if (this.spanner.isStripExtraWhiteSpace()) {
+    if (spanner.isStripExtraWhiteSpace()) {
       // Should never have more than 2 \n characters in a row.
-      if (len > 2 && builder.charAt(len - 1) == '\n'
-          && builder.charAt(len - 2) == '\n') {
+      if (len > 2 && builder.charAt(len - 1) == '\n' && builder.charAt(len - 2) == '\n') {
         return false;
       }
     }

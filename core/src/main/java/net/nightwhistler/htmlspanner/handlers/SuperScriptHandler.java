@@ -3,14 +3,10 @@ package net.nightwhistler.htmlspanner.handlers;
 import android.text.SpannableStringBuilder;
 import android.text.style.SuperscriptSpan;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
 import org.htmlcleaner.TagNode;
 
 /**
  * Applies superscript.
- *
- * @author Alex Kuiper
- *
  */
 public class SuperScriptHandler extends TagNodeHandler {
 

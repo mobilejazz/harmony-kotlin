@@ -2,18 +2,9 @@ package net.nightwhistler.htmlspanner.style;
 
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 6/29/13
- * Time: 9:48 AM
- * To change this template use File | Settings | File Templates.
- */
 public class StyleValue {
 
   private Integer intValue;
-
-  ;
   private Float floatValue;
   private Unit unit;
 
@@ -27,16 +18,14 @@ public class StyleValue {
     this.unit = unit;
   }
 
-  public static enum Unit {PX, EM, PERCENTAGE}
+  public enum Unit {PX, EM, PERCENTAGE}
 
   public static StyleValue parse(String value) {
-
     if (value.equals("0")) {
       return new StyleValue(0f, Unit.EM);
     }
 
     if (value.endsWith("px")) {
-
       try {
         final Integer intValue = Integer.parseInt(value.substring(0, value.length() - 2));
         return new StyleValue(intValue);

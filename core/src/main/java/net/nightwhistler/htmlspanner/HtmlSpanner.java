@@ -15,6 +15,7 @@ import net.nightwhistler.htmlspanner.handlers.StyleNodeHandler;
 import net.nightwhistler.htmlspanner.handlers.StyledTextHandler;
 import net.nightwhistler.htmlspanner.handlers.SubScriptHandler;
 import net.nightwhistler.htmlspanner.handlers.SuperScriptHandler;
+import net.nightwhistler.htmlspanner.handlers.TagNodeHandler;
 import net.nightwhistler.htmlspanner.handlers.attributes.AlignmentAttributeHandler;
 import net.nightwhistler.htmlspanner.handlers.attributes.BorderAttributeHandler;
 import net.nightwhistler.htmlspanner.handlers.attributes.StyleAttributeHandler;
@@ -125,17 +126,8 @@ public class HtmlSpanner {
    *
    * @return
    */
-  public boolean isAllowStyling() {
+  public boolean isCSSStylingAllowed() {
     return allowStyling;
-  }
-
-  /**
-   * Switch to specify is CSS style should be used.
-   *
-   * @param value
-   */
-  public void setAllowStyling(boolean value) {
-    this.allowStyling = value;
   }
 
   public boolean isUseColoursFromStyle() {
@@ -333,23 +325,19 @@ public class HtmlSpanner {
   }
 
   private void registerBuiltInHandlers() {
-
-    TagNodeHandler italicHandler = new StyledTextHandler(
-        new Style().setFontStyle(Style.FontStyle.ITALIC));
+    TagNodeHandler italicHandler = new StyledTextHandler(new Style().setFontStyle(Style.FontStyle.ITALIC));
 
     registerHandler("i", italicHandler);
     registerHandler("em", italicHandler);
     registerHandler("cite", italicHandler);
     registerHandler("dfn", italicHandler);
 
-    TagNodeHandler boldHandler = new StyledTextHandler(
-        new Style().setFontWeight(Style.FontWeight.BOLD));
+    TagNodeHandler boldHandler = new StyledTextHandler(new Style().setFontWeight(Style.FontWeight.BOLD));
 
     registerHandler("b", boldHandler);
     registerHandler("strong", boldHandler);
 
-    TagNodeHandler marginHandler = new StyledTextHandler(
-        new Style().setMarginLeft(new StyleValue(2.0f, StyleValue.Unit.EM)));
+    TagNodeHandler marginHandler = new StyledTextHandler(new Style().setMarginLeft(new StyleValue(2.0f, StyleValue.Unit.EM)));
 
     registerHandler("blockquote", marginHandler);
     registerHandler("ul", marginHandler);

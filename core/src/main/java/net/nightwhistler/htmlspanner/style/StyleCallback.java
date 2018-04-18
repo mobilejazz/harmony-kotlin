@@ -20,13 +20,6 @@ import net.nightwhistler.htmlspanner.spans.FontFamilySpan;
 
 import static java.lang.Math.min;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 5/6/13
- * Time: 3:18 PM
- * To change this template use File | Settings | File Templates.
- */
 public class StyleCallback implements SpanCallback {
 
   private int start;

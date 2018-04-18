@@ -39,7 +39,6 @@ public class HeaderHandler extends StyledTextHandler {
         .setDisplayStyle(Style.DisplayStyle.BLOCK)
         .setMarginBottom(margin)
         .setMarginTop(margin);
-
   }
 
 }

@@ -4,8 +4,8 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
-import net.nightwhistler.htmlspanner.css.CompiledRule;
+import net.nightwhistler.htmlspanner.css.CSSCompiledRule;
+import net.nightwhistler.htmlspanner.handlers.TagNodeHandler;
 import net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import org.htmlcleaner.TagNode;
 
@@ -36,8 +36,8 @@ public class CSSLinkHandler extends TagNodeHandler {
     }
 
     if (textLoader != null) {
-      final List<CompiledRule> rules = textLoader.getCSSRules(href);
-      for (CompiledRule rule : rules) {
+      final List<CSSCompiledRule> rules = textLoader.getCSSRules(href);
+      for (CSSCompiledRule rule : rules) {
         spanStack.registerCompiledRule(rule);
       }
     }

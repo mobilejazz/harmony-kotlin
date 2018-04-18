@@ -3,7 +3,6 @@ package net.nightwhistler.htmlspanner.handlers;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
 import net.nightwhistler.htmlspanner.spans.VerticalMarginSpan;
 import net.nightwhistler.htmlspanner.style.Style;
 import net.nightwhistler.htmlspanner.style.StyleCallback;
@@ -33,11 +32,9 @@ public class StyledTextHandler extends TagNodeHandler {
 
   @Override
   public void beforeChildren(TagNode node, SpannableStringBuilder builder, SpanStack spanStack) {
-
-    Style useStyle = spanStack.getStyle(node, getStyle());
+    final Style useStyle = spanStack.getStyle(node, getStyle());
 
     if (builder.length() > 0 && useStyle.getDisplayStyle() == Style.DisplayStyle.BLOCK) {
-
       if (builder.charAt(builder.length() - 1) != '\n') {
         builder.append('\n');
       }
@@ -46,8 +43,7 @@ public class StyledTextHandler extends TagNodeHandler {
     //If we have a top margin, we insert an extra newline. We'll manipulate the line height
     //of this newline to create the margin.
     if (useStyle.getMarginTop() != null) {
-
-      StyleValue styleValue = useStyle.getMarginTop();
+      final StyleValue styleValue = useStyle.getMarginTop();
 
       if (styleValue.getUnit() == StyleValue.Unit.PX) {
         if (styleValue.getIntValue() > 0) {
@@ -68,14 +64,12 @@ public class StyledTextHandler extends TagNodeHandler {
 
   }
 
-  public final void handleTagNode(TagNode node, SpannableStringBuilder builder,
-      int start, int end, SpanStack spanStack) {
-    Style styleFromCSS = spanStack.getStyle(node, getStyle());
+  @Override public final void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, SpanStack spanStack) {
+    final Style styleFromCSS = spanStack.getStyle(node, getStyle());
     handleTagNode(node, builder, start, end, styleFromCSS, spanStack);
   }
 
   public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, Style useStyle, SpanStack stack) {
-
     if (useStyle.getDisplayStyle() == Style.DisplayStyle.BLOCK) {
       appendNewLine(builder);
 
@@ -99,15 +93,15 @@ public class StyledTextHandler extends TagNodeHandler {
                 builder.length() - 1, builder.length());
           }
         }
-
       }
     }
 
     if (builder.length() > start) {
       stack.pushSpan(new StyleCallback(getSpanner().getFontResolver().getDefaultFont(), useStyle, start, builder.length()));
-    } else {
-      Log.d("StyledTextHandler", "Refusing to push span of length " + (builder.length() - start));
+      return;
     }
+
+    Log.d("StyledTextHandler", "Refusing to push span of length " + (builder.length() - start));
   }
 
 }

@@ -5,12 +5,8 @@ import android.graphics.Typeface;
 public class FontFamily {
 
   private Typeface defaultTypeface;
-
   private Typeface boldTypeface;
-
   private Typeface italicTypeface;
-
-  private Typeface boldItalicTypeface;
 
   private String name;
 
@@ -21,14 +17,6 @@ public class FontFamily {
 
   public String getName() {
     return name;
-  }
-
-  public Typeface getBoldItalicTypeface() {
-    return boldItalicTypeface;
-  }
-
-  public void setBoldItalicTypeface(Typeface boldItalicTypeface) {
-    this.boldItalicTypeface = boldItalicTypeface;
   }
 
   public Typeface getBoldTypeface() {

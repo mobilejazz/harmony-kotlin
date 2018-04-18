@@ -17,31 +17,24 @@ public class FontHandler extends StyledTextHandler {
   }
 
   @Override
-  public void handleTagNode(TagNode node, SpannableStringBuilder builder,
-      int start, int end, Style style, SpanStack spanStack) {
+  public void handleTagNode(TagNode node, SpannableStringBuilder builder, int start, int end, Style style, SpanStack spanStack) {
+    if (getSpanner().isCSSStylingAllowed()) {
+      final String face = node.getAttributeByName("face");
+      final String size = node.getAttributeByName("size");
+      final String color = node.getAttributeByName("color");
 
-    if (getSpanner().isAllowStyling()) {
-
-      String face = node.getAttributeByName("face");
-      String size = node.getAttributeByName("size");
-      String color = node.getAttributeByName("color");
-
-      FontFamily family = getSpanner().getFont(face);
-
+      final FontFamily family = getSpanner().getFont(face);
       style = style.setFontFamily(family);
 
       if (size != null) {
-        CSSCompiler.StyleUpdater updater = CSSCompiler.getStyleUpdater("font-size", size);
-
+        final CSSCompiler.StyleUpdater updater = CSSCompiler.getStyleUpdater("font-size", size);
         if (updater != null) {
           style = updater.updateStyle(style, getSpanner());
         }
       }
 
       if (color != null && getSpanner().isUseColoursFromStyle()) {
-
-        CSSCompiler.StyleUpdater updater = CSSCompiler.getStyleUpdater("color", color);
-
+        final CSSCompiler.StyleUpdater updater = CSSCompiler.getStyleUpdater("color", color);
         if (updater != null) {
           style = updater.updateStyle(style, getSpanner());
         }

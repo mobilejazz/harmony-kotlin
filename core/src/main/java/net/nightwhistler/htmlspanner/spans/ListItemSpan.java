@@ -20,7 +20,7 @@ import net.nightwhistler.htmlspanner.HtmlSpanner;
 public class ListItemSpan implements LeadingMarginSpan {
 
   //Gap should be about 1em
-  public static final int STANDARD_GAP_WIDTH = HtmlSpanner.HORIZONTAL_EM_WIDTH;
+  private static final int STANDARD_GAP_WIDTH = HtmlSpanner.HORIZONTAL_EM_WIDTH;
 
   private static final int BULLET_RADIUS = 3;
   private static final int NUMBER_RADIUS = 5;
@@ -43,12 +43,10 @@ public class ListItemSpan implements LeadingMarginSpan {
     }
   }
 
-  public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top,
-      int baseline, int bottom, CharSequence text, int start, int end,
-      boolean first, Layout l) {
+  public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first,
+      Layout l) {
     if (((Spanned) text).getSpanStart(this) == start) {
-      Paint.Style style = p.getStyle();
-
+      final Paint.Style style = p.getStyle();
       p.setStyle(Paint.Style.FILL);
 
       if (mNumber != -1) {

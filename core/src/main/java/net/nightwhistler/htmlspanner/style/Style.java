@@ -5,19 +5,16 @@ import net.nightwhistler.htmlspanner.FontFamily;
 /**
  * CSS Style object.
  *
- * A Style is immutable: using a setter creates a new Style object with the
- * changed setings.
+ * A Style is immutable: using a setter creates a new Style object with the changed setings.
  */
 public class Style {
 
   private final FontFamily fontFamily;
 
-  ;
   private final TextAlignment textAlignment;
   private final StyleValue fontSize;
   private final FontWeight fontWeight;
 
-  ;
   private final FontStyle fontStyle;
   private final Integer color;
   private final Integer backgroundColor;
@@ -76,13 +73,16 @@ public class Style {
     this.borderWidth = borderWidth;
     this.borderStyle = borderStyle;
   }
-  public static enum TextAlignment {LEFT, CENTER, RIGHT}
-  public static enum FontWeight {NORMAL, BOLD}
-  public static enum FontStyle {NORMAL, ITALIC}
 
-  public static enum DisplayStyle {BLOCK, INLINE}
+  public enum TextAlignment {LEFT, CENTER, RIGHT}
 
-  public static enum BorderStyle {SOLID, DASHED, DOTTED, DOUBLE}
+  public enum FontWeight {NORMAL, BOLD}
+
+  public enum FontStyle {NORMAL, ITALIC}
+
+  public enum DisplayStyle {BLOCK, INLINE}
+
+  public enum BorderStyle {SOLID, DASHED, DOTTED, DOUBLE}
 
   public Integer getBackgroundColor() {
     return this.backgroundColor;
@@ -261,8 +261,7 @@ public class Style {
   }
 
   public String toString() {
-
-    StringBuilder result = new StringBuilder("{\n");
+    final StringBuilder result = new StringBuilder("{\n");
 
     if (fontFamily != null) {
       result.append("  font-family: " + fontFamily.getName() + "\n");

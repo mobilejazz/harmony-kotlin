@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import net.nightwhistler.htmlspanner.SpanStack;
-import net.nightwhistler.htmlspanner.TagNodeHandler;
+import net.nightwhistler.htmlspanner.handlers.TagNodeHandler;
 import net.nightwhistler.pageturner.view.bookview.DICompanion;
 import net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
 import net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
