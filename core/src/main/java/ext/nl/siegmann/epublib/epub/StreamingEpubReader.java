@@ -6,10 +6,7 @@ import android.text.TextUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
-import com.worldreader.core.datasource.model.ContentOpfLocationEntity;
 import com.worldreader.core.datasource.model.NCXEntity;
-import net.sf.jazzlib.ZipEntry;
-import net.sf.jazzlib.ZipFile;
 import nl.siegmann.epublib.Constants;
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
@@ -20,11 +17,12 @@ import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Resources;
 import nl.siegmann.epublib.domain.Spine;
 import nl.siegmann.epublib.domain.SpineReference;
+import nl.siegmann.epublib.domain.StreamingResource;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.domain.TableOfContents;
 import nl.siegmann.epublib.service.MediatypeService;
 import nl.siegmann.epublib.util.StringUtil;
-import external.org.apache.commons.io.FilenameUtils;
+import ext.org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -34,30 +32,24 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-public class FileEpubReader {
+public class StreamingEpubReader {
 
   private static Strategy XML_STRATEGY = new TreeStrategy("clazz", "l"); // Ignore class attribute in SimpleXML (https://stackoverflow.com/a/16563238)
   private static Serializer XML_PARSER = new Persister(XML_STRATEGY);
 
-  public static Book readFileEpub(final File file) throws Exception {
-    final ZipFile zip = new ZipFile(file);
+  public static Book readStreamingEpub(final String contentPath, final InputStream contentOpfIs, final InputStream tocResourceIs) throws Exception {
+    final ContentOpfEntity contentOpf = XML_PARSER.read(ContentOpfEntity.class, contentOpfIs, false);
+    final NCXEntity NCXEntity = XML_PARSER.read(NCXEntity.class, tocResourceIs, false);
 
-    Resources resources = toEpubRawResources(file, zip);
-    final String packageResourceHref = findEpubPackageResourceHref(resources);
-
-    final Resource contentOpfResource = findContentOpfResource(packageResourceHref, resources);
-    final ContentOpfEntity contentOpf = XML_PARSER.read(ContentOpfEntity.class, contentOpfResource.getInputStream(), false);
-
-    resources = fixHrefs(packageResourceHref, resources);
-    resources = fixStreamingResourcesIds(contentOpf, resources);
-
+    final Resource opfResource = toOpfResource(contentOpfIs);
+    final Resources resources = toBookResources(contentPath, contentOpf);
     final Metadata metadata = toBookMetadata(contentOpf);
     final Spine spine = toSpine(contentOpf, resources);
-    final TableOfContents tableOfContents = toTableOfContents(contentOpf, spine, resources);
-    final Resource ncxResource = toNcxResource(contentOpf, spine, resources);
+    final TableOfContents tableOfContents = toTableOfContents(contentOpf, NCXEntity, resources);
+    final Resource ncxResource = toNcxResource(contentOpf, spine, resources, tocResourceIs);
 
     return Book.builder()
-        .withOpfResource(contentOpfResource)
+        .withOpfResource(opfResource)
         .withResources(resources)
         .withMetadata(metadata)
         .withSpine(spine)
@@ -67,101 +59,40 @@ public class FileEpubReader {
         .build();
   }
 
-  @NonNull private static Resources toEpubRawResources(File file, ZipFile zip) throws IOException {
+  private static Resource toOpfResource(InputStream contentOpfIs) throws IOException {
+    contentOpfIs.reset();
+    return new Resource(contentOpfIs, "OEBPS/content.opf");
+  }
+
+  private static Resources toBookResources(final String contentPath, final ContentOpfEntity contentOpf) {
+    final List<ContentOpfEntity.Item> entries = contentOpf.getManifest();
     final Resources resources = new Resources();
 
-    final Enumeration<? extends ZipEntry> entries = zip.entries();
-    while (entries.hasMoreElements()) {
-      final ZipEntry zipEntry = entries.nextElement();
+    for (ContentOpfEntity.Item entry : entries) {
+      final MediaType mediaType = MediatypeService.getMediaTypeByName(entry.mediaType);
+      final StreamingResource resource = new StreamingResource(entry.id, contentPath + entry.href, mediaType);
 
-      if (zipEntry.isDirectory()) {
-        continue;
-      }
-
-      final String filename = zipEntry.getName();
-      final Resource resource;
-
-      if (Constants.OEBPS_CONTENT_OPF.toLowerCase().contains(filename.toLowerCase()) || Constants.META_INF_CONTAINER.toLowerCase().contains(filename.toLowerCase())) {
-        resource = new Resource(zip.getInputStream(zipEntry), file.getPath(), (int) zipEntry.getSize(), filename);
-      } else {
-        resource = new Resource(file.getPath(), (int) zipEntry.getSize(), filename);
-      }
-
-      final MediaType mediaType = MediatypeService.determineMediaType(filename);
+      // Set proper encoding if source is HTML
       if (mediaType == MediatypeService.XHTML) {
         resource.setInputEncoding(Constants.CHARACTER_ENCODING);
       }
 
-      // TODO: 03/10/2017 Fix this to support extra characteristics
       // If the source supports width and height, let's add it
-      //if (MediatypeService.isBitmapImage(mediaType)) {
-      //  if (!TextUtils.isEmpty(resource.width) && !TextUtils.isEmpty(entry.height)) {
-      //    resource.setWidth(entry.width);
-      //    resource.setHeight(entry.height);
-      //  }
-      //}
+      if (MediatypeService.isBitmapImage(mediaType)) {
+        if (!TextUtils.isEmpty(entry.width) && !TextUtils.isEmpty(entry.height)) {
+          resource.setWidth(entry.width);
+          resource.setHeight(entry.height);
+        }
+      }
 
       resources.add(resource);
     }
 
-    resources.remove("mimetype");
-
     return resources;
   }
 
-  private static String findEpubPackageResourceHref(final Resources resources) throws Exception {
-    final Resource containerResource = resources.remove(Constants.META_INF_CONTAINER);
-    if (containerResource == null) {
-      return Constants.OEBPS_CONTENT_OPF;
-    }
-
-    final ContentOpfLocationEntity contentOpfLocation = XML_PARSER.read(ContentOpfLocationEntity.class, containerResource.getInputStream(), false);
-
-    return TextUtils.isEmpty(contentOpfLocation.getRawContentOpfFullPath()) ? Constants.OEBPS_CONTENT_OPF : contentOpfLocation.getRawContentOpfFullPath();
-  }
-
-  private static Resource findContentOpfResource(String resourceHref, Resources resources) throws IOException {
-    final Resource opfResource = resources.getByIdOrHref(resourceHref);
-    if (opfResource != null) {
-      return opfResource;
-    } else {
-      throw new IOException("Package resource not found");
-    }
-  }
-
-  private static Resources fixHrefs(String packageHref, Resources resources) {
-    final int lastSlashPos = packageHref.lastIndexOf('/');
-
-    if (lastSlashPos < 0) {
-      return resources;
-    }
-
-    final Resources result = new Resources();
-    for (Resource resource : resources.getAll()) {
-      if (!TextUtils.isEmpty(resource.getHref()) || resource.getHref().length() > lastSlashPos) {
-        resource.setHref(resource.getHref().substring(lastSlashPos + 1));
-      }
-      result.add(resource);
-    }
-
-    return result;
-  }
-
-  private static Resources fixStreamingResourcesIds(final ContentOpfEntity contentOpf, final Resources resources) {
-    final List<ContentOpfEntity.Item> manifestEntries = contentOpf.getManifest();
-
-    for (ContentOpfEntity.Item entry : manifestEntries) {
-      final Resource resource = resources.getByHref(entry.href);
-      if (resource != null) {
-        resource.setId(entry.id);
-      }
-    }
-
-    return resources;
-  }
-
-  private static Metadata toBookMetadata(ContentOpfEntity opf) {
-    final ContentOpfEntity.Metadata metadata = opf.getMetadata();
+  private static Metadata toBookMetadata(final ContentOpfEntity contentOpf) {
+    final ContentOpfEntity.Metadata metadata = contentOpf.getMetadata();
 
     final Metadata toReturn = new Metadata();
     toReturn.setTitles(Collections.singletonList(metadata.getTitle()));
@@ -172,7 +103,7 @@ public class FileEpubReader {
     return toReturn;
   }
 
-  private static Spine toSpine(ContentOpfEntity contentOpf, Resources resources) {
+  private static Spine toSpine(final ContentOpfEntity contentOpf, final Resources resources) {
     final List<SpineReference> spineReferences = new ArrayList<>();
     final List<ContentOpfEntity.itemref> itemrefs = contentOpf.getSpineItemRefs();
 
@@ -188,21 +119,21 @@ public class FileEpubReader {
     return new Spine(spineReferences);
   }
 
-  private static TableOfContents toTableOfContents(ContentOpfEntity contentOpf, final Spine spine, final Resources resources) throws Exception {
-    final String tocId = contentOpf.spine.toc;
-    final Resource tocResource = resources.getById(tocId);
-
-    if (tocResource == null) {
-      throw new IOException("TOC resource not found!");
+  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Spine spine, final Resources resources, final InputStream ncx)
+      throws IOException {
+    if (spine == null) {
+      return null; // Epub doesn't contain what we are looking for
     }
 
-    // Load toc resource
-    tocResource.initialize();
+    ncx.reset();
 
-    // Transform to NCXEntity
-    final NCXEntity ncxEntity = XML_PARSER.read(NCXEntity.class, tocResource.getInputStream(), false);
+    final String tocId = contentOpfEntity.spine.toc;
+    final Resource tocResource = resources.getById(tocId);
+    tocResource.setData(ncx);
 
-    return toTableOfContents(contentOpf, ncxEntity, resources);
+    spine.setTocResource(tocResource);
+
+    return tocResource;
   }
 
   private static TableOfContents toTableOfContents(final ContentOpfEntity contentOpfEntity, final NCXEntity ncxEntity, final Resources resources)
@@ -281,20 +212,6 @@ public class FileEpubReader {
     }
 
     return result;
-  }
-
-  @Nullable private static Resource toNcxResource(final ContentOpfEntity contentOpfEntity, final Spine spine, final Resources resources) throws IOException {
-    if (spine == null) {
-      return null; // Epub doesn't contain what we are looking for
-    }
-
-    // Content already loaded previously
-    final String tocId = contentOpfEntity.spine.toc;
-    final Resource tocResource = resources.getById(tocId);
-
-    spine.setTocResource(tocResource);
-
-    return tocResource;
   }
 
 }
