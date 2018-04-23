@@ -1,15 +1,15 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.nodehandler;
+package net.nightwhistler.pageturner.view.bookview.nodehandler;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
-import nl.siegmann.epublib.domain.Resources;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.DICompanion;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import net.nightwhistler.htmlspanner.SpanStack;
 import net.nightwhistler.htmlspanner.TagNodeHandler;
+import net.nightwhistler.pageturner.view.bookview.DICompanion;
+import net.nightwhistler.pageturner.view.bookview.resources.ImageResourceCallback;
+import net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import nl.siegmann.epublib.domain.Resources;
 import org.htmlcleaner.TagNode;
 
 public abstract class ImageTagHandler extends TagNodeHandler implements ImageResourceCallback.Listener {

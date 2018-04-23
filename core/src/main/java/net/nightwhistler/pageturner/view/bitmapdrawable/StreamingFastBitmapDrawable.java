@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable;
+package net.nightwhistler.pageturner.view.bitmapdrawable;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,8 +20,8 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.StreamingResource;
 import com.worldreader.core.domain.repository.StreamingBookRepository;
+import net.nightwhistler.pageturner.scheduling.QueuedTask;
 import nl.siegmann.epublib.domain.Resource;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueuedTask;
 
 import javax.annotation.Nullable;
 import java.io.*;

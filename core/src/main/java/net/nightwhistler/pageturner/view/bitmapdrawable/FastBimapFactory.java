@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable;
+package net.nightwhistler.pageturner.view.bitmapdrawable;
 
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.StreamingBookDataSource;

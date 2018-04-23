@@ -1,11 +1,11 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks;
+package net.nightwhistler.pageturner.view.bookview.tasks;
 
-import nl.siegmann.epublib.domain.Resource;
 import com.worldreader.reader.wr.models.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
 import jedi.functional.Command;
 import jedi.option.Option;
+import net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
+import net.nightwhistler.pageturner.view.bookview.resources.ResourcesLoader;
+import nl.siegmann.epublib.domain.Resource;
 
 import static jedi.option.Options.none;
 

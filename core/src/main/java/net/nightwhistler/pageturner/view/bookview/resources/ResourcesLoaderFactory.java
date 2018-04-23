@@ -1,7 +1,7 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
+package net.nightwhistler.pageturner.view.bookview.resources;
 
 import com.worldreader.core.domain.model.BookMetadata;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.DICompanion;
+import net.nightwhistler.pageturner.view.bookview.DICompanion;
 
 public class ResourcesLoaderFactory {
 

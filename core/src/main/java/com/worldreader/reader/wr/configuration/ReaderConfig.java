@@ -31,7 +31,6 @@ public class ReaderConfig {
   private static final String KEY_MARGIN_V = "KEY.MARGIN.V";
   private static final String KEY_LINE_SPACING = "KEY.LINE.SPACING";
   private static final String KEY_BRIGHTNESS = "KEY.PROFILE.BRIGHTNESS";
-  private static final String KEY_READING_DIRECTION = "KEY.READING.DIRECTION";
   private static final String KEY_CURRENT_THEME = "KEY.CURRENT.THEME";
   private static final String KEY_SERIF_FONT = "KEY.SERIF.FONT";
   private static final String KEY_SANS_SERIF_FONT = "KEY.SANS.SERIF.FONT";
@@ -93,7 +92,11 @@ public class ReaderConfig {
   }
 
   public ReadingDirection getReadingDirection() {
-    return (ReadingDirection) CURRENT_CONFIG.get(KEY_READING_DIRECTION);
+    return isLayoutDirectionRTL() ? ReadingDirection.RIGHT_TO_LEFT : ReadingDirection.LEFT_TO_RIGHT;
+  }
+
+  private static boolean isLayoutDirectionRTL() {
+    return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 
   public boolean isStripWhiteSpaceEnabled() {
@@ -250,19 +253,10 @@ public class ReaderConfig {
         put(KEY_MARGIN_V, 60); // px
         put(KEY_BRIGHTNESS, 50); // 50%
         put(KEY_LINE_SPACING, 0);
-        put(KEY_READING_DIRECTION, getReadingDirection());
         put(KEY_CURRENT_THEME, Theme.DAY);
         put(KEY_SERIF_FONT, ReaderFontFamilies.LORA.getName());
         put(KEY_SANS_SERIF_FONT, ReaderFontFamilies.OPEN_SANS.getName());
       }};
-    }
-
-    private static ReadingDirection getReadingDirection() {
-      return isLayoutDirectionRTL() ? ReadingDirection.RIGHT_TO_LEFT : ReadingDirection.LEFT_TO_RIGHT;
-    }
-
-    private static boolean isLayoutDirectionRTL() {
-      return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
     }
   }
 }

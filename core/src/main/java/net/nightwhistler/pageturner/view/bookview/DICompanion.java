@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package net.nightwhistler.pageturner.view.bookview;
 
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.analytics.Analytics;

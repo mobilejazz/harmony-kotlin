@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package net.nightwhistler.pageturner.view.bookview;
 
 import android.text.Layout;
 import android.text.Selection;
@@ -7,7 +7,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
+import net.nightwhistler.pageturner.view.bookview.span.ClickableImageSpan;
 
 public class BookViewMovementMethod extends LinkMovementMethod {
 

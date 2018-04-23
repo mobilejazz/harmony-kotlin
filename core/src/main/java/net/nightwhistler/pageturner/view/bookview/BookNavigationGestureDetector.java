@@ -1,12 +1,8 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview;
+package net.nightwhistler.pageturner.view.bookview;
 
-import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-
-import java.util.*;
 
 public class BookNavigationGestureDetector extends GestureDetector.SimpleOnGestureListener {
 

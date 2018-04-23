@@ -72,7 +72,7 @@ public class PinpointAnalyticsManager implements PinpointAnalytics {
     getPinpointManager().getSessionClient().pauseSession();
   }
 
-  @Override public void addGlobalProperties(final HashMap<String, String> attributes) {
+  @Override public void addGlobalProperties(final Map<String, String> attributes) {
     addGlobalProperties(null, attributes);
   }
 

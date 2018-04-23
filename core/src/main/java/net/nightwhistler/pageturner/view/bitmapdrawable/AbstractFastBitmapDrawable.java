@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable;
+package net.nightwhistler.pageturner.view.bitmapdrawable;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

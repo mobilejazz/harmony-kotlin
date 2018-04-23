@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.io;
+package external.org.apache.commons.io;
 
 import java.io.*;
 
@@ -58,7 +58,7 @@ public final class IOCase implements Serializable {
    * If you derialize this constant of Windows, and deserialize on Unix, or vice
    * versa, then the value of the case-sensitivity flag will change.
    */
-  public static final IOCase SYSTEM = new IOCase("System", !FilenameUtils.isSystemWindows());
+  public static final IOCase SYSTEM = new IOCase("System", !external.org.apache.commons.io.FilenameUtils.isSystemWindows());
 
   /** Serialization version. */
   private static final long serialVersionUID = -6343169151696340687L;

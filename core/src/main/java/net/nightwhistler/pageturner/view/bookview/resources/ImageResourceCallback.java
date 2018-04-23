@@ -1,4 +1,4 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources;
+package net.nightwhistler.pageturner.view.bookview.resources;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -14,11 +14,11 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.StreamingBookDataSource;
 import com.worldreader.core.datasource.model.ContentOpfEntity;
 import com.worldreader.core.domain.model.BookMetadata;
+import net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
+import net.nightwhistler.pageturner.view.bitmapdrawable.FastBimapFactory;
+import net.nightwhistler.pageturner.view.bitmapdrawable.InlineFastBitmapDrawable;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Resources;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.AbstractFastBitmapDrawable;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.FastBimapFactory;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bitmapdrawable.InlineFastBitmapDrawable;
 import org.javatuples.Pair;
 
 import java.io.*;

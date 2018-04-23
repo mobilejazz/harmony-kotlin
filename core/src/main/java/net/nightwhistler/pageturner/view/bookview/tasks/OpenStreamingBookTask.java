@@ -1,14 +1,14 @@
-package com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.tasks;
+package net.nightwhistler.pageturner.view.bookview.tasks;
 
 import android.content.Context;
 import com.google.common.base.Throwables;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.domain.model.BookMetadata;
-import nl.siegmann.epublib.domain.Book;
 import com.worldreader.reader.wr.models.PageTurnerSpine;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
-import com.worldreader.reader.pageturner.net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
 import jedi.option.Option;
+import net.nightwhistler.pageturner.scheduling.QueueableAsyncTask;
+import net.nightwhistler.pageturner.view.bookview.resources.TextLoader;
+import nl.siegmann.epublib.domain.Book;
 import org.javatuples.Pair;
 
 import java.lang.ref.WeakReference;
