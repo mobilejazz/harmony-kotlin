@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.*;
-import java.util.concurrent.*;
 
 public class LocaleCountryCodeProvider implements CountryCodeProvider {
 
@@ -42,19 +41,33 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
   }
 
   @Override public String getCountryCode() {
-    String countryISO;
+
+    // 1. Geolocation
     final Optional<String> geolocationCountryIsoCode = getGeolocationCountryIsoCode();
     if (geolocationCountryIsoCode.isPresent()) {
-      countryISO = geolocationCountryIsoCode.get();
-    } else {
-      countryISO = getSimCountryIsoCode();
-
-      // Trick to make possible work with the emulator.
-      if (TextUtils.isEmpty(countryISO)) {
-        countryISO = "US";
-      }
+      return geolocationCountryIsoCode.get();
     }
-    return countryISO;
+
+    // 2. SIM
+    String countryISO = getSimCountryIsoCode();
+    if (!TextUtils.isEmpty(countryISO)) {
+      return countryISO;
+    }
+
+    // 3. Network
+    countryISO = getNetworkCountryIsoCode();
+    if (!TextUtils.isEmpty(countryISO)) {
+      return countryISO;
+    }
+
+    // 4. Locale
+     countryISO = getLocaleCountryIso2Code();
+    if (!TextUtils.isEmpty(countryISO)) {
+      return countryISO;
+    }
+
+    // Trick to make possible work with the emulator.
+    return "US";
   }
 
   @Override
@@ -71,7 +84,7 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
       return getGeolocationInfoInteractor.get().execute(MoreExecutors.newDirectExecutorService()).get()
           .transform(new Function<GeolocationInfo, String>() {
             @Nullable @Override public String apply(GeolocationInfo input) {
-              return input.getCountryCode();
+              return input.getCountryCode().toUpperCase();
             }
           });
     } catch (Throwable throwable) {
@@ -108,7 +121,13 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
     }
 
     TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-    return tm.getNetworkCountryIso();
+
+    // CDMA networks are unreliable
+    if (tm == null || tm.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
+      return "";
+    }
+
+    return tm.getNetworkCountryIso().toUpperCase();
   }
 
   @Override public String getSimCountryIsoCode() {
@@ -118,7 +137,7 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
     }
 
     TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-    return tm.getSimCountryIso();
+    return tm != null ? tm.getSimCountryIso().toUpperCase() : "";
   }
 
   @Override public String getCountryIso3Code() {
@@ -131,6 +150,15 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
 
   @Override public String getLanguageIso3Code() {
     return getLocale().getISO3Language();
+  }
+
+  private String getLocaleCountryIso2Code() {
+    String country = getLocale().getCountry();
+    // Locale country could not be in iso2 code
+    if (TextUtils.isDigitsOnly(country) || country.length() != 2) {
+      return "";
+    }
+    return country.toUpperCase();
   }
 
   private Locale getLocale() {
