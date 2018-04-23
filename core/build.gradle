@@ -112,7 +112,7 @@ dependencies {
   compile dependencies.viewpropertyobjectanimator
 
   compile dependencies.awsCore
-  compile dependencies.awsMobileAnalytics
+  compile dependencies.awsPinpoint
 
   compile dependencies.networkConnectionClass
 

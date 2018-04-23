@@ -25,7 +25,9 @@ public class ConfigAnalyticsAttributesInteractor {
 
   private final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService executorService;
+
   private final Analytics analytics;
+
   private final CountryCodeProvider countryCodeProvider;
   protected Reachability reachability;
   private final Logger logger;
@@ -46,10 +48,12 @@ public class ConfigAnalyticsAttributesInteractor {
   }
 
   public ListenableFuture<Void> execute(final Executor executor) {
+
     final SettableFuture<Void> settableFuture = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
+
         final ListenableFuture<AnalyticsInfoModel> getAnalyticsInfoFuture =
             getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
 
@@ -75,7 +79,6 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("localeLanguageCode", countryCodeProvider.getLanguageIso3Code());
 
         analytics.addGlobalProperties(attributes);
-
         settableFuture.set(null);
       }
 
