@@ -52,8 +52,8 @@ ext {
 
       scaleImageView            : "com.davemorrissey.labs:subsampling-scale-image-view:3.6.0",
 
-      awsCore                   : "com.amazonaws:aws-android-sdk-core:2.2.+",
-      awsMobileAnalytics        : "com.amazonaws:aws-android-sdk-mobileanalytics:2.2.+",
+      awsCore                   : "com.amazonaws:aws-android-sdk-core:2.6.+",
+      awsPinpoint               : "com.amazonaws:aws-android-sdk-pinpoint:2.6.+",
       networkConnectionClass    : "com.facebook.network.connectionclass:connectionclass:1.0.1",
 
       viewpropertyobjectanimator: "com.bartoszlipinski:viewpropertyobjectanimator:1.4.5",
