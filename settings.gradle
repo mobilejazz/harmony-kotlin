@@ -1,1 +1,1 @@
-include ':app', ':core'
+include ':sample', ':core', ':core-jvm'
