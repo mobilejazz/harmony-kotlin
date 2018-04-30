@@ -7,4 +7,9 @@ data class Item(val id: String?,
                 val name: String,
                 val price: BigDecimal,
                 val count: Int,
-                val imageUrl: String)
+                val imageUrl: String){
+
+  override fun toString(): String {
+    return "Item(name='$name')"
+  }
+}

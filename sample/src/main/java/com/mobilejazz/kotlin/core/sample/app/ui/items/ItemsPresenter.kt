@@ -2,6 +2,7 @@ package com.mobilejazz.kotlin.core.sample.app.ui.items
 
 import com.mobilejazz.kotlin.core.sample.app.di.ActivityScope
 import com.mobilejazz.kotlin.core.sample.domain.items.GetItemsInteractor
+import com.mobilejazz.kotlin.core.sample.domain.model.Item
 import com.mobilejazz.kotlin.core.threading.extensions.onCompleteUi
 import com.mobilejazz.kotlin.core.ui.base.presenter.BasePresenter
 import com.mobilejazz.kotlin.core.ui.base.view.MVPView
@@ -14,7 +15,7 @@ class ItemsPresenter @Inject constructor(
   override fun onCreate(bundle: Map<String, Any>) {
     getItemsInteractor().onCompleteUi(
         onSuccess = {
-          view?.onDisplayItems()
+          view?.onDisplayItems(it)
         },
         onFailure = {
           // TODO error handling
@@ -31,7 +32,7 @@ class ItemsPresenter @Inject constructor(
   }
 
   interface View : MVPView {
-    fun onDisplayItems()
+    fun onDisplayItems(items: List<Item>)
 
   }
 
