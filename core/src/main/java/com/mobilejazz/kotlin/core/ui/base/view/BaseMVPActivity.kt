@@ -6,9 +6,9 @@ import com.mobilejazz.kotlin.core.ui.base.presenter.Presenter
 import java.util.Collections.emptyMap
 import javax.inject.Inject
 
-abstract class BaseMVPActivity<T : Presenter<V>, in V : MVPView> : BaseActivity(), MVPView {
+abstract class BaseMVPActivity<P : Presenter<V>, in V : MVPView> : BaseActivity(), MVPView {
 
-  @Inject lateinit var presenter: T
+  @Inject lateinit var presenter: P
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
