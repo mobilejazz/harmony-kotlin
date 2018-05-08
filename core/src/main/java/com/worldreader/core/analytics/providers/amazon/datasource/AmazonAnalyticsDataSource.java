@@ -1,18 +1,16 @@
-package com.worldreader.core.analytics.amazon.datasource;
+package com.worldreader.core.analytics.providers.amazon.datasource;
 
 import android.content.SharedPreferences;
 import com.google.common.base.Optional;
-import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
+import com.worldreader.core.analytics.providers.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
 // TODO: 06/04/2017 @jose Move sharedpreference to a storage repository
-public class AmazonAnalyticsDataSource
-    implements Repository<AnalyticsInfoModel, RepositorySpecification> {
+public class AmazonAnalyticsDataSource implements Repository<AnalyticsInfoModel, RepositorySpecification> {
 
   private final SharedPreferences sharedPreferences;
 
@@ -34,8 +32,7 @@ public class AmazonAnalyticsDataSource
     }
   }
 
-  @Override public void getAll(final RepositorySpecification specification,
-      final Callback<Optional<List<AnalyticsInfoModel>>> callback) {
+  @Override public void getAll(final RepositorySpecification specification, final Callback<Optional<List<AnalyticsInfoModel>>> callback) {
     throw new UnsupportedOperationException("getAll() not supported");
   }
 
@@ -53,14 +50,12 @@ public class AmazonAnalyticsDataSource
     }
   }
 
-  @Override public void putAll(final List<AnalyticsInfoModel> analyticsInfoModels,
-      final RepositorySpecification specification,
+  @Override public void putAll(final List<AnalyticsInfoModel> analyticsInfoModels, final RepositorySpecification specification,
       final Callback<Optional<List<AnalyticsInfoModel>>> callback) {
     throw new UnsupportedOperationException("putAll() not supported");
   }
 
-  @Override public void remove(final AnalyticsInfoModel analyticsInfoModel,
-      final RepositorySpecification specification,
+  @Override public void remove(final AnalyticsInfoModel analyticsInfoModel, final RepositorySpecification specification,
       final Callback<Optional<AnalyticsInfoModel>> callback) {
     final SharedPreferences.Editor edit = sharedPreferences.edit();
     edit.remove(AnalyticsInfoModel.USER_ID_KEY);

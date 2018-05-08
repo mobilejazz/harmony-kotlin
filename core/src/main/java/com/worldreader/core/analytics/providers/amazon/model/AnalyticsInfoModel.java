@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.amazon.model;
+package com.worldreader.core.analytics.providers.amazon.model;
 
 import com.worldreader.core.datasource.repository.model.RepositoryModel;
 
@@ -24,20 +24,20 @@ public class AnalyticsInfoModel extends RepositoryModel {
     return clientId;
   }
 
-  public String getDeviceId() {
-    return deviceId;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
   public void setClientId(final String clientId) {
     this.clientId = clientId;
   }
 
+  public String getDeviceId() {
+    return deviceId;
+  }
+
   public void setDeviceId(final String deviceId) {
     this.deviceId = deviceId;
+  }
+
+  public String getUserId() {
+    return userId;
   }
 
   public void setUserId(final String userId) {

@@ -1,9 +1,7 @@
-package com.worldreader.core.analytics.amazon;
+package com.worldreader.core.analytics.providers.amazon;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.worldreader.core.analytics.Analytics;
-
-import java.util.*;
+import java.util.Map;
 
 public interface PinpointAnalytics extends Analytics {
 
@@ -12,6 +10,4 @@ public interface PinpointAnalytics extends Analytics {
   void onPause();
 
   void addGlobalProperties(final String eventType, final Map<String, String> attributes);
-
-
 }

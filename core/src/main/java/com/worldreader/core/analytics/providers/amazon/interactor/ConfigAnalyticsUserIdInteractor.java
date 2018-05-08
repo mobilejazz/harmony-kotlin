@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.amazon.interactor;
+package com.worldreader.core.analytics.providers.amazon.interactor;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -8,9 +8,8 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
-
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
 public class ConfigAnalyticsUserIdInteractor {
 
@@ -61,7 +60,6 @@ public class ConfigAnalyticsUserIdInteractor {
     });
 
     return settableFuture;
-
   }
 
   public ListenableFuture<Void> execute(final Executor executor) {

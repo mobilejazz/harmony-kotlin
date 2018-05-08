@@ -1,19 +1,18 @@
-package com.worldreader.core.analytics.amazon.interactor;
+package com.worldreader.core.analytics.providers.amazon.interactor;
 
 import android.text.TextUtils;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
+import com.worldreader.core.analytics.providers.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-
+import java.util.UUID;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class GetAnalyticsInfoInteractor {
 
@@ -22,7 +21,8 @@ public class GetAnalyticsInfoInteractor {
 
   @Inject public GetAnalyticsInfoInteractor(
       final Repository<AnalyticsInfoModel, RepositorySpecification> repository,
-      final ListeningExecutorService listeningExecutorService) {
+      final ListeningExecutorService listeningExecutorService
+  ) {
     this.repository = repository;
     this.listeningExecutorService = listeningExecutorService;
   }

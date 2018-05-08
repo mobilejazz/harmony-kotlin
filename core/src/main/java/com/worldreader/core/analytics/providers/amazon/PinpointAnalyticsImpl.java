@@ -1,11 +1,9 @@
-package com.worldreader.core.analytics.amazon;
+package com.worldreader.core.analytics.providers.amazon;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
@@ -13,59 +11,55 @@ import com.amazonaws.mobileconnectors.pinpoint.internal.core.util.Preconditions;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.pinpoint.model.ChannelType;
 import com.mobilejazz.logger.library.Logger;
-import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
-import com.worldreader.core.analytics.event.BasicAnalyticsEvent;
+import com.worldreader.core.analytics.event.SimpleAnalyticsEvent;
+import java.util.Map;
 import org.json.JSONObject;
 
-import java.util.*;
+public class PinpointAnalyticsImpl implements PinpointAnalytics {
 
-public class PinpointAnalyticsManager implements PinpointAnalytics {
+  private final static String TAG = "AmazonMobileAnalytics";
 
-  private PinpointManager pinpointAnalyticsManager;
+  private static PinpointManager INSTANCE;
 
   private final Context context;
   private final String cognitoId;
   private final String applicationId;
   private final Logger logger;
-  private final static String TAG = "AmazonMobileAnalitycs";
 
-
-  public PinpointAnalyticsManager(final Context context, final String cognitoId, final String applicationId, Logger logger) {
+  public PinpointAnalyticsImpl(final Context context, final String cognitoId, final String applicationId, Logger logger) {
     this.context = context;
     this.cognitoId = cognitoId;
     this.applicationId = applicationId;
     this.logger = logger;
-    logger.d(TAG, "context: " + this.context + ", cognitoId: " + this.cognitoId + ", applicationId: " + this.applicationId);
 
+    this.logger.d(TAG, "context: " + this.context + ", cognitoId: " + this.cognitoId + ", applicationId: " + this.applicationId);
   }
 
   @Override public <T extends AnalyticsEvent> void sendEvent(@NonNull final T event) {
     Preconditions.checkNotNull(event, "event != null");
-    Preconditions.checkArgument(event instanceof BasicAnalyticsEvent, "event != BasicAnalyticsEvent");
+    Preconditions.checkArgument(event instanceof SimpleAnalyticsEvent, "event != SimpleAnalyticsEvent");
 
-    final BasicAnalyticsEvent basicAnalyticsEvent = (BasicAnalyticsEvent) event;
+    final SimpleAnalyticsEvent simpleAnalyticsEvent = (SimpleAnalyticsEvent) event;
 
     final AnalyticsClient eventClient = getPinpointManager().getAnalyticsClient();
 
-    final com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent analyticsEvent = eventClient.createEvent(basicAnalyticsEvent.getEventName());
+    final com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent analyticsEvent = eventClient.createEvent(simpleAnalyticsEvent.getEventName());
 
-    final Map<String, String> attributes = basicAnalyticsEvent.getMap();
+    final Map<String, String> attributes = simpleAnalyticsEvent.getMap();
     for (final String key : attributes.keySet()) {
       analyticsEvent.addAttribute(key, attributes.get(key));
     }
 
-    JSONObject jLogger = new JSONObject(analyticsEvent.getAllAttributes());
-    logger.d(TAG, "eventName: " + basicAnalyticsEvent.getEventName() + ", attributes: " + jLogger.toString());
+    final JSONObject jLogger = new JSONObject(analyticsEvent.getAllAttributes());
+    logger.d(TAG, "eventName: " + simpleAnalyticsEvent.getEventName() + ", attributes: " + jLogger.toString());
 
     getPinpointManager().getAnalyticsClient().recordEvent(analyticsEvent);
   }
 
-
   @Override public void onResume() {
     getPinpointManager().getSessionClient().resumeSession();
     getPinpointManager().getAnalyticsClient().submitEvents();
-    //logger.d(TAG, "onResume() - sending event");
   }
 
   @Override public void onPause() {
@@ -76,9 +70,7 @@ public class PinpointAnalyticsManager implements PinpointAnalytics {
     addGlobalProperties(null, attributes);
   }
 
-
-  @Override
-  public void addGlobalProperties(final String eventType, final Map<String, String> attributes) {
+  @Override public void addGlobalProperties(final String eventType, final Map<String, String> attributes) {
     final AnalyticsClient eventClient = getPinpointManager().getAnalyticsClient();
     for (final String key : attributes.keySet()) {
       final String value = attributes.get(key);
@@ -92,12 +84,8 @@ public class PinpointAnalyticsManager implements PinpointAnalytics {
     }
   }
 
-
-
-  private PinpointManager getPinpointManager() {
-
-    if (pinpointAnalyticsManager == null) {
-
+  private synchronized PinpointManager getPinpointManager() {
+    if (INSTANCE == null) {
       CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
           context,    /* get the context for the application */
           cognitoId,    /* Identity Pool ID */
@@ -105,11 +93,9 @@ public class PinpointAnalyticsManager implements PinpointAnalytics {
       );
       PinpointConfiguration config = new PinpointConfiguration(context, applicationId, Regions.US_EAST_1, ChannelType.GCM, credentialsProvider);
 
-      this.pinpointAnalyticsManager = new PinpointManager(config);
-
+      INSTANCE = new PinpointManager(config);
     }
 
-    return pinpointAnalyticsManager;
+    return INSTANCE;
   }
-
 }

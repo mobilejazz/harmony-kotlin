@@ -54,71 +54,72 @@ android {
 dependencies {
   def dependencies = project.ext.dependencies
 
-  compile dependencies.appCompat
-  compile dependencies.supportAnnotation
-  compile dependencies.recyclerView
-  compile dependencies.cardView
-  compile dependencies.design
-  compile dependencies.constraintLayout
+  api dependencies.appCompat
+  api dependencies.supportAnnotation
+  api dependencies.recyclerView
+  api dependencies.cardView
+  api dependencies.design
+  api dependencies.constraintLayout
 
-  compile dependencies.picasso
-  compile dependencies.picassoOkhttp3
-  compile dependencies.simpleStorage
+  api dependencies.picasso
+  api dependencies.picassoOkhttp3
+  api dependencies.simpleStorage
 
-  compile dependencies.guava
-  compile dependencies.joda
-  compile dependencies.logger
-  compile dependencies.javaxAnnotation
-  compile dependencies.javaxinject
-  compile dependencies.vastra
-  compile dependencies.storio
-  compile dependencies.storioAnnotation
+  api dependencies.guava
+  api dependencies.joda
+  api dependencies.logger
+  api dependencies.javaxAnnotation
+  api dependencies.javaxinject
+  api dependencies.vastra
+  api dependencies.storio
+  api dependencies.storioAnnotation
   annotationProcessor dependencies.storioAnnotationProcessor
 
-  compile(dependencies.materialDialogsCore) { transitive = true }
-  compile(dependencies.materialDialogsCommons) { transitive = true }
+  api(dependencies.materialDialogsCore) { transitive = true }
+  api(dependencies.materialDialogsCommons) { transitive = true }
 
-  compile dependencies.dagger
+  api dependencies.dagger
   annotationProcessor dependencies.daggerCompiler
 
-  compile dependencies.okHttp
-  compile dependencies.okHttp3LoggingInterceptor
+  api dependencies.okHttp
+  api dependencies.okHttp3LoggingInterceptor
 
-  compile dependencies.retrofit2
-  compile dependencies.retrofit2Gson
-  compile(dependencies.retrofitSimpleXml) {
+  api dependencies.retrofit2
+  api dependencies.retrofit2Gson
+  api(dependencies.retrofitSimpleXml) {
     exclude module: 'stax-api'
     exclude module: 'stax'
     exclude module: 'xpp3'
   }
-  compile(dependencies.simplexml) {
+  api(dependencies.simplexml) {
     exclude module: 'stax'
     exclude module: 'stax-api'
     exclude module: 'xpp3'
   }
 
-  compile dependencies.sqlcipher
+  api dependencies.sqlcipher
 
-  compile 'org.javatuples:javatuples:1.2'
+  api 'org.javatuples:javatuples:1.2'
 
-  compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.16'
-  compile 'com.osbcp.cssparser:cssparser:1.5'
-  compile dependencies.jedi
+  api 'net.sourceforge.htmlcleaner:htmlcleaner:2.16'
+  api 'com.osbcp.cssparser:cssparser:1.5'
+  api dependencies.jedi
 
-  compile dependencies.securePreferences
-  compile dependencies.androidjob
+  api dependencies.securePreferences
+  api dependencies.androidjob
 
-  compile dependencies.scaleImageView
-  compile dependencies.viewpropertyobjectanimator
+  api dependencies.scaleImageView
+  api dependencies.viewpropertyobjectanimator
 
-  compile dependencies.awsCore
-  compile dependencies.awsPinpoint
+  api dependencies.awsCore
+  api dependencies.awsPinpoint
+  api dependencies.clevertap
 
-  compile dependencies.networkConnectionClass
+  api dependencies.networkConnectionClass
 
-  compile dependencies.javaPoet
-  compile dependencies.systemUiHelper
-  compile dependencies.expandableLayout
+  api dependencies.javaPoet
+  api dependencies.systemUiHelper
+  api dependencies.expandableLayout
 
-  compile files('libs/wasabi.jar')
+  api files('libs/wasabi.jar')
 }

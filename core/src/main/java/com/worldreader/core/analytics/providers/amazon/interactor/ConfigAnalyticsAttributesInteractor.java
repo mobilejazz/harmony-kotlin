@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.amazon.interactor;
+package com.worldreader.core.analytics.providers.amazon.interactor;
 
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -8,16 +8,15 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.BuildConfig;
 import com.worldreader.core.analytics.Analytics;
-import com.worldreader.core.analytics.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
+import com.worldreader.core.analytics.providers.amazon.model.AnalyticsInfoModel;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.HashMap;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class ConfigAnalyticsAttributesInteractor {
 
@@ -29,9 +28,9 @@ public class ConfigAnalyticsAttributesInteractor {
   private final Analytics analytics;
 
   private final CountryCodeProvider countryCodeProvider;
-  protected Reachability reachability;
   private final Logger logger;
   private final MainThread mainThread;
+  protected Reachability reachability;
 
   @Inject public ConfigAnalyticsAttributesInteractor(
       final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor,
@@ -54,8 +53,7 @@ public class ConfigAnalyticsAttributesInteractor {
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
 
-        final ListenableFuture<AnalyticsInfoModel> getAnalyticsInfoFuture =
-            getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
+        final ListenableFuture<AnalyticsInfoModel> getAnalyticsInfoFuture = getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
 
         final AnalyticsInfoModel analyticsInfoModel = getAnalyticsInfoFuture.get();
         final HashMap<String, String> attributes = new HashMap<>();
@@ -66,8 +64,8 @@ public class ConfigAnalyticsAttributesInteractor {
         attributes.put("countryCode", countryCodeProvider.getCountryCode());//This is the logic to get this value: tries to get geo, if not available  ->
         // SIM, if not available -> default:US
         attributes.put("geolocationCountryCode", countryCodeProvider.getGeolocationCountryIsoCode().isPresent()
-                                                 ? countryCodeProvider.getGeolocationCountryIsoCode().get()
-                                                 : "");//This value is the actual country code obtained using Google API with obtained lat,long from GPS. If
+            ? countryCodeProvider.getGeolocationCountryIsoCode().get()
+            : "");//This value is the actual country code obtained using Google API with obtained lat,long from GPS. If
         // we couldn't obtain that info, empty value
 
         //When generating logs for Opera, I use only this attribute and disable the following 5 ones.

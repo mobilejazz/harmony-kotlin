@@ -16,19 +16,9 @@ public class AnalyticsEventConstants {
   public static final String DICTIONARY_WORD_DEFINITION_NOT_FOUND_EVENT = "DictionaryWordDefinitionNotFound";
   public static final String LOOKUP_WORD_ATTRIBUTE = "LookupWord";
 
-
-
   public static final String BOOK_READING_SPINE_ELEM_IN_SPINE_POSITION = "bookCurrentlyReadingSpineElement";
   public static final String BOOK_READING_SPINE_ELEM_SIZE_IN_CHARS = "spineElementSizeInChars";
   public static final String BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS = "screenTextSizeInChars";
-  public static final String BOOK_READING_SCREEN_AMOUNT_OF_IMAGES = "screenAmountOfImages";
   public static final String BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM = "currentPageNumberInSpineElement";
   public static final String BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM = "amountOfPagesForSpineElement";
-
-
-  public static class Reader {
-
-    public static final String OPEN_READER = "Open";
-  }
-
 }
