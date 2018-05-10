@@ -1,6 +1,7 @@
 package com.worldreader.core.datasource;
 
 import com.google.gson.Gson;
+import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.datasource.mapper.OAuthEntityDataMapper;
 import com.worldreader.core.datasource.network.datasource.oauth.OAuthNetworkDataSource;
 import com.worldreader.core.datasource.network.model.OAuthNetworkResponseEntity;
@@ -14,21 +15,26 @@ import java.util.*;
 
 public class OAuthDataSource implements OAuthRepository {
 
+  private static final String TAG = OAuthDataSource.class.getSimpleName();
+
   private final OAuthNetworkDataSource networkDataSource;
   private final OAuthBdDataSource bdDataSource;
   private final OAuthEntityDataMapper mapper;
   private final Gson gson;
+  private final Logger logger;
 
   public enum Token {
     APPLICATION, USER
   }
 
   @Inject
-  public OAuthDataSource(OAuthNetworkDataSource networkDataSource, OAuthBdDataSource bdDataSource, OAuthEntityDataMapper mapper, final Gson gson) {
+  public OAuthDataSource(OAuthNetworkDataSource networkDataSource, OAuthBdDataSource bdDataSource, OAuthEntityDataMapper mapper, final Gson gson,
+      Logger logger) {
     this.networkDataSource = networkDataSource;
     this.bdDataSource = bdDataSource;
     this.mapper = mapper;
     this.gson = gson;
+    this.logger = logger;
   }
 
   @Override public synchronized OAuthResponse applicationToken() {
@@ -43,7 +49,9 @@ public class OAuthDataSource implements OAuthRepository {
       return mapper.transform(token);
     } else {
       // Refresh the token and return it
+      logger.d(TAG, "Auto logout issue: token expired");
       token = refreshToken();
+
       return mapper.transform(token);
     }
   }
@@ -106,12 +114,20 @@ public class OAuthDataSource implements OAuthRepository {
 
   private OAuthNetworkResponseEntity refreshToken() throws IllegalStateException {
     final OAuthNetworkResponseEntity token = getToken(Token.USER);
+    logger.d(TAG, "Auto logout issue: old token = " + token);
     if (token == null || token.getRefreshToken() == null) {
       throw new IllegalStateException("User token is null");
     } else {
       final OAuthNetworkResponseEntity newUserToken = networkDataSource.refreshToken(token.getRefreshToken());
+      logger.d(TAG, "Auto logout issue: new token = " + newUserToken);
       if (newUserToken == null) {
+        logger.d(TAG, "Auto logout issue: returning expired token");
         return token;
+      } else {
+        if (newUserToken.getRefreshToken() == null) { // If the refresh token is not provided the old one should be still valid
+          logger.d(TAG, "Auto logout issue: refresh token not provided, using the old one");
+          newUserToken.setRefreshToken(token.getRefreshToken());
+        }
       }
       bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, newUserToken);
       return newUserToken;
