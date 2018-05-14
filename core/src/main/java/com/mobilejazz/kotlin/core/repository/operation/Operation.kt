@@ -4,19 +4,19 @@ package com.mobilejazz.kotlin.core.repository.operation
 
 sealed class Operation
 
-class DefaultOperation : Operation()
+object DefaultOperation : Operation()
 
 // Data stream will only use network
-class NetworkOperation : Operation()
+object NetworkOperation : Operation()
 
 // Data stream will use network and sync with storage if needed
-class NetworkSyncOperation: Operation()
+object NetworkSyncOperation: Operation()
 
 // Data stream will only use storage
-class StorageOperation : Operation()
+object StorageOperation : Operation()
 
 // Data stream will use storage and sync with network if needed
 object StorageSyncOperation: Operation()
 
 // Data stream will only use cache
-class CacheOperation : Operation()
+object CacheOperation : Operation()
