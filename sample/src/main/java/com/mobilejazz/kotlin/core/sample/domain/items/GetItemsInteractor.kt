@@ -14,8 +14,8 @@ class GetItemsInteractor @Inject constructor(private val executor: AppExecutor) 
 
   operator fun invoke(executor: ListeningExecutorService = this.executor): ListenableFuture<List<Item>> {
     return listOf(
-        Item("1", "bla bla", BigDecimal.TEN, 2, "http://lorempixel.com/400/200"),
-        Item("2", "bla bla 2", BigDecimal.TEN, 3, "http://lorempixel.com/400/200"))
+        Item("1", "bla bla", 1, 2, "http://lorempixel.com/400/200"),
+        Item("2", "bla bla 2", 2, 3, "http://lorempixel.com/400/200"))
         .toListenableFuture()
   }
 

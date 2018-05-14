@@ -16,7 +16,7 @@ class NetworkSyncOperation: Operation()
 class StorageOperation : Operation()
 
 // Data stream will use storage and sync with network if needed
-class StorageSyncOperation: Operation()
+object StorageSyncOperation: Operation()
 
 // Data stream will only use cache
 class CacheOperation : Operation()

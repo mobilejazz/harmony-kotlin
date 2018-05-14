@@ -12,12 +12,12 @@ import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 
 // Creation
-inline fun <A> Future(executor: ExecutorService = DirectExecutor, crossinline block: () -> A): ListenableFuture<A> {
+inline fun <A> FutureGuava(executor: ExecutorService = DirectExecutor, crossinline block: () -> A): ListenableFuture<A> {
   val service: ListeningExecutorService = MoreExecutors.listeningDecorator(executor)
   return service.submit(Callable<A> { block() })
 }
 
-inline fun <A> ImmediateFuture(crossinline block: () -> A): ListenableFuture<A> = Future(DirectExecutor, block)
+inline fun <A> ImmediateFuture(crossinline block: () -> A): ListenableFuture<A> = FutureGuava(DirectExecutor, block)
 
 fun <A> A.toListenableFuture(): ListenableFuture<A> = Futures.immediateFuture(this)
 

@@ -4,6 +4,8 @@ package com.mobilejazz.kotlin.core.repository.query
 
 open class Query
 
+object EmptyQuery : Query()
+
 open class ByIdentifierQuery<out T>(val identifier: T) : Query()
 
 open class ByIdentifiersQuery<out T>(val identifiers: List<T>) : Query()
