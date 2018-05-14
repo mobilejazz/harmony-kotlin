@@ -20,9 +20,9 @@ class DataSourceValidator<T>(private val getDataSource: GetDataSource<T>,
         return@flatMap if (!validator.isValid(it)) throw ObjectNotValidException() else it.toFuture()
     }
 
-    override fun put(query: Query, value: T): Future<T> = putDataSource.put(query, value)
+    override fun put(query: Query, value: T?): Future<T> = putDataSource.put(query, value)
 
-    override fun putAll(query: Query, value: List<T>): Future<List<T>> = putDataSource.putAll(query, value)
+    override fun putAll(query: Query, value: List<T>?): Future<List<T>> = putDataSource.putAll(query, value)
 
     override fun delete(query: Query): Future<Void> = deleteDataSource.delete(query)
 

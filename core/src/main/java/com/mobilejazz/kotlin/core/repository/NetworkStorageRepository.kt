@@ -50,7 +50,7 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
         else -> notSupportedOperation()
     }
 
-    override fun put(query: Query, value: V, operation: Operation): Future<V> = when (operation) {
+    override fun put(query: Query, value: V?, operation: Operation): Future<V> = when (operation) {
         is StorageOperation -> putStorage.put(query, value)
         is NetworkOperation -> putNetwork.put(query, value)
         is NetworkSyncOperation -> putNetwork.put(query, value).flatMap { putStorage.put(query, value) }
@@ -58,7 +58,7 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
         else -> notSupportedOperation()
     }
 
-    override fun putAll(query: Query, value: List<V>, operation: Operation): Future<List<V>> = when (operation) {
+    override fun putAll(query: Query, value: List<V>?, operation: Operation): Future<List<V>> = when (operation) {
         is StorageOperation -> putStorage.putAll(query, value)
         is NetworkOperation -> putNetwork.putAll(query, value)
         is NetworkSyncOperation -> putNetwork.putAll(query, value).flatMap { putStorage.putAll(query, value) }

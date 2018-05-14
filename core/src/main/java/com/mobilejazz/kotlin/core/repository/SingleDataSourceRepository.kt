@@ -16,9 +16,9 @@ class SingleDataSourceRepository<T> @Inject constructor(private val getDataSourc
 
   override fun getAll(query: Query, operation: Operation): Future<List<T>> = getDataSource.getAll(query)
 
-  override fun put(query: Query, value: T, operation: Operation): Future<T> = putDataSource.put(query, value)
+  override fun put(query: Query, value: T?, operation: Operation): Future<T> = putDataSource.put(query, value)
 
-  override fun putAll(query: Query, value: List<T>, operation: Operation): Future<List<T>> = putDataSource.putAll(query, value)
+  override fun putAll(query: Query, value: List<T>?, operation: Operation): Future<List<T>> = putDataSource.putAll(query, value)
 
   override fun delete(query: Query, operation: Operation): Future<Void> = deleteDataSource.delete(query)
 

@@ -42,13 +42,23 @@ class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSou
     else -> notSupportedQuery()
   }
 
-  override fun put(query: Query, value: T): Future<T> = when (query) {
-    is StringKeyQuery -> objects.put(query.key, value).run { value.toFuture() }
+  override fun put(query: Query, value: T?): Future<T> = when (query) {
+    is StringKeyQuery -> {
+      if (value == null)
+        throw IllegalArgumentException("InMemoryDataSource: value must be not null")
+      else
+        objects.put(query.key, value).run { value.toFuture() }
+    }
     else -> notSupportedQuery()
   }
 
-  override fun putAll(query: Query, value: List<T>): Future<List<T>> = when (query) {
-    is StringKeyQuery -> arrays.put(query.key, value).run { value.toFuture() }
+  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = when (query) {
+    is StringKeyQuery -> {
+      if (value == null)
+        throw IllegalArgumentException("InMemoryDataSource: values must be not null")
+      else
+        arrays.put(query.key, value).run { value.toFuture() }
+    }
     else -> notSupportedQuery()
   }
 

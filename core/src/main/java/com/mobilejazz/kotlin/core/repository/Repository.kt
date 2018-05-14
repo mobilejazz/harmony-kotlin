@@ -19,8 +19,8 @@ interface GetRepository<V> : Repository {
 }
 
 interface PutRepository<V> : Repository {
-  fun put(query: Query, value: V, operation: Operation = DefaultOperation()): Future<V>
-  fun putAll(query: Query, value: List<V> = emptyList(), operation: Operation = DefaultOperation()): Future<List<V>>
+  fun put(query: Query, value: V?, operation: Operation = DefaultOperation()): Future<V>
+  fun putAll(query: Query, value: List<V>? = emptyList(), operation: Operation = DefaultOperation()): Future<List<V>>
 }
 
 interface DeleteRepository : Repository {

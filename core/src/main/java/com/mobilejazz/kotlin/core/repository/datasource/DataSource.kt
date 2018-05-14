@@ -15,8 +15,8 @@ interface GetDataSource<V> : DataSource {
 }
 
 interface PutDataSource<V> : DataSource {
-  fun put(query: Query, value: V): Future<V>
-  fun putAll(query: Query, value: List<V> = emptyList()): Future<List<V>>
+  fun put(query: Query, value: V?): Future<V>
+  fun putAll(query: Query, value: List<V>? = emptyList()): Future<List<V>>
 }
 
 interface DeleteDataSource : DataSource {

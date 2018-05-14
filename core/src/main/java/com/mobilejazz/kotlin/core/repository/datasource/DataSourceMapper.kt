@@ -20,9 +20,15 @@ class DataSourceMapper<From, To> @Inject constructor(private val getDataSource: 
 
   override fun getAll(query: Query): Future<List<From>> = getDataSource.getAll(query).map { toFromMapper.map(it) }
 
-  override fun put(query: Query, value: From): Future<From> = putDataSource.put(query, toToMapper.map(value)).map { toFromMapper.map(it) }
+  override fun put(query: Query, value: From?): Future<From> {
+    val mapped = value?.let { toToMapper.map(value) }
+    return putDataSource.put(query, mapped).map { toFromMapper.map(it) }
+  }
 
-  override fun putAll(query: Query, value: List<From>): Future<List<From>> = putDataSource.putAll(query, toToMapper.map(value)).map { toFromMapper.map(it) }
+  override fun putAll(query: Query, value: List<From>?): Future<List<From>> {
+    val mapped = value?.let { toToMapper.map(value) }
+    return putDataSource.putAll(query, mapped).map { toFromMapper.map(it) }
+  }
 
   override fun delete(query: Query): Future<Void> = deleteDataSource.delete(query)
 
