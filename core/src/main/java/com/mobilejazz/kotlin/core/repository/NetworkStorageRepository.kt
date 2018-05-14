@@ -3,6 +3,7 @@ package com.mobilejazz.kotlin.core.repository
 import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
+import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.error.ObjectNotValidException
 import com.mobilejazz.kotlin.core.repository.operation.*
 import com.mobilejazz.kotlin.core.repository.query.Query
@@ -27,6 +28,7 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
             getStorage.get(query).recoverWith {
                 when (it) {
                     is ObjectNotValidException -> get(query, NetworkSyncOperation())
+                    is DataNotFoundException -> get(query, NetworkSyncOperation())
                     else -> throw it
                 }
             }
@@ -41,6 +43,7 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
             getStorage.getAll(query).recoverWith {
                 when (it) {
                     is ObjectNotValidException -> getAll(query, NetworkSyncOperation())
+                    is DataNotFoundException -> getAll(query, NetworkSyncOperation())
                     else -> throw it
                 }
             }
