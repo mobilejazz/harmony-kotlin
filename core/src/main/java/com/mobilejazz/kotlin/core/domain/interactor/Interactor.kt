@@ -1,6 +1,9 @@
 package com.mobilejazz.kotlin.core.domain.interactor
 
-import com.mobilejazz.kotlin.core.datasource.*
+import com.mobilejazz.kotlin.core.repository.*
+import com.mobilejazz.kotlin.core.repository.operation.DefaultOperation
+import com.mobilejazz.kotlin.core.repository.operation.Operation
+import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.AppExecutor
 import java.util.concurrent.Callable
 

@@ -21,6 +21,9 @@ inline fun <A> ImmediateFuture(crossinline block: () -> A): ListenableFuture<A> 
 
 fun <A> A.toListenableFuture(): ListenableFuture<A> = Futures.immediateFuture(this)
 
+
+fun emptyListenableFuture(): ListenableFuture<Void> = Futures.immediateFuture(null)
+
 fun <A> Throwable.toListenableFuture(): ListenableFuture<A> = Futures.immediateFailedFuture(this)
 
 // Monadic Operations
@@ -99,7 +102,7 @@ inline fun <A> ListenableFuture<A>.onComplete(executor: Executor = DirectExecuto
 inline fun <A> ListenableFuture<A>.onCompleteUi(crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A) -> Unit): ListenableFuture<A> =
     onComplete(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
-inline fun <A> ListenableFuture<A>.onCompleteDirect(crossinline  onFailure: (Throwable) -> Unit, crossinline onSuccess: (A) -> Unit): ListenableFuture<A> =
+inline fun <A> ListenableFuture<A>.onCompleteDirect(crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A) -> Unit): ListenableFuture<A> =
     onComplete(executor = DirectExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 object Future {

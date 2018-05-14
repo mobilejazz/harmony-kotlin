@@ -2,6 +2,11 @@ package com.mobilejazz.kotlin.core.sample.app.ui.items
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import com.mobilejazz.kotlin.core.repository.*
+import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
+import com.mobilejazz.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.kotlin.core.sample.R
 import com.mobilejazz.kotlin.core.sample.domain.model.Item
 import com.mobilejazz.kotlin.core.ui.base.view.BaseMVPActivity
