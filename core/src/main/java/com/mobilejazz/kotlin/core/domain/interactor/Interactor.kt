@@ -5,6 +5,7 @@ import com.mobilejazz.kotlin.core.repository.operation.DefaultOperation
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.AppExecutor
+import com.mobilejazz.kotlin.core.threading.Future
 import java.util.concurrent.Callable
 
 class GetObjectInteractor<M> constructor(private val executor: AppExecutor, private val getRepository: GetRepository<M>) {
