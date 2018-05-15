@@ -5,25 +5,24 @@ import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.sample.repository.entity.ItemEntity
-import com.mobilejazz.kotlin.core.threading.Future
-import com.mobilejazz.kotlin.core.threading.emptyFuture
-import com.mobilejazz.kotlin.core.threading.extensions.FutureGuava
+import com.mobilejazz.kotlin.core.threading.extensions.Future
+import com.mobilejazz.kotlin.core.threading.extensions.emptyFuture
 
 class ItemNetworkDataSource : GetDataSource<ItemEntity>, PutDataSource<ItemEntity>, DeleteDataSource {
     override fun get(query: Query): Future<ItemEntity> {
-        return FutureGuava { itemEntity() }
+        return Future { itemEntity() }
     }
 
     override fun getAll(query: Query): Future<List<ItemEntity>> {
-        return FutureGuava { itemEntities() }
+        return Future { itemEntities() }
     }
 
     override fun put(query: Query, value: ItemEntity?): Future<ItemEntity> {
-        return FutureGuava { value!! }
+        return Future { value!! }
     }
 
     override fun putAll(query: Query, value: List<ItemEntity>?): Future<List<ItemEntity>> {
-        return FutureGuava { value!! }
+        return Future { value!! }
     }
 
     override fun delete(query: Query): Future<Void> {

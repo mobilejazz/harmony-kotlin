@@ -8,48 +8,49 @@ import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.EmptyQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.Executor
-import com.mobilejazz.kotlin.core.threading.Future
+import com.mobilejazz.kotlin.core.threading.extensions.Future
+import com.mobilejazz.kotlin.core.threading.extensions.recoverWith
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class GetInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
 
-    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<M> = executor.submit(Callable {
+    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<M> = executor.submit(Callable {
         getRepository.get(query, operation).get()
     })
 }
 
 class GetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
 
-    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<List<M>> = executor.submit(Callable {
+    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<List<M>?> = executor.submit(Callable {
         getRepository.getAll(query, operation).get()
     })
 }
 
 class PutInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) {
 
-    operator fun invoke(m: M, query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<M> = executor.submit(Callable {
+    operator fun invoke(m: M, query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<M> = executor.submit(Callable {
         putRepository.put(query, m, operation).get()
     })
 }
 
 class PutAllInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) {
 
-    operator fun invoke(m: List<M>, query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<List<M>> = executor.submit(Callable {
+    operator fun invoke(m: List<M>, query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<List<M>> = executor.submit(Callable {
         putRepository.putAll(query, m, operation).get()
     })
 }
 
 class DeleteInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
 
-    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<Void> = executor.submit(Callable {
+    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<Void> = executor.submit(Callable {
         deleteRepository.delete(query, operation).get()
     })
 }
 
 class DeleteAllInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
 
-    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation()): Future<Void> = executor.submit(Callable {
+    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<Void> = executor.submit(Callable {
         deleteRepository.deleteAll(query, operation).get()
     })
 }

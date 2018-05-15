@@ -1,7 +1,7 @@
 package com.mobilejazz.kotlin.core.repository.datasource
 
 import com.mobilejazz.kotlin.core.repository.query.Query
-import com.mobilejazz.kotlin.core.threading.Future
+import com.mobilejazz.kotlin.core.threading.extensions.Future
 
 interface DataSource {
 
