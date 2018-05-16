@@ -61,4 +61,15 @@ public class OAuthNetworkResponseEntity {
   public Date getCreationDate() {
     return creationDate;
   }
+
+  @Override public String toString() {
+    return "OAuthNetworkResponseEntity{" +
+        "accessToken='" + accessToken + '\'' +
+        ", expiresIn=" + expiresIn +
+        ", tokenType='" + tokenType + '\'' +
+        ", scope='" + scope + '\'' +
+        ", refreshToken='" + refreshToken + '\'' +
+        ", creationDate=" + creationDate +
+        '}';
+  }
 }
