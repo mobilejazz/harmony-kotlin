@@ -39,7 +39,7 @@ dependencies {
 
   // Presentation
   implementation 'com.jakewharton:butterknife:8.8.1'
-  annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+  kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
   // Architecture
   api 'com.google.guava:guava:24.0-android'

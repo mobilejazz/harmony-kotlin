@@ -7,9 +7,8 @@ import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.error.ObjectNotValidException
 import com.mobilejazz.kotlin.core.repository.operation.*
 import com.mobilejazz.kotlin.core.repository.query.Query
-import com.mobilejazz.kotlin.core.threading.Future
-import com.mobilejazz.kotlin.core.threading.extensions.flatMap
-import com.mobilejazz.kotlin.core.threading.extensions.recoverWith
+import com.mobilejazz.kotlin.core.threading.extensions.Future
+import com.mobilejazz.kotlin.core.threading.extensions.*
 import javax.inject.Inject
 
 
@@ -27,8 +26,8 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
         is StorageSyncOperation ->
             getStorage.get(query).recoverWith {
                 when (it) {
-                    is ObjectNotValidException -> get(query, NetworkSyncOperation())
-                    is DataNotFoundException -> get(query, NetworkSyncOperation())
+                    is ObjectNotValidException -> get(query, NetworkSyncOperation)
+                    is DataNotFoundException -> get(query, NetworkSyncOperation)
                     else -> throw it
                 }
             }
@@ -39,14 +38,15 @@ class NetworkStorageRepository<V> @Inject constructor(private val getStorage: Ge
         is StorageOperation -> getStorage.getAll(query)
         is NetworkOperation -> getNetwork.getAll(query)
         is NetworkSyncOperation -> getNetwork.getAll(query).flatMap { putStorage.putAll(query, it) }
-        is StorageSyncOperation ->
+        is StorageSyncOperation -> {
             getStorage.getAll(query).recoverWith {
                 when (it) {
-                    is ObjectNotValidException -> getAll(query, NetworkSyncOperation())
-                    is DataNotFoundException -> getAll(query, NetworkSyncOperation())
+                    is ObjectNotValidException -> getAll(query, NetworkSyncOperation)
+                    is DataNotFoundException -> getAll(query, NetworkSyncOperation)
                     else -> throw it
                 }
             }
+        }
         else -> notSupportedOperation()
     }
 

@@ -4,7 +4,7 @@ import com.mobilejazz.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
-import com.mobilejazz.kotlin.core.threading.Future
+import com.mobilejazz.kotlin.core.threading.extensions.Future
 import com.mobilejazz.kotlin.core.threading.extensions.map
 import javax.inject.Inject
 
