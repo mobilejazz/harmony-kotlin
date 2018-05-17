@@ -447,6 +447,11 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
         final Resource resource = book.getResources().getByHref(href);
         if (resource != null) {
           loadText(resource);
+          //AD-551: We got here because the resource is part of the TOC but not part of the spine. Let's think of "copyright" as example.
+          //If we were in chapter 3 and we decided to go to the TOC->Copyright, when finishing reading the copyright we will go to chapter 4...I'm adding the
+          // following line so we go back to where wr where before.
+          // IDEALLY, we should go to the following element of the TOC after finishing reading the copyright.
+          spine.navigateBack();
         }
       }
     }
