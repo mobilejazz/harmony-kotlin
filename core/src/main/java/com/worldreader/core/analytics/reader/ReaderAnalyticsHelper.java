@@ -2,8 +2,8 @@ package com.worldreader.core.analytics.reader;
 
 import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
-import com.worldreader.core.analytics.event.SimpleAnalyticsEvent;
 
+import com.worldreader.core.analytics.event.GenericAnalyticsEvent;
 import java.util.*;
 
 // Wrapper class to perform reader analytics
@@ -12,7 +12,7 @@ public class ReaderAnalyticsHelper {
   public static void sendFormattedChapterEvent(Analytics analytics, final String bookId, final String title, final int pagesForResource, final int currentPage,
       final CharSequence text, final int tocSize, final int spineSize, final int spinePosition, final int textSizeInChars) {
     if (pagesForResource > 0) {
-      final Map<String, String> attrs = new HashMap<String, String>() {{
+      final Map<String, Object> attrs = new HashMap<String, Object>() {{
         //Book toc size
         put(AnalyticsEventConstants.BOOK_AMOUNT_OF_TOC_ENTRIES, String.valueOf(tocSize));
 
@@ -29,23 +29,23 @@ public class ReaderAnalyticsHelper {
         put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
       }};
 
-      analytics.sendEvent(new SimpleAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, attrs));
+      analytics.sendEvent(new GenericAnalyticsEvent(AnalyticsEventConstants.BOOK_READ_EVENT, attrs));
     }
   }
 
 
   public static void sendOpenTocEvent(Analytics analytics, final String bookId, final String title){
-    final Map<String, String> attrs = new HashMap<String, String>() {{
+    final Map<String, Object> attrs = new HashMap<String, Object>() {{
       put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
       put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
     }};
 
-    analytics.sendEvent(new SimpleAnalyticsEvent(AnalyticsEventConstants.BOOK_OPEN_TOC_EVENT, attrs));
+    analytics.sendEvent(new GenericAnalyticsEvent(AnalyticsEventConstants.BOOK_OPEN_TOC_EVENT, attrs));
 
   }
 
   public static void sendOpenTocEntryEvent(Analytics analytics, final String bookId, final String title, final String tocEntryTitle, final String tocEntryHref){
-    final Map<String, String> attrs = new HashMap<String, String>() {{
+    final Map<String, Object> attrs = new HashMap<String, Object>() {{
       put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
       put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
       put(AnalyticsEventConstants.TOC_ENTRY_TITLE_ATTRIBUTE, tocEntryTitle);
@@ -53,24 +53,24 @@ public class ReaderAnalyticsHelper {
 
     }};
 
-    analytics.sendEvent(new SimpleAnalyticsEvent(AnalyticsEventConstants.TOC_ENTRY_SELECTED_EVENT, attrs));
+    analytics.sendEvent(new GenericAnalyticsEvent(AnalyticsEventConstants.TOC_ENTRY_SELECTED_EVENT, attrs));
   }
 
   public static void sendDictionaryWordLookupEvent(Analytics analytics, final String bookId, final String title, final String word){
-    final Map<String, String> attrs = new HashMap<String, String>() {{
+    final Map<String, Object> attrs = new HashMap<String, Object>() {{
       put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
       put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
       put(AnalyticsEventConstants.LOOKUP_WORD_ATTRIBUTE, word);
     }};
-    analytics.sendEvent(new SimpleAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_LOOKUP_EVENT, attrs));
+    analytics.sendEvent(new GenericAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_LOOKUP_EVENT, attrs));
   }
 
   public static void sendDictionaryWordDefinitionNotFoundEvent(Analytics analytics, final String bookId, final String title, final String word){
-    final Map<String, String> attrs = new HashMap<String, String>() {{
+    final Map<String, Object> attrs = new HashMap<String, Object>() {{
       put(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, bookId);
       put(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, title);
       put(AnalyticsEventConstants.LOOKUP_WORD_ATTRIBUTE, word);
     }};
-    analytics.sendEvent(new SimpleAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_DEFINITION_NOT_FOUND_EVENT, attrs));
+    analytics.sendEvent(new GenericAnalyticsEvent(AnalyticsEventConstants.DICTIONARY_WORD_DEFINITION_NOT_FOUND_EVENT, attrs));
   }
 }

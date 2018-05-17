@@ -9,21 +9,21 @@ import com.google.common.base.Throwables;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
-import com.worldreader.core.analytics.providers.clevertap.events.CleverTapAnalyticsEvent;
+import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
+import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsEventMappers;
+import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsMapper;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton
-public class CleverTapAnalytics implements Analytics {
+@Singleton public class CleverTapAnalytics implements Analytics {
 
   private static final String TAG = CleverTapAnalytics.class.getSimpleName();
 
   private final CleverTapAPI clevertap;
-  private final Logger logger;
+  private final CleverTapAnalyticsEventMappers mappers;
 
-  @Inject
-  public CleverTapAnalytics(Context context, Logger logger) {
+  @Inject public CleverTapAnalytics(Context context, Logger logger) {
     try {
       this.clevertap = CleverTapAPI.getInstance(context);
     } catch (Exception e) {
@@ -31,7 +31,7 @@ public class CleverTapAnalytics implements Analytics {
       logger.e(TAG, "Error while initializing CleverTapAnalytics: " + Throwables.getStackTraceAsString(exception));
       throw exception;
     }
-    this.logger = logger;
+    this.mappers = new CleverTapAnalyticsEventMappers();
   }
 
   public static void registerEvents(Application app) {
@@ -39,15 +39,24 @@ public class CleverTapAnalytics implements Analytics {
   }
 
   @Override public <T extends AnalyticsEvent> void sendEvent(@NonNull T event) {
-    if (!(event instanceof CleverTapAnalyticsEvent)) {
-      return;
+    final CleverTapAnalyticsMapper mapper = mappers.obtain(event.getClass());
+    if (mapper != null) {
+      @SuppressWarnings("unchecked") final Map<String, Object> eventActions = mapper.transform(event);
+      final String eventName = ((String) eventActions.get(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME));
+      eventActions.remove(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME);
+      clevertap.event.push(eventName, eventActions);
     }
+  }
 
-    final CleverTapAnalyticsEvent ev = (CleverTapAnalyticsEvent) event;
-
-    clevertap.event.push(ev.id(), ev.actions());
+  public <T extends AnalyticsEvent> void sendProfile(@NonNull T event) {
+    final CleverTapAnalyticsMapper mapper = mappers.obtain(event.getClass());
+    if (mapper != null) {
+      @SuppressWarnings("unchecked") final Map<String, Object> profile = mapper.transform(event);
+      clevertap.profile.push(profile);
+    }
   }
 
   @Override public void addGlobalProperties(Map<String, String> attributes) {
+    // For now CleverTap doesn't need this properties
   }
 }

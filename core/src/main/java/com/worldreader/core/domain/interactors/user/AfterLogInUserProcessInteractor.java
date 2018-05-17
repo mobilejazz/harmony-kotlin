@@ -7,7 +7,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
-import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
+import com.worldreader.core.analytics.providers.amazon.interactor.PinpointConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
@@ -28,10 +28,9 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-
+import java.util.List;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 @PerActivity public class AfterLogInUserProcessInteractor {
 
@@ -47,7 +46,7 @@ import java.util.concurrent.*;
   private final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
   private final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
   private final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
-  private final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
+  private final PinpointConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
 
   private final Logger logger;
 
@@ -56,7 +55,7 @@ import java.util.concurrent.*;
       final PutAllUserMilestonesInteractor putAllUserMilestonesInteractor,
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
       final GetAllUserBookLikesInteractor getAllUserBookLikesInteractor, final PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
-      final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor, final Logger logger) {
+      final PinpointConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor, final Logger logger) {
     this.executor = executor;
     this.getUserBooksInteractor = getUserBooksInteractor;
     this.putAllUserBooksInteractor = putAllUserBooksInteractor;

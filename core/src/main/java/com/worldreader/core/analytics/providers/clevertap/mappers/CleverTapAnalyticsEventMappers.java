@@ -1,6 +1,7 @@
 package com.worldreader.core.analytics.providers.clevertap.mappers;
 
 import com.worldreader.core.analytics.event.AnalyticsEvent;
+import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookStartReadingAnalyticsEvent;
@@ -29,6 +30,7 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
     final Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> m = new HashMap<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>>() {{
       put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper());
       put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
+      put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper());
       put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper());
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
       put(SignInAnalyticsEvent.class, new CleverTapSignInMapper());

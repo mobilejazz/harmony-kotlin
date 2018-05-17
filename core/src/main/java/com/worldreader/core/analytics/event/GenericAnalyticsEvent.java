@@ -4,6 +4,7 @@ import dagger.internal.Preconditions;
 import java.util.Collections;
 import java.util.Map;
 
+@Deprecated
 public class GenericAnalyticsEvent implements AnalyticsEvent {
 
   private final String eventName;

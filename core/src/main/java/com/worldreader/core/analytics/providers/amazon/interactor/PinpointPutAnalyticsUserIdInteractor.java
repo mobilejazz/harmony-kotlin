@@ -5,7 +5,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.analytics.providers.amazon.model.AnalyticsInfoModel;
+import com.worldreader.core.analytics.interactors.GetUserInfoAnalyticsInteractor;
+import com.worldreader.core.analytics.models.UserInfoAnalyticsModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
@@ -13,17 +14,17 @@ import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
-public class PutAnalyticsUserIdInteractor {
+public class PinpointPutAnalyticsUserIdInteractor {
 
-  private final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor;
+  private final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService listeningExecutorService;
-  private final Repository<AnalyticsInfoModel, RepositorySpecification> repository;
+  private final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository;
 
   @Inject
-  public PutAnalyticsUserIdInteractor(
-      final GetAnalyticsInfoInteractor getAnalyticsInfoInteractor,
+  public PinpointPutAnalyticsUserIdInteractor(
+      final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor,
       final ListeningExecutorService listeningExecutorService,
-      final Repository<AnalyticsInfoModel, RepositorySpecification> repository
+      final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository
   ) {
     this.getAnalyticsInfoInteractor = getAnalyticsInfoInteractor;
     this.listeningExecutorService = listeningExecutorService;
@@ -35,16 +36,16 @@ public class PutAnalyticsUserIdInteractor {
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final ListenableFuture<AnalyticsInfoModel> getAnalyticsInfoFuture =
+        final ListenableFuture<UserInfoAnalyticsModel> getAnalyticsInfoFuture =
             getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
 
-        final AnalyticsInfoModel analyticsInfoModel = getAnalyticsInfoFuture.get();
-        analyticsInfoModel.setUserId(userId);
+        final UserInfoAnalyticsModel analyticsInfoModel = getAnalyticsInfoFuture.get();
+        analyticsInfoModel.userId = userId;
 
         repository.put(analyticsInfoModel, RepositorySpecification.NONE,
-            new Callback<Optional<AnalyticsInfoModel>>() {
+            new Callback<Optional<UserInfoAnalyticsModel>>() {
               @Override
-              public void onSuccess(final Optional<AnalyticsInfoModel> analyticsInfoModelOptional) {
+              public void onSuccess(final Optional<UserInfoAnalyticsModel> analyticsInfoModelOptional) {
                 settableFuture.set(null);
               }
 

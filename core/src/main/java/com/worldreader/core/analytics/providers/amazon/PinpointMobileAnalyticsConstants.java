@@ -1,13 +1,13 @@
-package com.worldreader.core.analytics.amazon;
+package com.worldreader.core.analytics.providers.amazon;
 
-public final class AmazonMobileAnalyticsConstants {
+public final class PinpointMobileAnalyticsConstants {
 
   public static final String GRADE_SELECTED_EVENT = "SelectedGrade";
   public static final String SELECTED_GRADE = "Grade";
   public static final String SELECTED_GRADE_ID = "GradeId";
   public static final String SELECTED_GRADE_SET_ID = "GradeSetId";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
-  public static final String BOOK_LOADING_EVENT ="BookLoading";
+  public static final String BOOK_LOADING_EVENT = "BookLoading";
   public static final String GO_TO_SEARCH_EVENT = "GoToSearch";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";
@@ -23,7 +23,6 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String CLICK_BANNER_EVENT = "ClickBanner";
   public static final String BANNER_TITLE_ATTRIBUTE = "BannerTitle";
   public static final String BANNER_ID_ATTRIBUTE = "BannerId";
-
 
   public static final String SEARCH_EVENT = "Search";//Test against prod books API
   public static final String SIGNUP_EVENT = "Signup";
@@ -80,22 +79,20 @@ public final class AmazonMobileAnalyticsConstants {
   public static final String CATEGORY_SELECTION_EVENT = "CategorySelection";
   public static final String LEADER_BOAD_PERIOD_ATTRIBUTE = "leaderPeriod";
   public static final String SEE_LEADER_BOAD_EVENT = "LeaderBoard";
-  public static final String MILESTONES_AS_USERTYPE_ATTRIBUTE ="asUserType";
-  public static final String SEE_MILESTONES_EVENT ="SeeMilestones";
+  public static final String MILESTONES_AS_USERTYPE_ATTRIBUTE = "asUserType";
+  public static final String SEE_MILESTONES_EVENT = "SeeMilestones";
   public static final String SHARE_BADGE_EVENT = "ShareBadge";
   public static final String MILESTONE_CLICKED_EVENT = "MilestoneClicked";
-  public static final String MILESTONE_ATTRIBUTE ="milestone";
+  public static final String MILESTONE_ATTRIBUTE = "milestone";
   public static final String MILESTONE_STATE_ATTRIBUTE = "milestoneState";
-  public static final String MILESTONE_DESC_ATTRIBUTE ="milestoneDesc";
+  public static final String MILESTONE_DESC_ATTRIBUTE = "milestoneDesc";
 
-  public static final String REFERRER_DEVICE_ID_ATTRIBUTE ="referrer_device_id";
-  public static final String REFERRER_USER_ID_ATTRIBUTE ="referrer_user_id";
-
+  public static final String REFERRER_DEVICE_ID_ATTRIBUTE = "referrer_device_id";
+  public static final String REFERRER_USER_ID_ATTRIBUTE = "referrer_user_id";
 
   public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;
   }
-
 }

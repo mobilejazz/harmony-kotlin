@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.action;
+package com.worldreader.core.analytics.providers.google.action;
 
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsMapper;

@@ -11,19 +11,19 @@ import com.worldreader.core.domain.model.user.User2;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
-public class ConfigAnalyticsUserIdInteractor {
+public class PinpointConfigAnalyticsUserIdInteractor {
 
   private final IsAnonymousUserInteractor isAnonymousUserInteractor;
   private final GetUserInteractor getUserInteractor;
-  private final PutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor;
+  private final PinpointPutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor;
   private final ListeningExecutorService executorService;
-  private final ConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor;
+  private final PinpointConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor;
 
-  @Inject public ConfigAnalyticsUserIdInteractor(final IsAnonymousUserInteractor isAnonymousUserInteractor,
+  @Inject public PinpointConfigAnalyticsUserIdInteractor(final IsAnonymousUserInteractor isAnonymousUserInteractor,
       final GetUserInteractor getUserInteractor,
-      final PutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor,
+      final PinpointPutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor,
       final ListeningExecutorService executorService,
-      final ConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor) {
+      final PinpointConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor) {
     this.isAnonymousUserInteractor = isAnonymousUserInteractor;
     this.getUserInteractor = getUserInteractor;
     this.putAnalyticsUserIdInteractor = putAnalyticsUserIdInteractor;
@@ -38,9 +38,7 @@ public class ConfigAnalyticsUserIdInteractor {
       @Override protected void safeRun() throws Throwable {
         User2 finalUser = user2;
         if (user2 == null) {
-          final IsAnonymousUserInteractor.Type type =
-              isAnonymousUserInteractor.execute(MoreExecutors.directExecutor()).get();
-
+          final IsAnonymousUserInteractor.Type type = isAnonymousUserInteractor.execute(MoreExecutors.directExecutor()).get();
           if (type == IsAnonymousUserInteractor.Type.REGISTERED) {
             finalUser = getUserInteractor.execute(MoreExecutors.directExecutor()).get();
           }
