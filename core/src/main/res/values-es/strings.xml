@@ -162,6 +162,7 @@
   <string name="ls_tts_failed">No se ha podido cargar Text To Speech</string>
   <string name="ls_moreByAuthor">Más del mismo autor</string>
   <string name="ls_moreByPublisher">Más de la misma editorial</string>
+  <string name="ls_series">Series</string>
   <string name="ls_home_invite_friends">Invita a tus amigos</string>
   <string name="ls_invite_friends_hint">Comparte tu código único o invita\na amigos via tu app favorita</string>
   <string name="ls_invite_friends_code_title">Tu código único de invitación</string>

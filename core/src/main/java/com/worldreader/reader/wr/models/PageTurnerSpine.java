@@ -61,7 +61,6 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
 
   private Map<String, String> createBlackList(Context c) {
     final Resources r = c.getResources();
-
     return new HashMap<String, String>() {{
       put("toc", r.getString(R.string.ls_toc));
       put("nav", r.getString(R.string.ls_toc));
@@ -76,11 +75,11 @@ public class PageTurnerSpine implements Iterable<PageTurnerSpine.SpineEntry> {
       put("backcover", r.getString(R.string.ls_back));
       put("back", r.getString(R.string.ls_back));
       put("bcover", r.getString(R.string.ls_back));
-      put("index", r.getString(R.string.ls_index));
       put("contents", r.getString(R.string.ls_toc));
       put("credits", r.getString(R.string.ls_credits));
       put("morebyauthor", r.getString(R.string.ls_moreByAuthor));
       put("morebypublisher", r.getString(R.string.ls_moreByPublisher));
+      put("series",r.getString(R.string.ls_series));
     }};
   }
 
