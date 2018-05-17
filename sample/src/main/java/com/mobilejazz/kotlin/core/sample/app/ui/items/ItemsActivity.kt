@@ -3,7 +3,6 @@ package com.mobilejazz.kotlin.core.sample.app.ui.items
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.mobilejazz.kotlin.core.sample.R
-import com.mobilejazz.kotlin.core.sample.R.id.items_lv
 import com.mobilejazz.kotlin.core.sample.domain.model.Item
 import com.mobilejazz.kotlin.core.ui.base.view.BaseMVPActivity
 import kotlinx.android.synthetic.main.activity_items.*
