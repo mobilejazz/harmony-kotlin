@@ -13,13 +13,13 @@ import org.worldreader.classroom.dataprovider.network.error.RetrofitErrorAdapter
 
 class GetItemNetworkDataSource @javax.inject.Inject constructor(
     private val service: ItemApiService,
-    private val errorAdapter: RetrofitErrorAdapter) : GetDataSource<Item> {
+    private val errorAdapter: RetrofitErrorAdapter) : GetDataSource<ItemEntity> {
 
-  override fun get(query: Query): Future<Item> {
+  override fun get(query: Query): Future<ItemEntity> {
     throw UnsupportedOperationException() // TODO What to return when the method is not supported at all?
   }
 
-  override fun getAll(query: Query): Future<List<Item>> {
-    return service.items().map { it.results }.mapError<List<Item>, Throwable> { errorAdapter.of(it) }
+  override fun getAll(query: Query): Future<List<ItemEntity>> {
+    return service.items().map { it.results }.mapError<List<ItemEntity>, Throwable> { errorAdapter.of(it) }
   }
 }
