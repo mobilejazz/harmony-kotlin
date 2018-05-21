@@ -1,8 +1,5 @@
-package com.mobilejazz.kotlin.core.sample.data
+package com.mobilejazz.kotlin.core.repository.datasource
 
-import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 
