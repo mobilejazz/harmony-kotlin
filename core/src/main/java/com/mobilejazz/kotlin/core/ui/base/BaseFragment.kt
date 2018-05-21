@@ -2,8 +2,11 @@ package com.mobilejazz.kotlin.core.ui.base
 
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import dagger.android.AndroidInjector
@@ -14,7 +17,8 @@ import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
-  @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+  @Inject
+  lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
   private var viewUnbinder: Unbinder? = null
 
@@ -25,6 +29,13 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     AndroidSupportInjection.inject(this)
     super.onAttach(context)
   }
+
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    return inflater.inflate(getContentViewResId(), container, false)
+  }
+
+  @LayoutRes
+  abstract fun getContentViewResId(): Int
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
