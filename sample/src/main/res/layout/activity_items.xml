@@ -20,10 +20,25 @@
 
   </android.support.design.widget.AppBarLayout>
 
-  <ListView
-    android:id="@+id/items_lv"
+  <com.mobilejazz.kotlin.core.ui.widget.LoadContentLayout
+    android:id="@+id/load_content_ly"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh_ly"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <ListView
+        android:id="@+id/items_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+  </com.mobilejazz.kotlin.core.ui.widget.LoadContentLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

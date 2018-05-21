@@ -7,8 +7,8 @@ import com.mobilejazz.kotlin.core.repository.RepositoryMapper
 import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.VoidDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.memory.InMemoryDataSource
-import com.mobilejazz.kotlin.core.sample.data.VoidDataSource
 import com.mobilejazz.kotlin.core.sample.data.network.items.GetItemNetworkDataSource
 import com.mobilejazz.kotlin.core.sample.data.network.items.ItemApiService
 import com.mobilejazz.kotlin.core.sample.domain.model.Item
