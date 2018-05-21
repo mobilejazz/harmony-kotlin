@@ -1,0 +1,10 @@
+<resources>
+  <public name="padding_nano" type="dimen" />
+  <public name="padding_nano" type="dimen" />
+  <public name="padding_micro" type="dimen" />
+  <public name="padding_small" type="dimen" />
+  <public name="padding_medium" type="dimen" />
+  <public name="padding_large" type="dimen" />
+  <public name="padding_x_large" type="dimen" />
+  <public name="padding_xx_large" type="dimen" />
+</resources>
