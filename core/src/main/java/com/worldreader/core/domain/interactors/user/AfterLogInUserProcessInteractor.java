@@ -7,7 +7,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.logger.library.Logger;
-import com.worldreader.core.analytics.providers.amazon.interactor.PinpointConfigAnalyticsUserIdInteractor;
+import com.worldreader.core.analytics.providers.pinpoint.interactor.PinpointConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;

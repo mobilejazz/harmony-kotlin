@@ -23,31 +23,24 @@ import com.worldreader.core.common.intents.Intents;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.Collection;
-
 import javax.inject.Inject;
 
 public abstract class LoadingBookActivity extends AppCompatActivity
     implements LoadingBookPresenter.View {
 
-  public abstract void initializeDependencies();
-
-  public abstract void navigateToReadingAcivity(BookMetadata bookMetadata);
-
-  public abstract void processError(ErrorCore<?> errorCore);
-
+  public static final String EXTRA_COLOR_ANIM = "extra.color.anim";
   private static final String KEY_BOOK = "book.key";
   private static final String KEY_COLLECTION = "collection.key";
   private static final String HOCK_READER_KEY = "hock.reader.key";
-  public static final String EXTRA_COLOR_ANIM = "extra.color.anim";
   private static final int TWO_SECONDS = 2000;
-
-  private LinearLayout loadingBookContainer;
-  private TextView titleTv;
 
   @Inject LoadingBookPresenter presenter;
 
+  private LinearLayout loadingBookContainer;
+  private TextView titleTv;
   private Handler handler = new Handler();
   private Runnable runnable = null;
+  private long startTime;
 
   public static Intent getCallingIntent(Context context, Book book, Collection collection,
       boolean navigateToReader, Class<?> claszz) {
@@ -75,6 +68,12 @@ public abstract class LoadingBookActivity extends AppCompatActivity
         extraDataIntent);
   }
 
+  public abstract void initializeDependencies();
+
+  public abstract void navigateToReadingAcivity(Book book, BookMetadata bookMetadata);
+
+  public abstract void processError(ErrorCore<?> errorCore);
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       overridePendingTransition(R.anim.no_animation, R.anim.no_animation);
@@ -101,8 +100,6 @@ public abstract class LoadingBookActivity extends AppCompatActivity
     super.finish();
     overridePendingTransition(0, R.anim.fade_out);
   }
-
-  private long startTime;
 
   //region Private methods
   private void initialize() {
@@ -167,8 +164,8 @@ public abstract class LoadingBookActivity extends AppCompatActivity
   }
 
   private void initializeView() {
-    loadingBookContainer = (LinearLayout) findViewById(R.id.loading_book_container);
-    titleTv = (TextView) findViewById(R.id.loading_book_title_tv);
+    loadingBookContainer = findViewById(R.id.loading_book_container);
+    titleTv = findViewById(R.id.loading_book_title_tv);
   }
 
   //endregion
@@ -186,41 +183,44 @@ public abstract class LoadingBookActivity extends AppCompatActivity
     // Nothing to do
   }
 
-  @Override public void onNotifyDisplayReader(final BookMetadata bookMetadata) {
+  @Override public void onNotifyDisplayReader(final Book book, final BookMetadata bookMetadata) {
     if (!isFinishing()) {
       long endTime = System.nanoTime();
       long diff = (endTime - startTime) / 1000000;
 
       if (diff > TWO_SECONDS) {
-        openReader(bookMetadata);
-      } else {
-        openReaderWithDelay(bookMetadata);
+        openReader(book, bookMetadata);
+        return;
       }
+
+      openReaderWithDelay(book, bookMetadata);
     }
   }
   //endregion
 
   //region Private Methods
-  private void openReaderWithDelay(final BookMetadata bookMetadata) {
-    runnable = new BookMetadataRunnable(bookMetadata);
+  private void openReaderWithDelay(Book book, BookMetadata bookMetadata) {
+    runnable = new BookMetadataRunnable(book, bookMetadata);
     handler.postDelayed(runnable, TWO_SECONDS);
   }
 
-  private void openReader(BookMetadata bookMetadata) {
-    navigateToReadingAcivity(bookMetadata);
+  private void openReader(Book book, BookMetadata bookMetadata) {
+    navigateToReadingAcivity(book, bookMetadata);
   }
   //endregion
 
   class BookMetadataRunnable implements Runnable {
 
+    private final Book book;
     private final BookMetadata bookMetadata;
 
-    public BookMetadataRunnable(BookMetadata bookMetadata) {
+    BookMetadataRunnable(Book book, BookMetadata bookMetadata) {
+      this.book = book;
       this.bookMetadata = bookMetadata;
     }
 
     @Override public void run() {
-      openReader(bookMetadata);
+      openReader(book, bookMetadata);
     }
   }
 }

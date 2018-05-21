@@ -29,6 +29,10 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     this.version = version;
   }
 
+  public static BookStartReadingAnalyticsEvent of (Book book) {
+    return of(book, false);
+  }
+
   public static BookStartReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
     return new BookStartReadingAnalyticsEvent.Builder()
         .setId(book.getId())

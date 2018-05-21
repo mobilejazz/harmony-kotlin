@@ -7,6 +7,7 @@ import com.worldreader.core.analytics.event.GenericAnalyticsEvent;
 import java.util.*;
 
 // Wrapper class to perform reader analytics
+@Deprecated
 public class ReaderAnalyticsHelper {
 
   public static void sendFormattedChapterEvent(Analytics analytics, final String bookId, final String title, final int pagesForResource, final int currentPage,

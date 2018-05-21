@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon.mappers;
+package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsMapper;

@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon.interactor;
+package com.worldreader.core.analytics.providers.pinpoint.interactor;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -11,17 +11,16 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
-public class PinpointPutAnalyticsUserIdInteractor {
+public class PinpointPutAnalyticsClientIdInteractor {
 
   private final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService listeningExecutorService;
   private final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository;
 
   @Inject
-  public PinpointPutAnalyticsUserIdInteractor(
+  public PinpointPutAnalyticsClientIdInteractor(
       final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor,
       final ListeningExecutorService listeningExecutorService,
       final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository
@@ -31,16 +30,16 @@ public class PinpointPutAnalyticsUserIdInteractor {
     this.repository = repository;
   }
 
-  public ListenableFuture<Void> execute(final String userId, final Executor executor) {
+  public ListenableFuture<Void> execute(final String clientId) {
     final SettableFuture<Void> settableFuture = SettableFuture.create();
 
-    executor.execute(new SafeRunnable() {
+    listeningExecutorService.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         final ListenableFuture<UserInfoAnalyticsModel> getAnalyticsInfoFuture =
             getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor());
 
         final UserInfoAnalyticsModel analyticsInfoModel = getAnalyticsInfoFuture.get();
-        analyticsInfoModel.userId = userId;
+        analyticsInfoModel.clientId = clientId;
 
         repository.put(analyticsInfoModel, RepositorySpecification.NONE,
             new Callback<Optional<UserInfoAnalyticsModel>>() {
@@ -61,9 +60,5 @@ public class PinpointPutAnalyticsUserIdInteractor {
     });
 
     return settableFuture;
-  }
-
-  public ListenableFuture<Void> execute(final String userId) {
-    return execute(userId, listeningExecutorService);
   }
 }
