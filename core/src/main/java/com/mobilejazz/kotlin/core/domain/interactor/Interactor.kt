@@ -22,7 +22,7 @@ class GetInteractor<M> @Inject constructor(private val executor: Executor, priva
 
 class GetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
 
-    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<List<M>?> = executor.submit(Callable {
+    operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<List<M>> = executor.submit(Callable {
         getRepository.getAll(query, operation).get()
     })
 }
