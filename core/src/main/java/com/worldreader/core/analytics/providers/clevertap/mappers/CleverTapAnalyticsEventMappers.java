@@ -1,10 +1,12 @@
 package com.worldreader.core.analytics.providers.clevertap.mappers;
 
+import android.content.Context;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookStartReadingAnalyticsEvent;
+import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
@@ -22,18 +24,22 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
 
   private final Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> mappers;
 
-  public CleverTapAnalyticsEventMappers() {
-    this.mappers = createMappers();
+  public CleverTapAnalyticsEventMappers(Context context) {
+    this.mappers = createMappers(context);
   }
 
-  private Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> createMappers() {
+  private Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> createMappers(final Context context) {
     final Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> m = new HashMap<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>>() {{
-      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper());
-      put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
       put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper());
+      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper());
       put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper());
+      put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
       put(SignInAnalyticsEvent.class, new CleverTapSignInMapper());
+      //BookEnd
+      put(CategorySelectedAnalyticsEvent.class, new CleverTapCategoryDetailsMapper(context));
+      //CategoryDetails
+      //CategoryBooks
     }};
     return Collections.unmodifiableMap(m);
   }

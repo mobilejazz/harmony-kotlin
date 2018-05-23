@@ -11,22 +11,6 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
   private String referringScreen;
   private String referringMeta;
 
-
-  /**
-   * attrs.put(PinpointMobileAnalyticsConstants.PARENT_CATEGORY_ID_ATTRIBUTE, "");
-   attrs.put(PinpointMobileAnalyticsConstants.PARENT_CATEGORY_TITLE_ATTRIBUTE, "");
-
-   * attrs.put(PinpointMobileAnalyticsConstants.REFERRING_SCREEN, referringScreen);
-   * attrs.put(PinpointMobileAnalyticsConstants.REFERRING_META, meta.toString());
-   * @param categoryId
-   * @param name
-   * @param parentCategoryId
-   * @param parentCategoryName
-   * @param referringScreen
-   * @param referringMeta
-   */
-
-
   private CategorySelectedAnalyticsEvent(Integer categoryId, String name, Integer parentCategoryId, String parentCategoryName, String referringScreen,
       String referringMeta) {
     this.categoryId = categoryId;

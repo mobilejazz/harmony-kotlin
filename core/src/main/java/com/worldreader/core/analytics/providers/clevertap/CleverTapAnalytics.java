@@ -31,7 +31,7 @@ import javax.inject.Singleton;
       logger.e(TAG, "Error while initializing CleverTapAnalytics: " + Throwables.getStackTraceAsString(exception));
       throw exception;
     }
-    this.mappers = new CleverTapAnalyticsEventMappers();
+    this.mappers = new CleverTapAnalyticsEventMappers(context);
   }
 
   public static void registerEvents(Application app) {
