@@ -1187,6 +1187,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int spineSize = bookView.getSpineSize();
     final int spinePosition = bookView.getIndex();
     final int textSizeInChars = bookView.getStrategy().getSizeChartDisplayed();
+
+
+
     ReaderAnalyticsHelper.sendFormattedChapterEvent(
         di.analytics,
         bookMetadata.bookId,

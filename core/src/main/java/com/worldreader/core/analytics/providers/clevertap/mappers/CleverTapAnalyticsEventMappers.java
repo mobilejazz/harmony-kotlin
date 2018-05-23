@@ -42,3 +42,18 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
     return mappers.get(clazz);
   }
 }
+
+/**
+
+ * BookContinue
+ * BookDetail
+ * BookRead
+ * BookStart
+ * SingIn
+ * SingUp
+ * BookEnd
+ * CategoryDetails
+ * CategoryBooks
+ *
+ * The web client is sending the PageView event. We may want to do a ScreenView equivalent one...but I'm not sure about the use of that info in CT
+ */

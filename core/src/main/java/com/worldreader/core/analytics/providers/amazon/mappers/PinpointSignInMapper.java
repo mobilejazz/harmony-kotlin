@@ -15,6 +15,7 @@ public class PinpointSignInMapper implements PinpointAnalyticsMapper<SignInAnaly
 
   @Override public AnalyticsEvent transform(SignInAnalyticsEvent event) {
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.LOGIN_EVENT);
+
     return analyticsEvent;
   }
 }

@@ -1,23 +1,31 @@
 package com.worldreader.core.analytics.providers.clevertap.mappers;
 
+import android.os.Build;
+import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookStartReadingAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CleverTapBookContinueReadingMapper implements CleverTapAnalyticsMapper<BookStartReadingAnalyticsEvent> {
+public class CleverTapBookContinueReadingMapper implements CleverTapAnalyticsMapper<BookContinueReadingAnalyticsEvent> {
 
-  @Override public Map<String, Object> transform(final BookStartReadingAnalyticsEvent event) {
+  @Override public Map<String, Object> transform(final BookContinueReadingAnalyticsEvent event) {
     return new HashMap<String, Object>() {{
       put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, "BookContinue");
-      put("BookId", event.getId());
-      put("BookTitle", event.getTitle());
-      put("BookVersion", event.getVersion());
-      put("BookPublisher", event.getPublisher());
-      put("BookCategory", event.getCategory());
-      put("BookCategoryId", event.getCategoryId());
-      put("UserId", "");
-      put("Os", "Android");
+      put(CleverTapEventConstants.BOOK_ID, event.getId());
+      put(CleverTapEventConstants.BOOK_TITLE, event.getTitle());
+      put(CleverTapEventConstants.BOOK_VERSION, event.getVersion());
+      put(CleverTapEventConstants.BOOK_PUBLISHER, event.getPublisher());
+      put(CleverTapEventConstants.BOOK_CATEGORY, event.getCategory());
+      put(CleverTapEventConstants.BOOK_CATEGORY_ID, event.getCategoryId());
+      put(CleverTapEventConstants.IS_READING_OFFLINE, event.getVariant());
+      put(CleverTapEventConstants.COUNTRY, "_TODO_");
+      put(CleverTapEventConstants.USER_ID, "_TODO_");
+      put(CleverTapEventConstants.DEVICE_ID, "_TODO_");
+      put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);
+      put(CleverTapEventConstants.DEVICE_MODEL, Build.MODEL);
+      put(CleverTapEventConstants.OS, Build.VERSION.RELEASE);
+
     }};
   }
 }

@@ -18,8 +18,17 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
   private final String publisher;
   private final int variant;
   private final String version;
+  private final int pagesForResouce;
+  private final int currentPage;
+  private final CharSequence text;
+  private final int tocSize;
+  private final int spineSize;
+  private final int spinePosition;
+  private final int textSizeInChars;
 
-  public BookReadAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version) {
+
+  public BookReadAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version,
+      int pagesForResouce, int currentPage, CharSequence text, int tocSize, int spineSize, int spinePosition, int textSizeInChars) {
     this.id = id;
     this.title = title;
     this.category = category;
@@ -27,10 +36,17 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     this.publisher = publisher;
     this.variant = variant;
     this.version = version;
+    this.pagesForResouce = pagesForResouce;
+    this.currentPage = currentPage;
+    this.text = text;
+    this.tocSize = tocSize;
+    this.spineSize = spineSize;
+    this.spinePosition = spinePosition;
+    this.textSizeInChars = textSizeInChars;
   }
 
-  public static BookStartReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
-    return new BookStartReadingAnalyticsEvent.Builder()
+  public static BookReadAnalyticsEvent of(Book book, boolean isDownloaded, int pagesForResouce, int currentPage, CharSequence text, int tocSize, int spineSize, int spinePosition, int textSizeInChars) {
+    return new Builder()
         .setId(book.getId())
         .setTitle(book.getTitle())
         .setPublisher(book.getPublisher())
@@ -38,7 +54,15 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
         .setCategoryId(toCategoryId(book.getCategories()))
         .setIsDownloaded(isDownloaded)
         .setVersion(book.getVersion())
-        .create();
+        .setPagesForResouce(pagesForResouce)
+        .setCurrentPage(currentPage)
+        .setText(text).setTocSize(tocSize)
+        .setSpineSize(spineSize)
+        .setSpinePosition(spinePosition)
+        .setTextSizeInChars
+            (textSizeInChars).create();
+
+
   }
 
   private static String toCategory(List<Category> categories) {
@@ -89,6 +113,34 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
 
   }
 
+  public int getPagesForResouce() {
+    return pagesForResouce;
+  }
+
+  public int getCurrentPage() {
+    return currentPage;
+  }
+
+  public CharSequence getText() {
+    return text;
+  }
+
+  public int getTocSize() {
+    return tocSize;
+  }
+
+  public int getSpineSize() {
+    return spineSize;
+  }
+
+  public int getSpinePosition() {
+    return spinePosition;
+  }
+
+  public int getTextSizeInChars() {
+    return textSizeInChars;
+  }
+
   public static class Builder {
 
     private String id;
@@ -98,6 +150,58 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     private String brand;
     private int variant;
     private String version;
+    private int pagesForResouce;
+    private int currentPage;
+    private CharSequence text;
+    private int tocSize;
+    private int spineSize;
+    private int spinePosition;
+    private int textSizeInChars;
+
+    public Builder setBrand(String brand) {
+      this.brand = brand;
+      return this;
+    }
+
+    public Builder setVariant(int variant) {
+      this.variant = variant;
+      return this;
+    }
+
+    public Builder setPagesForResouce(int pagesForResouce) {
+      this.pagesForResouce = pagesForResouce;
+      return this;
+    }
+
+    public Builder setCurrentPage(int currentPage) {
+      this.currentPage = currentPage;
+      return this;
+    }
+
+    public Builder setText(CharSequence text) {
+      this.text = text;
+      return this;
+    }
+
+    public Builder setTocSize(int tocSize) {
+      this.tocSize = tocSize;
+      return this;
+    }
+
+    public Builder setSpineSize(int spineSize) {
+      this.spineSize = spineSize;
+      return this;
+    }
+
+    public Builder setSpinePosition(int spinePosition) {
+      this.spinePosition = spinePosition;
+      return this;
+    }
+
+    public Builder setTextSizeInChars(int textSizeInChars) {
+      this.textSizeInChars = textSizeInChars;
+      return this;
+    }
 
     public Builder setId(String id) {
       this.id = id;
@@ -134,8 +238,11 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+
+
     public BookReadAnalyticsEvent create() {
-      return new BookReadAnalyticsEvent(id, title, category, categoryId, brand, variant, version);
+      return new BookReadAnalyticsEvent(id, title, category, categoryId, brand, variant, version, pagesForResouce,
+          currentPage, text, tocSize, spineSize, spinePosition, textSizeInChars);
     }
   }
 }
