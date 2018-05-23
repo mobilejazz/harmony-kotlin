@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon;
+package com.worldreader.core.analytics.providers.pinpoint;
 
 public final class PinpointMobileAnalyticsConstants {
 

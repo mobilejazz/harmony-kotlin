@@ -111,6 +111,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private Context context;
 
+  protected com.worldreader.core.domain.model.Book book;
   protected BookMetadata bookMetadata;
 
   private TextLoader textLoader;
@@ -178,6 +179,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
     final Intent intent = getActivity().getIntent();
+    book = (com.worldreader.core.domain.model.Book) intent.getSerializableExtra(AbstractReaderActivity.BOOK_KEY);
     bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
 
     // Gather status variables for the reader

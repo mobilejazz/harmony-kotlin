@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon.interactor;
+package com.worldreader.core.analytics.providers.pinpoint.interactor;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;

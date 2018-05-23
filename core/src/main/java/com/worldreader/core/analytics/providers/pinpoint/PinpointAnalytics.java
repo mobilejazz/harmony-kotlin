@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon;
+package com.worldreader.core.analytics.providers.pinpoint;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -13,8 +13,8 @@ import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.GenericAnalyticsEvent;
-import com.worldreader.core.analytics.providers.amazon.mappers.PinpointAnalyticsEventMappers;
-import com.worldreader.core.analytics.providers.amazon.mappers.PinpointAnalyticsMapper;
+import com.worldreader.core.analytics.providers.pinpoint.mappers.PinpointAnalyticsEventMappers;
+import com.worldreader.core.analytics.providers.pinpoint.mappers.PinpointAnalyticsMapper;
 import java.util.Map;
 import org.json.JSONObject;
 

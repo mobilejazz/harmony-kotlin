@@ -1,9 +1,9 @@
-package com.worldreader.core.analytics.providers.amazon.mappers;
+package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
-import com.worldreader.core.analytics.providers.amazon.PinpointMobileAnalyticsConstants;
+import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
 
 public class PinpointSignInMapper implements PinpointAnalyticsMapper<SignInAnalyticsEvent> {
 
@@ -14,6 +14,7 @@ public class PinpointSignInMapper implements PinpointAnalyticsMapper<SignInAnaly
   }
 
   @Override public AnalyticsEvent transform(SignInAnalyticsEvent event) {
+    // TODO: 21/05/2018 To be written
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.LOGIN_EVENT);
 
     return analyticsEvent;

@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.amazon.interactor;
+package com.worldreader.core.analytics.providers.pinpoint.interactor;
 
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -53,12 +53,12 @@ public class PinpointConfigAnalyticsAttributesInteractor {
 
     executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final UserInfoAnalyticsModel userInfo = getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor()).get();
+        final UserInfoAnalyticsModel model = getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor()).get();
 
         final HashMap<String, String> attributes = new HashMap<>();
-        attributes.put("userId", userInfo.userId);
-        attributes.put("deviceId", userInfo.deviceId);
-        attributes.put("clientId", userInfo.clientId);
+        attributes.put("userId", model.userId);
+        attributes.put("deviceId", model.deviceId);
+        attributes.put("clientId", model.clientId);
         attributes.put(AnalyticsEventConstants.APP_IN_OFFLINE, String.valueOf((reachability.isReachable()) ? 0 : 1));
         attributes.put("countryCode", countryCodeProvider.getCountryCode()); //This is the logic to get this value: tries to get geo, if not available  ->
         // SIM, if not available -> default:US

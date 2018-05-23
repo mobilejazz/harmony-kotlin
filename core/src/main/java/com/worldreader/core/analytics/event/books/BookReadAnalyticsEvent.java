@@ -61,8 +61,21 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
         .setSpinePosition(spinePosition)
         .setTextSizeInChars
             (textSizeInChars).create();
+  }
 
+  public static BookStartReadingAnalyticsEvent of (Book book) {
+    return of(book, false);
+  }
 
+  public static BookStartReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
+    return new BookStartReadingAnalyticsEvent.Builder()
+        .setId(book.getId())
+        .setTitle(book.getTitle())
+        .setPublisher(book.getPublisher())
+        .setCategory(toCategory(book.getCategories()))
+        .setCategoryId(toCategoryId(book.getCategories()))
+        .setIsDownloaded(isDownloaded)
+        .setVersion(book.getVersion()).create();
   }
 
   private static String toCategory(List<Category> categories) {

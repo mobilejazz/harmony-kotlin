@@ -53,7 +53,7 @@ public class LoadingBookPresenterImpl implements LoadingBookPresenter {
         bookMetadata.collectionId = collection == null ? 0 : collection.getId();
         bookMetadata.mode = BookMetadata.STREAMING_MODE;
 
-        view.onNotifyDisplayReader(bookMetadata);
+        view.onNotifyDisplayReader(book, bookMetadata);
       }
 
       @Override public void onFailure(@NonNull Throwable t) {

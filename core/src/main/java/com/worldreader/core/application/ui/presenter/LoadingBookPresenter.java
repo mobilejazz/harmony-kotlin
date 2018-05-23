@@ -27,6 +27,6 @@ public interface LoadingBookPresenter {
 
     void hideProgressView();
 
-    void onNotifyDisplayReader(BookMetadata bookMetadata);
+    void onNotifyDisplayReader(Book book, BookMetadata bookMetadata);
   }
 }
