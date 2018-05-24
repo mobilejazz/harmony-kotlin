@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.worldreader.core.analytics.interactors.PutAnalyticsUserIdInteractor;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
@@ -15,13 +16,13 @@ public class PinpointConfigAnalyticsUserIdInteractor {
 
   private final IsAnonymousUserInteractor isAnonymousUserInteractor;
   private final GetUserInteractor getUserInteractor;
-  private final PinpointPutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor;
+  private final PutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor;
   private final ListeningExecutorService executorService;
   private final PinpointConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor;
 
   @Inject public PinpointConfigAnalyticsUserIdInteractor(final IsAnonymousUserInteractor isAnonymousUserInteractor,
       final GetUserInteractor getUserInteractor,
-      final PinpointPutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor,
+      final PutAnalyticsUserIdInteractor putAnalyticsUserIdInteractor,
       final ListeningExecutorService executorService,
       final PinpointConfigAnalyticsAttributesInteractor configAnalyticsAttributesInteractor) {
     this.isAnonymousUserInteractor = isAnonymousUserInteractor;

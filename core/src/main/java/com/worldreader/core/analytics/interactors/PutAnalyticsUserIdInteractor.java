@@ -1,4 +1,4 @@
-package com.worldreader.core.analytics.providers.pinpoint.interactor;
+package com.worldreader.core.analytics.interactors;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -14,14 +14,14 @@ import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
-public class PinpointPutAnalyticsUserIdInteractor {
+public class PutAnalyticsUserIdInteractor {
 
   private final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor;
   private final ListeningExecutorService listeningExecutorService;
   private final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository;
 
   @Inject
-  public PinpointPutAnalyticsUserIdInteractor(
+  public PutAnalyticsUserIdInteractor(
       final GetUserInfoAnalyticsInteractor getAnalyticsInfoInteractor,
       final ListeningExecutorService listeningExecutorService,
       final Repository<UserInfoAnalyticsModel, RepositorySpecification> repository
