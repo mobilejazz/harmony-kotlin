@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import butterknife.Unbinder
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -13,10 +12,7 @@ import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
-  @Inject
-  lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
-
-  private var unbinder: Unbinder? = null
+  @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)
@@ -24,8 +20,7 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     setContentView(getContentViewResId())
   }
 
-  @LayoutRes
-  abstract fun getContentViewResId(): Int
+  @LayoutRes abstract fun getContentViewResId(): Int
 
   override fun supportFragmentInjector(): AndroidInjector<Fragment>? = fragmentInjector
 
