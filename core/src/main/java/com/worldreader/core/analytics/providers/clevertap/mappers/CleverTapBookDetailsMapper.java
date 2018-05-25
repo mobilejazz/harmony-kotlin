@@ -8,10 +8,10 @@ import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventC
 import java.util.HashMap;
 import java.util.Map;
 
-public class CleverTapBookDetailMapper implements CleverTapAnalyticsMapper<BookDetailAnalyticsEvent> {
+public class CleverTapBookDetailsMapper implements CleverTapAnalyticsMapper<BookDetailAnalyticsEvent> {
   private final SharedPreferences preferences;
 
-  public CleverTapBookDetailMapper(Context context) {
+  public CleverTapBookDetailsMapper(Context context) {
     preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
   }
 

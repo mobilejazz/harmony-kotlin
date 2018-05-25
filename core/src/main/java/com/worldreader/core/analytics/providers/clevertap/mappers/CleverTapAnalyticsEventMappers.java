@@ -35,7 +35,7 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
       put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper(context));
       put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper(context));
 
-      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper(context));
+      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailsMapper(context));
 
       put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
