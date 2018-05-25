@@ -29,10 +29,27 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
     return categoryId;
   }
 
-  public String getName() {
+  public String getCategoryName() {
     return categoryName;
   }
 
+  public String getParentCategoryId() {
+    if(parentCategoryId == null)
+      return new String("");
+    return String.valueOf(parentCategoryId);
+  }
+
+  public String getParentCategoryName() {
+    return parentCategoryName;
+  }
+
+  public String getReferringScreen() {
+    return referringScreen;
+  }
+
+  public String getReferringMeta() {
+    return referringMeta;
+  }
 
   public static final class Builder {
 
@@ -46,6 +63,11 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
     public Builder(Integer cId, String cName){
       categoryId = cId;
       categoryName = cName;
+      parentCategoryName = "";
+      parentCategoryId = null;
+      referringScreen ="";
+      referringMeta="";
+
     }
 
     public Builder parentCategoryId(Integer val) {

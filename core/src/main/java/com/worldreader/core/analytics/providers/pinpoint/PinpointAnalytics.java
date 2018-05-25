@@ -28,7 +28,7 @@ public class PinpointAnalytics implements Analytics {
   private final String cognitoId;
   private final String applicationId;
   private final Logger logger;
-
+  private final AnalyticsClient analyticsClient;
   private final PinpointAnalyticsEventMappers mappers;
 
   public PinpointAnalytics(final Context context, final String cognitoId, final String applicationId, Logger logger) {
@@ -36,8 +36,8 @@ public class PinpointAnalytics implements Analytics {
     this.cognitoId = cognitoId;
     this.applicationId = applicationId;
     this.logger = logger;
-
-    this.mappers = new PinpointAnalyticsEventMappers();
+    this.analyticsClient = getPinpointManager().getAnalyticsClient();
+    this.mappers = new PinpointAnalyticsEventMappers(analyticsClient);
     this.logger.d(TAG, "context: " + context + ", cognitoId: " + cognitoId + ", applicationId: " + applicationId);
   }
 

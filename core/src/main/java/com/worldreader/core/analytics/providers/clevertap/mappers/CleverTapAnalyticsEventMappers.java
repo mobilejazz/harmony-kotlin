@@ -30,14 +30,18 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
 
   private Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> createMappers(final Context context) {
     final Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> m = new HashMap<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>>() {{
-      put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper());
-      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper());
-      put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper());
+
+      put(CategorySelectedAnalyticsEvent.class, new CleverTapCategoryDetailsMapper(context));
+      put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper(context));
+      put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper(context));
+
+      put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailMapper(context));
+
       put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
       put(SignInAnalyticsEvent.class, new CleverTapSignInMapper());
       //BookEnd
-      put(CategorySelectedAnalyticsEvent.class, new CleverTapCategoryDetailsMapper(context));
+
       //CategoryDetails
       //CategoryBooks
     }};

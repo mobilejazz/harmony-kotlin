@@ -55,6 +55,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.R;
+import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
+import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.reader.ReaderAnalyticsHelper;
 import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.ui.Dimens;
@@ -1191,20 +1193,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int spinePosition = bookView.getIndex();
     final int textSizeInChars = bookView.getStrategy().getSizeChartDisplayed();
 
+    BookReadAnalyticsEvent event = new BookReadAnalyticsEvent.Builder()
+        .setId(bookMetadata.bookId)
+        .setTitle(bookMetadata.title)
+        .setPagesForResouce(pagesForResource)
+        .setCurrentPage(currentPage)
+        .setText(spanned)
+        .setTocSize(tocSize)
+        .setSpineSize(spineSize)
+        .setSpinePosition(spinePosition)
+        .setTextSizeInChars(textSizeInChars).create();
+    di.analytics.sendEvent(event);
 
-
-    ReaderAnalyticsHelper.sendFormattedChapterEvent(
-        di.analytics,
-        bookMetadata.bookId,
-        bookMetadata.title,
-        pagesForResource,
-        currentPage,
-        spanned,
-        tocSize,
-        spineSize,
-        spinePosition,
-        textSizeInChars
-    );
   }
 
   public interface OnBookTocEntryListener {
