@@ -6,7 +6,7 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.Category;
 import java.util.List;
 
-public class BookStartReadingAnalyticsEvent implements AnalyticsEvent {
+public class BookOpenAnalyticsEvent implements AnalyticsEvent {
 
   public static final int ONLINE_VARIANT = 0;
   public static final int OFFLINE_VARIANT = 1;
@@ -19,7 +19,7 @@ public class BookStartReadingAnalyticsEvent implements AnalyticsEvent {
   private final int variant;
   private final String version;
 
-  private BookStartReadingAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version) {
+  private BookOpenAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version) {
     this.id = id;
     this.title = title;
     this.category = category;
@@ -29,8 +29,8 @@ public class BookStartReadingAnalyticsEvent implements AnalyticsEvent {
     this.version = version;
   }
 
-  public static BookStartReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
-    return new BookStartReadingAnalyticsEvent.Builder()
+  public static BookOpenAnalyticsEvent of(Book book, boolean isDownloaded) {
+    return new BookOpenAnalyticsEvent.Builder()
         .setId(book.getId())
         .setTitle(book.getTitle())
         .setPublisher(book.getPublisher())
@@ -134,8 +134,8 @@ public class BookStartReadingAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
-    public BookStartReadingAnalyticsEvent create() {
-      return new BookStartReadingAnalyticsEvent(id, title, category, categoryId, brand, variant, version);
+    public BookOpenAnalyticsEvent create() {
+      return new BookOpenAnalyticsEvent(id, title, category, categoryId, brand, variant, version);
     }
   }
 }

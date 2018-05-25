@@ -5,7 +5,8 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
-import com.worldreader.core.analytics.event.books.BookStartReadingAnalyticsEvent;
+import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
+import com.worldreader.core.analytics.event.categories.CategoryBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
@@ -32,12 +33,12 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
     final Map<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>> m = new HashMap<Class<?>, CleverTapAnalyticsMapper<? extends AnalyticsEvent>>() {{
 
       put(CategorySelectedAnalyticsEvent.class, new CleverTapCategoryDetailsMapper(context));
+      put(CategoryBooksAnalyticsEvent.class, new CleverTapCategoryBooksMapper(context));
       put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper(context));
       put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper(context));
-
+      put(BookOpenAnalyticsEvent.class, new CleverTapBookOpenMapper(context));
       put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailsMapper(context));
 
-      put(BookStartReadingAnalyticsEvent.class, new CleverTapBookStartReadingMapper());
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
       put(SignInAnalyticsEvent.class, new CleverTapSignInMapper());
       //BookEnd

@@ -20,7 +20,7 @@ public class BookContinueReadingAnalyticsEvent implements AnalyticsEvent {
   private final String version;
 
   private BookContinueReadingAnalyticsEvent(String id, String title, String category, String categoryId, String publisher,
-      @BookStartReadingAnalyticsEvent.Variant int variant, String version) {
+      @BookOpenAnalyticsEvent.Variant int variant, String version) {
     this.id = id;
     this.title = title;
     this.category = category;
@@ -30,8 +30,8 @@ public class BookContinueReadingAnalyticsEvent implements AnalyticsEvent {
     this.version = version;
   }
 
-  public static BookStartReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
-    return new BookStartReadingAnalyticsEvent.Builder()
+  public static BookContinueReadingAnalyticsEvent of(Book book, boolean isDownloaded) {
+    return new BookContinueReadingAnalyticsEvent.Builder()
         .setId(book.getId())
         .setTitle(book.getTitle())
         .setPublisher(book.getPublisher())
@@ -78,7 +78,7 @@ public class BookContinueReadingAnalyticsEvent implements AnalyticsEvent {
     return publisher;
   }
 
-  @BookStartReadingAnalyticsEvent.Variant public int getVariant() {
+  @BookOpenAnalyticsEvent.Variant public int getVariant() {
     return variant;
   }
 
