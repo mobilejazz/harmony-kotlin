@@ -14,7 +14,7 @@ public class PinpointBookDetailsMapper implements PinpointAnalyticsMapper<BookDe
   }
 
   @Override public AnalyticsEvent transform(BookDetailAnalyticsEvent event) {
-    final AnalyticsEvent analyticsEvent = ac.createEvent(AnalyticsEventConstants.BOOK_READ_EVENT);
+    final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.BOOK_DETAILS_EVENT);
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.BOOK_ID_ATTRIBUTE, event.getId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.BOOK_TITLE_ATTRIBUTE, event.getTitle());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.BOOK_VERSION_ATTRIBUTE, PinpointMobileAnalyticsConstants.getBookVersionIntValue(event
