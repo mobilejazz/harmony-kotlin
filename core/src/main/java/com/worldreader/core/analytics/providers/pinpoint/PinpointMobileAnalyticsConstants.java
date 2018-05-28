@@ -8,6 +8,7 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String SELECTED_GRADE_SET_ID = "GradeSetId";
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
   public static final String BOOK_LOADING_EVENT = "BookLoading";
+  public static final String BOOK_OPEN_EVENT = "BookOpen";
   public static final String GO_TO_SEARCH_EVENT = "GoToSearch";
   public static final String BOOK_LIKE_EVENT = "Like";
   public static final String BOOK_UNLIKE_EVENT = "Unlike";

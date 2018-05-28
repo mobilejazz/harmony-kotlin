@@ -10,6 +10,7 @@ public class CleverTapEventConstants {
   public static final String BOOK_CONTINUE_READING_EVENT = "BookContinue";
   public static final String BOOK_READ_EVENT = "BookRead";
   public static final Object BOOK_OPEN_EVENT = "BookOpen";
+  public static final Object BOOK_END_EVENT = "BookEnd";
   public static final String SHELVE_ATTRIBUTE = "ShelfId";
   public static final String SHELVE_TITLE_ATTRIBUTE ="ShelfName" ;
 
