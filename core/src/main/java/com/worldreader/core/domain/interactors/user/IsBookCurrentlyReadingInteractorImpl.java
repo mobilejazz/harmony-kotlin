@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -22,18 +21,15 @@ public class IsBookCurrentlyReadingInteractorImpl extends AbstractInteractor<Boo
     implements IsBookCurrentlyReadingInteractor {
 
   private final GetUserBookInteractor getUserBookInteractor;
-  private final InteractorHandler interactorHandler;
 
   private String bookId;
   private DomainCallback<Boolean, ErrorCore> callback;
 
   @Inject
   public IsBookCurrentlyReadingInteractorImpl(InteractorExecutor executor, MainThread mainThread,
-      final GetUserBookInteractor getUserBookInteractor,
-      final InteractorHandler interactorHandler) {
+      final GetUserBookInteractor getUserBookInteractor) {
     super(executor, mainThread);
     this.getUserBookInteractor = getUserBookInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Override public void execute(String bookId, DomainCallback<Boolean, ErrorCore> callback) {
@@ -59,7 +55,7 @@ public class IsBookCurrentlyReadingInteractorImpl extends AbstractInteractor<Boo
   @Override public void run() {
     final ListenableFuture<Optional<UserBook>> userBookLf = getUserBookInteractor.execute(bookId);
 
-    interactorHandler.addCallback(userBookLf, new FutureCallback<Optional<UserBook>>() {
+    Futures.addCallback(userBookLf, new FutureCallback<Optional<UserBook>>() {
       @Override public void onSuccess(@Nullable final Optional<UserBook> result) {
         if (result.isPresent()) {
           final UserBook userBook = result.get();

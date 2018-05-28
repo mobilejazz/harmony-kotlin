@@ -2,7 +2,7 @@ package com.worldreader.core.domain.interactors.user;
 
 import android.support.annotation.NonNull;
 import com.google.common.util.concurrent.FutureCallback;
-import com.worldreader.core.application.helper.InteractorHandler;
+import com.google.common.util.concurrent.Futures;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.AbstractInteractor;
@@ -14,19 +14,14 @@ import com.worldreader.core.domain.model.Score;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.RatingRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
 import javax.inject.Inject;
 
-public class UserLikeBookInteractorImpl extends AbstractInteractor<Double, ErrorCore>
-    implements UserLikeBookInteractor {
+public class UserLikeBookInteractorImpl extends AbstractInteractor<Double, ErrorCore> implements UserLikeBookInteractor {
 
   private final RatingRepository ratingRepository;
-
   private final GetBookDetailInteractor getBookDetailInteractor;
+  private final com.worldreader.core.domain.interactors.user.userbooks.LikeBookInteractor likeBookInteractor;
 
-  private final com.worldreader.core.domain.interactors.user.userbooks.LikeBookInteractor
-      likeBookInteractor;
-  private final InteractorHandler interactorHandler;
 
   private String id;
   private Score score;
@@ -34,13 +29,11 @@ public class UserLikeBookInteractorImpl extends AbstractInteractor<Double, Error
 
   @Inject public UserLikeBookInteractorImpl(InteractorExecutor executor, MainThread mainThread,
       RatingRepository ratingRepository, GetBookDetailInteractor getBookDetailInteractor,
-      com.worldreader.core.domain.interactors.user.userbooks.LikeBookInteractor likeBookInteractor,
-      InteractorHandler interactorHandler) {
+      com.worldreader.core.domain.interactors.user.userbooks.LikeBookInteractor likeBookInteractor) {
     super(executor, mainThread);
     this.ratingRepository = ratingRepository;
     this.getBookDetailInteractor = getBookDetailInteractor;
     this.likeBookInteractor = likeBookInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Override
@@ -54,7 +47,7 @@ public class UserLikeBookInteractorImpl extends AbstractInteractor<Double, Error
   @Override public void run() {
     ratingRepository.rate(id, score, new CompletionCallback<Boolean>() {
       @Override public void onSuccess(Boolean result) {
-        interactorHandler.addCallback(likeBookInteractor.execute(id),
+        Futures.addCallback(likeBookInteractor.execute(id),
             new FutureCallback<UserBook>() {
               @Override public void onSuccess(UserBook result) {
                 getBookDetailInteractor.execute(id, true/*force update*/,

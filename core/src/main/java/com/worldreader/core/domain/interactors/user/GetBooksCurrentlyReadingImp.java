@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
@@ -39,7 +38,6 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
   private final Reachability reachability;
   private final UserBooksRepository userBookRepository;
   private final GetBookDetailInteractor getBookDetailInteractor;
-  private final InteractorHandler interactorHandler;
 
   private boolean allBooks;
   private int limit;
@@ -47,14 +45,12 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
 
   @Inject
   public GetBooksCurrentlyReadingImp(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository, Reachability reachability,
-      final UserBooksRepository userBookRepository, final GetBookDetailInteractor getBookDetailInteractor,
-      final InteractorHandler interactorHandler) {
+      final UserBooksRepository userBookRepository, final GetBookDetailInteractor getBookDetailInteractor) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.reachability = reachability;
     this.userBookRepository = userBookRepository;
     this.getBookDetailInteractor = getBookDetailInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Deprecated @Override public void execute(int limit, boolean allBooks, DomainCallback<List<Book>, ErrorCore> callback) {
@@ -164,7 +160,7 @@ public class GetBooksCurrentlyReadingImp extends AbstractInteractor<List<Book>, 
 
           final ListenableFuture<List<Optional<Book>>> combinerLf = Futures.allAsList(booksLf);
 
-          interactorHandler.addCallback(combinerLf, new FutureCallback<List<Optional<Book>>>() {
+          Futures.addCallback(combinerLf, new FutureCallback<List<Optional<Book>>>() {
             @Override public void onSuccess(@Nullable final List<Optional<Book>> result) {
               final List<Book> books = Lists.transform(result, new Function<Optional<Book>, Book>() {
                 @Nullable @Override public Book apply(@Nullable final Optional<Book> input) {

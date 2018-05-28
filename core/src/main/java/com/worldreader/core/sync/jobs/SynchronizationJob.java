@@ -37,9 +37,12 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 
 public class SynchronizationJob extends Job {
 
@@ -47,34 +50,21 @@ public class SynchronizationJob extends Job {
 
   private static int jobId = -1;
 
-  private Logger logger;
-  private GetUserInteractor getUserInteractor;
-  private SaveUserInteractor saveUserInteractor;
-  private GetAllUserBookInteractor getAllUserBookInteractor;
-  private PutAllUserBooksInteractor putAllUserBooksInteractor;
-  private UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
-  private GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor;
-  private PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor;
-  private PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
-  private GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
-  private PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
-  private IsAnonymousUserInteractor isAnonymousUserInteractor;
-  private Reachability reachability;
+  @Inject Logger logger;
+  @Inject GetUserInteractor getUserInteractor;
+  @Inject SaveUserInteractor saveUserInteractor;
+  @Inject GetAllUserBookInteractor getAllUserBookInteractor;
+  @Inject PutAllUserBooksInteractor putAllUserBooksInteractor;
+  @Inject UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
+  @Inject GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor;
+  @Inject PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor;
+  @Inject PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
+  @Inject GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
+  @Inject PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  @Inject IsAnonymousUserInteractor isAnonymousUserInteractor;
+  @Inject Reachability reachability;
 
-  public SynchronizationJob(Context context, WorldreaderJobCreator.InjectableCompanion companion) {
-    this.logger = companion.logger;
-    this.getUserInteractor = companion.getUserInteractor;
-    this.saveUserInteractor = companion.saveUserInteractor;
-    this.getAllUserBookInteractor = companion.getAllUserBookInteractor;
-    this.putAllUserBooksInteractor = companion.putAllUserBooksInteractor;
-    this.userScoreSynchronizationProcessInteractor = companion.userScoreSynchronizationProcessInteractor;
-    this.getUnsyncUserMilestonesInteractor = companion.getUnsyncUserMilestonesInteractor;
-    this.putAllUserMilestonesNetworkInteractor = companion.putAllUserMilestonesNetworkInteractor;
-    this.putAllUserMilestonesInteractor = companion.putAllUserMilestonesInteractor;
-    this.getAllUserBookLikesInteractor = companion.getAllUserBookLikesInteractor;
-    this.putAllUserBooksLikesInteractor = companion.putAllUserBooksLikesInteractor;
-    this.isAnonymousUserInteractor = companion.isAnonymousUserInteractor;
-    this.reachability = companion.reachability;
+  public SynchronizationJob(Context context) {
   }
 
   // Only for testing purposes

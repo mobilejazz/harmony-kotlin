@@ -1,9 +1,9 @@
 package com.worldreader.core.domain.interactors.userflow;
 
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.deprecated.DomainBackgroundCallback;
 import com.worldreader.core.domain.deprecated.DomainCallback;
@@ -13,9 +13,10 @@ import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserI
 import com.worldreader.core.domain.model.UserFlow;
 import com.worldreader.core.domain.repository.UserFlowRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
 public class GetReaderUserFlowToDisplayInteractorImpl extends BaseUserFlowInteractor
     implements GetReaderUserFlowToDisplayInteractor {
@@ -23,19 +24,16 @@ public class GetReaderUserFlowToDisplayInteractorImpl extends BaseUserFlowIntera
   private final UserFlowRepository userFlowRepository;
   private final GetSessionsInteractor getSessionsInteractor;
   private final IsAnonymousUserInteractor isAnonymousUserInteractor;
-  private final InteractorHandler interactorHandler;
   private DomainCallback<List<UserFlow>, ErrorCore<?>> callback;
 
   @Inject public GetReaderUserFlowToDisplayInteractorImpl(InteractorExecutor executor,
       MainThread mainThread, UserFlowRepository userFlowRepository,
       GetSessionsInteractor getSessionsInteractor,
-      final IsAnonymousUserInteractor isAnonymousUserInteractor,
-      final InteractorHandler interactorHandler) {
+      final IsAnonymousUserInteractor isAnonymousUserInteractor) {
     super(executor, mainThread);
     this.userFlowRepository = userFlowRepository;
     this.getSessionsInteractor = getSessionsInteractor;
     this.isAnonymousUserInteractor = isAnonymousUserInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Override public void execute(DomainCallback<List<UserFlow>, ErrorCore<?>> callback) {
@@ -50,7 +48,7 @@ public class GetReaderUserFlowToDisplayInteractorImpl extends BaseUserFlowIntera
       @Override public void onSuccess(final List<Date> sessions) {
         final ListenableFuture<IsAnonymousUserInteractor.Type> isAnonymousUserLf =
             isAnonymousUserInteractor.execute(MoreExecutors.directExecutor());
-        interactorHandler.addCallback(isAnonymousUserLf,
+        Futures.addCallback(isAnonymousUserLf,
             new FutureCallback<IsAnonymousUserInteractor.Type>() {
               @Override
               public void onSuccess(final IsAnonymousUserInteractor.Type result) {

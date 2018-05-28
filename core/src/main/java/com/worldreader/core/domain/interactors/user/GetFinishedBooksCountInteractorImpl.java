@@ -3,10 +3,10 @@ package com.worldreader.core.domain.interactors.user;
 import android.support.annotation.Nullable;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.concurrency.SafeRunnable;
@@ -19,10 +19,11 @@ import com.worldreader.core.domain.interactors.user.userbooks.GetCollectionIdMap
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Integer, ErrorCore> implements GetFinishedBooksCountInteractor {
 
@@ -30,7 +31,6 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
 
   private final UserBooksRepository userBooksRepository;
   private final GetCollectionIdMapOfUserBooksInteractor getCollectionIdMapOfUserBooksInteractor;
-  private final InteractorHandler interactorHandler;
 
   private String collectionId;
 
@@ -39,11 +39,10 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
 
   @Inject
   public GetFinishedBooksCountInteractorImpl(InteractorExecutor executor, MainThread mainThread, final UserBooksRepository userBooksRepository,
-      final GetCollectionIdMapOfUserBooksInteractor getCollectionIdMapOfUserBooksInteractor, final InteractorHandler interactorHandler) {
+      final GetCollectionIdMapOfUserBooksInteractor getCollectionIdMapOfUserBooksInteractor) {
     super(executor, mainThread);
     this.userBooksRepository = userBooksRepository;
     this.getCollectionIdMapOfUserBooksInteractor = getCollectionIdMapOfUserBooksInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Override public void execute(int collectionId, DomainCallback<Integer, ErrorCore> callback) {
@@ -134,7 +133,7 @@ public class GetFinishedBooksCountInteractorImpl extends AbstractInteractor<Inte
 
           final ListenableFuture<Map<String, Set<String>>> getCollectionIdMapFuture =
               getCollectionIdMapOfUserBooksInteractor.execute(userBooks, MoreExecutors.directExecutor());
-          interactorHandler.addCallback(getCollectionIdMapFuture, new FutureCallback<Map<String, Set<String>>>() {
+          Futures.addCallback(getCollectionIdMapFuture, new FutureCallback<Map<String, Set<String>>>() {
             @Override public void onSuccess(@Nullable final Map<String, Set<String>> result) {
               final Set<String> booksFinishedByCollection = result.get(String.valueOf(collectionId));
               final int response = booksFinishedByCollection == null ? 0 : booksFinishedByCollection.size();

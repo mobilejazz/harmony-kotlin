@@ -1,10 +1,10 @@
 package com.worldreader.core.domain.interactors.user;
 
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
@@ -20,14 +20,12 @@ import java.util.concurrent.*;
   private final ListeningExecutorService executorService;
   private final UserScoreRepository userScoreRepository;
   private final GetUserInteractor getUserInteractor;
-  private final InteractorHandler interactorHandler;
 
   @Inject public GetCurrentUserScoreInteractor(final ListeningExecutorService executorService, final UserScoreRepository userScoreRepository,
-      final GetUserInteractor getUserInteractor, final InteractorHandler interactorHandler) {
+      final GetUserInteractor getUserInteractor) {
     this.executorService = executorService;
     this.userScoreRepository = userScoreRepository;
     this.getUserInteractor = getUserInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   public ListenableFuture<Integer> execute() {
@@ -43,7 +41,7 @@ import java.util.concurrent.*;
 
         final ListenableFuture<User2> userLf = getUserInteractor.execute(spec, executor);
 
-        interactorHandler.addCallback(userLf, new FutureCallback<User2>() {
+        Futures.addCallback(userLf, new FutureCallback<User2>() {
           @Override public void onSuccess(final User2 result) {
             userScoreRepository.getTotalUserScore(result.getId(), new Callback<Integer>() {
               @Override public void onSuccess(final Integer value) {

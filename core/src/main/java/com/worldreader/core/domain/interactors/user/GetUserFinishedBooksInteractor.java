@@ -4,33 +4,30 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.interactors.user.userbooks.GetFinishedUserBooksInteractor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.BookRepository;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
 
 @Singleton public class GetUserFinishedBooksInteractor {
 
   private final ListeningExecutorService executor;
-  private final InteractorHandler interactorHandler;
   private final BookRepository bookRepository;
   private final GetFinishedUserBooksInteractor getFinishedUserBooksInteractor;
 
-  @Inject public GetUserFinishedBooksInteractor(ListeningExecutorService executor,
-      InteractorHandler interactorHandler, BookRepository bookRepository,
+  @Inject public GetUserFinishedBooksInteractor(ListeningExecutorService executor, BookRepository bookRepository,
       GetFinishedUserBooksInteractor getFinishedUserBooksInteractor) {
     this.executor = executor;
-    this.interactorHandler = interactorHandler;
     this.bookRepository = bookRepository;
     this.getFinishedUserBooksInteractor = getFinishedUserBooksInteractor;
   }
@@ -43,7 +40,7 @@ import java.util.*;
         final ListenableFuture<List<UserBook>> finishedBooksFuture =
             getFinishedUserBooksInteractor.execute();
 
-        interactorHandler.addCallback(finishedBooksFuture, new FutureCallback<List<UserBook>>() {
+        Futures.addCallback(finishedBooksFuture, new FutureCallback<List<UserBook>>() {
           @Override public void onSuccess(@Nullable final List<UserBook> result) {
             final List<String> finishedBooksIds = toBookIdList(result);
             final List<Book> fetchedBooks = Lists.newArrayListWithCapacity(finishedBooksIds.size());
@@ -68,7 +65,6 @@ import java.util.*;
             future.setException(t);
           }
         });
-
       }
     });
 
@@ -86,5 +82,4 @@ import java.util.*;
       return Collections.unmodifiableList(bookIds);
     }
   }
-
 }

@@ -1,11 +1,10 @@
 package com.worldreader.core.datasource.storage.datasource.referrer;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
-import com.worldreader.core.application.di.qualifiers.ReferrerSharedPreferences;
 import com.worldreader.core.datasource.ReferrerDataSource;
 import com.worldreader.core.domain.model.Referrer;
-
 import javax.inject.Inject;
 
 public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSource {
@@ -15,8 +14,8 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
   private static final String KEY_REFERRER_DEVICE_ID = "referrerDeviceId";
   private static final String KEY_REFERRER_USER_ID = "referrerUserId";
 
-  @Inject public ReferrerSharedPreferencesDataSourceImpl(@ReferrerSharedPreferences SharedPreferences sharedPreferences) {
-    this.sharedPreferences = sharedPreferences;
+  @Inject public ReferrerSharedPreferencesDataSourceImpl(Context c) {
+    this.sharedPreferences = c.getSharedPreferences("wr-invitation-referrer", Context.MODE_PRIVATE);
   }
 
   @SuppressLint("ApplySharedPref") @Override public void put(Referrer referrer) {

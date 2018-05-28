@@ -15,8 +15,7 @@ import com.worldreader.core.domain.thread.MainThread;
 import javax.inject.Inject;
 import java.util.concurrent.*;
 
-@Deprecated public class SaveOnBoardingPassedInteractorImpl
-    extends AbstractInteractor<Boolean, ErrorCore> implements SaveOnBoardingPassedInteractor {
+@Deprecated public class SaveOnBoardingPassedInteractorImpl extends AbstractInteractor<Boolean, ErrorCore> implements SaveOnBoardingPassedInteractor {
 
   private final Action<Void, Boolean> completeOnBoardingAction;
   private final Action<Void, Boolean> deleteOnBoardingAction;
@@ -24,8 +23,7 @@ import java.util.concurrent.*;
   private boolean status;
   private DomainCallback<Boolean, ErrorCore> callback;
 
-  @Inject public SaveOnBoardingPassedInteractorImpl(final InteractorExecutor executor,
-      final MainThread mainThread,
+  @Inject public SaveOnBoardingPassedInteractorImpl(final InteractorExecutor executor, final MainThread mainThread,
       @CompleteOnboardingActionQualifier final Action<Void, Boolean> completeOnBoardingAction,
       @DeleteOnboardingActionQualifier final Action<Void, Boolean> deleteOnBoardingAction) {
     super(executor, mainThread);

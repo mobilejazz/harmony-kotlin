@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
@@ -18,26 +18,23 @@ import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.model.user.UserScore;
-
+import java.util.Date;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
-import java.util.concurrent.*;
 
 @Singleton public class AddUserScoreInteractor {
 
   private final ListeningExecutorService executor;
   private final Repository<UserScore, RepositorySpecification> userScoreRepository;
   private final GetUserInteractor getUserInteractor;
-  private final InteractorHandler interactorHandler;
 
   @Inject public AddUserScoreInteractor(final ListeningExecutorService executor,
       final Repository<UserScore, RepositorySpecification> userScoreRepository,
-      final GetUserInteractor getUserInteractor, final InteractorHandler interactorHandler) {
+      final GetUserInteractor getUserInteractor) {
     this.executor = executor;
     this.userScoreRepository = userScoreRepository;
     this.getUserInteractor = getUserInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   public ListenableFuture<UserScore> execute(final String bookId, final int pages,
@@ -72,7 +69,7 @@ import java.util.concurrent.*;
         final ListenableFuture<User2> userLf =
             getUserInteractor.execute(spec, MoreExecutors.directExecutor());
 
-        interactorHandler.addCallback(userLf, new FutureCallback<User2>() {
+        Futures.addCallback(userLf, new FutureCallback<User2>() {
           @Override public void onSuccess(final User2 result) {
             if (result != null) {
               final String userId = result.getId();

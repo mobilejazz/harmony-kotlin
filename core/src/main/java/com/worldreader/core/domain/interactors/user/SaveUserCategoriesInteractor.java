@@ -5,11 +5,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
@@ -19,12 +19,11 @@ import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserI
 import com.worldreader.core.domain.model.user.User2;
 import com.worldreader.core.domain.repository.UserRepository;
 import com.worldreader.core.error.general.UnexpectedErrorException;
-
+import java.util.List;
+import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
-import java.util.concurrent.*;
 
 @Singleton public class SaveUserCategoriesInteractor {
 
@@ -33,19 +32,16 @@ import java.util.concurrent.*;
   private final IsAnonymousUserInteractor isAnonymousUserInteractor;
   private final GetUserInteractor getUserInteractor;
   private final SaveUserInteractor saveUserInteractor;
-  private final InteractorHandler interactorHandler;
 
   @Inject
   public SaveUserCategoriesInteractor(ListeningExecutorService executor, UserRepository repository,
       final IsAnonymousUserInteractor isAnonymousUserInteractor,
-      final GetUserInteractor getUserInteractor, final SaveUserInteractor saveUserInteractor,
-      final InteractorHandler interactorHandler) {
+      final GetUserInteractor getUserInteractor, final SaveUserInteractor saveUserInteractor) {
     this.executor = executor;
     this.repository = repository;
     this.isAnonymousUserInteractor = isAnonymousUserInteractor;
     this.getUserInteractor = getUserInteractor;
     this.saveUserInteractor = saveUserInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   public ListenableFuture<User2> execute(final List<Integer> categories) {
@@ -96,11 +92,11 @@ import java.util.concurrent.*;
 
               final SaveUserInteractor.Type userType =
                   type == IsAnonymousUserInteractor.Type.ANONYMOUS
-                  ? SaveUserInteractor.Type.ANONYMOUS : SaveUserInteractor.Type.LOGGED_IN;
+                      ? SaveUserInteractor.Type.ANONYMOUS : SaveUserInteractor.Type.LOGGED_IN;
               final ListenableFuture<User2> saveUserLf =
                   saveUserInteractor.execute(user, userType, MoreExecutors.directExecutor());
 
-              interactorHandler.addCallback(saveUserLf, new FutureCallback<User2>() {
+              Futures.addCallback(saveUserLf, new FutureCallback<User2>() {
                 @Override public void onSuccess(@Nullable final User2 result) {
                   future.set(result);
                 }
@@ -125,5 +121,4 @@ import java.util.concurrent.*;
       }
     };
   }
-
 }

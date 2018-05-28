@@ -3,7 +3,7 @@ package com.worldreader.core.application.ui.presenter;
 import android.support.annotation.NonNull;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.worldreader.core.application.helper.InteractorHandler;
+import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.interactors.reader.GetBookMetadataInteractor;
 import com.worldreader.core.domain.model.Book;
@@ -15,13 +15,11 @@ import javax.inject.Inject;
 public class LoadingBookPresenterImpl implements LoadingBookPresenter {
 
   private final GetBookMetadataInteractor getBookMetadataInteractor;
-  private final InteractorHandler interactorHandler;
 
   private View view;
 
-  @Inject public LoadingBookPresenterImpl(GetBookMetadataInteractor getBookMetadataInteractor, InteractorHandler interactorHandler) {
+  @Inject public LoadingBookPresenterImpl(GetBookMetadataInteractor getBookMetadataInteractor) {
     this.getBookMetadataInteractor = getBookMetadataInteractor;
-    this.interactorHandler = interactorHandler;
   }
 
   @Override public void initialize() {
@@ -46,7 +44,7 @@ public class LoadingBookPresenterImpl implements LoadingBookPresenter {
 
   @Override public void initialize(final Book book, final Collection collection) {
     final ListenableFuture<BookMetadata> getBookMetadataFuture = getBookMetadataInteractor.execute(book.getId(), book.getVersion());
-    interactorHandler.addCallbackMainThread(getBookMetadataFuture, new FutureCallback<BookMetadata>() {
+    AndroidFutures.addCallbackMainThread(getBookMetadataFuture, new FutureCallback<BookMetadata>() {
       @Override public void onSuccess(@NonNull BookMetadata bookMetadata) {
         bookMetadata.title = book.getTitle();
         bookMetadata.author = book.getAuthor();
