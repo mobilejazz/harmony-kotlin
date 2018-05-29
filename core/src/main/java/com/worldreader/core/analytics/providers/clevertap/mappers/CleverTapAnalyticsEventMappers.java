@@ -4,6 +4,7 @@ import android.content.Context;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
+import com.worldreader.core.analytics.event.books.BookFinishedAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategoryBooksAnalyticsEvent;
@@ -37,13 +38,11 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
       put(BookReadAnalyticsEvent.class, new CleverTapBookReadMapper(context));
       put(BookContinueReadingAnalyticsEvent.class, new CleverTapBookContinueReadingMapper(context));
       put(BookOpenAnalyticsEvent.class, new CleverTapBookOpenMapper(context));
+      put(BookFinishedAnalyticsEvent.class, new CleverTapBookFinishedMapper(context));
       put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailsMapper(context));
+      put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper(context));
+      put(SignInAnalyticsEvent.class, new CleverTapSignInMapper(context));
 
-      put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper());
-      put(SignInAnalyticsEvent.class, new CleverTapSignInMapper());
-      //BookEnd
-
-      //CategoryDetails
       //CategoryBooks
     }};
     return Collections.unmodifiableMap(m);

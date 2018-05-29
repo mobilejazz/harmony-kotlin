@@ -8,12 +8,14 @@ public class SignInAnalyticsEvent implements AnalyticsEvent {
   private final String userId;
   private final String country;
   private final String date;
+  private final String register;
 
   private SignInAnalyticsEvent(Builder builder) {
     username = builder.username;
     userId = builder.userId;
     country = builder.country;
     date = builder.date;
+    register = builder.register;
   }
 
   public static Builder builder() {
@@ -36,11 +38,16 @@ public class SignInAnalyticsEvent implements AnalyticsEvent {
     return date;
   }
 
-  public static final class Builder {
+  public String getRegister() {
+    return register;
+  }
+
+    public static final class Builder {
     private String username;
     private String userId;
     private String country;
     private String date;
+    private String register;
 
     private Builder() {
     }
@@ -62,6 +69,11 @@ public class SignInAnalyticsEvent implements AnalyticsEvent {
 
     public Builder withDate(String val) {
       date = val;
+      return this;
+    }
+
+    public Builder withRegister(String val) {
+      register = val;
       return this;
     }
 

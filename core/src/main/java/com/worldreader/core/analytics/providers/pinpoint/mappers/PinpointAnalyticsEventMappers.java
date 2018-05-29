@@ -1,6 +1,7 @@
 package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import android.content.Context;
+import com.amazonaws.auth.SigningAlgorithm;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
@@ -9,6 +10,8 @@ import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.SetUserIdAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,8 +41,9 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(BookDetailAnalyticsEvent.class, new PinpointBookDetailsMapper(analyticsClient));
           put(BookOpenAnalyticsEvent.class, new PinpointBookOpenMapper(analyticsClient));
           put(BookFinishedAnalyticsEvent.class, new PinpointBookFinishedMapper(analyticsClient));
-
-          put(SetUserIdAnalyticsEvent.class, NONE);
+          put(SignInAnalyticsEvent.class, new PinpointSignInMapper(analyticsClient));
+          put(SignUpAnalyticsEvent.class, new PinpointSignUpMapper(analyticsClient));
+          //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 
     return Collections.unmodifiableMap(mappers);
