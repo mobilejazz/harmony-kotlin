@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: 'buildsystem/dependencies.gradle'
 
 android {
-  compileSdkVersion rootProject.ext.androidCompileSdkVersion
-  buildToolsVersion rootProject.ext.androidBuildToolsVersion
+  compileSdkVersion rootProject.ext.android_compile_sdk_version
+  buildToolsVersion rootProject.ext.android_build_tools_version
 
   lintOptions {
     abortOnError false
@@ -15,8 +14,8 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion rootProject.ext.androidMinSdkVersion
-    targetSdkVersion rootProject.ext.androidTargetSdkVersion
+    minSdkVersion rootProject.ext.android_min_sdk_version
+    targetSdkVersion rootProject.ext.android_target_sdk_version
 
     versionCode 1001
 
@@ -52,73 +51,76 @@ android {
 }
 
 dependencies {
-  def dependencies = project.ext.dependencies
+  api "com.android.support:appcompat-v7:$rootProject.ext.support_libraries_version"
+  api "com.android.support:support-annotations:$rootProject.ext.support_libraries_version"
+  api "com.android.support:recyclerview-v7:$rootProject.ext.support_libraries_version"
+  api "com.android.support:cardview-v7:$rootProject.ext.support_libraries_version"
+  api "com.android.support:design:$rootProject.ext.support_libraries_version"
+  api "com.android.support.constraint:constraint-layout:$rootProject.ext.constraint_layout_version"
 
-  compile dependencies.appCompat
-  compile dependencies.supportAnnotation
-  compile dependencies.recyclerView
-  compile dependencies.cardView
-  compile dependencies.design
-  compile dependencies.constraintLayout
+  api files('libs/wasabi.jar')
 
-  compile dependencies.picasso
-  compile dependencies.picassoOkhttp3
-  compile dependencies.simpleStorage
+  api 'com.squareup.picasso:picasso:2.5.2'
+  api 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 
-  compile dependencies.guava
-  compile dependencies.joda
-  compile dependencies.logger
-  compile dependencies.javaxAnnotation
-  compile dependencies.javaxinject
-  compile dependencies.vastra
-  compile dependencies.storio
-  compile dependencies.storioAnnotation
-  annotationProcessor dependencies.storioAnnotationProcessor
+  api 'com.sromku:simple-storage:1.2.0'
 
-  compile(dependencies.materialDialogsCore) { transitive = true }
-  compile(dependencies.materialDialogsCommons) { transitive = true }
+  implementation "com.google.guava:guava:$rootProject.ext.guava_version"
+  api 'net.danlew:android.joda:2.9.9'
+  api 'com.mobilejazz.logger:library:0.2-SNAPSHOT'
 
-  compile dependencies.dagger
-  annotationProcessor dependencies.daggerCompiler
+  // Dagger
+  compile "com.google.dagger:dagger:$rootProject.ext.dagger_version"
+  annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.dagger_version"
+  api "javax.inject:javax.inject:1"
 
-  compile dependencies.okHttp
-  compile dependencies.okHttp3LoggingInterceptor
+  api 'com.mobilejazz.vastra:library:1.1.0-SNAPSHOT'
 
-  compile dependencies.retrofit2
-  compile dependencies.retrofit2Gson
-  compile(dependencies.retrofitSimpleXml) {
+  api 'com.pushtorefresh.storio:sqlite:1.11.0'
+  api 'com.pushtorefresh.storio:sqlite-annotations:1.11.0'
+  annotationProcessor 'com.pushtorefresh.storio:sqlite-annotations-processor:1.11.0'
+
+  api('com.afollestad.material-dialogs:core:0.9.6.0@aar') { transitive = true }
+  api('com.afollestad.material-dialogs:commons:0.9.6.0@aar') { transitive = true }
+
+  implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+
+  api 'com.squareup.retrofit2:retrofit:2.3.0'
+  api 'com.squareup.retrofit2:converter-gson:2.3.0'
+  api('com.squareup.retrofit2:converter-simplexml:2.3.0') {
     exclude module: 'stax-api'
     exclude module: 'stax'
     exclude module: 'xpp3'
   }
-  compile(dependencies.simplexml) {
+  api('org.simpleframework:simple-xml:2.7.1') {
     exclude module: 'stax'
     exclude module: 'stax-api'
     exclude module: 'xpp3'
   }
 
-  compile dependencies.sqlcipher
+  api 'net.zetetic:android-database-sqlcipher:3.5.9'
 
-  compile 'org.javatuples:javatuples:1.2'
+  implementation 'org.javatuples:javatuples:1.2'
 
-  compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.16'
-  compile 'com.osbcp.cssparser:cssparser:1.5'
-  compile dependencies.jedi
+  implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.16'
+  implementation 'com.osbcp.cssparser:cssparser:1.5'
+  implementation 'org.codehaus.jedi:jedi-core:3.0.5'
 
-  compile dependencies.securePreferences
-  compile dependencies.androidjob
+  api 'com.scottyab:secure-preferences-lib:0.1.4'
 
-  compile dependencies.scaleImageView
-  compile dependencies.viewpropertyobjectanimator
+  api 'com.evernote:android-job:1.1.12'
 
-  compile dependencies.awsCore
-  compile dependencies.awsPinpoint
+  api 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
+  implementation 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
 
-  compile dependencies.networkConnectionClass
+  api 'com.amazonaws:aws-android-sdk-core:2.6.+'
+  api 'com.amazonaws:aws-android-sdk-pinpoint:2.6.+'
 
-  compile dependencies.javaPoet
-  compile dependencies.systemUiHelper
-  compile dependencies.expandableLayout
+  compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
 
-  compile files('libs/wasabi.jar')
+  implementation "com.squareup:javapoet:1.7.0"
+
+  implementation 'me.zhanghai.android.systemuihelper:library:1.0.0'
+  implementation 'com.github.aakira:expandable-layout:1.6.0@aar'
 }
