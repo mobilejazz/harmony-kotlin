@@ -13,6 +13,7 @@ abstract class BaseMVPViewFragment<T : Presenter<V>, in V : MVPView> : BaseFragm
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    @Suppress("UNCHECKED_CAST")
     presenter.attachView(this@BaseMVPViewFragment as V)
   }
 

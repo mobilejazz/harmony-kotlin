@@ -36,6 +36,7 @@ class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSou
     }
 
 
+    @Suppress("USELESS_CAST")
     override fun put(query: Query, value: T?): Future<T> = Future {
         when (query) {
             is StringKeyQuery -> {
@@ -53,10 +54,12 @@ class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSou
     override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future {
         when (query) {
             is StringKeyQuery -> {
-                if (value == null)
+                if (value == null) {
                     throw IllegalArgumentException("InMemoryDataSource: values must be not null")
-                else
-                    arrays.put(query.key, value).run { value as List<T> }
+                }
+                else {
+                    return@Future arrays.put(query.key, value).run { value as List<T> }
+                }
             }
             else -> notSupportedQuery()
         }
