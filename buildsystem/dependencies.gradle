@@ -48,9 +48,9 @@ ext {
       kotlin                   : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version",
       kotlinstdlib             : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
 
+      dagger                   : "com.google.dagger:dagger:$daggerVersion",
       daggerCompiler           : "com.google.dagger:dagger-compiler:$daggerVersion",
       daggerAndroidCompiler    : "com.google.dagger:dagger-android-processor:$daggerVersion",
-      dagger                   : "com.google.dagger:dagger:$daggerVersion",
       daggerAndroid            : "com.google.dagger:dagger-android:$daggerVersion",
       daggerAndroidSupport     : "com.google.dagger:dagger-android-support:$daggerVersion",
       javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
