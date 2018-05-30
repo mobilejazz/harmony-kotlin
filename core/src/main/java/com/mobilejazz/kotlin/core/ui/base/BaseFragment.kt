@@ -33,6 +33,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     return inflater.inflate(getContentViewResId(), container, false)
   }
 
-  @LayoutRes abstract fun getContentViewResId(): Int
+  @LayoutRes
+  abstract fun getContentViewResId(): Int
 
 }
