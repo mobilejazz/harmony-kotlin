@@ -63,12 +63,12 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
             (textSizeInChars).create();
   }
 
-  public static BookOpenAnalyticsEvent of (Book book) {
+  public static BookReadAnalyticsEvent of (Book book) {
     return of(book, false);
   }
 
-  public static BookOpenAnalyticsEvent of(Book book, boolean isDownloaded) {
-    return new BookOpenAnalyticsEvent.Builder()
+  public static BookReadAnalyticsEvent of(Book book, boolean isDownloaded) {
+    return new BookReadAnalyticsEvent.Builder()
         .setId(book.getId())
         .setTitle(book.getTitle())
         .setPublisher(book.getPublisher())
@@ -114,7 +114,7 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     return publisher;
   }
 
-  @BookOpenAnalyticsEvent.Variant public int getVariant() {
+  @BookReadAnalyticsEvent.Variant public int getVariant() {
     return variant;
   }
 
