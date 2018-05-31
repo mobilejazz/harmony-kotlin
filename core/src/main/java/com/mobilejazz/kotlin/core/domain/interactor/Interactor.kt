@@ -46,9 +46,10 @@ class PutAllInteractor<M> @Inject constructor(private val executor: Executor, pr
 
 class DeleteInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
 
-  operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation): Future<Void> = executor.submit(Callable {
-    deleteRepository.delete(query, operation).get()
-  })
+  operator fun invoke(query: Query = EmptyQuery, operation: Operation = DefaultOperation, executor: Executor = this.executor): Future<Void> =
+      executor.submit(Callable {
+        deleteRepository.delete(query, operation).get()
+      })
 }
 
 class DeleteAllInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
