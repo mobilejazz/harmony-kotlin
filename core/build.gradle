@@ -52,6 +52,7 @@ dependencies {
 
   // Support
   implementation "com.android.support:appcompat-v7:$rootProject.ext.support_libraries_version"
+  implementation "com.android.support:design:$rootProject.ext.support_libraries_version"
 
   // Architecture
   api 'com.google.guava:guava:24.0-android'
