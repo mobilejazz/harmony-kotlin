@@ -21,9 +21,10 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
   private final String shelveId;
   private final String referringScreen;
   private final String referringMeta;
+  private final String country;
 
   private BookDetailAnalyticsEvent(String id, String title, String version, String category, String categoryId, String publisher, String author,
-      String collectionName, String collectionId, String shelveTitle, String shelveId, String referringScreen, String referringMeta) {
+      String collectionName, String collectionId, String shelveTitle, String shelveId, String referringScreen, String referringMeta, String country) {
     this.id = id;
     this.title = title;
     this.version = version;
@@ -37,6 +38,7 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
     this.shelveId = shelveId;
     this.referringScreen = referringScreen;
     this.referringMeta = referringMeta;
+    this.country = country;
   }
 
   /**
@@ -145,6 +147,10 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
     return referringMeta;
   }
 
+  public String getCountry() {
+    return country;
+  }
+
   public static class Builder {
 
     private String id;
@@ -160,6 +166,7 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
     private String shelveId;
     private String referringScreen;
     private String referringMeta;
+    private String country;
 
     public Builder() {
     }
@@ -229,12 +236,18 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+    public Builder setCountry(String country) {
+      this.country = country;
+      return this;
+    }
+
     public BookDetailAnalyticsEvent create(){
       return new BookDetailAnalyticsEvent(id, title, version, category, categoryId, publisher, author, collectionName, collectionId,
       shelveTitle,
       shelveId,
       referringScreen,
-      referringMeta);
+      referringMeta, country);
     }
+
   }
 }
