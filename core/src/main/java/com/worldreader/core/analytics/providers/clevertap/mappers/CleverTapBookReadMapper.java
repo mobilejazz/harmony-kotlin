@@ -14,7 +14,7 @@ public class CleverTapBookReadMapper implements CleverTapAnalyticsMapper<BookRea
   private final SharedPreferences preferences;
 
   public CleverTapBookReadMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
 
@@ -34,7 +34,7 @@ public class CleverTapBookReadMapper implements CleverTapAnalyticsMapper<BookRea
       put(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(event.getCurrentPage()));
       put(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(event.getPagesForResouce()));
       put(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(event.getTextSizeInChars()));
-      put(CleverTapEventConstants.COUNTRY, "");//TODO
+      put(CleverTapEventConstants.COUNTRY, event.getCountry());
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
       put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);

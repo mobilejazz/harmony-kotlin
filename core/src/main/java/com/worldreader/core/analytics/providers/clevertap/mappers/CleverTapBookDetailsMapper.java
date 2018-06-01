@@ -12,7 +12,8 @@ public class CleverTapBookDetailsMapper implements CleverTapAnalyticsMapper<Book
   private final SharedPreferences preferences;
 
   public CleverTapBookDetailsMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
+
   }
 
   @Override public Map<String, Object> transform(final BookDetailAnalyticsEvent event) {
@@ -27,7 +28,7 @@ public class CleverTapBookDetailsMapper implements CleverTapAnalyticsMapper<Book
       put(CleverTapEventConstants.BOOK_CATEGORY_ID, event.getCategoryId());
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
-      put(CleverTapEventConstants.COUNTRY, "");//TODO
+      put(CleverTapEventConstants.COUNTRY, event.getCountry());
       put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);
       put(CleverTapEventConstants.DEVICE_MODEL, Build.MODEL);
       put(CleverTapEventConstants.OS, Build.VERSION.RELEASE);

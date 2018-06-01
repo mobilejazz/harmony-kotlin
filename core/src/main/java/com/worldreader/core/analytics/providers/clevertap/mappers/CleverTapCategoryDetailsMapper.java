@@ -13,7 +13,7 @@ public class CleverTapCategoryDetailsMapper implements CleverTapAnalyticsMapper<
   private final SharedPreferences preferences;
 
   public CleverTapCategoryDetailsMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
   @Override public Map<String, Object> transform(final CategorySelectedAnalyticsEvent event) {

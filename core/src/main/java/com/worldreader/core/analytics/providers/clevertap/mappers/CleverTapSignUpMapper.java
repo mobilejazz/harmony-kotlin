@@ -12,7 +12,7 @@ public class CleverTapSignUpMapper implements CleverTapAnalyticsMapper<SignUpAna
   private final SharedPreferences preferences;
 
   public CleverTapSignUpMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
   @Override public Map<String, Object> transform(final SignUpAnalyticsEvent event) {
@@ -22,7 +22,7 @@ public class CleverTapSignUpMapper implements CleverTapAnalyticsMapper<SignUpAna
         put(CleverTapEventConstants.REGISTER_ATTRIBUTE, event.getRegister());
         put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
         put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
-        put(CleverTapEventConstants.COUNTRY, "");//TODO
+        put(CleverTapEventConstants.COUNTRY, event.getCountry());
         put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);
         put(CleverTapEventConstants.DEVICE_MODEL, Build.MODEL);
         put(CleverTapEventConstants.OS, Build.VERSION.RELEASE);

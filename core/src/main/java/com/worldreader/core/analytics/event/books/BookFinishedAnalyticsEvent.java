@@ -10,16 +10,16 @@ public class BookFinishedAnalyticsEvent implements AnalyticsEvent {
   private final String publisherId;
   private final String authorName;
   private final String authorId;
+  private final String country;
 
-
-  public BookFinishedAnalyticsEvent(String id, String title, String publisher, String publisherId, String authorName, String authorId) {
+  public BookFinishedAnalyticsEvent(String id, String title, String publisher, String publisherId, String authorName, String authorId, String country) {
     this.id = id;
     this.title = title;
     this.publisher = publisher;
     this.publisherId = publisherId;
-
     this.authorName = authorName;
     this.authorId = authorId;
+    this.country = country;
   }
 
   private BookFinishedAnalyticsEvent(Builder builder) {
@@ -29,6 +29,7 @@ public class BookFinishedAnalyticsEvent implements AnalyticsEvent {
     publisherId = builder.publisherId;
     authorName = builder.authorName;
     authorId = builder.authorId;
+    country = builder.coutry;
   }
 
   public String getId() {
@@ -55,6 +56,10 @@ public class BookFinishedAnalyticsEvent implements AnalyticsEvent {
     return authorId;
   }
 
+  public String getCountry() {
+    return country;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -63,6 +68,7 @@ public class BookFinishedAnalyticsEvent implements AnalyticsEvent {
     private String publisherId;
     private String authorName;
     private String authorId;
+    private String coutry;
 
     public Builder(String id, String title) {
       this.id = id;
@@ -99,8 +105,14 @@ public class BookFinishedAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+    public Builder setCoutry(String coutry) {
+      this.coutry = coutry;
+      return this;
+    }
+
     public BookFinishedAnalyticsEvent build() {
       return new BookFinishedAnalyticsEvent(this);
     }
   }
+
 }

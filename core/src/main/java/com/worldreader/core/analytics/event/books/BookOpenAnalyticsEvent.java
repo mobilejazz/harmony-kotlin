@@ -18,8 +18,10 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
   private final String publisher;
   private final int variant;
   private final String version;
+  private final String country;
 
-  private BookOpenAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version) {
+  private BookOpenAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version, String
+      country) {
     this.id = id;
     this.title = title;
     this.category = category;
@@ -27,6 +29,7 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
     this.publisher = publisher;
     this.variant = variant;
     this.version = version;
+    this.country = country;
   }
 
   public static BookOpenAnalyticsEvent of(Book book, boolean isDownloaded) {
@@ -41,7 +44,7 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
         .create();
   }
 
-  private static String toCategory(List<Category> categories) {
+  public static String toCategory(List<Category> categories) {
     if (categories == null || categories.isEmpty()) {
       return "";
     }
@@ -49,7 +52,7 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
     return categories.get(0).getTitle();
   }
 
-  private static String toCategoryId(List<Category> categories) {
+  public static String toCategoryId(List<Category> categories) {
     if (categories == null || categories.isEmpty()) {
       return "";
     }
@@ -89,6 +92,10 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
 
   }
 
+  public String getCountry() {
+    return country;
+  }
+
   public static class Builder {
 
     private String id;
@@ -98,6 +105,14 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
     private String brand;
     private int variant;
     private String version;
+    private String country;
+
+    public Builder(){}
+
+    public Builder(String id, String title) {
+      this.id = id;
+      this.title = title;
+    }
 
     public Builder setId(String id) {
       this.id = id;
@@ -134,8 +149,13 @@ public class BookOpenAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+    public Builder setCountry(String country) {
+      this.country = country;
+      return this;
+    }
+
     public BookOpenAnalyticsEvent create() {
-      return new BookOpenAnalyticsEvent(id, title, category, categoryId, brand, variant, version);
+      return new BookOpenAnalyticsEvent(id, title, category, categoryId, brand, variant, version, country);
     }
   }
 }

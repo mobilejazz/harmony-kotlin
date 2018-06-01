@@ -12,6 +12,8 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsEventMappers;
 import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsMapper;
+import org.json.JSONObject;
+
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,10 +24,12 @@ import javax.inject.Singleton;
 
   private final CleverTapAPI clevertap;
   private final CleverTapAnalyticsEventMappers mappers;
+  private final Logger logger;
 
   @Inject public CleverTapAnalytics(Context context, Logger logger) {
     try {
       this.clevertap = CleverTapAPI.getInstance(context);
+      this.logger = logger;
     } catch (Exception e) {
       final RuntimeException exception = new RuntimeException(e);
       logger.e(TAG, "Error while initializing CleverTapAnalytics: " + Throwables.getStackTraceAsString(exception));
@@ -44,7 +48,15 @@ import javax.inject.Singleton;
       @SuppressWarnings("unchecked") final Map<String, Object> eventActions = mapper.transform(event);
       final String eventName = ((String) eventActions.get(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME));
       eventActions.remove(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME);
+      String printable = new String();
+      for (Map.Entry<String, Object> entry : eventActions.entrySet()) {
+        if(!entry.getKey().isEmpty() && entry.getValue()!=null){
+          printable += (entry.getKey() + ": " + entry.getValue().toString())+"\n";
+        }
+      }
+      logger.d(TAG, "CleverTap eventName: " + eventName + ", attributes: \n" + printable);
       clevertap.event.push(eventName, eventActions);
+
     }
   }
 

@@ -16,7 +16,7 @@ public class CleverTapBookContinueReadingMapper implements CleverTapAnalyticsMap
   private final SharedPreferences preferences;
 
   public CleverTapBookContinueReadingMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
   @Override public Map<String, Object> transform(final BookContinueReadingAnalyticsEvent event) {

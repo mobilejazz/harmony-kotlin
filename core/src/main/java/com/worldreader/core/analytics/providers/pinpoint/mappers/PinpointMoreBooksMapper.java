@@ -18,6 +18,8 @@ public class PinpointMoreBooksMapper implements PinpointAnalyticsMapper<MoreBook
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.MORE_BOOKS_EVENT);
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.SHELVE_ATTRIBUTE, event.getShelveId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.SHELVE_TITLE_ATTRIBUTE, event.getShelveTitle());
+    analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.CATEGORY_ID_ATTRIBUTE, event.getCategoryId());
+    analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.CATEGORY_TITLE_ATTRIBUTE, event.getCategoryTitle());
     return analyticsEvent;
   }
 }

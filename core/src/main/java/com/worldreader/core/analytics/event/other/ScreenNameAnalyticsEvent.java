@@ -18,4 +18,5 @@ public class ScreenNameAnalyticsEvent implements AnalyticsEvent {
   public String getScreenName() {
     return screenName;
   }
+
 }

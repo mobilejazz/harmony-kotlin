@@ -6,15 +6,14 @@ import android.os.Build;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CleverTapBookOpenMapper implements CleverTapAnalyticsMapper<BookOpenAnalyticsEvent> {
 
   private final SharedPreferences preferences;
 
   public CleverTapBookOpenMapper(Context context) {
-    preferences = context.getSharedPreferences("wr-analytics", Context.MODE_PRIVATE);
+    preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
   @Override public Map<String, Object> transform(final BookOpenAnalyticsEvent event) {
@@ -27,7 +26,7 @@ public class CleverTapBookOpenMapper implements CleverTapAnalyticsMapper<BookOpe
       put(CleverTapEventConstants.BOOK_CATEGORY, event.getCategory());
       put(CleverTapEventConstants.BOOK_CATEGORY_ID, event.getCategoryId());
       put(CleverTapEventConstants.IS_READING_OFFLINE, event.getVariant());
-      put(CleverTapEventConstants.COUNTRY, "");//TODO
+      put(CleverTapEventConstants.COUNTRY, event.getCountry());
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
       put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);

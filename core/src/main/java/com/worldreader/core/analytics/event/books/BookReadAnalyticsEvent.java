@@ -4,6 +4,7 @@ import android.support.annotation.IntDef;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.Category;
+
 import java.util.List;
 
 public class BookReadAnalyticsEvent implements AnalyticsEvent {
@@ -25,10 +26,10 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
   private final int spineSize;
   private final int spinePosition;
   private final int textSizeInChars;
-
+  private final String country;
 
   public BookReadAnalyticsEvent(String id, String title, String category, String categoryId, String publisher, @Variant int variant, String version,
-      int pagesForResouce, int currentPage, CharSequence text, int tocSize, int spineSize, int spinePosition, int textSizeInChars) {
+      int pagesForResouce, int currentPage, CharSequence text, int tocSize, int spineSize, int spinePosition, int textSizeInChars, String country) {
     this.id = id;
     this.title = title;
     this.category = category;
@@ -43,9 +44,11 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     this.spineSize = spineSize;
     this.spinePosition = spinePosition;
     this.textSizeInChars = textSizeInChars;
+    this.country = country;
   }
 
-  public static BookReadAnalyticsEvent of(Book book, boolean isDownloaded, int pagesForResouce, int currentPage, CharSequence text, int tocSize, int spineSize, int spinePosition, int textSizeInChars) {
+  public static BookReadAnalyticsEvent of(Book book, boolean isDownloaded, int pagesForResouce, int currentPage, CharSequence text, int tocSize, int
+      spineSize, int spinePosition, int textSizeInChars, String country) {
     return new Builder()
         .setId(book.getId())
         .setTitle(book.getTitle())
@@ -60,10 +63,10 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
         .setSpineSize(spineSize)
         .setSpinePosition(spinePosition)
         .setTextSizeInChars
-            (textSizeInChars).create();
+            (textSizeInChars).setCountry(country).create();
   }
 
-  public static BookReadAnalyticsEvent of (Book book) {
+  public static BookReadAnalyticsEvent of(Book book) {
     return of(book, false);
   }
 
@@ -154,6 +157,10 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     return textSizeInChars;
   }
 
+  public String getCountry() {
+    return country;
+  }
+
   public static class Builder {
 
     private String id;
@@ -170,6 +177,7 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
     private int spineSize;
     private int spinePosition;
     private int textSizeInChars;
+    private String country;
 
     public Builder setBrand(String brand) {
       this.brand = brand;
@@ -251,11 +259,16 @@ public class BookReadAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
-
+    public Builder setCountry(String country) {
+      this.country = country;
+      return this;
+    }
 
     public BookReadAnalyticsEvent create() {
       return new BookReadAnalyticsEvent(id, title, category, categoryId, brand, variant, version, pagesForResouce,
-          currentPage, text, tocSize, spineSize, spinePosition, textSizeInChars);
+          currentPage, text, tocSize, spineSize, spinePosition, textSizeInChars, country);
     }
+
   }
+
 }
