@@ -141,6 +141,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   protected int currentScrolledPages = 0;
   private boolean hasSharedText;
 
+  private String countryCode;
+
   @Override public void onAttach(Context context) {
     super.onAttach(context);
     try {
@@ -183,6 +185,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final Intent intent = getActivity().getIntent();
     book = (com.worldreader.core.domain.model.Book) intent.getSerializableExtra(AbstractReaderActivity.BOOK_KEY);
     bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
+    countryCode = intent.getStringExtra(AbstractReaderActivity.COUNTRY_CODE);
 
     // Gather status variables for the reader
     final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
@@ -1202,7 +1205,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         .setTocSize(tocSize)
         .setSpineSize(spineSize)
         .setSpinePosition(spinePosition)
-        .setTextSizeInChars(textSizeInChars).create();
+        .setTextSizeInChars(textSizeInChars)
+        .setCountry(countryCode).create();
     di.analytics.sendEvent(event);
 
   }

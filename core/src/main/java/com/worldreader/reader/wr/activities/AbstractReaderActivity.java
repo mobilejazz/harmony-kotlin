@@ -49,6 +49,7 @@ public abstract class AbstractReaderActivity extends AppCompatActivity
   public static final String BOOK_KEY = "book.key";
   public static final String BOOK_METADATA_KEY = "book.metadata.key";
   public static final String READING_FRAGMENT_CLASS_KEY = "reading.fragment.class.key";
+  public static final String COUNTRY_CODE = "country.code";
 
   private SystemUiHelper systemUiHelper;
   private AbstractReaderFragment abstractReaderFragment;
