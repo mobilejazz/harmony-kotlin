@@ -3,14 +3,13 @@ package com.worldreader.core.domain.interactors.oauth;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.repository.OAuthRepository;
-
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
-@PerActivity public class PutUserTokenInteractor {
+@ActivityScope public class PutUserTokenInteractor {
 
   private final ListeningExecutorService executorService;
   private final OAuthRepository repository;
@@ -41,5 +40,4 @@ import java.util.concurrent.*;
 
     return settableFuture;
   }
-
 }

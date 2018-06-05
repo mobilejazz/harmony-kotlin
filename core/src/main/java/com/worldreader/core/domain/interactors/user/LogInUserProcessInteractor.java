@@ -10,7 +10,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.interactors.application.SaveOnBoardingPassedInteractor;
@@ -20,11 +20,10 @@ import com.worldreader.core.domain.interactors.oauth.PutUserTokenInteractor;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
-
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
-@PerActivity public class LogInUserProcessInteractor {
+@ActivityScope public class LogInUserProcessInteractor {
 
   private final ListeningExecutorService executor;
 
@@ -187,5 +186,4 @@ import java.util.concurrent.*;
 
     return null;
   }
-
 }

@@ -5,18 +5,18 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.Banner;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.repository.BannerRepository;
-
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
-@PerActivity public class GetBooksRelatedWithBannerInteractor {
+@ActivityScope public class GetBooksRelatedWithBannerInteractor {
 
   private final ListeningExecutorService executorService;
   private final BannerRepository bannerRepository;
@@ -54,7 +54,6 @@ import java.util.concurrent.*;
               } else {
                 settableFuture.set(Optional.fromNullable(books));
               }
-
             } catch (InterruptedException | ExecutionException e) {
               settableFuture.setException(e);
             }

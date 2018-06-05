@@ -1,6 +1,5 @@
 package com.worldreader.core.sync.jobs;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
@@ -43,6 +42,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 public class SynchronizationJob extends Job {
 
@@ -50,21 +50,51 @@ public class SynchronizationJob extends Job {
 
   private static int jobId = -1;
 
-  @Inject Logger logger;
-  @Inject GetUserInteractor getUserInteractor;
-  @Inject SaveUserInteractor saveUserInteractor;
-  @Inject GetAllUserBookInteractor getAllUserBookInteractor;
-  @Inject PutAllUserBooksInteractor putAllUserBooksInteractor;
-  @Inject UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
-  @Inject GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor;
-  @Inject PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor;
-  @Inject PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
-  @Inject GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
-  @Inject PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
-  @Inject IsAnonymousUserInteractor isAnonymousUserInteractor;
-  @Inject Reachability reachability;
+  Logger logger;
+  GetUserInteractor getUserInteractor;
+  SaveUserInteractor saveUserInteractor;
+  GetAllUserBookInteractor getAllUserBookInteractor;
+  PutAllUserBooksInteractor putAllUserBooksInteractor;
+  UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
+  GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor;
+  PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor;
+  PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
+  GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
+  PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+  IsAnonymousUserInteractor isAnonymousUserInteractor;
+  Reachability reachability;
 
-  public SynchronizationJob(Context context) {
+  public SynchronizationJob(Injection i) {
+    this.logger = i.logger;
+    this.getUserInteractor = i.getUserInteractor;
+    this.saveUserInteractor = i.saveUserInteractor;
+    this.getAllUserBookInteractor = i.getAllUserBookInteractor;
+    this.putAllUserBooksInteractor = i.putAllUserBooksInteractor;
+    this.userScoreSynchronizationProcessInteractor = i.userScoreSynchronizationProcessInteractor;
+    this.getUnsyncUserMilestonesInteractor = i.getUnsyncUserMilestonesInteractor;
+    this.putAllUserMilestonesNetworkInteractor = i.putAllUserMilestonesNetworkInteractor;
+    this.putAllUserMilestonesInteractor = i.putAllUserMilestonesInteractor;
+    this.getAllUserBookLikesInteractor = i.getAllUserBookLikesInteractor;
+    this.putAllUserBooksLikesInteractor = i.putAllUserBooksLikesInteractor;
+    this.isAnonymousUserInteractor = i.isAnonymousUserInteractor;
+    this.reachability = i.reachability;
+  }
+
+  public static void scheduleJob() {
+    jobId = new JobRequest.Builder(TAG)
+        .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+        .setPeriodic(TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL),
+            TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL_FLEX))
+        .setUpdateCurrent(true)
+        .build()
+        .schedule();
+  }
+
+  public static void cancelJob() {
+    if (jobId > 0) {
+      JobManager.instance().cancel(jobId);
+      jobId = -1;
+    }
   }
 
   // Only for testing purposes
@@ -200,28 +230,51 @@ public class SynchronizationJob extends Job {
       logger.d(TAG, "Completely finish the whole process. ");
 
       return Result.SUCCESS;
-
     } catch (Exception e) {
       logger.e(TAG, e.toString());
       return Result.FAILURE;
     }
   }
 
-  public static void scheduleJob() {
-    jobId = new JobRequest.Builder(TAG)
-        .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-        .setPeriodic(TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL),
-            TimeUnit.MINUTES.toMillis(BuildConfig.JOB_MANAGER_BACKGROUND_INTERVAL_FLEX))
-        .setUpdateCurrent(true)
-        .build()
-        .schedule();
-  }
+  @Singleton
+  public static class Injection {
+    Logger logger;
+    GetUserInteractor getUserInteractor;
+    SaveUserInteractor saveUserInteractor;
+    GetAllUserBookInteractor getAllUserBookInteractor;
+    PutAllUserBooksInteractor putAllUserBooksInteractor;
+    UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor;
+    GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor;
+    PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor;
+    PutAllUserMilestonesInteractor putAllUserMilestonesInteractor;
+    GetAllUserBookLikesInteractor getAllUserBookLikesInteractor;
+    PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor;
+    IsAnonymousUserInteractor isAnonymousUserInteractor;
+    Reachability reachability;
 
-  public static void cancelJob() {
-    if (jobId > 0) {
-      JobManager.instance().cancel(jobId);
-      jobId = -1;
+    @Inject public Injection(Logger logger, GetUserInteractor getUserInteractor, SaveUserInteractor saveUserInteractor,
+        GetAllUserBookInteractor getAllUserBookInteractor,
+        PutAllUserBooksInteractor putAllUserBooksInteractor,
+        UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
+        GetUnsyncUserMilestonesInteractor getUnsyncUserMilestonesInteractor,
+        PutAllUserMilestonesNetworkInteractor putAllUserMilestonesNetworkInteractor,
+        PutAllUserMilestonesInteractor putAllUserMilestonesInteractor,
+        GetAllUserBookLikesInteractor getAllUserBookLikesInteractor,
+        PutAllUserBooksLikesInteractor putAllUserBooksLikesInteractor,
+        IsAnonymousUserInteractor isAnonymousUserInteractor, Reachability reachability) {
+      this.logger = logger;
+      this.getUserInteractor = getUserInteractor;
+      this.saveUserInteractor = saveUserInteractor;
+      this.getAllUserBookInteractor = getAllUserBookInteractor;
+      this.putAllUserBooksInteractor = putAllUserBooksInteractor;
+      this.userScoreSynchronizationProcessInteractor = userScoreSynchronizationProcessInteractor;
+      this.getUnsyncUserMilestonesInteractor = getUnsyncUserMilestonesInteractor;
+      this.putAllUserMilestonesNetworkInteractor = putAllUserMilestonesNetworkInteractor;
+      this.putAllUserMilestonesInteractor = putAllUserMilestonesInteractor;
+      this.getAllUserBookLikesInteractor = getAllUserBookLikesInteractor;
+      this.putAllUserBooksLikesInteractor = putAllUserBooksLikesInteractor;
+      this.isAnonymousUserInteractor = isAnonymousUserInteractor;
+      this.reachability = reachability;
     }
   }
-
 }

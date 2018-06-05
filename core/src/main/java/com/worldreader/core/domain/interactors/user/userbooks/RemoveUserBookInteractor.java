@@ -7,18 +7,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.error.userbook.UserBookNotFoundException;
-
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
-@PerActivity public class RemoveUserBookInteractor {
+@ActivityScope public class RemoveUserBookInteractor {
 
   private final ListeningExecutorService executorService;
   private final UserBooksRepository userBooksRepository;

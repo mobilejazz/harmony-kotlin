@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.application.di.annotation.PerActivity;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
 
-@PerActivity public class AfterLogInUserProcessInteractor {
+@ActivityScope public class AfterLogInUserProcessInteractor {
 
   private static final String TAG = AfterLogInUserProcessInteractor.class.getSimpleName();
 

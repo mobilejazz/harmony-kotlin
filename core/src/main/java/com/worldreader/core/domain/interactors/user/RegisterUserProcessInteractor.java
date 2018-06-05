@@ -10,15 +10,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.model.user.RegisterProvider;
 import com.worldreader.core.domain.model.user.RegisterProviderData;
 import com.worldreader.core.domain.model.user.User2;
-
 import javax.inject.Inject;
 
-@PerActivity public class RegisterUserProcessInteractor {
+@ActivityScope public class RegisterUserProcessInteractor {
 
   private final ListeningExecutorService executor;
 
@@ -127,5 +126,4 @@ import javax.inject.Inject;
       }
     });
   }
-
 }

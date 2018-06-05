@@ -2,19 +2,19 @@ package com.worldreader.core.application.helper;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.domain.thread.MainThread;
-
-import javax.inject.Inject;
 import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Executor;
+import javax.inject.Inject;
 
-@PerActivity
-public class CancelableInteractorHandler {
+@ActivityScope public class CancelableInteractorHandler {
 
-  private List<WeakReference<CancelableFutureCallback<?>>> callbacks;
   private final MainThread mainThread;
+  private List<WeakReference<CancelableFutureCallback<?>>> callbacks;
 
   @Inject
   public CancelableInteractorHandler(MainThread mainThread) {
@@ -49,5 +49,4 @@ public class CancelableInteractorHandler {
       }
     }
   }
-
 }

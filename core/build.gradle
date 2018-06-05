@@ -60,6 +60,8 @@ dependencies {
 
   api files('libs/wasabi.jar')
 
+  api project(path: ':mj-core')
+
   api 'com.squareup.picasso:picasso:2.5.2'
   api 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 
@@ -70,8 +72,12 @@ dependencies {
   api 'com.mobilejazz.logger:library:0.2-SNAPSHOT'
 
   // Dagger
-  compile "com.google.dagger:dagger:$rootProject.ext.dagger_version"
+  implementation "com.google.dagger:dagger:$rootProject.ext.dagger_version"
+  implementation "com.google.dagger:dagger-android:$rootProject.ext.dagger_version"
+  implementation "com.google.dagger:dagger-android-support:$rootProject.ext.dagger_version"
   annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.dagger_version"
+  annotationProcessor "com.google.dagger:dagger-android-processor:$rootProject.ext.dagger_version"
+
   api "javax.inject:javax.inject:1"
 
   api 'com.mobilejazz.vastra:library:1.1.0-SNAPSHOT'
@@ -101,7 +107,7 @@ dependencies {
 
   api 'net.zetetic:android-database-sqlcipher:3.5.9'
 
-  implementation 'org.javatuples:javatuples:1.2'
+  api 'org.javatuples:javatuples:1.2'
 
   implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.16'
   implementation 'com.osbcp.cssparser:cssparser:1.5'

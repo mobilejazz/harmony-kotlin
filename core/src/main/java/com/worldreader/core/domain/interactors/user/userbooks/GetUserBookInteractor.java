@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.model.user.UserBook;
@@ -14,7 +15,7 @@ import java.util.concurrent.*;
 
 import static com.worldreader.core.datasource.repository.spec.RepositorySpecification.SimpleRepositorySpecification;
 
-@PerActivity public class GetUserBookInteractor {
+@ActivityScope public class GetUserBookInteractor {
 
   private final ListeningExecutorService executor;
   private final UserBooksRepository repository;

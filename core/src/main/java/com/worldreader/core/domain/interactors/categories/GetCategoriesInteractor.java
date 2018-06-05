@@ -3,17 +3,16 @@ package com.worldreader.core.domain.interactors.categories;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.common.deprecated.callback.CompletionCallback;
 import com.worldreader.core.common.deprecated.error.ErrorCore;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.CategoryRepository;
-
+import java.util.List;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.*;
 
-@PerActivity public class GetCategoriesInteractor {
+@ActivityScope public class GetCategoriesInteractor {
 
   private final ListeningExecutorService executor;
   private final CategoryRepository repository;
@@ -54,5 +53,4 @@ import java.util.concurrent.*;
 
     return settableFuture;
   }
-
 }

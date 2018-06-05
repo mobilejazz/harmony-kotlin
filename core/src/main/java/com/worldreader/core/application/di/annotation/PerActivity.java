@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+@Deprecated
 @Scope @Retention(RUNTIME) public @interface PerActivity {
 
 }

@@ -3,15 +3,14 @@ package com.worldreader.core.domain.interactors.user;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.FragmentScope;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.repository.UserBooksRepository;
-
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
-@PerActivity public class FinishBookInteractor {
+public class FinishBookInteractor {
 
   private final ListeningExecutorService executor;
   private final UserBooksRepository repository;
