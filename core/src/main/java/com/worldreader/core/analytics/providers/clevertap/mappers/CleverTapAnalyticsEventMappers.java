@@ -5,17 +5,17 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookFinishedAnalyticsEvent;
-import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
+import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategoryBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.ProfileAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<CleverTapAnalyticsMapper<? extends AnalyticsEvent>> {
 
@@ -43,6 +43,7 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
       put(BookDetailAnalyticsEvent.class, new CleverTapBookDetailsMapper(context));
       put(SignUpAnalyticsEvent.class, new CleverTapSignUpMapper(context));
       put(SignInAnalyticsEvent.class, new CleverTapSignInMapper(context));
+      put(ProfileAnalyticsEvent.class, new CleverTapProfileMapper(context));
       put(MoreBooksAnalyticsEvent.class, new CleverTapMoreBooksMapper(context));
 
       //CategoryBooks

@@ -25,6 +25,7 @@ public class CleverTapEventConstants {
   public static final String BOOK_CATEGORY_ID = "BookCategoryId";
   public static final String IS_READING_OFFLINE = "IsReadingOffline";
   public static final String USER_ID = "UserId";
+  public static final String IDENTITY = "Identity";
   public static final String USER_NAME = "UserName";
   public static final String REGISTER_ATTRIBUTE = "register";
   public static final String DEVICE_ID = "DeviceId";
@@ -38,5 +39,5 @@ public class CleverTapEventConstants {
   public static final String CATEGORY_ID_ATTRIBUTE = "CategoryId";
   public static final String CATEGORY_NAME_ATTRIBUTE = "CategoryName";
 
-
+  public static final Object PROFILE_EVENT = "Profile";
 }

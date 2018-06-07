@@ -12,11 +12,10 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsEventMappers;
 import com.worldreader.core.analytics.providers.clevertap.mappers.CleverTapAnalyticsMapper;
-import org.json.JSONObject;
 
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
 
 @Singleton public class CleverTapAnalytics implements Analytics {
 
@@ -64,6 +63,13 @@ import javax.inject.Singleton;
     final CleverTapAnalyticsMapper mapper = mappers.obtain(event.getClass());
     if (mapper != null) {
       @SuppressWarnings("unchecked") final Map<String, Object> profile = mapper.transform(event);
+      String printable = new String();
+      for (Map.Entry<String, Object> entry : profile.entrySet()) {
+        if(!entry.getKey().isEmpty() && entry.getValue()!=null){
+          printable += (entry.getKey() + ": " + entry.getValue().toString())+"\n";
+        }
+      }
+      logger.d(TAG, "CleverTap PROFILE, attributes: \n" + printable);
       clevertap.profile.push(profile);
     }
   }

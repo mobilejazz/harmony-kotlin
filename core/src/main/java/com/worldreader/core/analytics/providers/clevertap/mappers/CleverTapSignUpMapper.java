@@ -20,6 +20,7 @@ public class CleverTapSignUpMapper implements CleverTapAnalyticsMapper<SignUpAna
         put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, CleverTapEventConstants.SING_UP_EVENT);
         put(CleverTapEventConstants.USER_NAME, event.getUsername());
         put(CleverTapEventConstants.REGISTER_ATTRIBUTE, event.getRegister());
+        put(CleverTapEventConstants.IDENTITY, preferences.getString("userId", "-1"));
         put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
         put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
         put(CleverTapEventConstants.COUNTRY, event.getCountry());

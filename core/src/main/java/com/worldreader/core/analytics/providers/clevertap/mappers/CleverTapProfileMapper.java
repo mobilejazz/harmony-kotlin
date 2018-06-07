@@ -3,21 +3,21 @@ package com.worldreader.core.analytics.providers.clevertap.mappers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.ProfileAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 
 import java.util.*;
 
-public class CleverTapSignInMapper implements CleverTapAnalyticsMapper<SignInAnalyticsEvent> {
+public class CleverTapProfileMapper implements CleverTapAnalyticsMapper<ProfileAnalyticsEvent> {
   private final SharedPreferences preferences;
 
-  public CleverTapSignInMapper(Context context) {
+  public CleverTapProfileMapper(Context context) {
     preferences = context.getSharedPreferences("wr-preferences", Context.MODE_PRIVATE);
   }
 
-  @Override public Map<String, Object> transform(final SignInAnalyticsEvent event) {
+  @Override public Map<String, Object> transform(final ProfileAnalyticsEvent event) {
     return new HashMap<String, Object>() {{
-      put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, CleverTapEventConstants.SING_IN_EVENT);
+      put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, CleverTapEventConstants.PROFILE_EVENT);
       put(CleverTapEventConstants.USER_NAME, event.getUsername());
       put(CleverTapEventConstants.REGISTER_ATTRIBUTE, event.getRegister());
       put(CleverTapEventConstants.IDENTITY, preferences.getString("userId", "-1"));
