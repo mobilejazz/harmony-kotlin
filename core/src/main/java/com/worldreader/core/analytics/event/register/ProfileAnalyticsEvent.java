@@ -9,6 +9,7 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
   private final String country;
   private final String date;
   private final String register;
+  private final String language;
 
   private ProfileAnalyticsEvent(Builder builder) {
     username = builder.username;
@@ -16,6 +17,8 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
     country = builder.country;
     date = builder.date;
     register = builder.register;
+    language = builder.language;
+
   }
 
   public static Builder builder() {
@@ -42,12 +45,17 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
     return register;
   }
 
+  public String getLanguage() {
+    return language;
+  }
+
   public static final class Builder {
     private String username;
     private String userId;
     private String country;
     private String date;
     private String register;
+    public String language;
 
     private Builder() {
     }
@@ -74,6 +82,11 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
 
     public Builder withRegister(String val) {
       register = val;
+      return this;
+    }
+
+    public Builder withLanguage(String val) {
+      language = val;
       return this;
     }
 

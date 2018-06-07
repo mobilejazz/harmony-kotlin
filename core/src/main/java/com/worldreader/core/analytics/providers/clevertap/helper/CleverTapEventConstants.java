@@ -40,4 +40,5 @@ public class CleverTapEventConstants {
   public static final String CATEGORY_NAME_ATTRIBUTE = "CategoryName";
 
   public static final Object PROFILE_EVENT = "Profile";
+  public static final String LANGUAGE_ATTRIBUTE = "Language";
 }

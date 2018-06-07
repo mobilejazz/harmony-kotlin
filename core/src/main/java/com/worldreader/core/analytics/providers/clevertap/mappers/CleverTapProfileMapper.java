@@ -23,6 +23,7 @@ public class CleverTapProfileMapper implements CleverTapAnalyticsMapper<ProfileA
       put(CleverTapEventConstants.IDENTITY, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
+      put(CleverTapEventConstants.LANGUAGE_ATTRIBUTE, event.getLanguage());
       put(CleverTapEventConstants.COUNTRY, event.getCountry());
       put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);
       put(CleverTapEventConstants.DEVICE_MODEL, Build.MODEL);
