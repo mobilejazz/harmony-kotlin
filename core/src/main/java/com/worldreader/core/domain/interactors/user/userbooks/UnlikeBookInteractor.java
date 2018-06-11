@@ -16,6 +16,7 @@ import com.worldreader.core.error.general.UnexpectedErrorException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.concurrent.*;
 
 @Singleton public class UnlikeBookInteractor {
 
@@ -23,7 +24,8 @@ import javax.inject.Singleton;
   private final UserBooksRepository repository;
   private final UserBooksLikeRepository userBooksLikeRepository;
 
-  @Inject public UnlikeBookInteractor(ListeningExecutorService executor, UserBooksRepository repository,
+  @Inject
+  public UnlikeBookInteractor(ListeningExecutorService executor, UserBooksRepository repository,
       final UserBooksLikeRepository userBooksLikeRepository) {
     this.executor = executor;
     this.repository = repository;
@@ -31,6 +33,11 @@ import javax.inject.Singleton;
   }
 
   public ListenableFuture<UserBook> execute(@NonNull final String bookId) {
+    return execute(bookId, executor);
+  }
+
+  public ListenableFuture<UserBook> execute(@NonNull final String bookId,
+      @NonNull final Executor executor) {
     final SettableFuture<UserBook> future = SettableFuture.create();
 
     executor.execute(new SafeRunnable() {
