@@ -158,6 +158,7 @@
   <string name="ls_tts_failed">Text To Speech failed to load.</string>
   <string name="ls_moreByAuthor">More by the same author</string>
   <string name="ls_moreByPublisher">More by the same publisher</string>
+  <string name="ls_series">Series</string>
   <string name="ls_home_invite_friends">Invite Friends</string>
   <string name="ls_invite_friends_hint">Share your unique code or invite\nfriends via your preferred app</string>
   <string name="ls_invite_friends_code_title">Your unique invite code:</string>

@@ -121,5 +121,4 @@ dependencies {
   api dependencies.systemUiHelper
   api dependencies.expandableLayout
 
-  api files('libs/wasabi.jar')
 }

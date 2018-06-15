@@ -157,6 +157,7 @@
     <string name="ls_tts_failed">فشل تحميل النص إلى كلام.</string>
     <string name="ls_moreByAuthor">المزيد من هذا المؤلف</string>
     <string name="ls_moreByPublisher">المزيد من هذا الناشر</string>
+    <string name="ls_series">سلسلة</string>
     <string name="ls_home_invite_friends">دعوة الأصدقاء</string>
     <string name="ls_invite_friends_hint">شارك الرمز الخاص بك او قم بدعوة اصدقائك من خلال التطبيق المفضل</string>
     <string name="ls_invite_friends_code_title">رمز الدعوة الخاص بك:</string>

@@ -150,6 +150,7 @@
   <string name="ls_tts_failed">बोलने के लिए टेक्स्ट अपलोड होने में सफल।</string>
   <string name="ls_moreByAuthor">एक ही लेखक द्वारा और अधिक</string>
   <string name="ls_moreByPublisher">एक ही प्रकाशक के द्वारा और अधिक</string>
+  <string name="ls_series">शृंखला</string>
   <string name="ls_home_invite_friends">दोस्तों को आमंत्रित करें</string>
   <string name="ls_invite_friends_hint">अपने विशिष्ट कोड को सांझा करें या \nआपकी पसंदीदा ऐप से दोस्तों को आमंत्रित करें</string>
   <string name="ls_invite_friends_code_title">आपका विशिष्ट आमंत्रण कोड:</string>
