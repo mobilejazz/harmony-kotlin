@@ -55,7 +55,6 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.R;
-import com.worldreader.core.analytics.event.books.BookContinueReadingAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.reader.ReaderAnalyticsHelper;
 import com.worldreader.core.application.helper.AndroidFutures;
@@ -240,9 +239,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         } else {
           updateChapterProgress();
         }
-
-        // Notify analytics
-        onNotifyPageProgressAnalytics();
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
@@ -448,6 +444,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Kick start loading of text
     bookView.startLoadingText();
+
   }
 
   @Override public void onResume() {
@@ -876,13 +873,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
-      pageDown();
+        pageDown();
     } else {
-      pageUp();
-    }
-
-    if (bookView.isAtEnd()) {
-      onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
+        pageUp();
     }
 
     return true;
@@ -930,9 +923,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       pageUp();
     }
 
-    if (bookView.isAtEnd()) {
+    /*if (bookView.isAtEnd()) {
       onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
-    }
+    }*/
 
     return true;
   }
@@ -1162,11 +1155,13 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private void pageDown() {
     bookView.pageDown();
     updateChapterProgress();
+    onNotifyPageProgressAnalytics();
   }
 
   private void pageUp() {
     bookView.pageUp();
     updateChapterProgress();
+    onNotifyPageProgressAnalytics();
   }
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
@@ -1185,7 +1180,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     updateChapterProgress(current, total);
   }
 
-  private void onNotifyPageProgressAnalytics() {
+  public void onNotifyPageProgressAnalytics() {
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
 
