@@ -15,8 +15,9 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.GenericAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.mappers.PinpointAnalyticsEventMappers;
 import com.worldreader.core.analytics.providers.pinpoint.mappers.PinpointAnalyticsMapper;
-import java.util.Map;
 import org.json.JSONObject;
+
+import java.util.*;
 
 public class PinpointAnalytics implements Analytics {
 
@@ -71,6 +72,10 @@ public class PinpointAnalytics implements Analytics {
     }
   }
 
+  public void onStart(){
+    getPinpointManager().getSessionClient().startSession();
+    getPinpointManager().getAnalyticsClient().submitEvents();
+  }
   public void onResume() {
     getPinpointManager().getSessionClient().resumeSession();
     getPinpointManager().getAnalyticsClient().submitEvents();
@@ -78,6 +83,8 @@ public class PinpointAnalytics implements Analytics {
 
   public void onPause() {
     getPinpointManager().getSessionClient().pauseSession();
+    //getPinpointManager().getSessionClient().stopSession();
+    getPinpointManager().getAnalyticsClient().submitEvents();
   }
 
   @Override public void addGlobalProperties(final Map<String, String> attributes) {
@@ -106,6 +113,13 @@ public class PinpointAnalytics implements Analytics {
           Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
       );
       PinpointConfiguration config = new PinpointConfiguration(context, applicationId, Regions.US_EAST_1, ChannelType.GCM, credentialsProvider);
+
+      /*AWSMobileClient.getInstance().initialize(context).execute();
+      PinpointConfiguration config = new PinpointConfiguration(
+          context,
+          AWSMobileClient.getInstance().getCredentialsProvider(),
+          AWSMobileClient.getInstance().getConfiguration()
+      );*/
 
       INSTANCE = new PinpointManager(config);
     }

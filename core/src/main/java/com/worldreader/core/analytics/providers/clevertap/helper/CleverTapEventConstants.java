@@ -13,6 +13,7 @@ public class CleverTapEventConstants {
   public static final Object BOOK_END_EVENT = "BookEnd";
   public static final Object SING_IN_EVENT = "SignIn";
   public static final Object SING_UP_EVENT = "SignUp";
+  public static final String SIGNOUT_EVENT = "Logout";
   public static final String MORE_BOOKS_EVENT = "More";
   public static final String SHELVE_ATTRIBUTE = "ShelfId";
   public static final String SHELVE_TITLE_ATTRIBUTE ="ShelfName" ;
@@ -41,4 +42,7 @@ public class CleverTapEventConstants {
 
   public static final Object PROFILE_EVENT = "Profile";
   public static final String LANGUAGE_ATTRIBUTE = "Language";
+  public static final String READ_IN_LANGUAGE_EVENT = "ReadInLanguage";
+  public static final String LANGUAGE_ISO3_ATTRIBUTE = "language";
+  public static final String LANGUAGE_NAME_ATTRIBUTE = "languageName";
 }

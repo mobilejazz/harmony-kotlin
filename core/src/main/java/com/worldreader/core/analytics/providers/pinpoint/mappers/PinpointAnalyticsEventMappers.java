@@ -1,7 +1,5 @@
 package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
-import android.content.Context;
-import com.amazonaws.auth.SigningAlgorithm;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
@@ -9,15 +7,15 @@ import com.worldreader.core.analytics.event.books.BookFinishedAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
+import com.worldreader.core.analytics.event.other.ChangeLanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ScreenNameAnalyticsEvent;
-import com.worldreader.core.analytics.event.other.SetUserIdAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<PinpointAnalyticsMapper<? extends AnalyticsEvent>> {
 
@@ -47,6 +45,8 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(SignUpAnalyticsEvent.class, new PinpointSignUpMapper(analyticsClient));
           put(ScreenNameAnalyticsEvent.class, new PinpointInScreenMapper(analyticsClient));
           put(MoreBooksAnalyticsEvent.class, new PinpointMoreBooksMapper(analyticsClient));
+          put(SignOutAnalyticsEvent.class, new PinpointSignOutMapper(analyticsClient));
+          put(ChangeLanguageAnalyticsEvent.class, new PinpointReadInLanguageMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 

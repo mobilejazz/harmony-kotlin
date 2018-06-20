@@ -15,9 +15,10 @@ import com.worldreader.core.application.helper.reachability.Reachability;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.domain.thread.MainThread;
-import java.util.HashMap;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class PinpointConfigAnalyticsAttributesInteractor {
 
@@ -56,26 +57,28 @@ public class PinpointConfigAnalyticsAttributesInteractor {
         final UserInfoAnalyticsModel model = getAnalyticsInfoInteractor.execute(MoreExecutors.directExecutor()).get();
 
         final HashMap<String, String> attributes = new HashMap<>();
-        attributes.put("userId", model.userId);
-        attributes.put("deviceId", model.deviceId);
-        attributes.put("clientId", model.clientId);
+        attributes.put(AnalyticsEventConstants.USER_ID, model.userId);
+        attributes.put(AnalyticsEventConstants.DEVICE_ID, model.deviceId);
+        attributes.put(AnalyticsEventConstants.CLIENT_ID, model.clientId);
         attributes.put(AnalyticsEventConstants.APP_IN_OFFLINE, String.valueOf((reachability.isReachable()) ? 0 : 1));
-        attributes.put("countryCode", countryCodeProvider.getCountryCode()); //This is the logic to get this value: tries to get geo, if not available  ->
+        attributes.put(AnalyticsEventConstants.COUNTRTY_CODE, countryCodeProvider.getCountryCode()); //This is the logic to get this value: tries to get geo, if not
+        // available  ->
         // SIM, if not available -> default:US
-        attributes.put("geolocationCountryCode", countryCodeProvider.getGeolocationCountryIsoCode().isPresent()
+        attributes.put(AnalyticsEventConstants.GEOLOCATION_COUNTRY_CODE, countryCodeProvider.getGeolocationCountryIsoCode().isPresent()
             ? countryCodeProvider.getGeolocationCountryIsoCode().get()
             : ""); //This value is the actual country code obtained using Google API with obtained lat,long from GPS. If
         // we couldn't obtain that info, empty value
 
         //When generating logs for Opera, I use only this attribute and disable the following 5 ones.
 
-        attributes.put("simCountryCode", countryCodeProvider.getSimCountryIsoCode());
-        attributes.put("networkCountryCode", countryCodeProvider.getNetworkCountryIsoCode());
-        attributes.put("deviceIPV4", countryCodeProvider.getIPAddress(true));
-        attributes.put("deviceIPV6", countryCodeProvider.getIPAddress(false));
-        attributes.put("localeLanguageCode", countryCodeProvider.getLanguageIso3Code());
+        attributes.put(AnalyticsEventConstants.SIM_COUNTRY_CODE, countryCodeProvider.getSimCountryIsoCode());
+        attributes.put(AnalyticsEventConstants.NETWORK_COUNTRY_CODE, countryCodeProvider.getNetworkCountryIsoCode());
+        attributes.put(AnalyticsEventConstants.DEVICE_IPV4, countryCodeProvider.getIPAddress(true));
+        attributes.put(AnalyticsEventConstants.DEVICE_IPV6, countryCodeProvider.getIPAddress(false));
+        attributes.put(AnalyticsEventConstants.LOCALE_LANG_CODE, countryCodeProvider.getLanguageIso3Code());
 
         analytics.addGlobalProperties(attributes);
+        analytics.onStart();
         settableFuture.set(null);
       }
 

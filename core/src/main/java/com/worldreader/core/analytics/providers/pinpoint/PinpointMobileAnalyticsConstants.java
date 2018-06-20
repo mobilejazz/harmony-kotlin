@@ -27,6 +27,7 @@ public final class PinpointMobileAnalyticsConstants {
 
   public static final String SEARCH_EVENT = "Search";//Test against prod books API
   public static final String SIGNUP_EVENT = "Signup";
+  public static final String SIGNOUT_EVENT = "Logout";
   public static final String LOGIN_EVENT = "Login";
   public static final String REGISTER_ATTRIBUTE = "register";
   public static final String ANONYMOUS_USAGE_EVENT = "AnonymousUsage";
@@ -92,6 +93,7 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String REFERRER_USER_ID_ATTRIBUTE = "referrer_user_id";
 
   public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
+
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;

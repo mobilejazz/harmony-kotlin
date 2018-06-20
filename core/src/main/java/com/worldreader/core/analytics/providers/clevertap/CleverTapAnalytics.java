@@ -77,4 +77,8 @@ import java.util.*;
   @Override public void addGlobalProperties(Map<String, String> attributes) {
     // For now CleverTap doesn't need this properties
   }
+
+  @Override public void onStart(){
+
+  }
 }
