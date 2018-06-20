@@ -87,6 +87,12 @@ public class PinpointAnalytics implements Analytics {
     getPinpointManager().getAnalyticsClient().submitEvents();
   }
 
+  public void onStop() {
+    getPinpointManager().getSessionClient().stopSession();
+    getPinpointManager().getAnalyticsClient().submitEvents();
+  }
+
+
   @Override public void addGlobalProperties(final Map<String, String> attributes) {
     addGlobalProperties(null, attributes);
   }
