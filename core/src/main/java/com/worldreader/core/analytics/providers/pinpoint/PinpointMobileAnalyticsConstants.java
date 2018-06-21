@@ -91,7 +91,7 @@ public final class PinpointMobileAnalyticsConstants {
 
   public static final String REFERRER_DEVICE_ID_ATTRIBUTE = "referrer_device_id";
   public static final String REFERRER_USER_ID_ATTRIBUTE = "referrer_user_id";
-
+  public static final String CAMPAIGN_ANALYTICS_EVENT = "campaignTracking";
   public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
 
 

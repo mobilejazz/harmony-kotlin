@@ -1,5 +1,6 @@
 package com.worldreader.core.domain.model;
 
+import java.util.*;
 import java.util.regex.*;
 
 /**
@@ -20,13 +21,21 @@ public class Referrer {
   private static final String REFERRER_DEVICE_ID_KEY = "did";
   private static final String REFERRER_USER_ID_KEY = "uid";
   private static final String REFERRER_VALUE_DELIMITER = "!";
+  public static final String KEY_UTM_SOURCE = "utm_source";
+  public static final String KEY_UTM_MEDIUM = "utm_medium";
+  public static final String KEY_UTM_TERM = "utm_term";
+  public static final String KEY_UTM_CONTENT = "utm_content";
+  public static final String KEY_UTM_CAMPAIGN = "utm_campaign";
+
 
   private String deviceId;
   private String userId;
+  private Map<String, String> campaign;
 
-  public Referrer(String deviceId, String userId) {
+  public Referrer(String deviceId, String userId, Map<String, String> campaign) {
     this.deviceId = deviceId;
     this.userId = userId;
+    this.campaign = campaign;
   }
 
   public String getDeviceId() {
@@ -37,6 +46,9 @@ public class Referrer {
     return userId;
   }
 
+  public Map<String, String> getCampaign() {
+    return campaign;
+  }
 
   /**
    * Check if the string has a valid invitation identifier (to be sure that is not part of any other campaign)
@@ -60,21 +72,41 @@ public class Referrer {
 
     String deviceId = parseValueForKey(referrerUrlQueryValue, REFERRER_DEVICE_ID_KEY);
     String userId = parseValueForKey(referrerUrlQueryValue, REFERRER_USER_ID_KEY);
+    Map<String, String> campaign = parseUrlForUtmValues(referrerUrlQueryValue);
     if (deviceId == null && userId == null) {
       throw new ReferrerParseException("The string does not contains neither deviceId nor userId in the expected format");
     }
-    return new Referrer(deviceId, userId);
+    return new Referrer(deviceId, userId, campaign);
   }
 
   private static String parseValueForKey(String referrer, String key) {
-    String userId = null;
-    Pattern pattern = Pattern.compile(key + "(.*?)\\!");
-    Matcher matcher = pattern.matcher(referrer);
-    if (matcher.find()) {
-      userId = matcher.group(1);
+    String value = null;
+    Pattern pattern = null;
+    if(key.equals(REFERRER_DEVICE_ID_KEY)) {
+      pattern = Pattern.compile(key + "(.*?)\\!");
+    }else{
+      if(referrer.indexOf("%26")>0){
+        referrer = referrer.substring(0, referrer.indexOf("%26"));
+      }
+      pattern = Pattern.compile("\\!"+key + "(\\S.+)");
     }
 
-    return userId;
+    Matcher matcher = pattern.matcher(referrer);
+    if (matcher.find()) {
+      value = matcher.group(1);
+    }
+    return value;
+  }
+
+  private static Map<String, String> parseUrlForUtmValues(String url){
+    url = url.substring(url.indexOf("%26")+3, url.length());
+    String[] values = url.split("%26");
+    Map<String, String> c = new HashMap<>();
+    for(int i = 0; i < values.length; i++){
+      String[] utmParam = values[i].split("%3D");
+      c.put(utmParam[0], utmParam[1]);
+    }
+    return c;
   }
 
   /**
@@ -100,4 +132,5 @@ public class Referrer {
     }
     return builder.toString();
   }
+
 }

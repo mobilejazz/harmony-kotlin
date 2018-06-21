@@ -9,6 +9,8 @@ public class SignUpAnalyticsEvent implements AnalyticsEvent {
   private final String country;
   private final String date;
   private final String register;
+  private final String referrerUserId;
+  private final String referrerDeviceId;
 
   private SignUpAnalyticsEvent(Builder builder) {
     username = builder.username;
@@ -16,6 +18,9 @@ public class SignUpAnalyticsEvent implements AnalyticsEvent {
     country = builder.country;
     date = builder.date;
     register = builder.register;
+    referrerUserId = builder.referrerUserId;
+    referrerDeviceId = builder.referrerDeviceId;
+
   }
 
   public static Builder builder() {
@@ -42,12 +47,23 @@ public class SignUpAnalyticsEvent implements AnalyticsEvent {
     return register;
   }
 
+  public String getReferrerUserId() {
+    return referrerUserId;
+  }
+
+  public String getReferrerDeviceId() {
+    return referrerDeviceId;
+  }
+
   public static final class Builder {
     private String username;
     private String userId;
     private String country;
     private String date;
     private String register;
+    private String referrerUserId;
+    private String referrerDeviceId;
+
 
     public Builder() {
     }
@@ -77,6 +93,15 @@ public class SignUpAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+    public Builder withReferrerUserId(String val) {
+      referrerUserId = val;
+      return this;
+    }
+
+    public Builder withReferrerDeviceId(String val) {
+      referrerDeviceId = val;
+      return this;
+    }
 
     public SignUpAnalyticsEvent build() {
       return new SignUpAnalyticsEvent(this);

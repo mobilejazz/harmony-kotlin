@@ -3,6 +3,7 @@ package com.worldreader.core.analytics.providers.clevertap.mappers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 
@@ -20,8 +21,10 @@ public class CleverTapSignUpMapper implements CleverTapAnalyticsMapper<SignUpAna
         put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, CleverTapEventConstants.SING_UP_EVENT);
         put(CleverTapEventConstants.USER_NAME, event.getUsername());
         put(CleverTapEventConstants.REGISTER_ATTRIBUTE, event.getRegister());
-        put(CleverTapEventConstants.IDENTITY, preferences.getString("userId", "-1"));
-        put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
+        put(AnalyticsEventConstants.REFERRER_DEVICE_ID, event.getReferrerDeviceId());
+        put(AnalyticsEventConstants.REFERRER_USER_ID, event.getReferrerUserId());
+        put(CleverTapEventConstants.IDENTITY, event.getUserId() != null ? event.getUserId() : preferences.getString("userId", "-1"));
+        put(CleverTapEventConstants.USER_ID, event.getUserId() != null ? event.getUserId() : preferences.getString("userId", "-1"));
         put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
         put(CleverTapEventConstants.COUNTRY, event.getCountry());
         put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);

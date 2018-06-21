@@ -10,6 +10,7 @@ import com.worldreader.core.analytics.event.categories.CategorySelectedAnalytics
 import com.worldreader.core.analytics.event.other.ChangeLanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ScreenNameAnalyticsEvent;
+import com.worldreader.core.analytics.event.register.CampaignAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
@@ -47,6 +48,7 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(MoreBooksAnalyticsEvent.class, new PinpointMoreBooksMapper(analyticsClient));
           put(SignOutAnalyticsEvent.class, new PinpointSignOutMapper(analyticsClient));
           put(ChangeLanguageAnalyticsEvent.class, new PinpointReadInLanguageMapper(analyticsClient));
+          put(CampaignAnalyticsEvent.class, new PinpointCampaignMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 

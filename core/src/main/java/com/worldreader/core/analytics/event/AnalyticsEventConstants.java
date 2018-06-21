@@ -33,6 +33,8 @@ public class AnalyticsEventConstants {
   public static final String DEVICE_IPV4 = "deviceIPV4";
   public static final String DEVICE_IPV6 = "deviceIPV6";
   public static final String LOCALE_LANG_CODE = "localeLanguageCode";
+  public static final String REFERRER_USER_ID = "referrerUserId";
+  public static final String REFERRER_DEVICE_ID = "referrerDeviceId";
   /**
    *
 
