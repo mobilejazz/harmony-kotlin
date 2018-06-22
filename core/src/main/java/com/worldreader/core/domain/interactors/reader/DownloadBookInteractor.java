@@ -17,4 +17,6 @@ public interface DownloadBookInteractor {
   void execute(final String bookId, final String version, final DomainCallback<Integer, ErrorCore<?>> callback);
 
   ListenableFuture<Void> execute(final String bookId, final String version, BookImageQuality bookImageQuality, final Executor executor);
+
+  ListenableFuture<Void> execute(final String bookId, final String version, BookImageQuality bookImageQuality);
 }

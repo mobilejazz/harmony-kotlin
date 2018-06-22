@@ -23,6 +23,7 @@ import com.worldreader.core.common.intents.Intents;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.Collection;
+import dagger.android.AndroidInjection;
 
 import javax.inject.Inject;
 
@@ -81,6 +82,8 @@ public abstract class LoadingBookActivity extends AppCompatActivity
     } else {
       overridePendingTransition(0, R.anim.fade_in);
     }
+
+    AndroidInjection.inject(this);
 
     super.onCreate(savedInstanceState);
 

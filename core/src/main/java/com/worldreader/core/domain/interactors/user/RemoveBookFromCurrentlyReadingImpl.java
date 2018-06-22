@@ -14,6 +14,7 @@ import com.worldreader.core.domain.repository.UserBooksRepository;
 import com.worldreader.core.domain.thread.MainThread;
 
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 public class RemoveBookFromCurrentlyReadingImpl extends AbstractInteractor<Boolean, ErrorCore>
     implements RemoveBookFromCurrentlyReading {
@@ -37,8 +38,12 @@ public class RemoveBookFromCurrentlyReadingImpl extends AbstractInteractor<Boole
   }
 
   @Override public ListenableFuture<Boolean> execute(final String bookId) {
+    return execute(bookId, getExecutor());
+  }
+
+  @Override public ListenableFuture<Boolean> execute(final String bookId, final Executor executor) {
     final SettableFuture<Boolean> settableFuture = SettableFuture.create();
-    getExecutor().execute(new SafeRunnable() {
+    executor.execute(new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
         executeLogic(bookId, new Callback<Boolean>() {
           @Override public void onSuccess(final Boolean result) {

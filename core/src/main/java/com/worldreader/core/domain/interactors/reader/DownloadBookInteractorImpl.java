@@ -52,6 +52,11 @@ public class DownloadBookInteractorImpl extends AbstractInteractor<Integer, Erro
     this.executor.run(this);
   }
 
+  @Override public ListenableFuture<Void> execute(final String bookId, final String version,
+      final BookImageQuality bookImageQuality) {
+    return this.execute(bookId, version, bookImageQuality, executor.getExecutor());
+  }
+
   @Override public ListenableFuture<Void> execute(final String bookId, final String version, final BookImageQuality bookImageQuality, Executor executor) {
     this.bookId = bookId;
     this.version = version;
