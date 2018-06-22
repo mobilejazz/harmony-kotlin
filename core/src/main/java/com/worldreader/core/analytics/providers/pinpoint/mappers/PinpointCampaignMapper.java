@@ -23,6 +23,7 @@ public class PinpointCampaignMapper implements PinpointAnalyticsMapper<CampaignA
     analyticsEvent.addAttribute(Referrer.KEY_UTM_TERM, event.getUtmTerm());
     analyticsEvent.addAttribute(Referrer.KEY_UTM_CONTENT, event.getUtmContent());
     analyticsEvent.addAttribute(Referrer.KEY_UTM_CAMPAIGN, event.getUtmCampaign());
+    analyticsEvent.addAttribute(Referrer.KEY_ANID_CAMPAIGN, event.getAnId());
     return analyticsEvent;
 
   }

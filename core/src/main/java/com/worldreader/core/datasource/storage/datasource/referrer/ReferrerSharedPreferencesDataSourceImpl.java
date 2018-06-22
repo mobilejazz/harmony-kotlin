@@ -32,6 +32,7 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
         .putString(Referrer.KEY_UTM_TERM, referrer.getCampaign().get(Referrer.KEY_UTM_TERM))
         .putString(Referrer.KEY_UTM_CONTENT, referrer.getCampaign().get(Referrer.KEY_UTM_CONTENT))
         .putString(Referrer.KEY_UTM_CAMPAIGN, referrer.getCampaign().get(Referrer.KEY_UTM_CAMPAIGN))
+        .putString(Referrer.KEY_ANID_CAMPAIGN, referrer.getCampaign().get(Referrer.KEY_ANID_CAMPAIGN))
         .commit();
   }
 
@@ -42,6 +43,7 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
     campaign.put(Referrer.KEY_UTM_TERM,this.sharedPreferences.getString(Referrer.KEY_UTM_TERM, null));
     campaign.put(Referrer.KEY_UTM_CONTENT,this.sharedPreferences.getString(Referrer.KEY_UTM_CONTENT, null));
     campaign.put(Referrer.KEY_UTM_CAMPAIGN,this.sharedPreferences.getString(Referrer.KEY_UTM_CAMPAIGN, null));
+    campaign.put(Referrer.KEY_ANID_CAMPAIGN,this.sharedPreferences.getString(Referrer.KEY_ANID_CAMPAIGN, null));
 
     return new Referrer(
         this.sharedPreferences.getString(KEY_REFERRER_DEVICE_ID, null),

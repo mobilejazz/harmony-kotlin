@@ -21,11 +21,12 @@ public class Referrer {
   private static final String REFERRER_DEVICE_ID_KEY = "did";
   private static final String REFERRER_USER_ID_KEY = "uid";
   private static final String REFERRER_VALUE_DELIMITER = "!";
-  public static final String KEY_UTM_SOURCE = "utm_source";
+  public static final String KEY_UTM_SOURCE = "utm_source";//required param
   public static final String KEY_UTM_MEDIUM = "utm_medium";
   public static final String KEY_UTM_TERM = "utm_term";
   public static final String KEY_UTM_CONTENT = "utm_content";
   public static final String KEY_UTM_CAMPAIGN = "utm_campaign";
+  public static final String KEY_ANID_CAMPAIGN = "anid";//Ad Network Id, required param
 
 
   private String deviceId;
@@ -70,8 +71,8 @@ public class Referrer {
       throw new ReferrerParseException("The referrer string does not belong to a Worldreader invitation");
     }
 
-    String deviceId = parseValueForKey(referrerUrlQueryValue, REFERRER_DEVICE_ID_KEY);
-    String userId = parseValueForKey(referrerUrlQueryValue, REFERRER_USER_ID_KEY);
+    String deviceId = parseValueForInvite(referrerUrlQueryValue, REFERRER_INVITATION_IDENTIFIER+REFERRER_DEVICE_ID_KEY);
+    String userId = parseValueForInvite(referrerUrlQueryValue, REFERRER_USER_ID_KEY);
     Map<String, String> campaign = parseUrlForUtmValues(referrerUrlQueryValue);
     if (deviceId == null && userId == null) {
       throw new ReferrerParseException("The string does not contains neither deviceId nor userId in the expected format");
@@ -79,32 +80,24 @@ public class Referrer {
     return new Referrer(deviceId, userId, campaign);
   }
 
-  private static String parseValueForKey(String referrer, String key) {
-    String value = null;
-    Pattern pattern = null;
-    if(key.equals(REFERRER_DEVICE_ID_KEY)) {
-      pattern = Pattern.compile(key + "(.*?)\\!");
-    }else{
-      if(referrer.indexOf("%26")>0){
-        referrer = referrer.substring(0, referrer.indexOf("%26"));
-      }
-      pattern = Pattern.compile("\\!"+key + "(\\S.+)");
-    }
-
-    Matcher matcher = pattern.matcher(referrer);
-    if (matcher.find()) {
-      value = matcher.group(1);
-    }
+  private static String parseValueForInvite(String referrer, String key) {
+    String invite = referrer.substring(referrer.indexOf(REFERRER_INVITATION_IDENTIFIER+REFERRER_DEVICE_ID_KEY), referrer.lastIndexOf("!")+1);
+    String value = invite.substring(referrer.indexOf(key)+key.length(), key.equals(REFERRER_USER_ID_KEY) ? referrer.lastIndexOf("!") : referrer.indexOf
+        ("!"));
     return value;
   }
 
   private static Map<String, String> parseUrlForUtmValues(String url){
-    url = url.substring(url.indexOf("%26")+3, url.length());
-    String[] values = url.split("%26");
+    if(url.indexOf("!%26")>0){
+      url = url.substring(url.indexOf("!%26")+4, url.length());
+    }
     Map<String, String> c = new HashMap<>();
-    for(int i = 0; i < values.length; i++){
-      String[] utmParam = values[i].split("%3D");
-      c.put(utmParam[0], utmParam[1]);
+    if(url.indexOf("utm_") > -1) {
+      String[] values = url.split("%26");
+      for (int i = 0; i < values.length; i++) {
+        String[] utmParam = values[i].split("%3D");
+        c.put(utmParam[0], utmParam[1]);
+      }
     }
     return c;
   }

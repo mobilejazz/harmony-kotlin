@@ -15,6 +15,7 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
   private final String utmTerm;
   private final String utmContent;
   private final String utmCampaign;
+  private final String anId;
 
   public CampaignAnalyticsEvent(Builder builder){
     this.utmSource = builder.utmSource;
@@ -22,6 +23,7 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     this.utmTerm = builder.utmTerm;
     this.utmContent = builder.utmContent;
     this.utmCampaign = builder.utmCampaign;
+    this.anId = builder.anId;
   }
 
   public String getUtmSource() {
@@ -44,12 +46,17 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     return utmCampaign;
   }
 
+  public String getAnId() {
+    return anId;
+  }
+
   public static final class Builder {
     private String utmSource;
     private String utmMedium;
     private String utmTerm;
     private String utmContent;
     private String utmCampaign;
+    private String anId;
 
 
     public Builder() {
@@ -77,6 +84,11 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
 
     public Builder withUtmCampaign(String val) {
       this.utmCampaign = val;
+      return this;
+    }
+
+    public Builder withAnId(String val) {
+      this.anId = val;
       return this;
     }
 
