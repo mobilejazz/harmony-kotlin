@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 @Singleton public class WorldreaderDbOpenHelper extends SQLiteOpenHelper {
 
   private static final String DB_NAME = "worldreader";
-  private static final int DB_VERSION = 1;
+  private static final int DB_VERSION = 2;
 
   private static final String PRAGMA_FOREIGN_KEY_SUPPORT = "PRAGMA foreign_keys = ON;";
   private final Logger logger;
@@ -30,11 +30,24 @@ import java.util.concurrent.*;
   }
 
   @Override public void onCreate(final SQLiteDatabase db) {
-
   }
 
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+    if (oldVersion == 1 && newVersion == 2) {
+      String DEFAULT_AVATAR_ID = "monkey-avatar";
+      db.execSQL(
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_AVATAR_ID + " TEXT DEFAULT  \"" + DEFAULT_AVATAR_ID + "\""
+      );
+
+      db.execSQL(
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_CHILD_NAME + " TEXT"
+      );
+
+      db.execSQL(
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_RELATIONSHIP + " TEXT"
+      );
+    }
 
   }
 

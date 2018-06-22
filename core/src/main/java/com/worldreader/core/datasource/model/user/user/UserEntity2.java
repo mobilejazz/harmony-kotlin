@@ -29,12 +29,15 @@ import java.util.*;
   private final List<Integer> milestones;
   private final List<String> favoriteCategories;
   private final String localLibrary;
+  private final String childName;
+  private final String avatarId;
+  private final String relationship;
 
   private UserEntity2(String id, int profileId, String readToKidsId, String userName, String name,
       String email, boolean emailConfirmed, int pagesPerDay, String locale, int fontSize,
       int gender, int age, Date birthDate, int childrenCount, int minChildAge, int maxChildAge,
       final String picture, Date createdAt, Date updatedAt, List<Integer> milestones,
-      List<String> favoriteCategories, String localLibrary) {
+      List<String> favoriteCategories, String localLibrary, String childName, String avatarId, String relationship) {
     this.id = id;
     this.profileId = profileId;
     this.readToKidsId = readToKidsId;
@@ -57,6 +60,9 @@ import java.util.*;
     this.milestones = milestones;
     this.favoriteCategories = favoriteCategories;
     this.localLibrary = localLibrary;
+    this.childName = childName;
+    this.avatarId = avatarId;
+    this.relationship = relationship;
   }
 
   public String getId() {
@@ -151,6 +157,18 @@ import java.util.*;
     return localLibrary;
   }
 
+  public String getChildName() {
+    return childName;
+  }
+
+  public String getAvatarId() {
+    return avatarId;
+  }
+
+  public String getRelationship() {
+    return relationship;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -175,6 +193,9 @@ import java.util.*;
     private List<Integer> milestones;
     private List<String> favoriteCategories;
     private String localLibrary;
+    private String childName;
+    private String avatarId;
+    private String relationship;
 
     public Builder() {
     }
@@ -284,15 +305,29 @@ import java.util.*;
       return this;
     }
 
-    public Builder setLocalLibrary(String localLibrary) {
+    public Builder setLocalLibrary(String localLibrary){
       this.localLibrary = localLibrary;
+      return this;
+    }
+
+    public Builder setChildName(String childName) {
+      this.childName = childName;
+      return this;
+    }
+    public Builder setAvatarId(String avatarId) {
+      this.avatarId = avatarId;
+      return this;
+    }
+
+    public Builder setRelationship(String relationship) {
+      this.relationship = relationship;
       return this;
     }
 
     public UserEntity2 build() {
       return new UserEntity2(id, profileId, readToKidsId, userName, name, email, emailConfirmed,
           pagesPerDay, locale, fontSize, gender, age, birthDate, childrenCount, minChildAge,
-          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary);
+          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary, childName, avatarId, relationship);
     }
   }
 
