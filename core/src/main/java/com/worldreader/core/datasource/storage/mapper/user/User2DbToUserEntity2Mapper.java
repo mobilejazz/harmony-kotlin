@@ -51,6 +51,9 @@ import java.util.*;
               new TypeToken<ArrayList<String>>() {
               }.getType()))
           .setLocalLibrary(raw.getLocalLibrary())
+          .setChildName(raw.getChildName())
+          .setAvatarId(raw.getAvatarId())
+          .setRelationship(raw.getRelationship())
           .build();
       return Optional.of(userEntity);
     }

@@ -43,7 +43,8 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       final int pagesPerDay, final String locale, final int fontSize, final int gender,
       final int age, final Long birthDate, final int childrenCount, final int minChildAge,
       final int maxChildAge, final String picture, final long createdAt, final long updatedAt,
-      final String milestones, final String favoriteCategories, final String localLibrary) {
+      final String milestones, final String favoriteCategories, final String localLibrary,
+      final String childName, final String avatarId, final String relationship) {
     this.id = id;
     this.profileId = profileId;
     this.readToKidsId = readToKidsId;
@@ -66,6 +67,9 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.milestones = milestones;
     this.favoriteCategories = favoriteCategories;
     this.localLibrary = localLibrary;
+    this.childName = childName;
+    this.avatarId = avatarId;
+    this.relationship = relationship;
   }
 
   public String getId() {
@@ -244,6 +248,30 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     this.localLibrary = localLibrary;
   }
 
+  public String getChildName() {
+    return childName;
+  }
+
+  public void setChildName(String childName) {
+    this.childName = childName;
+  }
+
+  public String getAvatarId() {
+    return avatarId;
+  }
+
+  public void setAvatarId(String avatarId) {
+    this.avatarId = avatarId;
+  }
+
+  public String getRelationship() {
+    return relationship;
+  }
+
+  public void setRelationship(String relationship) {
+    this.relationship = relationship;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -268,6 +296,9 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     private String milestones;
     private String favoriteCategories;
     private String localLibrary;
+    private String childName;
+    private String avatarId;
+    private String relationship;
 
     public Builder() {
     }
@@ -394,10 +425,25 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
       return this;
     }
 
+    public Builder setChildName(String childName) {
+      this.childName = childName;
+      return this;
+    }
+
+    public Builder setAvatarId(String avatarId) {
+      this.avatarId = avatarId;
+      return this;
+    }
+
+    public Builder setRelationship(String relationship) {
+      this.relationship = relationship;
+      return this;
+    }
+
     public User2Db build() {
       return new User2Db(id, profileId, readToKidsId, userName, name, email, emailConfirmed,
           pagesPerDay, locale, fontSize, gender, age, birthDate, childrenCount, minChildAge,
-          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary);
+          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary, childName, avatarId, relationship);
     }
   }
 }

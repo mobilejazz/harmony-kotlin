@@ -42,6 +42,9 @@ import javax.inject.Singleton;
           .setMilestones(raw.getMilestones())
           .setFavoriteCategories(raw.getFavoriteCategories())
           .setLocalLibrary(raw.getLocalLibrary())
+          .setChildName(raw.getChildName())
+          .setAvatarId(raw.getAvatarId())
+          .setRelationship(raw.getRelationship())
           .build();
 
       return Optional.of(user);

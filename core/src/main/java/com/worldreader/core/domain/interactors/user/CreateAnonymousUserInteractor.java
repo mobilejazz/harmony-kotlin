@@ -10,6 +10,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.SettableFuture;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.storage.datasource.cache.manager.table.UsersTable;
+import com.worldreader.core.domain.model.user.KidsUser;
 import com.worldreader.core.domain.model.user.User2;
 
 import javax.inject.Inject;
@@ -35,6 +36,18 @@ import java.util.concurrent.*;
     return future;
   }
 
+  /**
+   * This method is intended for being used for the Worldreader Kids app
+   * @param executor
+   * @param user
+   * @return
+   */
+  public ListenableFuture<User2> execute(final Executor executor, KidsUser user) {
+    final SettableFuture<User2> future = SettableFuture.create();
+    executor.execute(getIneractorRunnable(Collections.<Integer>emptyList(), user, future));
+    return future;
+  }
+
   public ListenableFuture<User2> execute(@NonNull final List<Integer> favoriteCategories) {
     final SettableFuture<User2> future = SettableFuture.create();
     executor.execute(getIneractorRunnable(favoriteCategories, future));
@@ -48,11 +61,20 @@ import java.util.concurrent.*;
     return future;
   }
 
-  @NonNull SafeRunnable getIneractorRunnable(final @NonNull List<Integer> favoriteCategories,
+  @NonNull SafeRunnable getIneractorRunnable(
+      final @NonNull List<Integer> favoriteCategories,
+      final SettableFuture<User2> future) {
+    return getIneractorRunnable(favoriteCategories, null, future);
+
+  }
+
+  @NonNull SafeRunnable getIneractorRunnable(
+      final @NonNull List<Integer> favoriteCategories,
+      @Nullable final KidsUser user,
       final SettableFuture<User2> future) {
     return new SafeRunnable() {
       @Override protected void safeRun() throws Throwable {
-        final User2 anonymousUser = UserFactory.createAnonymous(favoriteCategories);
+        final User2 anonymousUser = UserFactory.createAnonymous(favoriteCategories, user);
         future.set(anonymousUser);
       }
 
@@ -64,11 +86,21 @@ import java.util.concurrent.*;
 
   private static class UserFactory {
 
-    static User2 createAnonymous(final List<Integer> favoriteCategories) {
+    static User2 createAnonymous(final List<Integer> favoriteCategories, @Nullable final KidsUser kidsUser) {
       final List<String> categories = toStringListCategories(favoriteCategories);
-      return new User2.Builder().setId(UsersTable.ANONYMOUS_USER_ID)
-          .setFavoriteCategories(categories)
-          .build();
+      User2.Builder userBuilder = new User2.Builder().setId(UsersTable.ANONYMOUS_USER_ID)
+          .setFavoriteCategories(categories);
+
+      if (kidsUser != null) {
+        userBuilder.setName(kidsUser.getName());
+        userBuilder.setChildName(kidsUser.getChildName());
+        userBuilder.setAvatarId(kidsUser.getAvatarId());
+        userBuilder.setBirthDate(kidsUser.getBirthDate());
+        userBuilder.setGender(kidsUser.getGender().getValue());
+        userBuilder.setRelationship(kidsUser.getRelationship());
+      }
+
+      return userBuilder.build();
     }
 
     private static List<String> toStringListCategories(final List<Integer> favoriteCategories) {
