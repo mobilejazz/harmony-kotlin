@@ -1,7 +1,6 @@
 package com.worldreader.core.domain.model;
 
 import java.util.*;
-import java.util.regex.*;
 
 /**
  * Rich model that represent a referrer who invites other users to install the app
@@ -17,9 +16,9 @@ public class Referrer {
     }
   }
 
-  private static final String REFERRER_INVITATION_IDENTIFIER = "wr_"; // Used to differentiate invitations from other possible campaigns
-  private static final String REFERRER_DEVICE_ID_KEY = "did";
-  private static final String REFERRER_USER_ID_KEY = "uid";
+  public static final String REFERRER_INVITATION_IDENTIFIER = "wr_"; // Used to differentiate invitations from other possible campaigns
+  public static final String REFERRER_DEVICE_ID_KEY = "did";
+  public static final String REFERRER_USER_ID_KEY = "uid";
   private static final String REFERRER_VALUE_DELIMITER = "!";
   public static final String KEY_UTM_SOURCE = "utm_source";//required param
   public static final String KEY_UTM_MEDIUM = "utm_medium";
@@ -57,42 +56,49 @@ public class Referrer {
    * @return
    */
   public static boolean isValidQueryValue(String referrerUrlQueryValue) {
-    return referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER);
+    return referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER) || isValidQueryCampaignValue(referrerUrlQueryValue);
   }
 
+  public static boolean isValidQueryCampaignValue(String referrerUrlQueryValue) {
+    return referrerUrlQueryValue.indexOf(KEY_UTM_SOURCE) > -1;
+  }
   /**
-   *  Creates a referrer object from the value of a url query field
+   *  Creates a referrer object from the values of a url query field
    * @param referrerUrlQueryValue
    * @return
    * @throws ReferrerParseException fi the string cannot be parsed
    */
   public static Referrer parse(String referrerUrlQueryValue) throws ReferrerParseException {
-    if (!referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER)) {
-      throw new ReferrerParseException("The referrer string does not belong to a Worldreader invitation");
+    String deviceId = null;
+    String userId = null;
+    if(referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER)) {
+      deviceId = parseValueForInvite(referrerUrlQueryValue, REFERRER_INVITATION_IDENTIFIER + REFERRER_DEVICE_ID_KEY);
+      userId = parseValueForInvite(referrerUrlQueryValue, REFERRER_USER_ID_KEY);
     }
-
-    String deviceId = parseValueForInvite(referrerUrlQueryValue, REFERRER_INVITATION_IDENTIFIER+REFERRER_DEVICE_ID_KEY);
-    String userId = parseValueForInvite(referrerUrlQueryValue, REFERRER_USER_ID_KEY);
     Map<String, String> campaign = parseUrlForUtmValues(referrerUrlQueryValue);
-    if (deviceId == null && userId == null) {
+    if (deviceId == null && userId == null && campaign == null) {
       throw new ReferrerParseException("The string does not contains neither deviceId nor userId in the expected format");
     }
     return new Referrer(deviceId, userId, campaign);
   }
 
   private static String parseValueForInvite(String referrer, String key) {
-    String invite = referrer.substring(referrer.indexOf(REFERRER_INVITATION_IDENTIFIER+REFERRER_DEVICE_ID_KEY), referrer.lastIndexOf("!")+1);
-    String value = invite.substring(referrer.indexOf(key)+key.length(), key.equals(REFERRER_USER_ID_KEY) ? referrer.lastIndexOf("!") : referrer.indexOf
-        ("!"));
-    return value;
+    String invite = referrer.substring(referrer.indexOf(REFERRER_INVITATION_IDENTIFIER + REFERRER_DEVICE_ID_KEY), referrer.lastIndexOf("!") + 1);
+    if (invite.indexOf(key) > -1) {
+      String value = invite.substring(referrer.indexOf(key) + key.length(), key.equals(REFERRER_USER_ID_KEY) ? referrer.lastIndexOf("!") : referrer.indexOf
+          ("!"));
+      return value;
+    }
+    return null;
   }
 
   private static Map<String, String> parseUrlForUtmValues(String url){
     if(url.indexOf("!%26")>0){
       url = url.substring(url.indexOf("!%26")+4, url.length());
     }
-    Map<String, String> c = new HashMap<>();
+    Map<String, String> c = null;
     if(url.indexOf("utm_") > -1) {
+      c = new HashMap<>();
       String[] values = url.split("%26");
       for (int i = 0; i < values.length; i++) {
         String[] utmParam = values[i].split("%3D");

@@ -4,18 +4,14 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 
 public class CampaignAnalyticsEvent implements AnalyticsEvent {
 
-  private static final String KEY_UTM_SOURCE = "utm_source";
-  private static final String KEY_UTM_MEDIUM = "utm_medium";
-  private static final String KEY_UTM_TERM = "utm_term";
-  private static final String KEY_UTM_CONTENT = "utm_content";
-  private static final String KEY_UTM_CAMPAIGN = "utm_campaign";
-
   private final String utmSource;
   private final String utmMedium;
   private final String utmTerm;
   private final String utmContent;
   private final String utmCampaign;
   private final String anId;
+  private final String referrerDeviceId;
+  private final String referrerUserId;
 
   public CampaignAnalyticsEvent(Builder builder){
     this.utmSource = builder.utmSource;
@@ -24,6 +20,8 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     this.utmContent = builder.utmContent;
     this.utmCampaign = builder.utmCampaign;
     this.anId = builder.anId;
+    this.referrerDeviceId = builder.referrerDeviceId;
+    this.referrerUserId = builder.referrerUserId;
   }
 
   public String getUtmSource() {
@@ -50,6 +48,14 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     return anId;
   }
 
+  public String getReferrerDeviceId() {
+    return referrerDeviceId;
+  }
+
+  public String getReferrerUserId() {
+    return referrerUserId;
+  }
+
   public static final class Builder {
     private String utmSource;
     private String utmMedium;
@@ -57,6 +63,8 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     private String utmContent;
     private String utmCampaign;
     private String anId;
+    private String referrerDeviceId;
+    private String referrerUserId;
 
 
     public Builder() {
@@ -89,6 +97,16 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
 
     public Builder withAnId(String val) {
       this.anId = val;
+      return this;
+    }
+
+    public Builder withReferrerDeviceId(String val) {
+      this.referrerDeviceId = val;
+      return this;
+    }
+
+    public Builder withReferrerUserId(String val) {
+      this.referrerUserId = val;
       return this;
     }
 
