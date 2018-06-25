@@ -107,11 +107,30 @@ inline fun <A> Future<A>.onComplete(executor: Executor = DirectExecutor, crossin
     return this
 }
 
+inline fun <A> Future<A>.onCompleteNullable(executor: Executor = DirectExecutor, crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A?) ->
+Unit): Future<A> {
+  Futures.addCallback(this, object : FutureCallback<A> {
+    override fun onSuccess(result: A?) {
+      onSuccess(result)
+    }
+
+    override fun onFailure(t: Throwable) {
+      onFailure(t)
+    }
+  }, executor)
+  return this
+}
+
+
 inline fun <A> Future<A>.onCompleteUi(crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A) -> Unit): Future<A> =
         onComplete(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 inline fun <A> Future<A>.onCompleteDirect(crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A) -> Unit): Future<A> =
         onComplete(executor = DirectExecutor, onFailure = onFailure, onSuccess = onSuccess)
+
+inline fun <A> Future<A>.onCompleteNullableUi(crossinline onFailure: (Throwable) -> Unit, crossinline onSuccess: (A?) -> Unit): Future<A> =
+    onCompleteNullable(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
+
 
 object FutureObject {
 
