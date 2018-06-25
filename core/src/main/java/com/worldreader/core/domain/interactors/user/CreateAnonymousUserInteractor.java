@@ -38,13 +38,12 @@ import java.util.concurrent.*;
 
   /**
    * This method is intended for being used for the Worldreader Kids app
-   * @param executor
    * @param user
    * @return
    */
-  public ListenableFuture<User2> execute(final Executor executor, KidsUser user) {
+  public ListenableFuture<User2> execute(KidsUser user, @NonNull final List<Integer> favoriteCategories) {
     final SettableFuture<User2> future = SettableFuture.create();
-    executor.execute(getIneractorRunnable(Collections.<Integer>emptyList(), user, future));
+    executor.execute(getIneractorRunnable(favoriteCategories, user, future));
     return future;
   }
 
