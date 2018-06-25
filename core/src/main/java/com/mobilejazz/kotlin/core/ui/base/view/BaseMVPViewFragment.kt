@@ -11,14 +11,10 @@ abstract class BaseMVPViewFragment<T : Presenter<V>, in V : MVPView> : BaseFragm
 
   @Inject lateinit var presenter: T
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    @Suppress("UNCHECKED_CAST")
-    presenter.attachView(this@BaseMVPViewFragment as V)
-  }
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    @Suppress("UNCHECKED_CAST")
+    presenter.attachView(this@BaseMVPViewFragment as V)
     presenter.onCreate(onSetupPresenterArguments())
   }
 
