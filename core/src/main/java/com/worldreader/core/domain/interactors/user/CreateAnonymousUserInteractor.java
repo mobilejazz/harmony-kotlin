@@ -94,8 +94,8 @@ import java.util.concurrent.*;
         userBuilder.setName(kidsUser.getName());
         userBuilder.setChildName(kidsUser.getChildName());
         userBuilder.setAvatarId(kidsUser.getAvatarId());
-        userBuilder.setBirthDate(kidsUser.getBirthDate());
-        userBuilder.setGender(kidsUser.getGender().getValue());
+        userBuilder.setChildBirthDate(kidsUser.getChildBirthDate());
+        userBuilder.setChildGender(kidsUser.getChildGender().getValue());
         userBuilder.setRelationship(kidsUser.getRelationship());
       }
 

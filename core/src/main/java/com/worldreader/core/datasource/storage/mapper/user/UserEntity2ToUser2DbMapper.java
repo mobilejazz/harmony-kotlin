@@ -48,6 +48,8 @@ import javax.inject.Singleton;
           .setChildName(raw.getChildName())
           .setAvatarId(raw.getAvatarId())
           .setRelationship(raw.getRelationship())
+          .setChildBirthDate(raw.getChildBirthDate())
+          .setChildGender(raw.getChildGender())
           .build();
       return Optional.of(user2Db);
     }

@@ -32,6 +32,8 @@ public class UsersTable {
   public static final String COLUMN_LOCAL_LIBRARY = "localLibrary";
   public static final String COLUMN_CHILD_NAME = "childName";
   public static final String COLUMN_AVATAR_ID = "avatarId";
+  public static final String COLUMN_CHILD_BIRTHDATE = "childBirthDate";
+  public static final String COLUMN_CHILD_GENDER = "childGender";
   public static final String COLUMN_RELATIONSHIP = "relationship";
 
   public static final String ANONYMOUS_USER_ID = "1";
@@ -125,6 +127,10 @@ public class UsersTable {
         + " TEXT, "
         + COLUMN_AVATAR_ID
         + " TEXT, "
+        + COLUMN_CHILD_BIRTHDATE
+        + " TEXT, "
+        + COLUMN_CHILD_GENDER
+        + " INTEGER, "
         + COLUMN_RELATIONSHIP
         + " TEXT"
         + ");";

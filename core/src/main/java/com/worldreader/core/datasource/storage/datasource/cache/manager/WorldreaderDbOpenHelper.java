@@ -35,13 +35,22 @@ import java.util.concurrent.*;
   @Override
   public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
     if (oldVersion == 1 && newVersion == 2) {
-      String DEFAULT_AVATAR_ID = "monkey-avatar";
+      String DEFAULT_AVATAR_ID = "monkey";
+
+      db.execSQL(
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_CHILD_NAME + " TEXT"
+      );
+
       db.execSQL(
           "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_AVATAR_ID + " TEXT DEFAULT  \"" + DEFAULT_AVATAR_ID + "\""
       );
 
       db.execSQL(
-          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_CHILD_NAME + " TEXT"
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_CHILD_BIRTHDATE + " TEXT"
+      );
+
+      db.execSQL(
+          "ALTER TABLE " + UsersTable.TABLE + " ADD COLUMN " + UsersTable.COLUMN_CHILD_GENDER + " INTEGER"
       );
 
       db.execSQL(

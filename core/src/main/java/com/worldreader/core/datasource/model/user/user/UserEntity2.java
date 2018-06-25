@@ -31,13 +31,15 @@ import java.util.*;
   private final String localLibrary;
   private final String childName;
   private final String avatarId;
+  private final Date childBirthDate;
+  private final int childGender;
   private final String relationship;
 
   private UserEntity2(String id, int profileId, String readToKidsId, String userName, String name,
       String email, boolean emailConfirmed, int pagesPerDay, String locale, int fontSize,
       int gender, int age, Date birthDate, int childrenCount, int minChildAge, int maxChildAge,
       final String picture, Date createdAt, Date updatedAt, List<Integer> milestones,
-      List<String> favoriteCategories, String localLibrary, String childName, String avatarId, String relationship) {
+      List<String> favoriteCategories, String localLibrary,String childName, String avatarId, Date childBirthDate, int childGender, String relationship) {
     this.id = id;
     this.profileId = profileId;
     this.readToKidsId = readToKidsId;
@@ -62,6 +64,8 @@ import java.util.*;
     this.localLibrary = localLibrary;
     this.childName = childName;
     this.avatarId = avatarId;
+    this.childBirthDate = childBirthDate;
+    this.childGender = childGender;
     this.relationship = relationship;
   }
 
@@ -169,6 +173,14 @@ import java.util.*;
     return relationship;
   }
 
+  public Date getChildBirthDate() {
+    return childBirthDate;
+  }
+
+  public int getChildGender() {
+    return childGender;
+  }
+
   public static final class Builder {
 
     private String id;
@@ -195,6 +207,8 @@ import java.util.*;
     private String localLibrary;
     private String childName;
     private String avatarId;
+    private Date childBirthDate;
+    private int childGender;
     private String relationship;
 
     public Builder() {
@@ -324,10 +338,21 @@ import java.util.*;
       return this;
     }
 
+    public Builder setChildBirthDate(Date childBirthDate) {
+      this.childBirthDate = childBirthDate;
+      return this;
+    }
+
+    public Builder setChildGender(int childGender) {
+      this.childGender = childGender;
+      return this;
+    }
+
     public UserEntity2 build() {
       return new UserEntity2(id, profileId, readToKidsId, userName, name, email, emailConfirmed,
           pagesPerDay, locale, fontSize, gender, age, birthDate, childrenCount, minChildAge,
-          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary, childName, avatarId, relationship);
+          maxChildAge, picture, createdAt, updatedAt, milestones, favoriteCategories, localLibrary , childName, avatarId, childBirthDate, childGender,
+          relationship);
     }
   }
 

@@ -54,6 +54,8 @@ import java.util.*;
           .setChildName(raw.getChildName())
           .setAvatarId(raw.getAvatarId())
           .setRelationship(raw.getRelationship())
+          .setChildBirthDate(raw.getChildBirthDate()!= null ? new Date(raw.getBirthDate()) : null)
+          .setChildGender(raw.getChildGender())
           .build();
       return Optional.of(userEntity);
     }

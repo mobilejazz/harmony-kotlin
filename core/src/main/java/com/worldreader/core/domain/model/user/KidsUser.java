@@ -24,16 +24,16 @@ public class KidsUser {
   private final String name;
   private final String childName;
   private final String avatarId;
-  private final Date birthDate;
-  private final Gender gender;
+  private final Date childBirthDate;
+  private final Gender childGender;
   private final String relationship;
 
-  private KidsUser(String name, String childName, String avatarId, Date birthDate, Gender gender, String relationship) {
+  private KidsUser(String name, String childName, String avatarId, Date childBirthDate, Gender childGender, String relationship) {
     this.name = name;
     this.childName = childName;
     this.avatarId = avatarId;
-    this.birthDate = birthDate;
-    this.gender = gender;
+    this.childBirthDate = childBirthDate;
+    this.childGender = childGender;
     this.relationship = relationship;
   }
 
@@ -49,12 +49,12 @@ public class KidsUser {
     return avatarId;
   }
 
-  public Date getBirthDate() {
-    return birthDate;
+  public Date getChildBirthDate() {
+    return childBirthDate;
   }
 
-  public Gender getGender() {
-    return gender;
+  public Gender getChildGender() {
+    return childGender;
   }
 
   public String getRelationship() {
@@ -66,8 +66,8 @@ public class KidsUser {
     private String name;
     private String childName;
     private String avatarId;
-    private Date birthDate;
-    private Gender gender;
+    private Date childBirthDate;
+    private Gender childGender;
     private String relationship;
 
     public Builder setName(String name) {
@@ -89,22 +89,22 @@ public class KidsUser {
       return this;
     }
 
-    public Builder setBirthDate(Date birthDate) {
-      this.birthDate = birthDate;
+    public Builder setChildBirthDate(Date birthDate) {
+      this.childBirthDate = birthDate;
       return this;
     }
 
-    public Date getBirthDate() {
-      return birthDate;
+    public Date getChildBirthDate() {
+      return childBirthDate;
     }
 
-    public Builder setGender(Gender gender) {
-      this.gender = gender;
+    public Builder setChildGender(Gender childGender) {
+      this.childGender = childGender;
       return this;
     }
 
-    public Gender getGender() {
-      return gender;
+    public Gender getChildGender() {
+      return childGender;
     }
 
     public Builder setRelationship(String relationship) {
@@ -113,7 +113,7 @@ public class KidsUser {
     }
 
     public KidsUser build() {
-      return new KidsUser(name, childName, avatarId, birthDate, gender, relationship);
+      return new KidsUser(name, childName, avatarId, childBirthDate, childGender, relationship);
     }
   }
 }

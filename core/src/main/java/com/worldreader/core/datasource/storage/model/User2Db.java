@@ -33,6 +33,8 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
   @StorIOSQLiteColumn(name = COLUMN_LOCAL_LIBRARY) public String localLibrary;
   @StorIOSQLiteColumn(name = COLUMN_CHILD_NAME) public String childName;
   @StorIOSQLiteColumn(name = COLUMN_AVATAR_ID) public String avatarId;
+  @StorIOSQLiteColumn(name = COLUMN_CHILD_BIRTHDATE)public Long childBirthDate;
+  @StorIOSQLiteColumn(name = COLUMN_CHILD_GENDER) public int childGender;
   @StorIOSQLiteColumn(name = COLUMN_RELATIONSHIP) public String relationship;
 
   public User2Db() {
@@ -268,6 +270,22 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     return relationship;
   }
 
+  public void setChildGender(int childGender) {
+    this.childGender = childGender;
+  }
+
+  public int getChildGender() {
+    return childGender;
+  }
+
+  public void setChildBirthDate(Long childBirthDate) {
+    this.childBirthDate = childBirthDate;
+  }
+
+  public Long getChildBirthDate() {
+    return childBirthDate;
+  }
+
   public void setRelationship(String relationship) {
     this.relationship = relationship;
   }
@@ -298,6 +316,8 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
     private String localLibrary;
     private String childName;
     private String avatarId;
+    private Date childBirthDate;
+    private int childGender;
     private String relationship;
 
     public Builder() {
@@ -437,6 +457,16 @@ import static com.worldreader.core.datasource.storage.datasource.cache.manager.t
 
     public Builder setRelationship(String relationship) {
       this.relationship = relationship;
+      return this;
+    }
+
+    public Builder setChildBirthDate(Date childBirthDate) {
+      this.childBirthDate = childBirthDate;
+      return this;
+    }
+
+    public Builder setChildGender(int childGender) {
+      this.childGender = childGender;
       return this;
     }
 
