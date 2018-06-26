@@ -114,7 +114,7 @@ dependencies {
   api dependencies.awsCore
   api dependencies.awsPinpoint
   api dependencies.clevertap
-  api dependencies.firebase
+
 
   api dependencies.networkConnectionClass
 

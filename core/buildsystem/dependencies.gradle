@@ -54,8 +54,7 @@ ext {
 
       awsCore                   : "com.amazonaws:aws-android-sdk-core:2.6.+",
       awsPinpoint               : "com.amazonaws:aws-android-sdk-pinpoint:2.6.+",
-      clevertap                 : 'com.clevertap.android:clevertap-android-sdk:3.1.9',
-      firebase                  : 'com.google.firebase:firebase-messaging:9.0.2',
+      clevertap                 : 'com.clevertap.android:clevertap-android-sdk:3.1.10',
       networkConnectionClass    : "com.facebook.network.connectionclass:connectionclass:1.0.1",
 
       viewpropertyobjectanimator: "com.bartoszlipinski:viewpropertyobjectanimator:1.4.5",
