@@ -24,5 +24,7 @@ public interface GetRecommendedBooksInteractor {
 
   ListenableFuture<Optional<List<Book>>> execute(final Book book, final int offset, final int limit, Set<Category> rootCategories);
 
+  ListenableFuture<Optional<List<Book>>> execute(final int offset, final int limit, Set<Category> categories);
+
   ListenableFuture<Optional<List<Book>>> execute(Book book, int offset, int limit, String language, Executor executor, Set<Category> rootCategories);
 }
