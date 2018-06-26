@@ -1,13 +1,12 @@
 package com.worldreader.core.domain.model;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 public class Banner implements Serializable {
 
   public static final String READ_TO_KIDS_BANNER_IDENTIFIER = "r2kmain";
-
-  public static final int OFFLINE_BANNER_ID = -1;
 
   public static final Banner EMPTY = new Banner();
 

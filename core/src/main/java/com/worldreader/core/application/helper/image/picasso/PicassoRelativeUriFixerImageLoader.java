@@ -1,17 +1,17 @@
 package com.worldreader.core.application.helper.image.picasso;
 
+import android.content.Context;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.worldreader.core.application.helper.image.ImageDownloader;
-
 import javax.inject.Inject;
 
 public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
 
   private final String endpoint;
 
-  @Inject public PicassoRelativeUriFixerImageLoader(Picasso picasso, String endpoint, ImageDownloader imageDownloader) {
-    super(picasso, imageDownloader);
+  @Inject public PicassoRelativeUriFixerImageLoader(Context context, Picasso picasso, String endpoint, ImageDownloader imageDownloader) {
+    super(context, picasso, imageDownloader);
     this.endpoint = endpoint;
   }
 
@@ -35,5 +35,9 @@ public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
       url = endpoint.concat(url);
     }
     return url;
+  }
+
+  @Override public void loadCover(String url, String tag, int radius, int margin, ImageView view) {
+    super.loadCover(fixUrl(url), tag, radius, margin, view);
   }
 }
