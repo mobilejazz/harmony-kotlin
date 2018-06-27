@@ -26,16 +26,19 @@ public class Referrer {
   public static final String KEY_UTM_CONTENT = "utm_content";
   public static final String KEY_UTM_CAMPAIGN = "utm_campaign";
   public static final String KEY_ANID_CAMPAIGN = "anid";//Ad Network Id, required param
+  public static final String REFERRER_RAW = "referrer_raw";
 
 
   private String deviceId;
   private String userId;
   private Map<String, String> campaign;
+  private String referrerRaw;
 
-  public Referrer(String deviceId, String userId, Map<String, String> campaign) {
+  public Referrer(String deviceId, String userId, Map<String, String> campaign, String referrerRaw) {
     this.deviceId = deviceId;
     this.userId = userId;
     this.campaign = campaign;
+    this.referrerRaw = referrerRaw;
   }
 
   public String getDeviceId() {
@@ -79,7 +82,7 @@ public class Referrer {
     if (deviceId == null && userId == null && campaign == null) {
       throw new ReferrerParseException("The string does not contains neither deviceId nor userId in the expected format");
     }
-    return new Referrer(deviceId, userId, campaign);
+    return new Referrer(deviceId, userId, campaign, referrerUrlQueryValue);
   }
 
   private static String parseValueForInvite(String referrer, String key) {
@@ -136,4 +139,7 @@ public class Referrer {
     return builder.toString();
   }
 
+  public String getReferrerRaw() {
+    return referrerRaw;
+  }
 }

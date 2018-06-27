@@ -12,6 +12,7 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
   private final String anId;
   private final String referrerDeviceId;
   private final String referrerUserId;
+  private final String referrerRaw;
 
   public CampaignAnalyticsEvent(Builder builder){
     this.utmSource = builder.utmSource;
@@ -22,6 +23,7 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     this.anId = builder.anId;
     this.referrerDeviceId = builder.referrerDeviceId;
     this.referrerUserId = builder.referrerUserId;
+    this.referrerRaw = builder.referrerRaw;
   }
 
   public String getUtmSource() {
@@ -56,6 +58,10 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     return referrerUserId;
   }
 
+  public String getReferrerRaw() {
+    return referrerRaw;
+  }
+
   public static final class Builder {
     private String utmSource;
     private String utmMedium;
@@ -65,7 +71,7 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
     private String anId;
     private String referrerDeviceId;
     private String referrerUserId;
-
+    private String referrerRaw;
 
     public Builder() {
     }
@@ -107,6 +113,11 @@ public class CampaignAnalyticsEvent implements AnalyticsEvent {
 
     public Builder withReferrerUserId(String val) {
       this.referrerUserId = val;
+      return this;
+    }
+
+    public Builder withReferrerRaw(String val) {
+      this.referrerRaw = val;
       return this;
     }
 

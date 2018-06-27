@@ -24,6 +24,7 @@ public class PinpointCampaignMapper implements PinpointAnalyticsMapper<CampaignA
     analyticsEvent.addAttribute(Referrer.KEY_ANID_CAMPAIGN, event.getAnId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_DEVICE_ID_ATTRIBUTE, event.getReferrerDeviceId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_USER_ID_ATTRIBUTE, event.getReferrerUserId());
+    analyticsEvent.addAttribute(Referrer.REFERRER_RAW, event.getReferrerRaw());
 
     return analyticsEvent;
 
