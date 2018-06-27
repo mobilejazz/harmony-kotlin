@@ -23,16 +23,16 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
   }
 
   @SuppressLint("ApplySharedPref") @Override public void put(Referrer referrer) {
-    referrer.getCampaign().keySet();
     this.sharedPreferences.edit()
         .putString(KEY_REFERRER_DEVICE_ID, referrer.getDeviceId())
         .putString(KEY_REFERRER_USER_ID, referrer.getUserId())
-        .putString(Referrer.KEY_UTM_SOURCE, referrer.getCampaign().get(Referrer.KEY_UTM_SOURCE))
-        .putString(Referrer.KEY_UTM_MEDIUM, referrer.getCampaign().get(Referrer.KEY_UTM_MEDIUM))
-        .putString(Referrer.KEY_UTM_TERM, referrer.getCampaign().get(Referrer.KEY_UTM_TERM))
-        .putString(Referrer.KEY_UTM_CONTENT, referrer.getCampaign().get(Referrer.KEY_UTM_CONTENT))
-        .putString(Referrer.KEY_UTM_CAMPAIGN, referrer.getCampaign().get(Referrer.KEY_UTM_CAMPAIGN))
-        .putString(Referrer.KEY_ANID_CAMPAIGN, referrer.getCampaign().get(Referrer.KEY_ANID_CAMPAIGN))
+        .putString(Referrer.KEY_UTM_SOURCE, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_UTM_SOURCE) : null)
+        .putString(Referrer.KEY_UTM_MEDIUM, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_UTM_MEDIUM) : null)
+        .putString(Referrer.KEY_UTM_TERM, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_UTM_TERM) : null)
+        .putString(Referrer.KEY_UTM_CONTENT, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_UTM_CONTENT) : null)
+        .putString(Referrer.KEY_UTM_CAMPAIGN, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_UTM_CAMPAIGN) : null)
+        .putString(Referrer.KEY_ANID_CAMPAIGN, (referrer.getCampaign()!=null) ? referrer.getCampaign().get(Referrer.KEY_ANID_CAMPAIGN) : null)
+        .putString(Referrer.REFERRER_RAW, referrer.getReferrerRaw())
         .commit();
   }
 
@@ -47,6 +47,6 @@ public class ReferrerSharedPreferencesDataSourceImpl implements ReferrerDataSour
 
     return new Referrer(
         this.sharedPreferences.getString(KEY_REFERRER_DEVICE_ID, null),
-        this.sharedPreferences.getString(KEY_REFERRER_USER_ID, null),campaign);
+        this.sharedPreferences.getString(KEY_REFERRER_USER_ID, null),campaign, this.sharedPreferences.getString(Referrer.REFERRER_RAW, null));
   }
 }
