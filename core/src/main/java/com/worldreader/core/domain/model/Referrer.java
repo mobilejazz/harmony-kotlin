@@ -83,7 +83,9 @@ public class Referrer {
   }
 
   private static String parseValueForInvite(String referrer, String key) {
-    String invite = referrer.substring(referrer.indexOf(REFERRER_INVITATION_IDENTIFIER + REFERRER_DEVICE_ID_KEY), referrer.lastIndexOf("!") + 1);
+    String invite = referrer.substring(referrer.indexOf(REFERRER_INVITATION_IDENTIFIER), referrer.lastIndexOf("!") + 1);//this isolates the invite info in a
+    // separate string in the case we also have campaign info in the referrer.
+
     if (invite.indexOf(key) > -1) {
       String value = invite.substring(referrer.indexOf(key) + key.length(), key.equals(REFERRER_USER_ID_KEY) ? referrer.lastIndexOf("!") : referrer.indexOf
           ("!"));
