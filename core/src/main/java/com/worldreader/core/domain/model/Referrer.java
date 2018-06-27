@@ -104,7 +104,9 @@ public class Referrer {
       String[] values = url.split("%26");
       for (int i = 0; i < values.length; i++) {
         String[] utmParam = values[i].split("%3D");
-        c.put(utmParam[0], utmParam[1]);
+        if(utmParam.length > 1){
+          c.put(utmParam[0], utmParam[1]);
+        }
       }
     }
     return c;
