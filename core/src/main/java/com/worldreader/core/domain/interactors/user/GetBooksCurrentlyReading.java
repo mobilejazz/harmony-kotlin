@@ -16,6 +16,8 @@ public interface GetBooksCurrentlyReading {
 
   ListenableFuture<List<Book>> execute(int limit, boolean allBooks, Executor executor);
 
+  ListenableFuture<List<Book>> execute(int limit, boolean allBooks);
+
   ListenableFuture<List<Book>> execute(final GetAllUserBooksCurrentlyReadingStorageSpec spec, final Executor executor);
 
   ListenableFuture<List<Book>> execute(final GetAllUserBooksCurrentlyReadingStorageSpec spec);
