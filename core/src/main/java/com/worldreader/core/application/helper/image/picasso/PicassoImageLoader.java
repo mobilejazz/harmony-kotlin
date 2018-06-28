@@ -64,13 +64,53 @@ public class PicassoImageLoader implements ImageLoader {
     picasso.load(resIcon).into(imageView);
   }
 
-  @Override public void loadCover(String url, String tag, int radius, int margin, ImageView view) {
-    picasso
-        .load(url)
+  public void loadCover(String id, String url, String tag, int radius, int margin, int resPlaceholderIcon, ImageView imageView) {
+    File imageCached = imageDownloader.getImage(id);
+    if (imageCached != null) {
+
+      if (imageCached.length() > 0) {
+        if (resPlaceholderIcon > 0) {
+          picasso.load(imageCached)
+              .fit()
+              .tag(tag)
+              .transform(new RoundedCornersTransformation(radius, margin))
+              .placeholder(resPlaceholderIcon)
+              .into(imageView);
+        } else {
+          picasso.load(imageCached)
+              .fit()
+              .tag(tag)
+              .transform(new RoundedCornersTransformation(radius, margin))
+              .into(imageView);
+        }
+      } else {
+        if (resPlaceholderIcon > 0) {
+          if (url != null && imageView != null) {
+            picasso.load(url)
+                .fit()
+                .tag(tag)
+                .transform(new RoundedCornersTransformation(radius, margin))
+                .placeholder(resPlaceholderIcon)
+                .into(imageView);
+          }
+        } else {
+          if (url != null && imageView != null) {
+            picasso.load(url)
+                .fit()
+                .tag(tag)
+                .transform(new RoundedCornersTransformation(radius, margin))
+                .into(imageView);
+          }
+        }
+      }
+    }
+  }
+
+  @Override public void loadCover(int radius, int margin, int placeHolderImage, ImageView imageView) {
+    picasso.load(placeHolderImage)
         .fit()
-        .tag(tag)
         .transform(new RoundedCornersTransformation(radius, margin))
-        .into(view);
+        .into(imageView);
   }
 
   @Override public void cancel(String tag) {
