@@ -2,13 +2,12 @@ package com.worldreader.core.domain.interactors.geolocation;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.worldreader.core.application.di.annotation.PerActivity;
+import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.domain.repository.GeolocationRepository;
-
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
-import java.util.concurrent.*;
 
-@PerActivity
+@ActivityScope
 public class UpdateGeolocationInfoInteractor {
 
   private final ListeningExecutorService executor;
