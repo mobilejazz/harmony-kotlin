@@ -9,7 +9,6 @@ import com.worldreader.core.domain.interactors.reader.GetBookMetadataInteractor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.Collection;
-
 import javax.inject.Inject;
 
 public class LoadingBookPresenterImpl implements LoadingBookPresenter {

@@ -28,6 +28,12 @@ import javax.inject.Singleton;
     return settableFuture;
   }
 
+  public ListenableFuture<Optional<UserBook>> execute(final UserBookStorageSpecification specification, final UserBook userbook, ListeningExecutorService executor) {
+    final SettableFuture<Optional<UserBook>> settableFuture = SettableFuture.create();
+    executor.execute(getInteractorRunnable(specification, userbook, settableFuture));
+    return settableFuture;
+  }
+
   private Runnable getInteractorRunnable(final UserBookStorageSpecification specification, final UserBook userbook,
       final SettableFuture<Optional<UserBook>> future) {
     return new Runnable() {
