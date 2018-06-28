@@ -13,7 +13,9 @@ public interface ImageLoader {
 
   void load(int resIcon, ImageView imageView);
 
-  void loadCover(String url, String tag, int radius, int margin, ImageView view);
+  void loadCover(String id, String url, String tag, int radius, int margin, int resPlaceholderIcon, ImageView imageView);
+
+  void loadCover(int radius, int margin, int placeHolderImage, ImageView imageView);
 
   void cancel(String tag);
 

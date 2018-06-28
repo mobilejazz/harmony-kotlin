@@ -37,7 +37,11 @@ public class PicassoRelativeUriFixerImageLoader extends PicassoImageLoader {
     return url;
   }
 
-  @Override public void loadCover(String url, String tag, int radius, int margin, ImageView view) {
-    super.loadCover(fixUrl(url), tag, radius, margin, view);
+  @Override public void loadCover(String id, String url, String tag, int radius, int margin, int resPlaceholderIcon, ImageView imageView) {
+    super.loadCover(id, fixUrl(url), tag, radius, margin, resPlaceholderIcon, imageView);
+  }
+
+  @Override public void loadImageCircle(String url, int resPlaceholderIcon, ImageView imageView) {
+    super.loadImageCircle(fixUrl(url), resPlaceholderIcon, imageView);
   }
 }
