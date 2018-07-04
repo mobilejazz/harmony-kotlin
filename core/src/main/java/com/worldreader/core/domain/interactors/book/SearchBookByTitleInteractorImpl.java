@@ -11,9 +11,8 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
 public class SearchBookByTitleInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements SearchBookByTitleInteractor {
@@ -90,19 +89,5 @@ public class SearchBookByTitleInteractorImpl extends AbstractInteractor<List<Boo
             }
           }
         });
-    //bookRepository.searchBooks(index, limit, query, null/*author*/, null/*publisher*/,
-    //    new CompletionCallback<List<Book>>() {
-    //      @Override public void onSuccess(final List<Book> result) {
-    //        if (callback != null) {
-    //          callback.onSuccess(result);
-    //        }
-    //      }
-    //
-    //      @Override public void onError(final ErrorCore error) {
-    //        if (callback != null) {
-    //          callback.onError(error.getCause());
-    //        }
-    //      }
-    //    });
   }
 }

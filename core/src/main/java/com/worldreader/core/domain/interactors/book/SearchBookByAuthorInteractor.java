@@ -12,6 +12,5 @@ public interface SearchBookByAuthorInteractor {
 
   void execute(int index, int limit, String query, DomainCallback<List<Book>, ErrorCore> callback);
 
-  ListenableFuture<Optional<List<Book>>> execute(String query, List<Integer> categories, int index,
-      int limit);
+  ListenableFuture<Optional<List<Book>>> execute(String query, List<Integer> categories, int index, int limit);
 }
