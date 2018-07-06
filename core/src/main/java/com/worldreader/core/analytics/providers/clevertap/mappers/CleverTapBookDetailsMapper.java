@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class CleverTapBookDetailsMapper implements CleverTapAnalyticsMapper<BookDetailAnalyticsEvent> {
   private final SharedPreferences preferences;

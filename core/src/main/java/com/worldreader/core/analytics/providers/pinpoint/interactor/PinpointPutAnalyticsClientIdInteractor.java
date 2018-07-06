@@ -11,6 +11,7 @@ import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
+
 import javax.inject.Inject;
 
 public class PinpointPutAnalyticsClientIdInteractor {

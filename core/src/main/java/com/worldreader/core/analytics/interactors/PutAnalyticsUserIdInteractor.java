@@ -5,14 +5,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.analytics.interactors.GetUserInfoAnalyticsInteractor;
 import com.worldreader.core.analytics.models.UserInfoAnalyticsModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 public class PutAnalyticsUserIdInteractor {
 

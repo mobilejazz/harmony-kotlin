@@ -42,10 +42,10 @@ import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.error.user.UserNotFoundException;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.*;
 
 @Singleton public class AfterRegisterUserProcessInteractor {
 

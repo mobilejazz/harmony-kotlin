@@ -6,8 +6,8 @@ import android.os.Build;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class CleverTapBookReadMapper implements CleverTapAnalyticsMapper<BookReadAnalyticsEvent> {
 

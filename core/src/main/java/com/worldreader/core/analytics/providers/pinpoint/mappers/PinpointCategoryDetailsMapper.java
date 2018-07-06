@@ -1,14 +1,9 @@
 package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
-
-import java.util.*;
 
 class PinpointCategoryDetailsMapper implements PinpointAnalyticsMapper<CategorySelectedAnalyticsEvent> {
   private final AnalyticsClient ac;

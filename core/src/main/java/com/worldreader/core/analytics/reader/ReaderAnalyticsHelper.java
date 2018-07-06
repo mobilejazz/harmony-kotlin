@@ -2,8 +2,8 @@ package com.worldreader.core.analytics.reader;
 
 import com.worldreader.core.analytics.Analytics;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
-
 import com.worldreader.core.analytics.event.GenericAnalyticsEvent;
+
 import java.util.*;
 
 // Wrapper class to perform reader analytics

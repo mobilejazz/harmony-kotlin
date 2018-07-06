@@ -1,6 +1,5 @@
 package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
-import android.content.SharedPreferences;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;

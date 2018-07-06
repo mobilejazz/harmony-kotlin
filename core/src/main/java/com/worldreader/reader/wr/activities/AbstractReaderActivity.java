@@ -34,9 +34,9 @@ import android.widget.Toast;
 import com.google.common.base.Throwables;
 import com.worldreader.core.R;
 import com.worldreader.core.helper.fragments.Fragments;
-import com.worldreader.reader.wr.models.TocEntry;
 import com.worldreader.reader.wr.fragments.AbstractReaderFragment;
 import com.worldreader.reader.wr.fragments.ReaderBookTocFragment;
+import com.worldreader.reader.wr.models.TocEntry;
 import jedi.option.Option;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
 

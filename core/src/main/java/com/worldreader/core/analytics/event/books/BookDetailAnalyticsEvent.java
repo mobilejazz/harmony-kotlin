@@ -4,7 +4,7 @@ import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.Category;
 
-import java.util.List;
+import java.util.*;
 
 public class BookDetailAnalyticsEvent implements AnalyticsEvent {
 

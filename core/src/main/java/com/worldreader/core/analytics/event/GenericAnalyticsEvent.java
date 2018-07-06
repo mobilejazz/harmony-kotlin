@@ -1,8 +1,8 @@
 package com.worldreader.core.analytics.event;
 
 import dagger.internal.Preconditions;
-import java.util.Collections;
-import java.util.Map;
+
+import java.util.*;
 
 @Deprecated
 public class GenericAnalyticsEvent implements AnalyticsEvent {

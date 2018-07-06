@@ -9,7 +9,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.mobilejazz.logger.library.Logger;
 import com.worldreader.core.analytics.providers.pinpoint.interactor.PinpointConfigAnalyticsUserIdInteractor;
-import com.worldreader.core.application.di.annotation.PerActivity;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.spec.milestones.PutUserMilestonesStorageSpec;
 import com.worldreader.core.datasource.spec.user.UserStorageSpecification;
@@ -29,9 +28,10 @@ import com.worldreader.core.domain.model.user.UserBook;
 import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-import java.util.List;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
 
 @ActivityScope public class AfterLogInUserProcessInteractor {
 

@@ -2,7 +2,6 @@ package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
-import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
 

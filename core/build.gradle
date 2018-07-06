@@ -58,7 +58,6 @@ dependencies {
   api "com.android.support:design:$rootProject.ext.support_libraries_version"
   api "com.android.support.constraint:constraint-layout:$rootProject.ext.constraint_layout_version"
 
-  api files('libs/wasabi.jar')
 
   api project(path: ':mj-core')
 
@@ -122,6 +121,7 @@ dependencies {
 
   api 'com.amazonaws:aws-android-sdk-core:2.6.+'
   api 'com.amazonaws:aws-android-sdk-pinpoint:2.6.+'
+  api 'com.clevertap.android:clevertap-android-sdk:3.1.10'
 
   compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
 

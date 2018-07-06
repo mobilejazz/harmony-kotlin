@@ -6,8 +6,9 @@ import com.worldreader.core.analytics.models.UserInfoAnalyticsModel;
 import com.worldreader.core.common.callback.Callback;
 import com.worldreader.core.datasource.repository.Repository;
 import com.worldreader.core.datasource.repository.spec.RepositorySpecification;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class AnalyticsDataSource implements Repository<UserInfoAnalyticsModel, RepositorySpecification> {
 

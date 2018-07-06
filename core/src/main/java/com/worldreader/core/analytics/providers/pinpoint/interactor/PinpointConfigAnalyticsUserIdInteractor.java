@@ -9,8 +9,9 @@ import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.domain.interactors.user.GetUserInteractor;
 import com.worldreader.core.domain.interactors.user.application.IsAnonymousUserInteractor;
 import com.worldreader.core.domain.model.user.User2;
-import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
+import java.util.concurrent.*;
 
 public class PinpointConfigAnalyticsUserIdInteractor {
 

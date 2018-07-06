@@ -5,7 +5,6 @@ import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
 import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
-import com.worldreader.core.analytics.providers.pinpoint.interactor.PinpointConfigAnalyticsAttributesInteractor;
 
 public class PinpointSignUpMapper implements PinpointAnalyticsMapper<SignUpAnalyticsEvent> {
   private final AnalyticsClient ac;

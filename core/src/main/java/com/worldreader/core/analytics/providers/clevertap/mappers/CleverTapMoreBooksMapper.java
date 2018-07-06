@@ -3,7 +3,6 @@ package com.worldreader.core.analytics.providers.clevertap.mappers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import com.worldreader.core.analytics.event.AnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
 import com.worldreader.core.analytics.providers.clevertap.helper.CleverTapEventConstants;
 

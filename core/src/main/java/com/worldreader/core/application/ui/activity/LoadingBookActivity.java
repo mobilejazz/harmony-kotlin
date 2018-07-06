@@ -24,6 +24,7 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookMetadata;
 import com.worldreader.core.domain.model.Collection;
 import dagger.android.AndroidInjection;
+
 import javax.inject.Inject;
 
 public abstract class LoadingBookActivity extends AppCompatActivity
@@ -188,7 +189,7 @@ public abstract class LoadingBookActivity extends AppCompatActivity
     // Nothing to do
   }
 
-  @Override public void onNotifyDisplayReader(final BookMetadata bookMetadata) {
+  @Override public void onNotifyDisplayReader(Book book, final BookMetadata bookMetadata) {
     if (!isFinishing()) {
       long endTime = System.nanoTime();
       long diff = (endTime - startTime) / 1000000;
