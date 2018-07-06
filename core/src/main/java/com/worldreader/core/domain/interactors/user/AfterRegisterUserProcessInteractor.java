@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.worldreader.core.analytics.amazon.interactor.ConfigAnalyticsUserIdInteractor;
+import com.worldreader.core.analytics.providers.pinpoint.interactor.PinpointConfigAnalyticsUserIdInteractor;
 import com.worldreader.core.common.date.Dates;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.repository.spec.NetworkSpecification;
@@ -42,10 +42,10 @@ import com.worldreader.core.domain.model.user.UserBookLike;
 import com.worldreader.core.domain.model.user.UserMilestone;
 import com.worldreader.core.error.user.UserNotFoundException;
 import com.worldreader.core.sync.WorldreaderJobCreator;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
 
 @Singleton public class AfterRegisterUserProcessInteractor {
 
@@ -68,7 +68,7 @@ import java.util.*;
   private final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor;
   private final SaveSessionInteractor saveSessionInteractor;
   private final Dates dateUtils;
-  private final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
+  private final PinpointConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor;
 
   @Inject public AfterRegisterUserProcessInteractor(final ListeningExecutorService executor, final SaveUserInteractor saveUserInteractor,
       final GetUserInteractor getUserInteractor, final DeleteUserInteractor deleteUserInteractor,
@@ -81,7 +81,7 @@ import java.util.*;
       final UserScoreSynchronizationProcessInteractor userScoreSynchronizationProcessInteractor,
       final AnonymousUserScoreSynchronizationProcessInteractor anonymousUserScoreSynchronizationProcessInteractor,
       final SaveOnBoardingPassedInteractor saveOnBoardingPassedInteractor, final SaveSessionInteractor saveSessionInteractor, final Dates dateUtils,
-      final ConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor) {
+      final PinpointConfigAnalyticsUserIdInteractor configAnalyticsUserIdInteractor) {
     this.executor = executor;
     this.saveUserInteractor = saveUserInteractor;
     this.getUserInteractor = getUserInteractor;

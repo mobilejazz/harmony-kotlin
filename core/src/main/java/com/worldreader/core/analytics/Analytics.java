@@ -11,4 +11,5 @@ public interface Analytics {
 
   void addGlobalProperties(Map<String, String> attributes);
 
+  void onStart();
 }

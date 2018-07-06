@@ -55,7 +55,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.R;
-import com.worldreader.core.analytics.reader.ReaderAnalytics;
+import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
+import com.worldreader.core.analytics.reader.ReaderAnalyticsHelper;
 import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.ui.Dimens;
 import com.worldreader.core.application.ui.dialog.DialogFactory;
@@ -111,6 +112,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   private Context context;
 
+  protected com.worldreader.core.domain.model.Book book;
   protected BookMetadata bookMetadata;
 
   private TextLoader textLoader;
@@ -137,6 +139,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   protected int currentScrolledPages = 0;
   private boolean hasSharedText;
+
+  private String countryCode;
 
   @Override public void onAttach(Context context) {
     super.onAttach(context);
@@ -178,7 +182,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Intent content checked properly in AbstractReaderActivity (if BookMetadata is not present we can't continue further)
     final Intent intent = getActivity().getIntent();
+    book = (com.worldreader.core.domain.model.Book) intent.getSerializableExtra(AbstractReaderActivity.BOOK_KEY);
     bookMetadata = (BookMetadata) intent.getSerializableExtra(AbstractReaderActivity.BOOK_METADATA_KEY);
+    countryCode = intent.getStringExtra(AbstractReaderActivity.COUNTRY_CODE);
 
     // Gather status variables for the reader
     final boolean isFontChanged = intent.getBooleanExtra(CHANGE_FONT_KEY, false);
@@ -233,9 +239,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         } else {
           updateChapterProgress();
         }
-
-        // Notify analytics
-        onNotifyPageProgressAnalytics();
       }
 
       @Override public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
@@ -441,6 +444,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
     // Kick start loading of text
     bookView.startLoadingText();
+
   }
 
   @Override public void onResume() {
@@ -586,7 +590,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       activity.findViewById(R.id.font_options_container).setVisibility(View.GONE);
       activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
-      ReaderAnalytics.sendOpenTocEvent(di.analytics, bookMetadata.bookId, bookMetadata.title);
+      ReaderAnalyticsHelper.sendOpenTocEvent(di.analytics, bookMetadata.bookId, bookMetadata.title);
+
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
       item.setChecked(!item.isChecked());
@@ -868,13 +873,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     }
 
     if (di.config.getReadingDirection() == ReaderConfig.ReadingDirection.LEFT_TO_RIGHT) {
-      pageDown();
+        pageDown();
     } else {
-      pageUp();
-    }
-
-    if (bookView.isAtEnd()) {
-      onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
+        pageUp();
     }
 
     return true;
@@ -922,9 +923,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       pageUp();
     }
 
-    if (bookView.isAtEnd()) {
+    /*if (bookView.isAtEnd()) {
       onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
-    }
+    }*/
 
     return true;
   }
@@ -1154,16 +1155,18 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
   private void pageDown() {
     bookView.pageDown();
     updateChapterProgress();
+    onNotifyPageProgressAnalytics();
   }
 
   private void pageUp() {
     bookView.pageUp();
     updateChapterProgress();
+    onNotifyPageProgressAnalytics();
   }
 
   public void onNavigateToTocEntry(TocEntry tocEntry) {
     this.bookView.navigateTo(tocEntry);
-    ReaderAnalytics.sendOpenTocEntryEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, tocEntry.getTitle(), tocEntry.getHref());
+    ReaderAnalyticsHelper.sendOpenTocEntryEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, tocEntry.getTitle(), tocEntry.getHref());
   }
 
   private void updateChapterProgress(final int current, final int total) {
@@ -1177,7 +1180,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     updateChapterProgress(current, total);
   }
 
-  private void onNotifyPageProgressAnalytics() {
+  public void onNotifyPageProgressAnalytics() {
     final int pagesForResource = bookView.getPagesForResource();
     final int currentPage = bookView.getCurrentPage();
 
@@ -1187,18 +1190,20 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     final int spineSize = bookView.getSpineSize();
     final int spinePosition = bookView.getIndex();
     final int textSizeInChars = bookView.getStrategy().getSizeChartDisplayed();
-    ReaderAnalytics.sendFormattedChapterEvent(
-        di.analytics,
-        bookMetadata.bookId,
-        bookMetadata.title,
-        pagesForResource,
-        currentPage,
-        spanned,
-        tocSize,
-        spineSize,
-        spinePosition,
-        textSizeInChars
-    );
+
+    BookReadAnalyticsEvent event = new BookReadAnalyticsEvent.Builder()
+        .setId(bookMetadata.bookId)
+        .setTitle(bookMetadata.title)
+        .setPagesForResouce(pagesForResource)
+        .setCurrentPage(currentPage)
+        .setText(spanned)
+        .setTocSize(tocSize)
+        .setSpineSize(spineSize)
+        .setSpinePosition(spinePosition)
+        .setTextSizeInChars(textSizeInChars)
+        .setCountry(countryCode).create();
+    di.analytics.sendEvent(event);
+
   }
 
   public interface OnBookTocEntryListener {
@@ -1218,7 +1223,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           text = text.trim().replaceAll("[^a-zA-Z ]", "");
           final StringTokenizer st = new StringTokenizer(text);
           if (st.countTokens() == 1) {
-            ReaderAnalytics.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
+            ReaderAnalyticsHelper.sendDictionaryWordLookupEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, text);
             definitionView.showLoading();
             showDefinitionView();
             final ListenableFuture<WordDefinition> getWordDefinitionFuture = di.getWordDefinitionInteractor.execute(text);
@@ -1239,7 +1244,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
                   definitionView.setWordDefinition(result);
                   definitionView.showDefinition();
                   if (definitionView.isDefinitionInvisible()) {
-                    ReaderAnalytics.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
+                    ReaderAnalyticsHelper.sendDictionaryWordDefinitionNotFoundEvent(di.analytics, bookMetadata.bookId, bookMetadata.title, st.nextToken());
                   }
                 }
               }

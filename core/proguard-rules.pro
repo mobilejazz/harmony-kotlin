@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# For CleverTap SDK
+-dontwarn com.clevertap.android.sdk.**
