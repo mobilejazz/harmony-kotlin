@@ -131,7 +131,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
     final List<Integer> filteredBookCategories;
     if (!rootCategories.isEmpty()) {
       final Sets.SetView<Integer> intersection = Sets.intersection(getCategoriesIds(rootCategories), categoriesIds);
-      filteredBookCategories = new ArrayList<>(intersection);
+      filteredBookCategories = intersection.isEmpty() ? new ArrayList<>(getCategoriesIds(rootCategories)) : new ArrayList<>(intersection);
     } else {
       filteredBookCategories = new ArrayList<>(categoriesIds);
     }
