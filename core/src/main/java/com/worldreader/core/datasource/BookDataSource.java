@@ -70,7 +70,7 @@ public class BookDataSource implements BookRepository {
   }
 
   @Override public void search(final int index, final int limit, final List<Integer> categories,
-      final String title, final String author, final String publisher,
+      final String title, final String author, final String publisher, final List<String> languages, final List<String> ages,
       final Callback<List<Book>> callback) {
     String countryCode = countryCodeProvider.getCountryCode();
 
@@ -81,6 +81,8 @@ public class BookDataSource implements BookRepository {
         .addAuthor(author)
         .addTitle(title)
         .addCategories(categories)
+        .addLanguage(languages)
+        .addAges(ages)
         .build();
 
     try {
@@ -98,7 +100,7 @@ public class BookDataSource implements BookRepository {
         throw new IllegalArgumentException("Title and Author must be not null");
       }
 
-      networkDataSource.search(index, limit, categories, title, author,
+      networkDataSource.search(index, limit, categories, title, author, languages, ages,
           new Callback<List<BookEntity>>() {
             @Override public void onSuccess(List<BookEntity> bookEntitiesFromNetwork) {
               bddDataSource.persist(key, bookEntitiesFromNetwork);

@@ -11,6 +11,7 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -75,7 +76,7 @@ public class SearchBookByTitleInteractorImpl extends AbstractInteractor<List<Boo
   private void execute(final int index, final int limit, final String query,
       final List<Integer> categories, final Callback<List<Book>> callback) {
 
-    bookRepository.search(index, limit, categories, query /*title*/, null /*author*/, null /*publisher*/,
+    bookRepository.search(index, limit, categories, query, null, null, Collections.<String>emptyList(), Collections.<String>emptyList(),
         new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             if (callback != null) {

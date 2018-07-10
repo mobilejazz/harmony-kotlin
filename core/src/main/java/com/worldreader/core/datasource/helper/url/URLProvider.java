@@ -19,7 +19,8 @@ public class URLProvider {
   private static final String KEY_TITLE = "title";
   private static final String KEY_AUTHOR = "author";
   private static final String KEY_PUBLISHER = "publisher";
-  private static final String KEY_LANGUAGE = "language";
+  private static final String KEY_LANGUAGE = "languages";
+  private static final String KEY_TAG = "tag";
 
   public static Builder withEndpoint(String endpoint) {
     return new Builder(endpoint);
@@ -64,8 +65,9 @@ public class URLProvider {
     private String author;
     private String publisher;
     private String subpath;
-    private String language;
+    private List<String> languages;
     private String languageQuery;
+    private List<String> ages;
 
     public Builder(String endpoint) {
       this.endpoint = endpoint;
@@ -149,12 +151,22 @@ public class URLProvider {
     }
 
     public Builder addLanguage(String language) {
-      this.language = language;
+      this.languages = Arrays.asList(language);
+      return this;
+    }
+
+    public Builder addLanguage(List<String> languages) {
+      this.languages = languages;
       return this;
     }
 
     public Builder addLaguageQuery(String language) {
       this.languageQuery = language;
+      return this;
+    }
+
+    public Builder addAges(List<String> ages) {
+      this.ages = ages;
       return this;
     }
 
@@ -173,9 +185,11 @@ public class URLProvider {
           builder.append(countryCode3Iso);
         }
 
-        if (!TextUtils.isEmpty(language)) {
-          builder.append(Symbol.SLASH.getSymbol());
-          builder.append(language);
+        if (languages != null && !languages.isEmpty()) {
+          for (String language : languages) {
+            builder.append(Symbol.SLASH.getSymbol());
+            builder.append(language);
+          }
         }
 
         if (index >= 0) {
@@ -224,6 +238,13 @@ public class URLProvider {
 
         if (!TextUtils.isEmpty(languageQuery)) {
           addParameter(KEY_LANGUAGE, languageQuery);
+        }
+
+        if (ages != null && !ages.isEmpty()) {
+          for (String age : ages) {
+            builder.append(Symbol.SLASH.getSymbol());
+            builder.append(age);
+          }
         }
 
         if (version != null) {

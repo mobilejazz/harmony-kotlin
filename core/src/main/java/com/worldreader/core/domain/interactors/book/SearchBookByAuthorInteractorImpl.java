@@ -11,9 +11,9 @@ import com.worldreader.core.domain.deprecated.executor.InteractorExecutor;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
 public class SearchBookByAuthorInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements SearchBookByAuthorInteractor {
@@ -76,7 +76,7 @@ public class SearchBookByAuthorInteractorImpl extends AbstractInteractor<List<Bo
 
   private void execute(final int index, final int limit, final String query,
       final List<Integer> categories, final Callback<List<Book>> callback) {
-    bookRepository.search(index, limit, categories, null /*title*/, query, null /*publisher*/,
+    bookRepository.search(index, limit, categories, null, query, null, Collections.<String>emptyList(), Collections.<String>emptyList(),
         new Callback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             if (callback != null) {

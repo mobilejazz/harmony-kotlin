@@ -10,10 +10,10 @@ import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.model.BookEntity;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.domain.model.BookSort;
-import retrofit2.Call;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
+import retrofit2.Call;
 
 public class BookNetworkDataSourceImp implements BookNetworkDataSource {
 
@@ -69,11 +69,11 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
         });
   }
 
-  @Override public void search(int index, int limit, List<Integer> categories, String title, String author,
+  @Override public void search(int index, int limit, List<Integer> categories, String title, String author, List<String> languages, List<String> ages,
       final com.worldreader.core.common.callback.Callback<List<BookEntity>> callback) {
     final String countryCode = getCountryCode();
 
-    bookApiService.search(index, limit, countryCode, title, author, categories).enqueue(new retrofit2.Callback<List<BookEntity>>() {
+    bookApiService.search(index, limit, countryCode, title, author, categories, languages, ages).enqueue(new retrofit2.Callback<List<BookEntity>>() {
       @Override public void onResponse(@NonNull final Call<List<BookEntity>> call, @NonNull final retrofit2.Response<List<BookEntity>> response) {
         final boolean successful = response.isSuccessful();
         if (successful) {
