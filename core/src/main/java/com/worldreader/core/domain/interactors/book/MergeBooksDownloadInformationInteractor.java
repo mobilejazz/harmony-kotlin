@@ -3,16 +3,16 @@ package com.worldreader.core.domain.interactors.book;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.mobilejazz.kotlin.core.di.ActivityScope;
 import com.worldreader.core.concurrency.SafeRunnable;
 import com.worldreader.core.datasource.helper.Provider;
 import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookDownloaded;
-import java.util.List;
-import java.util.concurrent.Executor;
-import javax.inject.Inject;
 
-@ActivityScope public class MergeBooksDownloadInformationInteractor {
+import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.*;
+
+public class MergeBooksDownloadInformationInteractor {
 
   private final Provider<List<BookDownloaded>> booksDownloadListProvider;
 
