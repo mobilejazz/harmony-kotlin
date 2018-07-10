@@ -70,7 +70,7 @@ public class MoreBooksAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
-    public Builder withCcountry(String val) {
+    public Builder withCountry(String val) {
       country = val;
       return this;
     }
