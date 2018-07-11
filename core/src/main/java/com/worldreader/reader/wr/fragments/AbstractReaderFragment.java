@@ -923,10 +923,6 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       pageUp();
     }
 
-    /*if (bookView.isAtEnd()) {
-      onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
-    }*/
-
     return true;
   }
 
@@ -972,6 +968,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onLastScreenPageDown() {
     currentScrolledPages += 1;
+
+    onReaderFragmentEvent(BookReaderEvents.READER_FINISHED_BOOK_EVENT);
     onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT);
   }
 
