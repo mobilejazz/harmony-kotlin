@@ -5,12 +5,10 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.worldreader.core.application.helper.image.ImageDownloader;
 import com.worldreader.core.application.helper.image.ImageLoader;
-import com.worldreader.core.application.helper.image.picasso.transformations.AlphaTransformation;
 import com.worldreader.core.application.helper.image.picasso.transformations.CircleTransform;
 import com.worldreader.core.application.helper.image.picasso.transformations.RoundedCornersTransformation;
-
+import java.io.File;
 import javax.inject.Inject;
-import java.io.*;
 
 public class PicassoImageLoader implements ImageLoader {
 
