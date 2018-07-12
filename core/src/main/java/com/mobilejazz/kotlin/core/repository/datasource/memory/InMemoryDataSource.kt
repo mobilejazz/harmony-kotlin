@@ -65,12 +65,12 @@ class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSou
         }
     }
 
-    override fun delete(query: Query): Future<Void> = when (query) {
+    override fun delete(query: Query): Future<Unit> = when (query) {
         is StringKeyQuery -> objects.remove(query.key).run { emptyFuture() }
         else -> notSupportedQuery()
     }
 
-    override fun deleteAll(query: Query): Future<Void> = when (query) {
+    override fun deleteAll(query: Query): Future<Unit> = when (query) {
         is StringKeyQuery -> arrays.remove(query.key).run { emptyFuture() }
         else -> notSupportedQuery()
     }

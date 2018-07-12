@@ -24,6 +24,6 @@ interface PutRepository<V> : Repository {
 }
 
 interface DeleteRepository : Repository {
-  fun delete(query: Query, operation: Operation = DefaultOperation): Future<Void>
-  fun deleteAll(query: Query, operation: Operation = DefaultOperation): Future<Void>
+  fun delete(query: Query, operation: Operation = DefaultOperation): Future<Unit>
+  fun deleteAll(query: Query, operation: Operation = DefaultOperation): Future<Unit>
 }

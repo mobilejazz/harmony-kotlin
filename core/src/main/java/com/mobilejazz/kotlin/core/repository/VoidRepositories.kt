@@ -23,11 +23,11 @@ class VoidRepository<V> : GetRepository<V>, PutRepository<V>, DeleteRepository {
     throw UnsupportedOperationException()
   }
 
-  override fun delete(query: Query, operation: Operation): Future<Void> {
+  override fun delete(query: Query, operation: Operation): Future<Unit> {
     throw UnsupportedOperationException()
   }
 
-  override fun deleteAll(query: Query, operation: Operation): Future<Void> {
+  override fun deleteAll(query: Query, operation: Operation): Future<Unit> {
     throw UnsupportedOperationException()
   }
 }
@@ -54,11 +54,11 @@ class VoidPutRepository<V> : PutRepository<V> {
 }
 
 class VoidDeleteRepository : DeleteRepository {
-  override fun delete(query: Query, operation: Operation): Future<Void> {
+  override fun delete(query: Query, operation: Operation): Future<Unit> {
     throw UnsupportedOperationException()
   }
 
-  override fun deleteAll(query: Query, operation: Operation): Future<Void> {
+  override fun deleteAll(query: Query, operation: Operation): Future<Unit> {
     throw UnsupportedOperationException()
   }
 }

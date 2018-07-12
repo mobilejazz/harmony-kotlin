@@ -20,11 +20,11 @@ class VoidDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
     throw UnsupportedOperationException()
   }
 
-  override fun delete(query: Query): Future<Void> {
+  override fun delete(query: Query): Future<Unit> {
     throw UnsupportedOperationException()
   }
 
-  override fun deleteAll(query: Query): Future<Void> {
+  override fun deleteAll(query: Query): Future<Unit> {
     throw UnsupportedOperationException()
   }
 }
@@ -52,11 +52,11 @@ class VoidPutDataSource<V> : PutDataSource<V> {
 }
 
 class VoidDeleteDataSource : DeleteDataSource {
-  override fun delete(query: Query): Future<Void> {
+  override fun delete(query: Query): Future<Unit> {
     throw UnsupportedOperationException()
   }
 
-  override fun deleteAll(query: Query): Future<Void> {
+  override fun deleteAll(query: Query): Future<Unit> {
     throw UnsupportedOperationException()
   }
 }

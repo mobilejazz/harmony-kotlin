@@ -24,9 +24,9 @@ class DataSourceValidator<T>(private val getDataSource: GetDataSource<T>,
 
     override fun putAll(query: Query, value: List<T>?): Future<List<T>> = putDataSource.putAll(query, value)
 
-    override fun delete(query: Query): Future<Void> = deleteDataSource.delete(query)
+    override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
 
-    override fun deleteAll(query: Query): Future<Void> = deleteDataSource.deleteAll(query)
+    override fun deleteAll(query: Query): Future<Unit> = deleteDataSource.deleteAll(query)
 
 }
 

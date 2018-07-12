@@ -39,8 +39,8 @@ class RepositoryMapper<From, To> @Inject constructor(private val getRepository: 
     return putRepository.putAll(query, mapped, operation).map { toFromMapper.map(it) }
   }
 
-  override fun delete(query: Query, operation: Operation): Future<Void> = deleteRepository.delete(query, operation)
+  override fun delete(query: Query, operation: Operation): Future<Unit> = deleteRepository.delete(query, operation)
 
-  override fun deleteAll(query: Query, operation: Operation): Future<Void> = deleteRepository.deleteAll(query, operation)
+  override fun deleteAll(query: Query, operation: Operation): Future<Unit> = deleteRepository.deleteAll(query, operation)
 
 }
