@@ -9,8 +9,9 @@ import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategoryBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
-import com.worldreader.core.analytics.event.other.ChangeLanguageAnalyticsEvent;
+import com.worldreader.core.analytics.event.other.ChangeReadingLanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
+import com.worldreader.core.analytics.event.other.UILanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.ProfileAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
@@ -48,7 +49,8 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
       put(ProfileAnalyticsEvent.class, new CleverTapProfileMapper(context));
       put(MoreBooksAnalyticsEvent.class, new CleverTapMoreBooksMapper(context));
       put(SignOutAnalyticsEvent.class, new CleverTapSignOutMapper(context));
-      put(ChangeLanguageAnalyticsEvent.class, new CleverTapReadInLanguageMapper(context));
+      put(ChangeReadingLanguageAnalyticsEvent.class, new CleverTapReadInLanguageMapper(context));
+      put(UILanguageAnalyticsEvent.class, new CleverTapUILanguageMapper(context));
 
       //CategoryBooks
     }};

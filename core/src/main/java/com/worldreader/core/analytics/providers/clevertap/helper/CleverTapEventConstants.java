@@ -45,4 +45,7 @@ public class CleverTapEventConstants {
   public static final String READ_IN_LANGUAGE_EVENT = "ReadInLanguage";
   public static final String LANGUAGE_ISO3_ATTRIBUTE = "language";
   public static final String LANGUAGE_NAME_ATTRIBUTE = "languageName";
+  public static final String UI_LANGUAGE_EVENT = "UILanguage";
+  public static final String UI_LANGUAGE_ISO3_ATTRIBUTE = "UILanguage";
+  public static final String UI_LANGUAGE_NAME_ATTRIBUTE = "UILanguageName";
 }
