@@ -39,9 +39,9 @@ public class BookDataSource implements BookRepository {
     this.booksDownloadedProvider = booksDownloadedProvider;
   }
 
-  @Override public void books(List<Integer> categoriesId, String list, List<BookSort> sorters,
-      boolean openCountry, String language, int index, int limit,
-      CompletionCallback<List<Book>> callback) {
+  @Override
+  public void books(List<Integer> categoriesId, String list, List<BookSort> sorters, boolean openCountry, List<String> languages, List<String> ages, int index,
+      int limit, CompletionCallback<List<Book>> callback) {
     String countryIsoCode = countryCodeProvider.getCountryCode();
 
     String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
@@ -52,7 +52,8 @@ public class BookDataSource implements BookRepository {
         .addSorters(sorters)
         //.addOpenCountry(openCountry ? countryIsoCode : null)
         .addCountryCode(countryIsoCode)
-        .addLaguageQuery(language)
+        .addLanguages(languages)
+        .addAges(ages)
         .build();
 
     try {
@@ -64,8 +65,7 @@ public class BookDataSource implements BookRepository {
 
       notifyResponse(response, callback);
     } catch (InvalidCacheException e) {
-      fetchBooks(key, index, limit, sorters, list, categoriesId, /*open country*/ false, language,
-          callback);
+      fetchBooks(key, index, limit, sorters, list, categoriesId, false, languages, ages, callback);
     }
   }
 
@@ -81,7 +81,7 @@ public class BookDataSource implements BookRepository {
         .addAuthor(author)
         .addTitle(title)
         .addCategories(categories)
-        .addLanguage(languages)
+        .addLanguages(languages)
         .addAges(ages)
         .build();
 
@@ -160,11 +160,9 @@ public class BookDataSource implements BookRepository {
   // Private methods
   ///////////////////////////////////////////////////////////////////////////
 
-  private void fetchBooks(final String key, int index, int limit, List<BookSort> sorters,
-      String list, List<Integer> categories, boolean openCountryCode, String language,
-      final CompletionCallback callback) {
-    networkDataSource.books(index, limit, sorters, list, categories, openCountryCode, language,
-        new CompletionCallback<List<BookEntity>>() {
+  private void fetchBooks(final String key, int index, int limit, List<BookSort> sorters, String list, List<Integer> categories, boolean openCountryCode,
+      List<String> languages, List<String> ages, final CompletionCallback callback) {
+    networkDataSource.books(index, limit, sorters, list, categories, openCountryCode, languages, ages, new CompletionCallback<List<BookEntity>>() {
           @Override public void onSuccess(List<BookEntity> result) {
             bddDataSource.persist(key, result);
             List<Book> books = transform(result);

@@ -17,17 +17,20 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetHighestRatedBooksInteractor {
 
   private final BookRepository bookRepository;
-  private final Provider<String> localeProvider;
+
+  private final Provider<List<String>> localeProvider;
+  private final Provider<List<String>> agesProvider;
 
   private ListAdapter<Integer, Category> categoryToIntAdapter;
 
@@ -38,13 +41,18 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
   private DomainCallback<List<Book>, ErrorCore> callback;
 
   @Inject
-  public GetHighestRatedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread,
+  public GetHighestRatedBooksInteractorImpl(
+      InteractorExecutor executor,
+      MainThread mainThread,
       BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+      @Named("locale.provider") final Provider<List<String>> localeProvider,
+      @Named("ages.provider") final Provider<List<String>> agesProvider
+  ) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
-    this.localeProvider = localeProvider;
     this.categoryToIntAdapter = new CategoryToIntAdapter();
+    this.localeProvider = localeProvider;
+    this.agesProvider = agesProvider;
   }
 
   @Override public void execute(int offset, int limit, List<Category> categories, DomainCallback<List<Book>, ErrorCore> callback) {
@@ -102,29 +110,26 @@ public class GetHighestRatedBooksInteractorImpl extends AbstractInteractor<List<
 
   //region Private methods
   private void execute(final List<Category> categories, final int offset, final int limit, String language, final Callback<List<Book>> callback) {
-    if (language == null) {
-      language = localeProvider.get();
-    }
+    final List<String> languages = language == null ? localeProvider.get() : Collections.singletonList(language);
+    final List<String> ages = agesProvider.get();
 
     List<Integer> categoriesInt = categoryToIntAdapter.transform(categories);
-    List<BookSort> sorteredBy =
-        Arrays.asList(BookSort.createBookSort(BookSort.Type.SCORE, BookSort.Value.DESC),
-            BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+    List<BookSort> sortedBy =
+        Arrays.asList(BookSort.createBookSort(BookSort.Type.SCORE, BookSort.Value.DESC), BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-    bookRepository.books(categoriesInt, null /*list*/, sorteredBy, false, language,
-        offset, limit, new CompletionCallback<List<Book>>() {
-          @Override public void onSuccess(final List<Book> result) {
-            if (callback != null) {
-              callback.onSuccess(result);
-            }
-          }
+    bookRepository.books(categoriesInt, null, sortedBy, false, languages, ages, offset, limit, new CompletionCallback<List<Book>>() {
+      @Override public void onSuccess(final List<Book> result) {
+        if (callback != null) {
+          callback.onSuccess(result);
+        }
+      }
 
-          @Override public void onError(final ErrorCore error) {
-            if (callback != null) {
-              callback.onError(error.getCause());
-            }
-          }
-        });
+      @Override public void onError(final ErrorCore error) {
+        if (callback != null) {
+          callback.onError(error.getCause());
+        }
+      }
+    });
   }
   //endregion
 }

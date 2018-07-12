@@ -15,6 +15,7 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
@@ -24,15 +25,23 @@ import javax.inject.Named;
 
   private final ListeningExecutorService executor;
   private final BookRepository bookRepository;
-  private final Provider<String> localeProvider;
+
+  private final Provider<List<String>> localeProvider;
+  private final Provider<List<String>> agesProvider;
+
   private final ListAdapter<Integer, Category> categoryToIntAdapter;
 
-  @Inject public GetMostPopularBooksInteractor(final ListeningExecutorService executor, final BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+  @Inject public GetMostPopularBooksInteractor(
+      final ListeningExecutorService executor,
+      final BookRepository bookRepository,
+      @Named("locale.provider") final Provider<List<String>> localeProvider,
+      @Named("ages.provider") final Provider<List<String>> agesProvider
+  ) {
     this.executor = executor;
     this.bookRepository = bookRepository;
-    this.localeProvider = localeProvider;
     this.categoryToIntAdapter = new CategoryToIntAdapter();
+    this.localeProvider = localeProvider;
+    this.agesProvider = agesProvider;
   }
 
   public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit, String language) {
@@ -47,24 +56,23 @@ import javax.inject.Named;
     return execute(categories, offset, limit, null, executor);
   }
 
-  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit, final String language,
-      Executor executor) {
+  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit, final String language, Executor executor) {
     final SettableFuture<Optional<List<Book>>> future = SettableFuture.create();
     executor.execute(getInteractorCallable(categories, offset, limit, language, future));
     return future;
   }
 
-  private Runnable getInteractorCallable(final List<Category> categories, final int offset, final int limit, String language,
-      final SettableFuture<Optional<List<Book>>> future) {
+  private Runnable getInteractorCallable(final List<Category> categories, final int offset, final int limit, String language, final SettableFuture<Optional<List<Book>>> future) {
+    final List<String> languages = language == null ? localeProvider.get() : Collections.singletonList(language);
+    final List<String> ages = agesProvider.get();
 
-    final String finalLanguage = language == null ? localeProvider.get() : language;
     return new Runnable() {
       @Override public void run() {
         final List<Integer> categoriesInt = categoryToIntAdapter.transform(categories);
-        final List<BookSort> sortedBy = Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC),
-            BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+        final List<BookSort> sortedBy =
+            Arrays.asList(BookSort.createBookSort(BookSort.Type.OPENS, BookSort.Value.DESC), BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
-        bookRepository.books(categoriesInt, null /*list*/, sortedBy, true, finalLanguage, offset, limit, new CompletionCallback<List<Book>>() {
+        bookRepository.books(categoriesInt, null, sortedBy, true, languages, ages, offset, limit, new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(final List<Book> result) {
             future.set(Optional.fromNullable(result));
           }

@@ -16,7 +16,8 @@ public interface BookNetworkDataSource {
       String list,
       List<Integer> categories,
       boolean countryOpen,
-      String language,
+      List<String> languages,
+      List<String> ages,
       CompletionCallback<List<BookEntity>> callback
   );
 

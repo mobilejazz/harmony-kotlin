@@ -17,28 +17,38 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<Book>, ErrorCore> implements GetRecommendedBooksInteractor {
 
-  private BookRepository bookRepository;
-  private final Provider<String> localeProvider;
+  private final Provider<List<String>> localeProvider;
+  private final Provider<List<String>> agesProvider;
 
+  private BookRepository bookRepository;
   private int offset;
   private int limit;
   private Book book;
   private DomainCallback<List<Book>, ErrorCore> callback;
   private Set<Category> rootCategories;
 
-  @Inject public GetRecommendedBooksInteractorImpl(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+  @Inject public GetRecommendedBooksInteractorImpl(
+      InteractorExecutor executor,
+      MainThread mainThread,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<List<String>> localeProvider,
+      @Named("ages.provider") final Provider<List<String>> agesProvider
+  ) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
+    this.agesProvider = agesProvider;
   }
 
   @Override public void execute(int offset, int limit, Book book, DomainCallback<List<Book>, ErrorCore> callback) {
@@ -136,8 +146,10 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
       filteredBookCategories = new ArrayList<>(categoriesIds);
     }
 
-    bookRepository.books(filteredBookCategories, null /*list*/, bookSorts, false/*open country*/, language == null ? localeProvider.get() : language, offset,
-        limit,
+    final List<String> languages = language == null ? localeProvider.get() : Collections.singletonList(language);
+    final List<String> ages = agesProvider.get();
+
+    bookRepository.books(filteredBookCategories, null, bookSorts, false, languages, ages, offset, limit,
         new CompletionCallback<List<Book>>() {
           @Override public void onSuccess(List<Book> books) {
             if (callback != null) {
@@ -150,6 +162,7 @@ public class GetRecommendedBooksInteractorImpl extends AbstractInteractor<List<B
               callback.onError(errorCore.getCause());
             }
           }
-        });
+        }
+    );
   }
 }

@@ -36,14 +36,12 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
   }
 
   @Override
-  public void books(int index, int limit, List<BookSort> sorters, String list, List<Integer> categories, boolean countryOpen, String language,
-      final CompletionCallback<List<BookEntity>> callback) {
-
+  public void books(int index, int limit, List<BookSort> sorters, String list, List<Integer> categories, boolean countryOpen, List<String> languages, final List<String> ages, final CompletionCallback<List<BookEntity>> callback) {
     final List<String> sorterList = getSorterList(sorters);
     final String countryCode = getCountryCode();
     final String countryOpenCode = countryOpen ? countryCode : null;
 
-    bookApiService.books(index, limit, sorterList, list, categories, countryCode, countryOpenCode, language)
+    bookApiService.books(index, limit, sorterList, list, categories, countryCode, countryOpenCode, languages, ages)
         .enqueue(new retrofit2.Callback<List<BookEntity>>() {
           @Override public void onResponse(@NonNull final Call<List<BookEntity>> call, @NonNull final retrofit2.Response<List<BookEntity>> response) {
             final boolean successful = response.isSuccessful();

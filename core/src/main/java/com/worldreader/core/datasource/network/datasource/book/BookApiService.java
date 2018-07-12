@@ -12,12 +12,13 @@ public interface BookApiService {
   @GET("books") Call<List<BookEntity>> books(
       @Query("index") int index,
       @Query("limit") int limit,
-      @Query(value = "sort") List<String> sort,
+      @Query("sort") List<String> sort,
       @Query("list") String list,
       @Query("category") List<Integer> categories,
       @Query("country") String country,
       @Query("opensCountry") String countryCode,
-      @Query("language") String language
+      @Query("language") List<String> language,
+      @Query(value = "tag", encoded = true) List<String> ages
   );
 
   @GET("books/{id}/{version}") Call<BookEntity> bookDetail(
