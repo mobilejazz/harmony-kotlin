@@ -97,7 +97,8 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String REFERRER_USER_ID_ATTRIBUTE = "referrer_user_id";
   public static final String CAMPAIGN_ANALYTICS_EVENT = "campaignTracking";
   public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
-
+  public static final String AGE_SELECTED_EVENT = "AgeSelected";
+  public static final String AGE_SELECTED_ATTRIBUTE = "Age";
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;

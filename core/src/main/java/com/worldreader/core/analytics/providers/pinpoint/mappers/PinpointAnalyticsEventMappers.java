@@ -7,6 +7,7 @@ import com.worldreader.core.analytics.event.books.BookFinishedAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
+import com.worldreader.core.analytics.event.other.AgeSelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ChangeReadingLanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ScreenNameAnalyticsEvent;
@@ -53,6 +54,7 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(UILanguageAnalyticsEvent.class, new PinpointUILanguageMapper(analyticsClient));
           put(CampaignAnalyticsEvent.class, new PinpointCampaignMapper(analyticsClient));
           put(SearchAnalyticsEvent.class, new PinpointSearchMapper(analyticsClient));
+          put(AgeSelectedAnalyticsEvent.class, new PinpointAgeSelectedMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 
