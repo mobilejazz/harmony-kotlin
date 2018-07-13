@@ -16,6 +16,7 @@ import com.worldreader.core.analytics.event.register.ProfileAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
+import com.worldreader.core.analytics.event.search.SearchAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
 
 import java.util.*;
@@ -51,6 +52,7 @@ public class CleverTapAnalyticsEventMappers implements AnalyticsEventMappers<Cle
       put(SignOutAnalyticsEvent.class, new CleverTapSignOutMapper(context));
       put(ChangeReadingLanguageAnalyticsEvent.class, new CleverTapReadInLanguageMapper(context));
       put(UILanguageAnalyticsEvent.class, new CleverTapUILanguageMapper(context));
+      put(SearchAnalyticsEvent.class, new CleverTapSearchMapper(context));
 
       //CategoryBooks
     }};

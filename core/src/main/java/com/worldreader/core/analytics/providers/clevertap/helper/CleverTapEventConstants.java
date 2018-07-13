@@ -6,13 +6,13 @@ public class CleverTapEventConstants {
 
   public static final String BOOK_DETAILS_EVENT = "BookDetails";
   public static final String CATEGORY_DETAILS_EVENT = "CategoryDetails";
-  public static final Object CATEGORY_BOOKS_EVENT = "CategoryBooks";
+  public static final String CATEGORY_BOOKS_EVENT = "CategoryBooks";
   public static final String BOOK_CONTINUE_READING_EVENT = "BookContinue";
   public static final String BOOK_READ_EVENT = "BookRead";
-  public static final Object BOOK_OPEN_EVENT = "BookOpen";
-  public static final Object BOOK_END_EVENT = "BookEnd";
-  public static final Object SING_IN_EVENT = "SignIn";
-  public static final Object SING_UP_EVENT = "SignUp";
+  public static final String BOOK_OPEN_EVENT = "BookOpen";
+  public static final String BOOK_END_EVENT = "BookEnd";
+  public static final String SING_IN_EVENT = "SignIn";
+  public static final String SING_UP_EVENT = "SignUp";
   public static final String SIGNOUT_EVENT = "Logout";
   public static final String MORE_BOOKS_EVENT = "More";
   public static final String SHELVE_ATTRIBUTE = "ShelfId";
@@ -40,7 +40,7 @@ public class CleverTapEventConstants {
   public static final String CATEGORY_ID_ATTRIBUTE = "CategoryId";
   public static final String CATEGORY_NAME_ATTRIBUTE = "CategoryName";
 
-  public static final Object PROFILE_EVENT = "Profile";
+  public static final String PROFILE_EVENT = "Profile";
   public static final String LANGUAGE_ATTRIBUTE = "Language";
   public static final String READ_IN_LANGUAGE_EVENT = "ReadInLanguage";
   public static final String LANGUAGE_ISO3_ATTRIBUTE = "language";
@@ -48,4 +48,5 @@ public class CleverTapEventConstants {
   public static final String UI_LANGUAGE_EVENT = "UILanguage";
   public static final String UI_LANGUAGE_ISO3_ATTRIBUTE = "UILanguage";
   public static final String UI_LANGUAGE_NAME_ATTRIBUTE = "UILanguageName";
+
 }

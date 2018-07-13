@@ -15,6 +15,7 @@ import com.worldreader.core.analytics.event.register.CampaignAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignUpAnalyticsEvent;
+import com.worldreader.core.analytics.event.search.SearchAnalyticsEvent;
 import com.worldreader.core.analytics.mapper.AnalyticsEventMappers;
 
 import java.util.*;
@@ -51,6 +52,7 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(ChangeReadingLanguageAnalyticsEvent.class, new PinpointReadInLanguageMapper(analyticsClient));
           put(UILanguageAnalyticsEvent.class, new PinpointUILanguageMapper(analyticsClient));
           put(CampaignAnalyticsEvent.class, new PinpointCampaignMapper(analyticsClient));
+          put(SearchAnalyticsEvent.class, new PinpointSearchMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 

@@ -35,6 +35,13 @@ public class AnalyticsEventConstants {
   public static final String LOCALE_LANG_CODE = "localeLanguageCode";
   public static final String REFERRER_USER_ID = "referrerUserId";
   public static final String REFERRER_DEVICE_ID = "referrerDeviceId";
+
+  public static final String SEARCH_QUERY_ATTRIBUTE = "query";
+  public static final String SEARCH_AGE_ATTRIBUTE = "searchAge";
+  public static final String SEARCH_CATEGORY_ATTRIBUTE = "searchCategory";
+  public static final String SEARCH_LANG_ATTRIBUTE = "searchLang";
+  public static final String SEARCH_EVENT = "Search";
+
   /**
    *
 

@@ -25,7 +25,7 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String BANNER_TITLE_ATTRIBUTE = "BannerTitle";
   public static final String BANNER_ID_ATTRIBUTE = "BannerId";
 
-  public static final String SEARCH_EVENT = "Search";//Test against prod books API
+
   public static final String SIGNUP_EVENT = "Signup";
   public static final String SIGNOUT_EVENT = "Logout";
   public static final String LOGIN_EVENT = "Login";
@@ -62,7 +62,8 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String SEARCH_BY_ATTRIBUTE = "searchBy";
   public static final String SEARCH_BY_TITLE = "title";
   public static final String SEARCH_BY_AUTHOR = "author";
-  public static final String SEARCH_QUERY_ATTRIBUTE = "query";
+
+
   public static final String OFFSET_ATTRIBUTE = "offset";
   public static final String LIMIT_ATTRIBUTE = "limit";
 
