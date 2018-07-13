@@ -48,7 +48,7 @@ public class CategoryDataSource implements CategoryRepository {
 
       responseCategoriesLoaded(categories, callback);
     } catch (InvalidCacheException e) {
-      networkDataSource.fetchCategories(new CompletionCallback<List<CategoryEntity>>() {
+      networkDataSource.fetchCategories(language, new CompletionCallback<List<CategoryEntity>>() {
         @Override public void onSuccess(List<CategoryEntity> categoryEntities) {
           bdDataSource.persist(key, categoryEntities);
 

@@ -7,5 +7,7 @@ import java.util.*;
 
 public interface CategoryNetworkDataSource {
 
+  void fetchCategories(String language, CompletionCallback<List<CategoryEntity>> callback);
+
   void fetchCategories(CompletionCallback<List<CategoryEntity>> callback);
 }

@@ -31,8 +31,13 @@ public class CategoryNetworkDataSourceImp implements CategoryNetworkDataSource {
     this.logger = logger;
   }
 
-  @Override public void fetchCategories(final CompletionCallback<List<CategoryEntity>> callback) {
-    final String iso3Language = countryCodeProvider.getLanguageIso3Code();
+  @Override public void fetchCategories(CompletionCallback<List<CategoryEntity>> callback) {
+    fetchCategories(null, callback);
+  }
+
+  @Override public void fetchCategories(String language, final CompletionCallback<List<CategoryEntity>> callback) {
+    final String iso3Language = language == null ? countryCodeProvider.getLanguageIso3Code() : language;
+
     categoryApiService.categories(iso3Language).enqueue(new retrofit2.Callback<List<CategoryEntity>>() {
       @Override
       public void onResponse(@NonNull final Call<List<CategoryEntity>> call, @NonNull final retrofit2.Response<List<CategoryEntity>> response) {
