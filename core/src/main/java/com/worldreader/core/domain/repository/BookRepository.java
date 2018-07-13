@@ -17,9 +17,11 @@ public interface BookRepository {
       String list,
       List<BookSort> sorters,
       boolean openCountry,
-      String language,
+      List<String> language,
+      List<String> ages,
       int index,
-      int limit, CompletionCallback<List<Book>> callback
+      int limit,
+      CompletionCallback<List<Book>> callback
   );
 
   void search(

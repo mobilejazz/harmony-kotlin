@@ -150,12 +150,12 @@ public class URLProvider {
       return this;
     }
 
-    public Builder addLanguage(String language) {
+    public Builder addLanguages(String language) {
       this.languages = Arrays.asList(language);
       return this;
     }
 
-    public Builder addLanguage(List<String> languages) {
+    public Builder addLanguages(List<String> languages) {
       this.languages = languages;
       return this;
     }

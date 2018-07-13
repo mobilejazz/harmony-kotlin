@@ -9,12 +9,11 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
-public class GetBooksFeaturedImp extends AbstractInteractor<List<Book>, ErrorCore>
-    implements GetBooksFeatured {
+public class GetBooksFeaturedImp extends AbstractInteractor<List<Book>, ErrorCore> implements GetBooksFeatured {
 
   private final BookRepository bookRepository;
 
@@ -22,8 +21,7 @@ public class GetBooksFeaturedImp extends AbstractInteractor<List<Book>, ErrorCor
   private int limit;
   private DomainCallback<List<Book>, ErrorCore> callback;
 
-  @Inject public GetBooksFeaturedImp(InteractorExecutor executor, MainThread mainThread,
-      BookRepository bookRepository) {
+  @Inject public GetBooksFeaturedImp(InteractorExecutor executor, MainThread mainThread, BookRepository bookRepository) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
   }
@@ -37,18 +35,18 @@ public class GetBooksFeaturedImp extends AbstractInteractor<List<Book>, ErrorCor
   }
 
   @Override public void run() {
-    List<BookSort> bookSorts =
-        Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+    final List<BookSort> bookSorts = Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+    final List<String> languages = Collections.emptyList();
+    final List<String> ages = Collections.emptyList();
 
-    bookRepository.books(null /*categories*/, BookRepository.KEY_LIST_FEATURED, bookSorts, false /*opensCountry*/,
-        null, index, limit, new CompletionCallback<List<Book>>() {
-          @Override public void onSuccess(final List<Book> result) {
-            performSuccessCallback(callback, result);
-          }
+    bookRepository.books(null, BookRepository.KEY_LIST_FEATURED, bookSorts, false, languages, ages, index, limit, new CompletionCallback<List<Book>>() {
+      @Override public void onSuccess(final List<Book> result) {
+        performSuccessCallback(callback, result);
+      }
 
-          @Override public void onError(final ErrorCore error) {
-            performErrorCallback(callback, error);
-          }
-        });
+      @Override public void onError(final ErrorCore error) {
+        performErrorCallback(callback, error);
+      }
+    });
   }
 }

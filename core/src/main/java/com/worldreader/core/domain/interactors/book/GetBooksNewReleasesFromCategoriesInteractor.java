@@ -24,17 +24,22 @@ import javax.inject.Named;
 
   private final ListeningExecutorService listeningExecutorService;
   private final BookRepository bookRepository;
-  private final Provider<String> localeProvider;
+
+  private final Provider<List<String>> localeProvider;
+  private final Provider<List<String>> agesProvider;
 
   private ListAdapter<Integer, Category> categoryToIntAdapter;
 
   @Inject public GetBooksNewReleasesFromCategoriesInteractor(
-      ListeningExecutorService listeningExecutorService, BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider) {
+      ListeningExecutorService listeningExecutorService,
+      BookRepository bookRepository,
+      @Named("locale.provider") final Provider<List<String>> localeProvider,
+      @Named("ages.provider") final Provider<List<String>> agesProvider
+  ) {
     this.listeningExecutorService = listeningExecutorService;
     this.bookRepository = bookRepository;
     this.localeProvider = localeProvider;
-
+    this.agesProvider = agesProvider;
     categoryToIntAdapter = new CategoryToIntAdapter();
   }
 
@@ -46,19 +51,19 @@ import javax.inject.Named;
     return execute(categories, offset, limit, null, executor);
   }
 
-  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories,
-      final int offset, final int limit, final String language, final Executor executor) {
+  public ListenableFuture<Optional<List<Book>>> execute(final List<Category> categories, final int offset, final int limit, final String language, final Executor executor) {
     final SettableFuture<Optional<List<Book>>> settableFuture = SettableFuture.create();
+
+    final List<String> languages = language == null ? localeProvider.get() : Collections.singletonList(language);
+    final List<String> ages = agesProvider.get();
 
     executor.execute(new Runnable() {
       @Override public void run() {
 
-        List<BookSort> bookSorts = Collections.singletonList(
-            BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+        List<BookSort> bookSorts = Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
         List<Integer> categoriesList = categoryToIntAdapter.transform(categories);
 
-        bookRepository.books(categoriesList, null /*list*/, bookSorts, false /*openCountries*/,
-            language == null ? localeProvider.get() : language, offset, limit, new CompletionCallback<List<Book>>() {
+        bookRepository.books(categoriesList, null, bookSorts, false, languages, ages, offset, limit, new CompletionCallback<List<Book>>() {
               @Override public void onSuccess(final List<Book> result) {
                 Optional<List<Book>> booksOp =
                     result == null ? Optional.<List<Book>>absent() : Optional.of(result);

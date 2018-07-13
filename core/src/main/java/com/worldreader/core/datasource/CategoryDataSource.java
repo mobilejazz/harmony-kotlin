@@ -40,7 +40,7 @@ public class CategoryDataSource implements CategoryRepository {
     if (language == null) {
       language = countryCodeProvider.getLanguageIso3Code();
     }
-    final String key = URLProvider.withEndpoint(CategoryNetworkDataSourceImp.ENDPOINT).addLanguage(language).build();
+    final String key = URLProvider.withEndpoint(CategoryNetworkDataSourceImp.ENDPOINT).addLanguages(language).build();
 
     try {
       List<CategoryEntity> categoryEntities = bdDataSource.obtains(key);

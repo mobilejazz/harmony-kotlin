@@ -14,32 +14,40 @@ import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.model.Category;
 import com.worldreader.core.domain.repository.BookRepository;
 import com.worldreader.core.domain.thread.MainThread;
-
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, ErrorCore>
     implements GetLatestBooksInteractor {
 
   private final BookRepository bookRepository;
-  private final Provider<String> localeProvider;
+
+  private final Provider<List<String>> localeProvider;
+  private final Provider<List<String>> agesProvider;
+
   private final ListAdapter<Integer, Category> categoryToIntAdapter;
 
-  private int index;
+  private int offset;
   private int limit;
 
   private DomainCallback<List<Book>, ErrorCore> callback;
 
-  @Inject public GetLatestBooksInteractorImp(InteractorExecutor executor, MainThread mainThread,
+  @Inject public GetLatestBooksInteractorImp(
+      InteractorExecutor executor,
+      MainThread mainThread,
       BookRepository bookRepository,
-      @Named("locale.provider") final Provider<String> localeProvider,
-      ListAdapter<Integer, Category> categoryToIntAdapter) {
+      ListAdapter<Integer, Category> categoryToIntAdapter,
+      @Named("locale.provider") final Provider<List<String>> localeProvider,
+      @Named("ages.provider") final Provider<List<String>> agesProvider
+  ) {
     super(executor, mainThread);
     this.bookRepository = bookRepository;
-    this.localeProvider = localeProvider;
     this.categoryToIntAdapter = categoryToIntAdapter;
+    this.localeProvider = localeProvider;
+    this.agesProvider = agesProvider;
   }
 
   @Override public void execute(DomainCallback<List<Book>, ErrorCore> callback) {
@@ -49,7 +57,7 @@ public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, 
 
   @Override
   public void execute(int index, int limit, DomainCallback<List<Book>, ErrorCore> callback) {
-    this.index = index;
+    this.offset = index;
     this.limit = limit;
     this.callback = callback;
     this.executor.run(this);
@@ -62,44 +70,46 @@ public class GetLatestBooksInteractorImp extends AbstractInteractor<List<Book>, 
   }
 
   @Override public void run() {
-    List<BookSort> sorter =
-        Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+    List<BookSort> sorter = Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
 
     // Configure the get latest books request if we don't need pagination
-    if (index < 0 && limit < 0) {
-      index = 0;
+    if (offset < 0 && limit < 0) {
+      offset = 0;
       limit = 3;
     }
 
-    bookRepository.books(null/*Categories*/, null/*List*/, sorter, false/*openCountry*/,
-        localeProvider.get(), index, limit, new CompletionCallback<List<Book>>() {
-          @Override public void onSuccess(List<Book> result) {
-            performSuccessCallback(callback, result);
-          }
+    final List<String> languages = localeProvider.get();
+    final List<String> ages = agesProvider.get();
 
-          @Override public void onError(ErrorCore error) {
-            performErrorCallback(callback, error);
-          }
-        });
+    bookRepository.books(null, null, sorter, false, languages, ages, offset, limit, new CompletionCallback<List<Book>>() {
+      @Override public void onSuccess(List<Book> result) {
+        performSuccessCallback(callback, result);
+      }
+
+      @Override public void onError(ErrorCore error) {
+        performErrorCallback(callback, error);
+      }
+    });
   }
 
   private Runnable getInteractorCallable(final int offset, final int limit, final List<Category> categories, final SettableFuture<List<Book>> future) {
     return new Runnable() {
       @Override public void run() {
-        List<BookSort> sorter =
-            Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
+        List<BookSort> sorter = Collections.singletonList(BookSort.createBookSort(BookSort.Type.DATE, BookSort.Value.DESC));
         final List<Integer> categoriesToFetch = (categories != null && !categories.isEmpty()) ? categoryToIntAdapter.transform(categories) : null;
 
-        bookRepository.books(categoriesToFetch, null/*List*/, sorter, false/*openCountry*/,
-            localeProvider.get(), offset, limit, new CompletionCallback<List<Book>>() {
-              @Override public void onSuccess(List<Book> result) {
-                future.set(result);
-              }
+        final List<String> languages = localeProvider.get();
+        final List<String> ages = agesProvider.get();
 
-              @Override public void onError(ErrorCore error) {
-                future.setException(error.getCause());
-              }
-            });
+        bookRepository.books(categoriesToFetch, null, sorter, false, languages, ages, offset, limit, new CompletionCallback<List<Book>>() {
+          @Override public void onSuccess(List<Book> result) {
+            future.set(result);
+          }
+
+          @Override public void onError(ErrorCore error) {
+            future.setException(error.getCause());
+          }
+        });
       }
     };
   }
