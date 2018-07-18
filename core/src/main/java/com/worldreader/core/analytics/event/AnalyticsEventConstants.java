@@ -41,6 +41,12 @@ public class AnalyticsEventConstants {
   public static final String SEARCH_CATEGORY_ATTRIBUTE = "searchCategory";
   public static final String SEARCH_LANG_ATTRIBUTE = "searchLang";
   public static final String SEARCH_EVENT = "Search";
+  public static final String CHANGE_FONT_TYPE_EVENT = "ChangeFontType";
+  public static final String CHANGE_FONT_SIZE_EVENT = "ChangeFontSize";
+  public static final String SELECTED_FONT = "SelectedFont" ;
+  public static final String SELECTED_FONT_SIZE = "SelectedFontSize";
+  public static final String OPEN_READER_OPTIONS="OpenReaderOptions";
+
 
   /**
    *

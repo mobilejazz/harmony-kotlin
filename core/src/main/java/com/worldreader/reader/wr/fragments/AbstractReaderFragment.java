@@ -56,6 +56,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.worldreader.core.R;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderChangeFontSizeAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderChangeFontTypeAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderOpenReaderOptionsAnalyticsEvent;
 import com.worldreader.core.analytics.reader.ReaderAnalyticsHelper;
 import com.worldreader.core.application.helper.AndroidFutures;
 import com.worldreader.core.application.helper.ui.Dimens;
@@ -273,6 +276,10 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         }
         config.setDefaultFontFamily(fontFamily);
         updateReaderState();
+
+        ReaderChangeFontTypeAnalyticsEvent event = new ReaderChangeFontTypeAnalyticsEvent(bookMetadata.bookId, bookMetadata.title, fontFamily.getName(), countryCode);
+        di.analytics.sendEvent(event);
+
       }
     });
 
@@ -312,6 +319,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         config.setTextSize(size);
 
         updateReaderState();
+        ReaderChangeFontSizeAnalyticsEvent event = new ReaderChangeFontSizeAnalyticsEvent(bookMetadata.bookId, bookMetadata.title, rawSize,
+            countryCode);
+        di.analytics.sendEvent(event);
       }
     };
 
@@ -367,18 +377,23 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           dayProfileBtn.setChecked(true);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(false);
+          //ANALYTICS track backgroubd change
+
         } else if (id == R.id.night_profile_btn) {
           config.setTheme(ReaderConfig.Theme.NIGHT);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(true);
           creamProfileBtn.setChecked(false);
+          //ANALYTICS track backgroubd change
         } else if (id == R.id.cream_profile_btn) {
           config.setTheme(ReaderConfig.Theme.CREAM);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(true);
+          //ANALYTICS track backgroubd change
         }
         updateReaderState();
+        //ANALYTICS track backgroubd change
       }
     };
 
@@ -584,6 +599,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       }
     }
 
+    ReaderOpenReaderOptionsAnalyticsEvent event = new ReaderOpenReaderOptionsAnalyticsEvent(bookMetadata.bookId, bookMetadata.title, countryCode);
+    di.analytics.sendEvent(event);
+
     if (itemId == R.id.show_book_content) {
       menu.findItem(R.id.show_font_options).setChecked(false);
       menu.findItem(R.id.show_brightness_options).setChecked(false);
@@ -591,6 +609,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
       activity.findViewById(R.id.brightness_options_container).setVisibility(View.GONE);
       bookTocEntryListener.displayBookTableOfContents();
       ReaderAnalyticsHelper.sendOpenTocEvent(di.analytics, bookMetadata.bookId, bookMetadata.title);
+      //ANALYTICS REFACTOR TO NEW WAY
 
       return true;
     } else if (itemId == R.id.show_font_options || itemId == R.id.show_brightness_options) {
@@ -975,6 +994,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
   @Override public void onBookImageClicked(final Drawable drawable) {
     showPhotoViewer((AbstractFastBitmapDrawable) drawable);
+    //ANALYTICS image opened
   }
 
   private void showPhotoViewer(final AbstractFastBitmapDrawable drawable) {
@@ -1048,6 +1068,7 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
 
       final SubsamplingScaleImageView imageScaleView = activity.findViewById(R.id.photo_viewer_iv);
       imageScaleView.recycle();
+      //ANALYTICS image closed
     }
   }
 

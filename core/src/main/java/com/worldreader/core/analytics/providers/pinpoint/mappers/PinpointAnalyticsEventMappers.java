@@ -12,6 +12,9 @@ import com.worldreader.core.analytics.event.other.ChangeReadingLanguageAnalytics
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ScreenNameAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.UILanguageAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderChangeFontSizeAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderChangeFontTypeAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderOpenReaderOptionsAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.CampaignAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignInAnalyticsEvent;
 import com.worldreader.core.analytics.event.register.SignOutAnalyticsEvent;
@@ -55,6 +58,9 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(CampaignAnalyticsEvent.class, new PinpointCampaignMapper(analyticsClient));
           put(SearchAnalyticsEvent.class, new PinpointSearchMapper(analyticsClient));
           put(AgeSelectedAnalyticsEvent.class, new PinpointAgeSelectedMapper(analyticsClient));
+          put(ReaderChangeFontTypeAnalyticsEvent.class, new PinpointReaderChangeFontMapper(analyticsClient));
+          put(ReaderChangeFontSizeAnalyticsEvent.class, new PinpointReaderChangeFontSizeMapper(analyticsClient));
+          put(ReaderOpenReaderOptionsAnalyticsEvent.class, new PinpointReaderOpenReaderOptionsMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 
