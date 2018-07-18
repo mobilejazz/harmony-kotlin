@@ -192,17 +192,21 @@ public class LocaleCountryCodeProvider implements CountryCodeProvider {
               if (isIPv4) {
                 return sAddr;
               }
-            } else {
-              if (!isIPv4) {
-                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
-                return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+            }else {
+                if (!isIPv4 & !startsWithFE80(sAddr)) {
+                  int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                  return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                }
               }
             }
           }
         }
-      }
-    } catch (Exception ex) {
-    } // for now eat exceptions
-    return "";
+      } catch (Exception ex) {
+      } // for now eat exceptions
+      return "";
+    }
+
+    private boolean startsWithFE80(String address){
+      return address.toUpperCase().contains("FE80");
+    }
   }
-}
