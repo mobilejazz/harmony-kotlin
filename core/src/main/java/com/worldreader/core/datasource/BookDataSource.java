@@ -16,9 +16,9 @@ import com.worldreader.core.domain.model.Book;
 import com.worldreader.core.domain.model.BookDownloaded;
 import com.worldreader.core.domain.model.BookSort;
 import com.worldreader.core.domain.repository.BookRepository;
-import java.util.Collections;
-import java.util.List;
+
 import javax.inject.Inject;
+import java.util.*;
 
 public class BookDataSource implements BookRepository {
 
@@ -50,7 +50,7 @@ public class BookDataSource implements BookRepository {
         .addCategories(categoriesId)
         .addList(list)
         .addSorters(sorters)
-        //.addOpenCountry(openCountry ? countryIsoCode : null)
+        .addOpenCountry(openCountry ? countryIsoCode : null)
         .addCountryCode(countryIsoCode)
         .addLanguages(languages)
         .addAges(ages)
