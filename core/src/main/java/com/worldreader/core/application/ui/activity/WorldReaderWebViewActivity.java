@@ -16,7 +16,8 @@ public class WorldReaderWebViewActivity extends AppCompatActivity {
   public static final String TITLE_URL = "webview.title.key";
 
   public enum Url {
-    TERMS_CONDITIONS("http://wrm.worldreader.org/terms.html");
+    TERMS_CONDITIONS("http://wrm.worldreader.org/terms.html"),
+    PRIVACY_POLICY("https://www.worldreader.org/privacy-policy/");
 
     String url;
 
