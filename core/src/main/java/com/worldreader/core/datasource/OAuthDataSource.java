@@ -89,6 +89,17 @@ public class OAuthDataSource implements OAuthRepository {
     }
   }
 
+  @Override public boolean loginWithGoogleTokenId(String googleTokenId) {
+    final OAuthNetworkResponseEntity userToken = networkDataSource.userTokenWithGoogleTokenId(googleTokenId);
+
+    if (userToken == null) {
+      return false;
+    } else {
+      bdDataSource.persist(OAuthBdDataSourceImpl.USER_TOKEN, userToken);
+      return true;
+    }
+  }
+
   @Override public boolean putUserToken(final String value) {
     final OAuthNetworkResponseEntity token = gson.fromJson(value, OAuthNetworkResponseEntity.class);
 

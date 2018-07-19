@@ -14,6 +14,8 @@ public interface OAuthRepository {
 
   boolean loginWithGoogle(String googleId, String email);
 
+  boolean loginWithGoogleTokenId(String googleTokenId);
+
   boolean putUserToken(String value);
 
   boolean removeUserToken();

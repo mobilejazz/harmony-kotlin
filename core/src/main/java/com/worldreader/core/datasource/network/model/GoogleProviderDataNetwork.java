@@ -5,8 +5,8 @@ public class GoogleProviderDataNetwork
 
   private final NetworkGoogleRegisterData googleRegisterData;
 
-  public GoogleProviderDataNetwork(String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
-    this.googleRegisterData = new NetworkGoogleRegisterData(googleId, name, email, referrerDeviceId, referrerUserId);
+  public GoogleProviderDataNetwork(String googleTokenId, String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
+    this.googleRegisterData = new NetworkGoogleRegisterData(googleTokenId, googleId, name, email, referrerDeviceId, referrerUserId);
   }
 
   @Override public NetworkGoogleRegisterData get() {
@@ -15,15 +15,21 @@ public class GoogleProviderDataNetwork
 
   public static class NetworkGoogleRegisterData extends BaseNetworkRegisterData {
 
+    private final String googleTokenId;
     private final String googleId;
     private final String name;
     private final String email;
 
-    public NetworkGoogleRegisterData(String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
+    public NetworkGoogleRegisterData(String googleTokenId, String googleId, String name, String email, String referrerDeviceId, String referrerUserId) {
       super(referrerDeviceId, referrerUserId);
+      this.googleTokenId = googleTokenId;
       this.googleId = googleId;
       this.name = name;
       this.email = email;
+    }
+
+    public String getGoogleTokenId() {
+      return googleTokenId;
     }
 
     public String getGoogleId() {

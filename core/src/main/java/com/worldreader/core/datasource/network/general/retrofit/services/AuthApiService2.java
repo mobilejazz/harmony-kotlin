@@ -17,6 +17,9 @@ public interface AuthApiService2 {
 
   @POST("google") Call<Void> registerWithGoogle(@Body UserGoogleRegisterBody body);
 
-  @POST("google/login") Call<OAuthNetworkResponseEntity> userTokenWithGoogle(@Body OAuthGoogleBody bodyor );
+  @POST("google/login") Call<OAuthNetworkResponseEntity> userTokenWithGoogle(@Body OAuthGoogleBody body );
+
+  @POST("google/login-token") Call<OAuthNetworkResponseEntity> userTokenWithGoogleTokenId(@Body OAuthGoogleBody body );
+
 
 }

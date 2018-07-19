@@ -219,7 +219,8 @@ public class UserDataSource2 implements UserRepository {
   private void registerUserWithGoogle(Object data, Referrer referrer, final Callback<Optional<User2>> callback) {
     final GoogleProviderData.DomainGoogleRegisterData registerData = (GoogleProviderData.DomainGoogleRegisterData) data;
     final GoogleProviderDataNetwork googleProviderData =
-        new GoogleProviderDataNetwork(registerData.getGoogleId(), registerData.getName(), registerData.getEmail(), referrer.getDeviceId(),
+        new GoogleProviderDataNetwork(registerData.getGoogleTokenId(), registerData.getGoogleId(), registerData.getName(), registerData.getEmail(), referrer
+            .getDeviceId(),
             referrer.getUserId());
     userNetworkDataSource.register(RegisterProviderNetwork.GOOGLE, googleProviderData, new Callback<Optional<UserEntity2>>() {
       @Override public void onSuccess(Optional<UserEntity2> optional) {

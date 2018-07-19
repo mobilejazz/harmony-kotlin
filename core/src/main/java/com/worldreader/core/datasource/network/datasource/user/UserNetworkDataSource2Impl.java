@@ -195,7 +195,7 @@ public class UserNetworkDataSource2Impl implements UserNetworkDataSource2 {
     final GoogleProviderDataNetwork.NetworkGoogleRegisterData registerData =
         (GoogleProviderDataNetwork.NetworkGoogleRegisterData) data;
     final UserGoogleRegisterBody body =
-        UserGoogleRegisterBody.create(registerData.getGoogleId(), registerData.getName(),
+        UserGoogleRegisterBody.create(registerData.getGoogleTokenId(), registerData.getGoogleId(), registerData.getName(),
             registerData.getEmail(), registerData.getReferrerDeviceId(), registerData.getReferrerUserId());
     try {
       final Response<Void> response = authApiService.registerWithGoogle(body).execute();

@@ -103,7 +103,26 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
   }
 
   @Override public OAuthNetworkResponseEntity userTokenWithGoogle(final String googleId, final String email) throws LoginException {
-    final OAuthGoogleBody body = OAuthGoogleBody.create(clientId, googleId, email);
+    final OAuthGoogleBody body = OAuthGoogleBody.create(clientId, null, googleId, email);
+
+    try {
+      final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithGoogle(body).execute();
+      final boolean successful = response.isSuccessful();
+      if (successful) {
+        return response.body();
+      } else {
+        final ResponseBody errorBody = response.errorBody();
+        // TODO: 23/12/2016 We have to inspect what error could the server return and act accordingly
+        return null;
+      }
+    } catch (IOException e) {
+      // In this case the request could be canceled, so we should take that into account
+      return null;
+    }
+  }
+
+  @Override public OAuthNetworkResponseEntity userTokenWithGoogleTokenId(final String googleTokenId) throws LoginException {
+    final OAuthGoogleBody body = OAuthGoogleBody.create(clientId, googleTokenId, null, null);
 
     try {
       final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithGoogle(body).execute();

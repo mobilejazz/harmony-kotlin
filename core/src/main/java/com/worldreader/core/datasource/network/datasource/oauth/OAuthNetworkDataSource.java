@@ -14,4 +14,6 @@ public interface OAuthNetworkDataSource {
   OAuthNetworkResponseEntity userTokenWithFacebook(String facebookToken) throws LoginException;
 
   OAuthNetworkResponseEntity userTokenWithGoogle(String googleId, String email) throws LoginException;
+
+  OAuthNetworkResponseEntity userTokenWithGoogleTokenId(String googleTokenId) throws LoginException;
 }

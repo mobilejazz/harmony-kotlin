@@ -47,7 +47,10 @@ import java.util.concurrent.*;
             break;
           case GOOGLE:
             final GoogleProviderData.DomainGoogleRegisterData googleRegisterData = ((GoogleProviderData) data).get();
-            final boolean isLoggedGoogle = repository.loginWithGoogle(googleRegisterData.getGoogleId(), googleRegisterData.getEmail());
+            final boolean isLoggedGoogle = googleRegisterData.getGoogleTokenId() != null ?
+                                           repository.loginWithGoogleTokenId(googleRegisterData.getGoogleTokenId()) :
+                                           repository.loginWithGoogle(googleRegisterData.getGoogleId(), googleRegisterData.getEmail());
+
             future.set(isLoggedGoogle);
             break;
           case WORLDREADER:
