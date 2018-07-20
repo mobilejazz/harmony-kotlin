@@ -125,7 +125,7 @@ public class OAuthNetworkDataSourceImpl2 implements OAuthNetworkDataSource {
     final OAuthGoogleBody body = OAuthGoogleBody.create(clientId, googleTokenId, null, null);
 
     try {
-      final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithGoogle(body).execute();
+      final Response<OAuthNetworkResponseEntity> response = authApi.userTokenWithGoogleTokenId(body).execute();
       final boolean successful = response.isSuccessful();
       if (successful) {
         return response.body();
