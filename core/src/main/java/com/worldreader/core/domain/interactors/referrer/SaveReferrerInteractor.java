@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.*;
 
-@PerActivity public class SaveReferrerInteractor {
+public class SaveReferrerInteractor {
 
   private final ListeningExecutorService executorService;
   private final ReferrerDataSource referrerRepository;
