@@ -127,5 +127,5 @@ public interface BookViewListener {
   /**
    * Called when the user clicks on an image.
    */
-  void onBookImageClicked(final Drawable drawable);
+  void onBookImageClicked(final Drawable drawable, String data);
 }

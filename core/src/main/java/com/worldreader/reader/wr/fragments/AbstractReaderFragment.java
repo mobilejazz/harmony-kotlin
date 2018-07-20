@@ -58,6 +58,7 @@ import com.worldreader.core.R;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.reader.ReaderChangeFontSizeAnalyticsEvent;
 import com.worldreader.core.analytics.event.reader.ReaderChangeFontTypeAnalyticsEvent;
+import com.worldreader.core.analytics.event.reader.ReaderImageZoomAnalyticsEvent;
 import com.worldreader.core.analytics.event.reader.ReaderOpenReaderOptionsAnalyticsEvent;
 import com.worldreader.core.analytics.reader.ReaderAnalyticsHelper;
 import com.worldreader.core.application.helper.AndroidFutures;
@@ -377,23 +378,19 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           dayProfileBtn.setChecked(true);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(false);
-          //ANALYTICS track backgroubd change
-
         } else if (id == R.id.night_profile_btn) {
           config.setTheme(ReaderConfig.Theme.NIGHT);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(true);
           creamProfileBtn.setChecked(false);
-          //ANALYTICS track backgroubd change
         } else if (id == R.id.cream_profile_btn) {
           config.setTheme(ReaderConfig.Theme.CREAM);
           dayProfileBtn.setChecked(false);
           nightProfileBtn.setChecked(false);
           creamProfileBtn.setChecked(true);
-          //ANALYTICS track backgroubd change
         }
         updateReaderState();
-        //ANALYTICS track backgroubd change
+        //TODO ANALYTICS track backgroubd change
       }
     };
 
@@ -428,6 +425,8 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
         final SystemUiHelper systemUiHelper = getSystemUiHelper();
         if (systemUiHelper != null && !systemUiHelper.isShowing()) {
           systemUiHelper.show();
+          //TODO Analytics track open reader options
+
         }
       }
     });
@@ -992,12 +991,11 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
     onReaderFragmentEvent(BookReaderEvents.NAVIGATION_TO_BOOK_FINISHED_SCREEN_EVENT);
   }
 
-  @Override public void onBookImageClicked(final Drawable drawable) {
-    showPhotoViewer((AbstractFastBitmapDrawable) drawable);
-    //ANALYTICS image opened
+  @Override public void onBookImageClicked(final Drawable drawable, String data) {
+    showPhotoViewer((AbstractFastBitmapDrawable) drawable, data);
   }
 
-  private void showPhotoViewer(final AbstractFastBitmapDrawable drawable) {
+  private void showPhotoViewer(final AbstractFastBitmapDrawable drawable, String data) {
     final FragmentActivity activity = getActivity();
     final SystemUiHelper systemUiHelper = getSystemUiHelper();
 
@@ -1037,6 +1035,9 @@ public abstract class AbstractReaderFragment extends Fragment implements BookVie
           animator.setAutoCancel(true);
         }
         animator.start();
+
+        ReaderImageZoomAnalyticsEvent event = new ReaderImageZoomAnalyticsEvent(bookMetadata.bookId, bookMetadata.title, data, countryCode);
+        di.analytics.sendEvent(event);
       }
     }
   }

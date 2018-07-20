@@ -46,7 +46,8 @@ public class AnalyticsEventConstants {
   public static final String SELECTED_FONT = "SelectedFont" ;
   public static final String SELECTED_FONT_SIZE = "SelectedFontSize";
   public static final String OPEN_READER_OPTIONS="OpenReaderOptions";
-
+  public static final String SELECTED_IMAGE = "SelectedImage";
+  public static final String IMAGE_ZOOM_EVENT = "ImageZoom" ;
 
   /**
    *
