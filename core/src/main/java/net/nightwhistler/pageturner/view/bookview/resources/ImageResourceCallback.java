@@ -136,7 +136,7 @@ public class ImageResourceCallback {
 
   private void notifyListener(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
     if (listener != null) {
-      listener.onBitmapDrawableCreated(drawable, builder, start, end);
+      listener.onBitmapDrawableCreated(drawable, builder, start, end, data);
     }
   }
 
@@ -258,7 +258,7 @@ public class ImageResourceCallback {
 
   public interface Listener {
 
-    void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end);
+    void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end, String data);
   }
 
 }

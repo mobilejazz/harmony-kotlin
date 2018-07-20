@@ -686,12 +686,12 @@ public class BookView extends ScrollView implements TextSelectionActions.Selecte
       super(context, bm, resourcesLoader, di, logger);
     }
 
-    @Override public void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end) {
+    @Override public void onBitmapDrawableCreated(Drawable drawable, SpannableStringBuilder builder, int start, int end, final String data) {
       drawable.setCallback(callback);
       final ClickableImageSpan imageSpan = new ClickableImageSpan(drawable, new ClickableImageSpan.ClickableImageSpanListener() {
         @Override public void onImageClick(View v, Drawable drawable) {
           if (listener != null) {
-            listener.onBookImageClicked(drawable);
+            listener.onBookImageClicked(drawable, data);
           }
         }
       });
