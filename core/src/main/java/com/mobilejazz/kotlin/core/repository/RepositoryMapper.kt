@@ -18,25 +18,25 @@ import javax.inject.Inject
  * @param toToMapper Mapper to map objects
  * @param toFromMapper Mapper to map objects
  */
-class RepositoryMapper<From, To> @Inject constructor(private val getRepository: GetRepository<To>,
-                                                     private val putRepository: PutRepository<To>,
+class RepositoryMapper<From, To> @Inject constructor(private val getRepository: GetRepository<From>,
+                                                     private val putRepository: PutRepository<From>,
                                                      private val deleteRepository: DeleteRepository,
                                                      private val toToMapper: Mapper<From, To>,
-                                                     private val toFromMapper: Mapper<To, From>) : GetRepository<From>, PutRepository<From>, DeleteRepository {
+                                                     private val toFromMapper: Mapper<To, From>) : GetRepository<To>, PutRepository<To>, DeleteRepository {
 
-  override fun get(query: Query, operation: Operation): Future<From> = getRepository.get(query, operation).map { toFromMapper.map(it) }
+  override fun get(query: Query, operation: Operation): Future<To> = getRepository.get(query, operation).map { toToMapper.map(it) }
 
-  override fun getAll(query: Query, operation: Operation): Future<List<From>> = getRepository.getAll(query, operation).map { toFromMapper.map(it) }
+  override fun getAll(query: Query, operation: Operation): Future<List<To>> = getRepository.getAll(query, operation).map { toToMapper.map(it) }
 
-  override fun put(query: Query, value: From?, operation: Operation): Future<From> {
-    val mapped = value?.let { toToMapper.map(it) }
-    return putRepository.put(query, mapped, operation).map { toFromMapper.map(it)
+  override fun put(query: Query, value: To?, operation: Operation): Future<To> {
+    val mapped = value?.let { toFromMapper.map(it) }
+    return putRepository.put(query, mapped, operation).map { toToMapper.map(it)
     }
   }
 
-  override fun putAll(query: Query, value: List<From>?, operation: Operation): Future<List<From>> {
-    val mapped = value?.let { toToMapper.map(value) }
-    return putRepository.putAll(query, mapped, operation).map { toFromMapper.map(it) }
+  override fun putAll(query: Query, value: List<To>?, operation: Operation): Future<List<To>> {
+    val mapped = value?.let { toFromMapper.map(value) }
+    return putRepository.putAll(query, mapped, operation).map { toToMapper.map(it) }
   }
 
   override fun delete(query: Query, operation: Operation): Future<Unit> = deleteRepository.delete(query, operation)
