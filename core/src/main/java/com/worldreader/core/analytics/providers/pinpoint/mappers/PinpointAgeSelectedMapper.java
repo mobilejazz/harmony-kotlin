@@ -18,7 +18,7 @@ public class PinpointAgeSelectedMapper implements PinpointAnalyticsMapper<AgeSel
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.AGE_SELECTED_EVENT);
 
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.AGE_SELECTED_ATTRIBUTE, event.getAgeSelected());
-    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRY, event.getCountry());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
   }

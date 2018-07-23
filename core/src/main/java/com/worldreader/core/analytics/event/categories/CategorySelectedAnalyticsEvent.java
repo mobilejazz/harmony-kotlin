@@ -10,15 +10,17 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
   private String parentCategoryName;
   private String referringScreen;
   private String referringMeta;
+  private String countryCode;
 
   private CategorySelectedAnalyticsEvent(Integer categoryId, String name, Integer parentCategoryId, String parentCategoryName, String referringScreen,
-      String referringMeta) {
+      String referringMeta, String countryCode) {
     this.categoryId = categoryId;
     this.categoryName = name;
     this.parentCategoryId = parentCategoryId;
     this.parentCategoryName = parentCategoryName;
     this.referringScreen = referringScreen;
     this.referringMeta = referringMeta;
+    this.countryCode = countryCode;
   }
 
   public static CategorySelectedAnalyticsEvent of(Integer categoryId, String name) {
@@ -51,6 +53,10 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
     return referringMeta;
   }
 
+  public String getCountryCode() {
+    return countryCode;
+  }
+
   public static final class Builder {
 
     private Integer categoryId;
@@ -59,6 +65,7 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
     private String parentCategoryName;
     private String referringScreen;
     private String referringMeta;
+    private String countryCode;
 
     public Builder(Integer cId, String cName){
       categoryId = cId;
@@ -67,6 +74,7 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
       parentCategoryId = null;
       referringScreen ="";
       referringMeta="";
+      countryCode ="";
 
     }
 
@@ -90,8 +98,13 @@ public class CategorySelectedAnalyticsEvent implements AnalyticsEvent {
       return this;
     }
 
+    public Builder countryCode(String val) {
+      countryCode = val;
+      return this;
+    }
+
     public CategorySelectedAnalyticsEvent create() {
-      return new CategorySelectedAnalyticsEvent(categoryId, categoryName, parentCategoryId, parentCategoryName, referringScreen, referringMeta);
+      return new CategorySelectedAnalyticsEvent(categoryId, categoryName, parentCategoryId, parentCategoryName, referringScreen, referringMeta, countryCode);
     }
   }
 }

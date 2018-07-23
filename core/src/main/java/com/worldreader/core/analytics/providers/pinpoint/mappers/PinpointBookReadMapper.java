@@ -24,6 +24,7 @@ public class PinpointBookReadMapper implements PinpointAnalyticsMapper<BookReadA
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_READING_CURRENT_PAGE_IN_SPINE_ELEM, String.valueOf(event.getCurrentPage()));
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_READING_AMOUNT_OF_PAGES_IN_SPINE_ELEM, String.valueOf(event.getPagesForResouce()));
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_READING_SCREEN_TEXT_SIZE_IN_CHARS, String.valueOf(event.getTextSizeInChars()));
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
   }

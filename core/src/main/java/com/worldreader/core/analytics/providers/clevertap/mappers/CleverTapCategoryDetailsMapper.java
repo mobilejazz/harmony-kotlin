@@ -24,7 +24,7 @@ public class CleverTapCategoryDetailsMapper implements CleverTapAnalyticsMapper<
       put(CleverTapEventConstants.CATEGORY_NAME_ATTRIBUTE, event.getCategoryName());
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
-      put(CleverTapEventConstants.COUNTRY, "");//TODO
+      put(CleverTapEventConstants.COUNTRY, event.getCountryCode());
       put(CleverTapEventConstants.DEVICE_MANUFACTURER, Build.MANUFACTURER);
       put(CleverTapEventConstants.DEVICE_MODEL, Build.MODEL);
       put(CleverTapEventConstants.OS, Build.VERSION.RELEASE);

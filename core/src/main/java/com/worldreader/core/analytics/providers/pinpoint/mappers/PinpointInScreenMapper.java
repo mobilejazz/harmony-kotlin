@@ -18,6 +18,7 @@ public class PinpointInScreenMapper implements PinpointAnalyticsMapper<ScreenNam
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.IN_SCREEN);
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.SCREEN_NAME_ATTRIBUTE, event.getScreenName());
     analyticsEvent.addAttribute(AnalyticsEventConstants.APP_IN_OFFLINE, "");
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountryCode());
     return analyticsEvent;
   }
 

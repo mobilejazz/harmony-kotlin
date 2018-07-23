@@ -20,6 +20,7 @@ public class PinpointSignUpMapper implements PinpointAnalyticsMapper<SignUpAnaly
     analyticsEvent.addAttribute(AnalyticsEventConstants.USER_ID, event.getUserId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_USER_ID_ATTRIBUTE, event.getReferrerUserId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_DEVICE_ID_ATTRIBUTE, event.getReferrerDeviceId());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
 

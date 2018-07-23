@@ -19,7 +19,7 @@ public class PinpointReaderChangeFontSizeMapper implements PinpointAnalyticsMapp
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, event.getBookId());
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, event.getBookTitle());
     analyticsEvent.addAttribute(AnalyticsEventConstants.SELECTED_FONT_SIZE, event.getNewFontSize());
-    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRY, event.getCountry());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
   }

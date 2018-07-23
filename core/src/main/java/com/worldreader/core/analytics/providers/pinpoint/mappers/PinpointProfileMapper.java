@@ -20,7 +20,7 @@ public class PinpointProfileMapper implements PinpointAnalyticsMapper<ProfileAna
     final AnalyticsEvent analyticsEvent = ac.createEvent(PinpointMobileAnalyticsConstants.READ_IN_LANGUAGE_EVENT);
 
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.LANGUAGE_ISO3_ATTRIBUTE, event.getLanguage());
-    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRY, event.getCountry());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
 
     return analyticsEvent;

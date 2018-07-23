@@ -2,6 +2,7 @@ package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
+import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.books.BookDetailAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
 
@@ -25,7 +26,7 @@ public class PinpointBookDetailsMapper implements PinpointAnalyticsMapper<BookDe
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.SHELVE_TITLE_ATTRIBUTE, event.getShelveTitle());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRING_SCREEN, event.getReferringScreen());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRING_META, event.getReferringMeta());
-
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
     return analyticsEvent;
   }
 

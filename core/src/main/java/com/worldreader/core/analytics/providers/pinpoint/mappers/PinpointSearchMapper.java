@@ -15,6 +15,7 @@ public class PinpointSearchMapper implements PinpointAnalyticsMapper<SearchAnaly
   @Override public AnalyticsEvent transform(SearchAnalyticsEvent event) {
     final AnalyticsEvent analyticsEvent = ac.createEvent(AnalyticsEventConstants.SEARCH_EVENT);
     analyticsEvent.addAttribute(AnalyticsEventConstants.SEARCH_QUERY_ATTRIBUTE,event.getQuery());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
     if(event.getAges()!=null && !event.getAges().isEmpty()){
       java.util.Collections.sort(event.getAges());
       for(int i=0; i<event.getAges().size(); i++){

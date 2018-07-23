@@ -2,6 +2,7 @@ package com.worldreader.core.analytics.providers.pinpoint.mappers;
 
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsClient;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
+import com.worldreader.core.analytics.event.AnalyticsEventConstants;
 import com.worldreader.core.analytics.event.register.CampaignAnalyticsEvent;
 import com.worldreader.core.analytics.providers.pinpoint.PinpointMobileAnalyticsConstants;
 import com.worldreader.core.domain.model.Referrer;
@@ -22,6 +23,7 @@ public class PinpointCampaignMapper implements PinpointAnalyticsMapper<CampaignA
     analyticsEvent.addAttribute(Referrer.KEY_UTM_CONTENT, event.getUtmContent());
     analyticsEvent.addAttribute(Referrer.KEY_UTM_CAMPAIGN, event.getUtmCampaign());
     analyticsEvent.addAttribute(Referrer.KEY_ANID_CAMPAIGN, event.getAnId());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountryCode());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_DEVICE_ID_ATTRIBUTE, event.getReferrerDeviceId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.REFERRER_USER_ID_ATTRIBUTE, event.getReferrerUserId());
     analyticsEvent.addAttribute(Referrer.REFERRER_RAW, event.getReferrerRaw());

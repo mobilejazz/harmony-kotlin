@@ -20,6 +20,7 @@ public class PinpointBookOpenMapper implements PinpointAnalyticsMapper<BookOpenA
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.BOOK_VERSION_ATTRIBUTE, PinpointMobileAnalyticsConstants.getBookVersionIntValue(event
         .getVersion()));
     analyticsEvent.addAttribute(AnalyticsEventConstants.APP_IN_OFFLINE, (event.getVariant() == BookOpenAnalyticsEvent.OFFLINE_VARIANT ? "1" : "0"));
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.CATEGORY_ID_ATTRIBUTE, event.getCategoryId());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.CATEGORY_TITLE_ATTRIBUTE, event.getCategory());
 

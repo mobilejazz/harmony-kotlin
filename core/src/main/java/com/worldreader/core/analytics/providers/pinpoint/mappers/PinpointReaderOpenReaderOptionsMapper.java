@@ -18,7 +18,7 @@ public class PinpointReaderOpenReaderOptionsMapper implements PinpointAnalyticsM
 
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_ID_ATTRIBUTE, event.getBookId());
     analyticsEvent.addAttribute(AnalyticsEventConstants.BOOK_TITLE_ATTRIBUTE, event.getBookTitle());
-    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRY, event.getCountry());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
   }

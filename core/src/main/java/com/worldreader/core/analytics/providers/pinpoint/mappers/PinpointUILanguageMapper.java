@@ -19,7 +19,7 @@ public class PinpointUILanguageMapper implements PinpointAnalyticsMapper<UILangu
 
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.UI_LANGUAGE_ISO3_ATTRIBUTE, event.getLangCode());
     analyticsEvent.addAttribute(PinpointMobileAnalyticsConstants.UI_LANGUAGE_NAME_ATTRIBUTE, event.getLang());
-    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRY, event.getCountry());
+    analyticsEvent.addAttribute(AnalyticsEventConstants.COUNTRTY_CODE, event.getCountry());
 
     return analyticsEvent;
   }
