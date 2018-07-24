@@ -49,6 +49,8 @@ public class AnalyticsEventConstants {
   public static final String SELECTED_IMAGE = "SelectedImage";
   public static final String IMAGE_ZOOM_EVENT = "ImageZoom" ;
 
+  public static final String DEEP_LINK = "DEEP_LINK";
+
   /**
    *
 

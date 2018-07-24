@@ -20,7 +20,7 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
   private final String shelveTitle;
   private final String shelveId;
   private final String referringScreen;
-  private final String referringMeta;
+  private String referringMeta;
   private final String country;
 
   private BookDetailAnalyticsEvent(String id, String title, String version, String category, String categoryId, String publisher, String author,
@@ -145,6 +145,10 @@ public class BookDetailAnalyticsEvent implements AnalyticsEvent {
 
   public String getReferringMeta() {
     return referringMeta;
+  }
+
+  public void setReferringMeta(final String referringMeta) {
+    this.referringMeta = referringMeta;
   }
 
   public String getCountry() {
