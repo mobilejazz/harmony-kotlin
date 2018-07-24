@@ -17,7 +17,7 @@ public class WorldReaderWebViewActivity extends AppCompatActivity {
 
   public enum Url {
     TERMS_CONDITIONS("http://wrm.worldreader.org/terms.html"),
-    PRIVACY_POLICY("https://www.worldreader.org/privacy-policy/");
+    PRIVACY_POLICY("http://wrm.worldreader.org/privacy.html");
 
     String url;
 
