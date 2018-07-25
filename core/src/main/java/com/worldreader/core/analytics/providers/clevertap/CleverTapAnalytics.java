@@ -28,6 +28,8 @@ import java.util.*;
   @Inject public CleverTapAnalytics(Context context, Logger logger) {
     try {
       this.clevertap = CleverTapAPI.getInstance(context);
+      this.clevertap.enableDeviceNetworkInfoReporting(true);
+
       this.logger = logger;
     } catch (Exception e) {
       final RuntimeException exception = new RuntimeException(e);
