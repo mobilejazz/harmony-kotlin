@@ -10,6 +10,7 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
   private final String date;
   private final String register;
   private final String language;
+  private final String uiLanguage;
 
   private ProfileAnalyticsEvent(Builder builder) {
     username = builder.username;
@@ -18,6 +19,7 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
     date = builder.date;
     register = builder.register;
     language = builder.language;
+    uiLanguage = builder.uiLanguage;
 
   }
 
@@ -49,6 +51,10 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
     return language;
   }
 
+  public String getUiLanguage() {
+    return uiLanguage;
+  }
+
   public static final class Builder {
     private String username;
     private String userId;
@@ -56,6 +62,7 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
     private String date;
     private String register;
     public String language;
+    public String uiLanguage;
 
     private Builder() {
     }
@@ -92,6 +99,11 @@ public class ProfileAnalyticsEvent implements AnalyticsEvent {
 
     public ProfileAnalyticsEvent build() {
       return new ProfileAnalyticsEvent(this);
+    }
+
+    public Builder withUILanguage(String val) {
+      uiLanguage = val;
+      return this;
     }
   }
 }
