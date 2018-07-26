@@ -99,6 +99,7 @@ public final class PinpointMobileAnalyticsConstants {
   public static final String FINISH_READING_SESSION_EVENT = "FinishReadingSession";
   public static final String AGE_SELECTED_EVENT = "AgeSelected";
   public static final String AGE_SELECTED_ATTRIBUTE = "Age";
+  public static final String ACCEPTS_PRIVACY = "AcceptsPrivacy";
 
   public static String getBookVersionIntValue(String bookVersion) {
     return bookVersion == null ? "" : bookVersion.equalsIgnoreCase("Latest") ? "-1" : bookVersion;
