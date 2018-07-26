@@ -10,10 +10,10 @@ import com.worldreader.core.datasource.helper.locale.CountryCodeProvider;
 import com.worldreader.core.datasource.model.BookEntity;
 import com.worldreader.core.datasource.network.general.retrofit.exception.Retrofit2Error;
 import com.worldreader.core.domain.model.BookSort;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit2.Call;
+
+import javax.inject.Inject;
+import java.util.*;
 
 public class BookNetworkDataSourceImp implements BookNetworkDataSource {
 
@@ -40,8 +40,9 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
     final List<String> sorterList = getSorterList(sorters);
     final String countryCode = getCountryCode();
     final String countryOpenCode = countryOpen ? countryCode : null;
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
-    bookApiService.books(index, limit, sorterList, list, categories, countryCode, countryOpenCode, languages, ages)
+    bookApiService.books(index, limit, sorterList, list, categories, countryCode, countryOpenCode, languages, ages, displayLang)
         .enqueue(new retrofit2.Callback<List<BookEntity>>() {
           @Override public void onResponse(@NonNull final Call<List<BookEntity>> call, @NonNull final retrofit2.Response<List<BookEntity>> response) {
             final boolean successful = response.isSuccessful();
@@ -70,8 +71,9 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
   @Override public void search(int index, int limit, List<Integer> categories, String title, String author, List<String> languages, List<String> ages,
       final com.worldreader.core.common.callback.Callback<List<BookEntity>> callback) {
     final String countryCode = getCountryCode();
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
-    bookApiService.search(index, limit, countryCode, title, author, categories, languages, ages).enqueue(new retrofit2.Callback<List<BookEntity>>() {
+    bookApiService.search(index, limit, countryCode, title, author, categories, languages, ages, displayLang).enqueue(new retrofit2.Callback<List<BookEntity>>() {
       @Override public void onResponse(@NonNull final Call<List<BookEntity>> call, @NonNull final retrofit2.Response<List<BookEntity>> response) {
         final boolean successful = response.isSuccessful();
         if (successful) {
@@ -98,8 +100,9 @@ public class BookNetworkDataSourceImp implements BookNetworkDataSource {
 
   @Override public void bookDetail(String bookId, String version, final CompletionCallback<BookEntity> callback) {
     final String countryCode = getCountryCode();
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
-    bookApiService.bookDetail(bookId, version, countryCode).enqueue(new retrofit2.Callback<BookEntity>() {
+    bookApiService.bookDetail(bookId, version, countryCode, displayLang).enqueue(new retrofit2.Callback<BookEntity>() {
       @Override public void onResponse(@NonNull final Call<BookEntity> call, @NonNull final retrofit2.Response<BookEntity> response) {
         final boolean successful = response.isSuccessful();
         if (successful) {

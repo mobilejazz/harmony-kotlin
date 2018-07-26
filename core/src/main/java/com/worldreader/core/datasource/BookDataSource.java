@@ -44,7 +44,7 @@ public class BookDataSource implements BookRepository {
   public void books(List<Integer> categoriesId, String list, List<BookSort> sorters, boolean openCountry, List<String> languages, List<String> ages, int index,
       int limit, CompletionCallback<List<Book>> callback) {
     String countryIsoCode = countryCodeProvider.getCountryCode();
-    String uiLang = countryCodeProvider.getLanguageIso3Code();
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
     String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
         .addIndex(index)
@@ -56,7 +56,7 @@ public class BookDataSource implements BookRepository {
         .addCountryCode(countryIsoCode)
         .addLanguages(languages)
         .addAges(ages)
-        .addCategoryLang(uiLang)
+        .addDisplayLang(displayLang)
         .build();
 
     try {
@@ -76,6 +76,7 @@ public class BookDataSource implements BookRepository {
       final String title, final String author, final String publisher, final List<String> languages, final List<String> ages,
       final Callback<List<Book>> callback) {
     String countryCode = countryCodeProvider.getCountryCode();
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
     final String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
         .addIndex(index)
@@ -86,6 +87,7 @@ public class BookDataSource implements BookRepository {
         .addCategories(categories)
         .addLanguages(languages)
         .addAges(ages)
+        .addDisplayLang(displayLang)
         .build();
 
     try {
@@ -128,11 +130,14 @@ public class BookDataSource implements BookRepository {
 
   @Override public void bookDetail(String bookId, String version, boolean forceUpdate,
       CompletionCallback<Book> callback) {
-    String countryIsoCode = countryCodeProvider.getCountryCode();
+    String countryCode = countryCodeProvider.getCountryCode();
+    String displayLang = countryCodeProvider.getLanguageIso3Code();
 
     String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
         .addId(bookId)
         .addVersion(version)
+        .addCountryCode(countryCode)
+        .addDisplayLang(displayLang)
         .build();
 
     if (forceUpdate) {
