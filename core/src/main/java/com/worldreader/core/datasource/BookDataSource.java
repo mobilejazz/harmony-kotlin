@@ -28,6 +28,7 @@ public class BookDataSource implements BookRepository {
   private final CountryCodeProvider countryCodeProvider;
   private final Provider<List<BookDownloaded>> booksDownloadedProvider;
 
+
   @Inject
   public BookDataSource(BookNetworkDataSource networkDataSource, BookBdDataSource bddDataSource,
       BookEntityDataMapper entityDataMapper, CountryCodeProvider countryCodeProvider,
@@ -43,6 +44,7 @@ public class BookDataSource implements BookRepository {
   public void books(List<Integer> categoriesId, String list, List<BookSort> sorters, boolean openCountry, List<String> languages, List<String> ages, int index,
       int limit, CompletionCallback<List<Book>> callback) {
     String countryIsoCode = countryCodeProvider.getCountryCode();
+    String uiLang = countryCodeProvider.getLanguageIso3Code();
 
     String key = URLProvider.withEndpoint(BookNetworkDataSourceImp.ENDPOINT)
         .addIndex(index)
@@ -54,6 +56,7 @@ public class BookDataSource implements BookRepository {
         .addCountryCode(countryIsoCode)
         .addLanguages(languages)
         .addAges(ages)
+        .addCategoryLang(uiLang)
         .build();
 
     try {

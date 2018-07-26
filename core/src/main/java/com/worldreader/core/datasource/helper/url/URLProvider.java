@@ -20,6 +20,7 @@ public class URLProvider {
   private static final String KEY_AUTHOR = "author";
   private static final String KEY_PUBLISHER = "publisher";
   private static final String KEY_LANGUAGE = "languages";
+  private static final String KEY_CATEGORY_LANG = "categoryLang";
   private static final String KEY_TAG = "tag";
 
   public static Builder withEndpoint(String endpoint) {
@@ -68,6 +69,7 @@ public class URLProvider {
     private List<String> languages;
     private String languageQuery;
     private List<String> ages;
+    private String categoryLang;
 
     public Builder(String endpoint) {
       this.endpoint = endpoint;
@@ -170,6 +172,12 @@ public class URLProvider {
       return this;
     }
 
+    public Builder addCategoryLang(String uiLang) {
+      this.categoryLang = uiLang;
+      return this;
+    }
+
+
     public String build() {
       //The endpoint is the most important thing in the URL
       if (isValidEndpoint()) {
@@ -238,6 +246,10 @@ public class URLProvider {
 
         if (!TextUtils.isEmpty(languageQuery)) {
           addParameter(KEY_LANGUAGE, languageQuery);
+        }
+
+        if (!TextUtils.isEmpty(categoryLang)) {
+          addParameter(KEY_CATEGORY_LANG, categoryLang);
         }
 
         if (ages != null && !ages.isEmpty()) {
