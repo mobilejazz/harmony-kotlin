@@ -7,6 +7,7 @@ import com.worldreader.core.analytics.event.books.BookFinishedAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookOpenAnalyticsEvent;
 import com.worldreader.core.analytics.event.books.BookReadAnalyticsEvent;
 import com.worldreader.core.analytics.event.categories.CategorySelectedAnalyticsEvent;
+import com.worldreader.core.analytics.event.notifications.NotificationsStatusAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.AgeSelectedAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.ChangeReadingLanguageAnalyticsEvent;
 import com.worldreader.core.analytics.event.other.MoreBooksAnalyticsEvent;
@@ -65,6 +66,7 @@ public class PinpointAnalyticsEventMappers implements AnalyticsEventMappers<Pinp
           put(ReaderOpenReaderOptionsAnalyticsEvent.class, new PinpointReaderOpenReaderOptionsMapper(analyticsClient));
           put(ReaderImageZoomAnalyticsEvent.class, new PinpointReaderImageZoomMapper(analyticsClient));
           put(AcceptPrivacyAnalyticEvent.class, new PinpointAcceptPrivacyMapper(analyticsClient));
+          put(NotificationsStatusAnalyticsEvent.class, new PinpointAnalyticsNotificationStatusMapper(analyticsClient));
           //put(SetUserIdAnalyticsEvent.class, NONE);
         }};
 
