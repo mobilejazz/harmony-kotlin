@@ -59,11 +59,12 @@ public class Referrer {
    * @return
    */
   public static boolean isValidQueryValue(String referrerUrlQueryValue) {
-    return referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER) || isValidQueryCampaignValue(referrerUrlQueryValue);
+    return referrerUrlQueryValue !=null && referrerUrlQueryValue.startsWith(REFERRER_INVITATION_IDENTIFIER) || isValidQueryCampaignValue
+        (referrerUrlQueryValue);
   }
 
   public static boolean isValidQueryCampaignValue(String referrerUrlQueryValue) {
-    return referrerUrlQueryValue.indexOf(KEY_UTM_SOURCE) > -1;
+    return referrerUrlQueryValue.contains(KEY_UTM_SOURCE);
   }
   /**
    *  Creates a referrer object from the values of a url query field
