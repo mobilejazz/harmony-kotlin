@@ -50,6 +50,7 @@ public class AnalyticsEventConstants {
   public static final String IMAGE_ZOOM_EVENT = "ImageZoom" ;
 
   public static final String DEEP_LINK = "DEEP_LINK";
+  public static final String SEARCH_EVENT_JSON = "SearchJSON";
 
   /**
    *

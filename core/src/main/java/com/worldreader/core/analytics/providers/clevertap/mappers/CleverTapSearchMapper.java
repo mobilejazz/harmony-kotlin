@@ -23,9 +23,9 @@ public class CleverTapSearchMapper implements CleverTapAnalyticsMapper<SearchAna
     return new HashMap<String, Object>() {{
       put(CleverTapEventConstants.CLEVERTAP_KEY_EVENT_NAME, AnalyticsEventConstants.SEARCH_EVENT);
       put(AnalyticsEventConstants.SEARCH_QUERY_ATTRIBUTE, event.getQuery());
-      put(AnalyticsEventConstants.SEARCH_LANG_ATTRIBUTE, TextUtils.join(",", event.getLanguages()));
-      put(AnalyticsEventConstants.SEARCH_CATEGORY_ATTRIBUTE, TextUtils.join(",", event.getCategories()));
-      put(AnalyticsEventConstants.SEARCH_AGE_ATTRIBUTE, TextUtils.join(",", event.getAges()));
+      put(AnalyticsEventConstants.SEARCH_LANG_ATTRIBUTE, TextUtils.join(", ", event.getLanguages()));
+      put(AnalyticsEventConstants.SEARCH_CATEGORY_ATTRIBUTE, TextUtils.join(", ", event.getCategories()));
+      put(AnalyticsEventConstants.SEARCH_AGE_ATTRIBUTE, TextUtils.join(", ", event.getAges()));
       put(CleverTapEventConstants.USER_ID, preferences.getString("userId", "-1"));
       put(CleverTapEventConstants.DEVICE_ID, preferences.getString("deviceId", "-1"));
       put(CleverTapEventConstants.COUNTRY, event.getCountry());
