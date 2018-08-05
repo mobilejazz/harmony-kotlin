@@ -65,4 +65,10 @@ dependencies {
   implementation "com.google.dagger:dagger-android-support:$rootProject.ext.dagger_version"
   kapt "com.google.dagger:dagger-compiler:$rootProject.ext.dagger_version"
   kapt "com.google.dagger:dagger-android-processor:$rootProject.ext.dagger_version"
+
+  //arch components
+  api "android.arch.lifecycle:runtime:1.1.1"
+  api "android.arch.lifecycle:extensions:1.1.1"
+  kapt "android.arch.lifecycle:compiler:1.1.1"
+
 }
