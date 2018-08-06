@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
+import com.mobilejazz.kotlin.core.viewmodel.VMBaseActivity
 
 
 fun Application.initInjection() {
@@ -30,7 +31,7 @@ fun Application.initInjection() {
     }
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-      if (activity is AppCompatActivity) {
+      if (activity is VMBaseActivity) {
         dagger.android.AndroidInjection.inject(activity)
         activity.supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
