@@ -9,35 +9,35 @@ import javax.inject.Inject
 
 /**
  * This data source uses mappers to map objects and redirects them to the contained data source, acting as a simple "translator".
+ *
+ * @param getDataSource Data source with get operations
+ * @param putDataSource Data source with put operations
+ * @param deleteDataSource Data source with delete operations
+ * @param dataSourceEntityToRepositoryEntityMapper Mapper to map data source objects to repository objects
+ * @param repositoryEntityToDataSourceEntityMapper Mapper to map repository objects to data source objects
  */
-class DataSourceMapper<From, To> @Inject constructor(
-  private val getDataSource: GetDataSource<To>,
-  private val putDataSource: PutDataSource<To>,
-  private val deleteDataSource: DeleteDataSource,
-  private val toToMapper: Mapper<From, To>,
-  private val toFromMapper: Mapper<To, From>
-) : GetDataSource<From>, PutDataSource<From>, DeleteDataSource {
+class DataSourceMapper<DataSourceEntity, RepositoryEntity> @Inject constructor(
+    private val getDataSource: GetDataSource<DataSourceEntity>,
+    private val putDataSource: PutDataSource<DataSourceEntity>,
+    private val deleteDataSource: DeleteDataSource,
+    private val dataSourceEntityToRepositoryEntityMapper: Mapper<DataSourceEntity, RepositoryEntity>,
+    private val repositoryEntityToDataSourceEntityMapper: Mapper<RepositoryEntity, DataSourceEntity>
+) : GetDataSource<RepositoryEntity>, PutDataSource<RepositoryEntity>, DeleteDataSource {
 
-  override fun get(query: Query): Future<From> = getDataSource.get(query).map { toFromMapper.map(it) }
+  override fun get(query: Query): Future<RepositoryEntity> = getDataSource.get(query).map { dataSourceEntityToRepositoryEntityMapper.map(it) }
 
-  override fun getAll(query: Query): Future<List<From>> = getDataSource.getAll(query).map { toFromMapper.map(it) }
+  override fun getAll(query: Query): Future<List<RepositoryEntity>> = getDataSource.getAll(query).map { dataSourceEntityToRepositoryEntityMapper.map(it) }
 
-  override fun put(
-    query: Query,
-    value: From?
-  ): Future<From> {
-    val mapped = value?.let { toToMapper.map(value) }
+  override fun put(query: Query, value: RepositoryEntity?): Future<RepositoryEntity> {
+    val mapped = value?.let { repositoryEntityToDataSourceEntityMapper.map(value) }
     return putDataSource.put(query, mapped)
-        .map { toFromMapper.map(it) }
+        .map { dataSourceEntityToRepositoryEntityMapper.map(it) }
   }
 
-  override fun putAll(
-    query: Query,
-    value: List<From>?
-  ): Future<List<From>> {
-    val mapped = value?.let { toToMapper.map(value) }
+  override fun putAll(query: Query, value: List<RepositoryEntity>?): Future<List<RepositoryEntity>> {
+    val mapped = value?.let { repositoryEntityToDataSourceEntityMapper.map(value) }
     return putDataSource.putAll(query, mapped)
-        .map { toFromMapper.map(it) }
+        .map { dataSourceEntityToRepositoryEntityMapper.map(it) }
   }
 
   override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
