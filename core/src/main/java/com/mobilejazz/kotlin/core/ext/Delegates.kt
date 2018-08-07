@@ -8,3 +8,4 @@ class WeakRef<T>(element: T) {
   private val weak = WeakReference(element)
   operator fun getValue(thisRef: Any, property: KProperty<*>): T? = weak.get()
 }
+
