@@ -4,10 +4,13 @@ import javax.inject.Scope
 import kotlin.annotation.AnnotationRetention.RUNTIME
 
 @Scope
-@Retention(RUNTIME) annotation class ActivityScope
+@Retention(RUNTIME)
+annotation class ActivityScope
 
 @Scope
-@Retention(RUNTIME) annotation class FragmentScope
+@Retention(RUNTIME)
+annotation class FragmentScope
 
 @Scope
-@Retention(RUNTIME) annotation class FragmentChildScope
+@Retention(RUNTIME)
+annotation class FragmentChildScope
