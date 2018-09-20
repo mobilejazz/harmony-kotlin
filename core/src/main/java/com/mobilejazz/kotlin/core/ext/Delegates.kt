@@ -33,6 +33,10 @@ class BundleParam<out Param>(val name: String, private val default: Param? = nul
       is Int -> getInt(name, default)
       is Boolean -> getBoolean(name, default)
       is Float -> getFloat(name, default)
+      is Byte -> getByte(name, default)
+      is ByteArray -> getByteArray(name)
+      is Char -> getChar(name, default)
+      is CharArray -> getCharArray(name)
       else -> getSerializable(name)
     } as Param
 
@@ -73,7 +77,7 @@ class PrefParam<Param>(private val context: Context,
                        private val notifyOnChange: ((Param) -> Unit)? = null) : ReadWriteProperty<Any, Param> {
 
   private val sharedPreferences: SharedPreferences by lazy {
-    preferenceRef?.let { context.getSharedPreferences(preferenceRef, prefMode)} ?: PreferenceManager.getDefaultSharedPreferences(context)
+    preferenceRef?.let { context.getSharedPreferences(preferenceRef, prefMode) } ?: PreferenceManager.getDefaultSharedPreferences(context)
   }
 
   override fun getValue(thisRef: Any, property: KProperty<*>): Param {
