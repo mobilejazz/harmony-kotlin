@@ -3,6 +3,7 @@ package com.mobilejazz.kotlin.core.ext
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
+import android.os.Build
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.IdRes
@@ -20,7 +21,10 @@ import android.view.inputmethod.InputMethodManager
 // Context
 // -------
 
-fun Context.getCompatColor(@ColorRes id: Int) = android.support.v4.content.ContextCompat.getColor(this, id)
+fun Context.getCompatColor(@ColorRes id: Int): Int {
+  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) getColor(id)
+  else resources.getColor(id)
+}
 
 fun Context.hideKeyboard(view: View) {
   val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
