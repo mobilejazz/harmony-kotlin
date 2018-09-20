@@ -67,10 +67,14 @@ class Argument<Param>(val name: String, private val default: Param) : ReadOnlyPr
 
 class PrefParam<Param>(private val context: Context,
                        private val name: String? = null,
+                       private val preferenceRef: String? = null,
+                       private val prefMode: Int = Context.MODE_PRIVATE,
                        private val default: Param,
                        private val notifyOnChange: ((Param) -> Unit)? = null) : ReadWriteProperty<Any, Param> {
 
-  private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+  private val sharedPreferences: SharedPreferences by lazy {
+    preferenceRef?.let { context.getSharedPreferences(preferenceRef, prefMode)} ?: PreferenceManager.getDefaultSharedPreferences(context)
+  }
 
   override fun getValue(thisRef: Any, property: KProperty<*>): Param {
     return findPreference(name ?: property.name, default)
