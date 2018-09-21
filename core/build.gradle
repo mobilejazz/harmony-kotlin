@@ -66,6 +66,9 @@ dependencies {
   kapt "com.google.dagger:dagger-compiler:$rootProject.ext.dagger_version"
   kapt "com.google.dagger:dagger-android-processor:$rootProject.ext.dagger_version"
 
+  // Gson
+  implementation "com.google.code.gson:gson:$rootProject.ext.gson_version"
+
   //arch components
   api "android.arch.lifecycle:runtime:1.1.1"
   api "android.arch.lifecycle:extensions:1.1.1"
