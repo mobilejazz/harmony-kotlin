@@ -4,11 +4,17 @@ package com.mobilejazz.kotlin.core.repository.query
 
 open class Query
 
-object EmptyQuery : Query()
+object VoidQuery : Query()
 
-open class ByIdentifierQuery<out T>(val identifier: T) : Query()
+open class ByIdentifierQuery<out T>(val identifier: T) : StringKeyQuery(identifier.toString())
 
-open class ByIdentifiersQuery<out T>(val identifiers: List<T>) : Query()
+open class ByIdentifierIntegerQuery(id: Int): ByIdentifierQuery<Int>(id)
+
+open class ByIdentifierStringQuery(id: String): ByIdentifierQuery<String>(id)
+
+open class ByIdentifiersQuery<out T>(val identifiers: List<T>) : StringKeyQuery(identifiers.toString())
+
+open class ByIdentifiersIntegerQuery(ids: List<Int>): ByIdentifiersQuery<Int>(ids)
 
 open class PaginationQuery : Query()
 

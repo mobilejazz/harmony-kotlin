@@ -16,6 +16,8 @@ object AppExecutor : Executor by MoreExecutors.listeningDecorator(Executors.newS
 
 object DirectExecutor : Executor by MoreExecutors.listeningDecorator(MoreExecutors.newDirectExecutorService())
 
+object MultiThreadExecutor: Executor by MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(5))
+
 object AppUiExecutor : Executor {
 
     private val handler: Handler = Handler(Looper.getMainLooper())
