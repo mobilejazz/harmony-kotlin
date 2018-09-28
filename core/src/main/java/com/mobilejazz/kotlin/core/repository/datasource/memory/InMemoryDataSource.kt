@@ -35,7 +35,6 @@ class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSou
     }
   }
 
-
   @Suppress("USELESS_CAST")
   override fun put(query: Query, value: T?): Future<T> = Future {
     when (query) {

@@ -1,6 +1,7 @@
 package com.mobilejazz.kotlin.core.repository
 
 import com.mobilejazz.kotlin.core.repository.mapper.Mapper
+import com.mobilejazz.kotlin.core.repository.mapper.VoidMapper
 import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
@@ -19,11 +20,11 @@ import javax.inject.Inject
  * @param domainModelToRepositoryEntityMapper Mapper to map domain objects to data objects
  */
 class RepositoryMapper<DataEntity, DomainModel> @Inject constructor(
-    private val getRepository: GetRepository<DataEntity>,
-    private val putRepository: PutRepository<DataEntity>,
-    private val deleteRepository: DeleteRepository,
-    private val repositoryEntityToDomainModelMapper: Mapper<DataEntity, DomainModel>,
-    private val domainModelToRepositoryEntityMapper: Mapper<DomainModel, DataEntity>
+    private val getRepository: GetRepository<DataEntity> = VoidGetRepository(),
+    private val putRepository: PutRepository<DataEntity> = VoidPutRepository(),
+    private val deleteRepository: DeleteRepository = VoidDeleteRepository(),
+    private val repositoryEntityToDomainModelMapper: Mapper<DataEntity, DomainModel> = VoidMapper(),
+    private val domainModelToRepositoryEntityMapper: Mapper<DomainModel, DataEntity> = VoidMapper()
 ) : GetRepository<DomainModel>, PutRepository<DomainModel>, DeleteRepository {
 
   override fun get(query: Query, operation: Operation): Future<DomainModel> = getRepository.get(query, operation).map { repositoryEntityToDomainModelMapper.map(it) }

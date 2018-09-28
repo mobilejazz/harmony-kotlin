@@ -9,10 +9,11 @@ import com.mobilejazz.kotlin.core.threading.extensions.flatMap
 import com.mobilejazz.kotlin.core.threading.extensions.toFuture
 import javax.inject.Inject
 
-class DataSourceVastraValidator<T : ValidationStrategyDataSource> @Inject constructor(private val getDataSource: GetDataSource<T>,
-                                                                                      private val putDataSource: PutDataSource<T>,
-                                                                                      private val deleteDataSource: DeleteDataSource,
-                                                                                      private val validator: ValidationService) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+class DataSourceVastraValidator<T : ValidationStrategyDataSource> @Inject constructor(
+    private val getDataSource: GetDataSource<T> = VoidGetDataSource(),
+    private val putDataSource: PutDataSource<T> = VoidPutDataSource(),
+    private val deleteDataSource: DeleteDataSource = VoidDeleteDataSource(),
+    private val validator: ValidationService) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
   override fun get(query: Query): Future<T> = getDataSource.get(query).flatMap {
     return@flatMap if (!validator.isValid(it)) throw ObjectNotValidException() else it.toFuture()

@@ -1,15 +1,9 @@
 package com.mobilejazz.kotlin.core.repository
 
-import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.*
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.error.ObjectNotValidException
-import com.mobilejazz.kotlin.core.repository.operation.NetworkOperation
-import com.mobilejazz.kotlin.core.repository.operation.NetworkSyncOperation
-import com.mobilejazz.kotlin.core.repository.operation.Operation
-import com.mobilejazz.kotlin.core.repository.operation.StorageOperation
-import com.mobilejazz.kotlin.core.repository.operation.StorageSyncOperation
+import com.mobilejazz.kotlin.core.repository.operation.*
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import com.mobilejazz.kotlin.core.threading.extensions.flatMap
@@ -17,17 +11,17 @@ import com.mobilejazz.kotlin.core.threading.extensions.recoverWith
 import javax.inject.Inject
 
 class NetworkStorageRepository<V> @Inject constructor(
-  private val getStorage: GetDataSource<V>,
-  private val putStorage: PutDataSource<V>,
-  private val deleteStorage: DeleteDataSource,
-  private val getNetwork: GetDataSource<V>,
-  private val putNetwork: PutDataSource<V>,
-  private val deleteNetwork: DeleteDataSource
+    private val getStorage: GetDataSource<V> = VoidGetDataSource<V>(),
+    private val putStorage: PutDataSource<V> = VoidPutDataSource<V>(),
+    private val deleteStorage: DeleteDataSource = VoidDeleteDataSource(),
+    private val getNetwork: GetDataSource<V> = VoidGetDataSource<V>(),
+    private val putNetwork: PutDataSource<V> = VoidPutDataSource<V>(),
+    private val deleteNetwork: DeleteDataSource = VoidDeleteDataSource()
 ) : GetRepository<V>, PutRepository<V>, DeleteRepository {
 
   override fun get(
-    query: Query,
-    operation: Operation
+      query: Query,
+      operation: Operation
   ): Future<V> = when (operation) {
     is StorageOperation -> getStorage.get(query)
     is NetworkOperation -> getNetwork.get(query)
@@ -44,8 +38,8 @@ class NetworkStorageRepository<V> @Inject constructor(
   }
 
   override fun getAll(
-    query: Query,
-    operation: Operation
+      query: Query,
+      operation: Operation
   ): Future<List<V>> = when (operation) {
     is StorageOperation -> getStorage.getAll(query)
     is NetworkOperation -> getNetwork.getAll(query)
@@ -64,9 +58,9 @@ class NetworkStorageRepository<V> @Inject constructor(
   }
 
   override fun put(
-    query: Query,
-    value: V?,
-    operation: Operation
+      query: Query,
+      value: V?,
+      operation: Operation
   ): Future<V> = when (operation) {
     is StorageOperation -> putStorage.put(query, value)
     is NetworkOperation -> putNetwork.put(query, value)
@@ -76,9 +70,9 @@ class NetworkStorageRepository<V> @Inject constructor(
   }
 
   override fun putAll(
-    query: Query,
-    value: List<V>?,
-    operation: Operation
+      query: Query,
+      value: List<V>?,
+      operation: Operation
   ): Future<List<V>> = when (operation) {
     is StorageOperation -> putStorage.putAll(query, value)
     is NetworkOperation -> putNetwork.putAll(query, value)
@@ -88,8 +82,8 @@ class NetworkStorageRepository<V> @Inject constructor(
   }
 
   override fun delete(
-    query: Query,
-    operation: Operation
+      query: Query,
+      operation: Operation
   ): Future<Unit> = when (operation) {
     is StorageOperation -> deleteStorage.delete(query)
     is NetworkOperation -> deleteNetwork.delete(query)
@@ -99,8 +93,8 @@ class NetworkStorageRepository<V> @Inject constructor(
   }
 
   override fun deleteAll(
-    query: Query,
-    operation: Operation
+      query: Query,
+      operation: Operation
   ): Future<Unit> = when (operation) {
     is StorageOperation -> deleteStorage.deleteAll(query)
     is NetworkOperation -> deleteNetwork.deleteAll(query)

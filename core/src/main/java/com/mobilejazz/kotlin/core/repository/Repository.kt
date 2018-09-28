@@ -9,7 +9,7 @@ interface Repository {
 
   fun notSupportedQuery(): Nothing = throw UnsupportedOperationException("Query not supported")
 
-  fun notSupportedOperation(): Nothing = throw IllegalStateException("Operation not defined")
+  fun notSupportedOperation(): Nothing = throw UnsupportedOperationException("Operation not defined")
 }
 
 // Repositories
