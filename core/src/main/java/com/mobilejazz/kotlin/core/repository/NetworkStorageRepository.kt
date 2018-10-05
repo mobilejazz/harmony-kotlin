@@ -11,17 +11,17 @@ import com.mobilejazz.kotlin.core.threading.extensions.recoverWith
 import javax.inject.Inject
 
 class NetworkStorageRepository<V> @Inject constructor(
-    private val getStorage: GetDataSource<V> = VoidGetDataSource<V>(),
-    private val putStorage: PutDataSource<V> = VoidPutDataSource<V>(),
-    private val deleteStorage: DeleteDataSource = VoidDeleteDataSource(),
-    private val getNetwork: GetDataSource<V> = VoidGetDataSource<V>(),
-    private val putNetwork: PutDataSource<V> = VoidPutDataSource<V>(),
-    private val deleteNetwork: DeleteDataSource = VoidDeleteDataSource()
+  private val getStorage: GetDataSource<V>,
+  private val putStorage: PutDataSource<V>,
+  private val deleteStorage: DeleteDataSource,
+  private val getNetwork: GetDataSource<V>,
+  private val putNetwork: PutDataSource<V>,
+  private val deleteNetwork: DeleteDataSource
 ) : GetRepository<V>, PutRepository<V>, DeleteRepository {
 
   override fun get(
-      query: Query,
-      operation: Operation
+    query: Query,
+    operation: Operation
   ): Future<V> = when (operation) {
     is StorageOperation -> getStorage.get(query)
     is NetworkOperation -> getNetwork.get(query)

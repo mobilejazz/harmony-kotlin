@@ -1,15 +1,17 @@
 package com.mobilejazz.kotlin.core.repository
 
-import com.mobilejazz.kotlin.core.repository.datasource.*
+import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
+import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import javax.inject.Inject
 
 class SingleDataSourceRepository<T> @Inject constructor(
-    private val getDataSource: GetDataSource<T> = VoidGetDataSource(),
-    private val putDataSource: PutDataSource<T> = VoidPutDataSource(),
-    private val deleteDataSource: DeleteDataSource = VoidDeleteDataSource()
+    private val getDataSource: GetDataSource<T>,
+    private val putDataSource: PutDataSource<T>,
+    private val deleteDataSource: DeleteDataSource
 ) : GetRepository<T>, PutRepository<T>, DeleteRepository {
 
   override fun get(

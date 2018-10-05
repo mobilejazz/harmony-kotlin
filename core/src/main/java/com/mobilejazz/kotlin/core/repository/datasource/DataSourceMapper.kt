@@ -1,7 +1,6 @@
 package com.mobilejazz.kotlin.core.repository.datasource
 
 import com.mobilejazz.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.kotlin.core.repository.mapper.VoidMapper
 import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
@@ -18,11 +17,11 @@ import javax.inject.Inject
  * @param repositoryEntityToDataSourceEntityMapper Mapper to map repository objects to data source objects
  */
 class DataSourceMapper<DataSourceEntity, RepositoryEntity> @Inject constructor(
-    private val getDataSource: GetDataSource<DataSourceEntity> = VoidGetDataSource(),
-    private val putDataSource: PutDataSource<DataSourceEntity> = VoidPutDataSource(),
-    private val deleteDataSource: DeleteDataSource = VoidDeleteDataSource(),
-    private val dataSourceEntityToRepositoryEntityMapper: Mapper<DataSourceEntity, RepositoryEntity> = VoidMapper(),
-    private val repositoryEntityToDataSourceEntityMapper: Mapper<RepositoryEntity, DataSourceEntity> = VoidMapper()
+    private val getDataSource: GetDataSource<DataSourceEntity>,
+    private val putDataSource: PutDataSource<DataSourceEntity>,
+    private val deleteDataSource: DeleteDataSource,
+    private val dataSourceEntityToRepositoryEntityMapper: Mapper<DataSourceEntity, RepositoryEntity>,
+    private val repositoryEntityToDataSourceEntityMapper: Mapper<RepositoryEntity, DataSourceEntity>
 ) : GetDataSource<RepositoryEntity>, PutDataSource<RepositoryEntity>, DeleteDataSource {
 
   override fun get(query: Query): Future<RepositoryEntity> = getDataSource.get(query).map { dataSourceEntityToRepositoryEntityMapper.map(it) }
