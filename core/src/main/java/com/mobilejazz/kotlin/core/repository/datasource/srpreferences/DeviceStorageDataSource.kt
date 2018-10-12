@@ -31,7 +31,7 @@ class ListModelToStringMapper<in T>(private val gson: Gson) : Mapper<List<T>, St
   override fun map(from: List<T>): String = gson.toJson(from)
 }
 
-class SharedPreferencesDataSource<T> @Inject constructor(
+class DeviceStorageDataSource<T> @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val toStringMapper: Mapper<T, String>,
     private val toModelMapper: Mapper<String, T>,
@@ -76,7 +76,7 @@ class SharedPreferencesDataSource<T> @Inject constructor(
     when (query) {
       is StringKeyQuery -> {
         if (value == null) {
-          throw IllegalArgumentException("${SharedPreferencesDataSource::class.java.simpleName}: value must be not null")
+          throw IllegalArgumentException("${DeviceStorageDataSource::class.java.simpleName}: value must be not null")
         } else {
           sharedPreferences.edit()
               .putString(query.key, toStringMapper.map(value))
@@ -95,7 +95,7 @@ class SharedPreferencesDataSource<T> @Inject constructor(
     when (query) {
       is StringKeyQuery -> {
         if (value == null) {
-          throw IllegalArgumentException("${SharedPreferencesDataSource::class.java.simpleName}: values must be not null")
+          throw IllegalArgumentException("${DeviceStorageDataSource::class.java.simpleName}: values must be not null")
         } else {
           sharedPreferences.edit()
               .putString(query.key, toStringFromListMapper.map(value))
