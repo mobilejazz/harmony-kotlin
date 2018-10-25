@@ -8,8 +8,10 @@ import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.mapper.Mapper
+import com.mobilejazz.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.repository.query.StringKeyQuery
+import com.mobilejazz.kotlin.core.repository.query.asTyped
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import javax.inject.Inject
 
@@ -41,14 +43,17 @@ class DeviceStorageDataSource<T> @Inject constructor(
 
   override fun get(query: Query): Future<T> = Future {
     when (query) {
-      is StringKeyQuery -> {
+      is KeyQuery<*> -> {
+        val keyTyped = query.asTyped<String>()
 
-        if (!sharedPreferences.contains(query.key)) {
-          throw DataNotFoundException()
-        }
+        return@Future keyTyped?.let {
+          if (!sharedPreferences.contains(it.key)) {
+            throw DataNotFoundException()
+          }
 
-        sharedPreferences.getString(query.key, null)
-            .let { toModelMapper.map(it) }
+          sharedPreferences.getString(it.key, null)
+              .let { toModelMapper.map(it) }
+        } ?: notSupportedQuery()
       }
       else -> notSupportedQuery()
     }
@@ -64,7 +69,9 @@ class DeviceStorageDataSource<T> @Inject constructor(
           }
 
           sharedPreferences.getString(query.key, null)
-              .let { toModelFromListString.map(it) }
+              .let {
+                toModelFromListString.map(it)
+              }
         }
         else -> notSupportedQuery()
       }
@@ -88,10 +95,7 @@ class DeviceStorageDataSource<T> @Inject constructor(
     }
   }
 
-  override fun putAll(
-      query: Query,
-      value: List<T>?
-  ): Future<List<T>> = Future {
+  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future {
     when (query) {
       is StringKeyQuery -> {
         if (value == null) {

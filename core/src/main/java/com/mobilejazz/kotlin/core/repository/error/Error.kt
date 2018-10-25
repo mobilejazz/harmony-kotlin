@@ -11,3 +11,5 @@ class DeleteObjectFailException(message: String? = "Fail deleting object", cause
 class PutObjectFailException(message: String? = "Fail updating or inserting object", cause: Throwable? = null) : RepositoryException(message, cause)
 
 class ObjectNotValidException(message: String? = "Object not valid", cause: Throwable? = null) : RepositoryException(message, cause)
+
+class QueryNotSupportedException(message: String? = "Query not supported", cause: Throwable? = null): RepositoryException(message, cause)

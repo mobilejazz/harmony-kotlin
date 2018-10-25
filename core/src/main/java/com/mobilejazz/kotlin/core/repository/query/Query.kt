@@ -6,26 +6,41 @@ open class Query
 
 object VoidQuery : Query()
 
-open class ByIdentifierQuery<out T>(val identifier: T) : StringKeyQuery(identifier.toString())
+// Single object query
+open class ObjectQuery<out T>(val value: T) : Query()
 
-open class ByIdentifierIntegerQuery(id: Int): ByIdentifierQuery<Int>(id)
+// Collection objects query
+open class ObjectsQuery<out T>(val values: Collection<T>) : Query()
 
-open class ByIdentifierStringQuery(id: String): ByIdentifierQuery<String>(id)
+// Generic all object query supporting key value
+open class AllObjectsQuery : KeyQuery<String>("all-objects-key")
 
-open class ByIdentifiersQuery<out T>(val identifiers: List<T>) : StringKeyQuery(identifiers.toString())
+open class IdQuery<out T>(val identifier: T) : KeyQuery<T>(identifier)
 
-open class ByIdentifiersIntegerQuery(ids: List<Int>): ByIdentifiersQuery<Int>(ids)
+open class IntegerIdQuery(val id: Int) : IdQuery<Int>(id)
+
+open class IdsQuery<out T>(val identifiers: Collection<T>) : KeyQuery<String>(identifiers.toString())
+
+open class IntegerIdsQuery(val ids: Collection<Int>) : IdsQuery<Int>(ids)
 
 open class PaginationQuery : Query()
 
 open class PaginationOffsetLimitQuery(val offset: Int, val limit: Int) : PaginationQuery()
 
-open class UpdateModelQuery : Query()
+open class UpdateObjectQuery : Query()
 
-open class InsertModelQuery : Query()
+open class InsertObjectQuery : Query()
 
 // Key value queries
-
 open class KeyQuery<out T>(val key: T) : Query()
 
 open class StringKeyQuery(key: String) : KeyQuery<String>(key)
+
+// Extensions
+inline fun <reified T> IdQuery<*>.asTyped(): IdQuery<T>? = (this.identifier as? T)?.let { IdQuery(it) }
+
+inline fun <reified T> KeyQuery<*>.asTyped(): KeyQuery<T>? = (this.key as? T)?.let { KeyQuery(it) }
+
+fun <T> KeyQuery<*>.isTyped(type: Class<T>): Boolean {
+  return type.isAssignableFrom(this.key!!::class.java.componentType)
+}

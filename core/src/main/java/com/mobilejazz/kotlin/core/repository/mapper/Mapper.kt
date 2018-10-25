@@ -7,7 +7,7 @@ import javax.inject.Inject
  */
 interface Mapper<in From, out To> {
 
-    fun map(from: From): To
+  fun map(from: From): To
 }
 
 /**
@@ -15,12 +15,12 @@ interface Mapper<in From, out To> {
  */
 class BlankMapper<T> : Mapper<T, T> {
 
-    override fun map(from: T): T = from
+  override fun map(from: T): T = from
 }
 
 class ClosureMapper<in From, out To> @Inject constructor(val closure: (from: From) -> To) : Mapper<From, To> {
 
-    override fun map(from: From): To = closure(from)
+  override fun map(from: From): To = closure(from)
 }
 
 /**
@@ -29,17 +29,11 @@ class ClosureMapper<in From, out To> @Inject constructor(val closure: (from: Fro
 fun <From, To> Mapper<From, To>.map(values: List<From>): List<To> = values.map { map(it) }
 
 /**
- * Mapper defined by a closure
- */
-inline fun <From, To> Mapper<From, To>.map(from: From, closure: (from: From) -> To): To = closure(from)
-
-
-/**
  * Mapping method for Maps
  *
  * @param value A Map<K, From> of ket-value, where value is typed as "From"
  * @return A Map<K, To> of mapped values
  */
 fun <From, To, K> Mapper<From, To>.map(value: Map<K, From>): Map<K, To> {
-    return value.mapValues { map(it.value) }
+  return value.mapValues { map(it.value) }
 }

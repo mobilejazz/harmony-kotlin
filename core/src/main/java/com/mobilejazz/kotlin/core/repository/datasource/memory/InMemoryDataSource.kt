@@ -6,70 +6,109 @@ import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
+import com.mobilejazz.kotlin.core.repository.query.asTyped
 import com.mobilejazz.kotlin.core.threading.extensions.Future
-import com.mobilejazz.kotlin.core.threading.extensions.emptyFuture
 import javax.inject.Inject
 
-class InMemoryDataSource<T> @Inject constructor() : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
 
-  private val objects: MutableMap<String, T> = mutableMapOf()
-  private val arrays: MutableMap<String, List<T>> = mutableMapOf()
+  private val objects: MutableMap<String, V> = mutableMapOf()
+  private val arrays: MutableMap<String, List<V>> = mutableMapOf()
 
-  override fun get(query: Query): Future<T> = Future {
+  override fun get(query: Query): Future<V> = Future {
     when (query) {
       is KeyQuery<*> -> {
-        objects[query.key].run { this ?: throw DataNotFoundException() }
+        val keyTyped = query.asTyped<String>()
+
+        return@Future keyTyped?.let {
+          objects[it.key].run {
+            this ?: throw DataNotFoundException()
+          }
+        } ?: notSupportedQuery()
       }
       else -> notSupportedQuery()
     }
   }
 
-  override fun getAll(query: Query): Future<List<T>> {
+  override fun getAll(query: Query): Future<List<V>> {
     return Future {
       when (query) {
         is KeyQuery<*> -> {
-          arrays[query.key].run { this ?: throw DataNotFoundException() }
+          val keyTyped = query.asTyped<String>()
+
+          return@Future keyTyped?.let {
+            arrays[it.key].run { this ?: throw DataNotFoundException() }
+          } ?: notSupportedQuery()
         }
         else -> notSupportedQuery()
       }
     }
   }
 
-  @Suppress("USELESS_CAST")
-  override fun put(query: Query, value: T?): Future<T> = Future {
+  override fun put(query: Query, value: V?): Future<V> = Future {
     when (query) {
       is KeyQuery<*> -> {
-        if (value == null) {
-          throw IllegalArgumentException("InMemoryDataSource: value must be not null")
-        } else {
-          objects[query.key as String] = value
-          return@Future value as T
-        }
+        value?.let {
+          val keyTyped = query.asTyped<String>()
+
+          keyTyped?.let {
+            objects.put(it.key, value).run { value }
+          } ?: notSupportedQuery()
+        } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
       else -> notSupportedQuery()
     }
   }
 
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future {
+  override fun putAll(query: Query, value: List<V>?): Future<List<V>> = Future {
     when (query) {
       is KeyQuery<*> -> {
-        if (value == null) {
-          throw IllegalArgumentException("InMemoryDataSource: values must be not null")
-        } else {
-          return@Future arrays.put(query.key as String, value).run { value as List<T> }
-        }
+        value?.let {
+          val keyTyped = query.asTyped<String>()
+
+          keyTyped?.let {
+            arrays.put(it.key, value).run { value }
+
+          } ?: notSupportedQuery()
+
+        } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
+
       }
       else -> notSupportedQuery()
     }
   }
 
-  override fun delete(query: Query): Future<Unit> = when (query) {
-    is KeyQuery<*> -> objects.remove(query.key).run { emptyFuture() }
-    else -> notSupportedQuery()
+  override fun delete(query: Query): Future<Unit> {
+    return Future {
+      when (query) {
+        is KeyQuery<*> -> {
+          val keyTyped = query.asTyped<String>()
+
+          keyTyped?.let {
+            objects.remove(it.key)
+          }
+
+          return@Future
+        }
+        else -> notSupportedQuery()
+      }
+    }
   }
 
-  override fun deleteAll(query: Query): Future<Unit> = when (query) {
-    is KeyQuery<*> -> arrays.remove(query.key).run { emptyFuture() }
-    else -> notSupportedQuery()
+  override fun deleteAll(query: Query): Future<Unit> {
+    return Future {
+      when (query) {
+        is KeyQuery<*> -> {
+          val keyTyped = query.asTyped<String>()
+
+          keyTyped?.let {
+            arrays.remove(it.key)
+          }
+
+          return@Future
+        }
+        else -> notSupportedQuery()
+      }
+    }
   }
 }

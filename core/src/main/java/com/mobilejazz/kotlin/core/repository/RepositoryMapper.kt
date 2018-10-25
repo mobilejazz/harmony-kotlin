@@ -1,7 +1,6 @@
 package com.mobilejazz.kotlin.core.repository
 
 import com.mobilejazz.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.kotlin.core.repository.mapper.VoidMapper
 import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
@@ -16,31 +15,31 @@ import javax.inject.Inject
  * @param getRepository Repository with get operations
  * @param putRepository Repository with put operations
  * @param deleteRepository Repository with delete operations
- * @param repositoryEntityToDomainModelMapper Mapper to map data objects to domain objects
- * @param domainModelToRepositoryEntityMapper Mapper to map domain objects to data objects
+ * @param toOutMapper Mapper to map data objects to domain objects
+ * @param toInMapper Mapper to map domain objects to data objects
  */
-class RepositoryMapper<DataEntity, DomainModel> @Inject constructor(
-    private val getRepository: GetRepository<DataEntity>,
-    private val putRepository: PutRepository<DataEntity>,
+class RepositoryMapper<In, Out> @Inject constructor(
+    private val getRepository: GetRepository<In>,
+    private val putRepository: PutRepository<In>,
     private val deleteRepository: DeleteRepository,
-    private val repositoryEntityToDomainModelMapper: Mapper<DataEntity, DomainModel>,
-    private val domainModelToRepositoryEntityMapper: Mapper<DomainModel, DataEntity>
-) : GetRepository<DomainModel>, PutRepository<DomainModel>, DeleteRepository {
+    private val toOutMapper: Mapper<In, Out>,
+    private val toInMapper: Mapper<Out, In>
+) : GetRepository<Out>, PutRepository<Out>, DeleteRepository {
 
-  override fun get(query: Query, operation: Operation): Future<DomainModel> = getRepository.get(query, operation).map { repositoryEntityToDomainModelMapper.map(it) }
+  override fun get(query: Query, operation: Operation): Future<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
 
-  override fun getAll(query: Query, operation: Operation): Future<List<DomainModel>> = getRepository.getAll(query, operation).map { repositoryEntityToDomainModelMapper.map(it) }
+  override fun getAll(query: Query, operation: Operation): Future<List<Out>> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 
-  override fun put(query: Query, value: DomainModel?, operation: Operation): Future<DomainModel> {
-    val mapped = value?.let { domainModelToRepositoryEntityMapper.map(it) }
+  override fun put(query: Query, value: Out?, operation: Operation): Future<Out> {
+    val mapped = value?.let { toInMapper.map(it) }
     return putRepository.put(query, mapped, operation).map {
-      repositoryEntityToDomainModelMapper.map(it)
+      toOutMapper.map(it)
     }
   }
 
-  override fun putAll(query: Query, value: List<DomainModel>?, operation: Operation): Future<List<DomainModel>> {
-    val mapped = value?.let { domainModelToRepositoryEntityMapper.map(value) }
-    return putRepository.putAll(query, mapped, operation).map { repositoryEntityToDomainModelMapper.map(it) }
+  override fun putAll(query: Query, value: List<Out>?, operation: Operation): Future<List<Out>> {
+    val mapped = value?.let { toInMapper.map(value) }
+    return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }
   }
 
   override fun delete(query: Query, operation: Operation): Future<Unit> = deleteRepository.delete(query, operation)
