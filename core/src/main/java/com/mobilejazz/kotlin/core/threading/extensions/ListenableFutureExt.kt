@@ -3,15 +3,10 @@
 package com.mobilejazz.kotlin.core.threading.extensions
 
 import com.google.common.base.Function
-import com.google.common.util.concurrent.AsyncFunction
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.ListeningExecutorService
-import com.google.common.util.concurrent.MoreExecutors
+import com.google.common.util.concurrent.*
 import com.mobilejazz.kotlin.core.threading.AppUiExecutor
 import com.mobilejazz.kotlin.core.threading.DirectExecutor
-import java.util.NoSuchElementException
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -97,6 +92,19 @@ inline fun <A> Future<A>.fallbackTo(
   crossinline f: () -> Future<A>
 ): Future<A> =
   recoverWith(executor, { f() })
+
+/**
+ * This function blocks a Exception thrown by a Future.
+ *
+ * This function should be used when neither result nor the error is needed.
+ * An example of this could be a data storage operation that is not required to success and the error is not important for the caller.
+ *
+ * @return
+ *
+ */
+inline fun <reified E : Throwable> Future<*>.blockError(): Future<Unit> {
+  return Futures.catching(this, E::class.java, Function { null }, DirectExecutor).map { kotlin.Unit }
+}
 
 // Callbacks
 inline fun <A> Future<A>.onFailure(
