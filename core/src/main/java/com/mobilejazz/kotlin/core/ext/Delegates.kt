@@ -116,3 +116,4 @@ class PrefParam<Param>(private val context: Context,
 
 }
 
+class ParcelablePrefParam()
