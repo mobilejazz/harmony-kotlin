@@ -12,10 +12,12 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.mobilejazz.kotlin.core.R
 
 // -------
 // Context
@@ -221,3 +223,14 @@ val Int.dp: Int
 
 val Int.px: Int
   get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+
+// ----------------
+// Dialogs
+// ----------------
+fun Fragment.showInfo(message: String) {
+  AlertDialog.Builder(this.activity!!)
+      .setMessage(message)
+      .create()
+      .show()
+}
