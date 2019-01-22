@@ -4,13 +4,13 @@ import java.util.*
 
 object Dates {
 
-  val now = Date()
+  fun now() = Date()
 
-  val today = Date()
+  fun today() = Date()
 
-  val tomorrow = setDate(value = 1)
+  fun tomorrow() = setDate(value = 1)
 
-  val yesterday = setDate(value = -1)
+  fun yesterday() = setDate(value = -1)
 
   private fun setDate(value: Int): Date {
     calendar.time = Date()
