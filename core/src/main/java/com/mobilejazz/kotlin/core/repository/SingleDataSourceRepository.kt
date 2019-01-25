@@ -41,10 +41,9 @@ class SinglePutDataSourceRepository<T> @Inject constructor(private val putDataSo
 }
 
 
-class SingleDeleteDataSourceRepository<T> @Inject constructor(private val deleteDataSource: DeleteDataSource) : DeleteRepository {
+class SingleDeleteDataSourceRepository @Inject constructor(private val deleteDataSource: DeleteDataSource) : DeleteRepository {
 
   override fun delete(query: Query, operation: Operation): Future<Unit> = deleteDataSource.delete(query)
 
   override fun deleteAll(query: Query, operation: Operation): Future<Unit> = deleteDataSource.deleteAll(query)
 }
-
