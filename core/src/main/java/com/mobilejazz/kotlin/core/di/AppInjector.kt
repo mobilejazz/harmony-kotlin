@@ -5,7 +5,6 @@ import android.app.Application
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
 import com.mobilejazz.kotlin.core.viewmodel.VMBaseActivity
 
 
@@ -35,7 +34,7 @@ fun Application.initInjection() {
         dagger.android.AndroidInjection.inject(activity)
         activity.supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
-              override fun onFragmentCreated(fm: FragmentManager?, f: Fragment, savedInstanceState: Bundle?) {
+              override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
                 if (f is Injectable) {
                   dagger.android.support.AndroidSupportInjection.inject(f)
                 }
@@ -43,6 +42,5 @@ fun Application.initInjection() {
             }, true)
       }
     }
-
   })
 }
