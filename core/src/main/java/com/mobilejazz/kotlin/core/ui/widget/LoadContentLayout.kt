@@ -1,7 +1,6 @@
 package com.mobilejazz.kotlin.core.ui.widget
 
 import android.content.Context
-import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.mobilejazz.kotlin.core.R
 
 class LoadContentLayout : CoordinatorLayout {

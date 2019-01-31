@@ -1,9 +1,9 @@
 package com.mobilejazz.kotlin.core.ext
 
-import android.support.annotation.Px
-import android.support.annotation.RequiresApi
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Px
+import androidx.annotation.RequiresApi
 
 /*
  * Copyright (C) 2017 The Android Open Source Project

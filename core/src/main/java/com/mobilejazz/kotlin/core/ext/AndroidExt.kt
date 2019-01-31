@@ -4,20 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
-import android.support.annotation.ColorRes
-import android.support.annotation.DrawableRes
-import android.support.annotation.IdRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.mobilejazz.kotlin.core.R
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
 // -------
 // Context
@@ -42,8 +41,8 @@ fun AppCompatActivity.getCompatDrawable(@DrawableRes id: Int) = ContextCompat.ge
 // --------
 
 inline fun AppCompatActivity.setupActionBar(
-  toolbar: Toolbar,
-  action: ActionBar.() -> Unit
+    toolbar: Toolbar,
+    action: ActionBar.() -> Unit
 ) {
   setSupportActionBar(toolbar)
   supportActionBar?.run(action)
@@ -71,9 +70,9 @@ fun AppCompatActivity.addFragmentNow(
 }
 
 fun AppCompatActivity.addFragmentAllowingStateLoss(
-  fragment: Fragment,
-  frameId: Int,
-  tag: String?
+    fragment: Fragment,
+    frameId: Int,
+    tag: String?
 ) {
   supportFragmentManager.inTransactionAllowingStateLoss { add(frameId, fragment, tag) }
 }
@@ -103,11 +102,11 @@ fun AppCompatActivity.hideKeyboard() = hideKeyboard(if (currentFocus == null) Vi
 // ---------
 
 fun Fragment.addFragment(
-  fragment: Fragment,
-  frameId: Int,
-  tag: String? = null,
-  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-  after: (FragmentTransaction.() -> FragmentTransaction)? = null
+    fragment: Fragment,
+    frameId: Int,
+    tag: String? = null,
+    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+    after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransaction {
     before?.let { before(this) }

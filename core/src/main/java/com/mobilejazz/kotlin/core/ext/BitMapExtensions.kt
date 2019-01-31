@@ -3,8 +3,8 @@ package com.mobilejazz.kotlin.core.ext
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.ExifInterface
-import android.support.annotation.CheckResult
 import android.util.Base64
+import androidx.annotation.CheckResult
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 

@@ -51,8 +51,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlin_version"
 
   // Android Support
-  implementation "com.android.support:appcompat-v7:$rootProject.ext.support_libraries_version"
-  implementation "com.android.support:design:$rootProject.ext.support_libraries_version"
+  implementation "androidx.appcompat:appcompat:1.0.2"
 
   // Architecture
   api "com.google.guava:guava:$rootProject.ext.guava_version"
@@ -70,9 +69,9 @@ dependencies {
   implementation "com.google.code.gson:gson:$rootProject.ext.gson_version"
 
   //arch components
-  api "android.arch.lifecycle:runtime:1.1.1"
-  api "android.arch.lifecycle:extensions:1.1.1"
-  kapt "android.arch.lifecycle:compiler:1.1.1"
+  api "androidx.lifecycle:lifecycle-runtime:2.0.0"
+  api "androidx.lifecycle:lifecycle-extensions:2.0.0"
+  kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
 
   // Testing
 
