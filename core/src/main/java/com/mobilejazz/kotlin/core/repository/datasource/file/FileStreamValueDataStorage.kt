@@ -10,8 +10,8 @@ import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-
 class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+
   override fun get(query: Query): Future<T> {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
@@ -20,14 +20,16 @@ class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataS
     return Future {
       val values = mutableListOf<T>()
       val fin = file.inputStream()
-      val ois = ObjectInputStream(fin)
+      var ois: ObjectInputStream? = null
       try {
+        ois = ObjectInputStream(fin)
+
         while (true) {
           val value = ois.readObject() as T
           values.add(value)
         }
       } catch (e: EOFException) {
-        ois.close()
+        ois?.close()
         fin.close()
       }
 
@@ -46,9 +48,14 @@ class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataS
   override fun putAll(query: Query, value: List<T>?): Future<List<T>> {
     return Future {
       value?.let {
+        val allCurrentValues = getAll(query).get()
         val fos = file.outputStream()
         val oos = ObjectOutputStream(fos)
-        for (obj in value) {
+
+        val allValues = value.toMutableList()
+        allValues.addAll(allCurrentValues)
+
+        for (obj in allValues) {
           oos.writeObject(obj)
         }
         oos.flush()

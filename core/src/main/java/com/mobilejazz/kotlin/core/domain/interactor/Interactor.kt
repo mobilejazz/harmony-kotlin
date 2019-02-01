@@ -9,6 +9,7 @@ import com.mobilejazz.kotlin.core.repository.query.IdQuery
 import com.mobilejazz.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.repository.query.VoidQuery
+import com.mobilejazz.kotlin.core.threading.AppExecutor
 import com.mobilejazz.kotlin.core.threading.Executor
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import java.util.concurrent.Callable
@@ -74,3 +75,16 @@ fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyLis
 fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOperation) = this.invoke(IdQuery(id), operation)
 
 fun <K> DeleteAllInteractor.execute(ids: List<K>, operation: Operation = DefaultOperation) = this.invoke(IdsQuery(ids), operation)
+
+
+fun <V> GetRepository<V>.toGetInteractor(executor: Executor = AppExecutor) = GetInteractor(executor, this)
+
+fun <V> GetRepository<V>.toGetAllInteractor(executor: Executor = AppExecutor) = GetAllInteractor(executor, this)
+
+fun <V> PutRepository<V>.toPutInteractor(executor: Executor = AppExecutor) = PutInteractor(executor, this)
+
+fun <V> PutRepository<V>.toPutAllInteractor(executor: Executor = AppExecutor) = PutAllInteractor(executor, this)
+
+fun DeleteRepository.toDeleteInteractor(executor: Executor = AppExecutor) = DeleteInteractor(executor, this)
+
+fun DeleteRepository.toDeleteAllInteractor(executor: Executor = AppExecutor) = DeleteAllInteractor(executor, this)
