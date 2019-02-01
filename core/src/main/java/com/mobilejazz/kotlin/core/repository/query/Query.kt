@@ -27,10 +27,6 @@ open class PaginationQuery : Query()
 
 open class PaginationOffsetLimitQuery(val offset: Int, val limit: Int) : PaginationQuery()
 
-open class UpdateObjectQuery : Query()
-
-open class InsertObjectQuery : Query()
-
 // Key value queries
 open class KeyQuery<out T>(val key: T) : Query()
 
