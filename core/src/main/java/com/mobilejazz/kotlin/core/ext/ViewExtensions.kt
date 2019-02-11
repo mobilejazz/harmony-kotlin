@@ -5,6 +5,10 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
+import android.text.Spannable
+import android.text.TextPaint
+import android.text.style.URLSpan
+import android.text.style.UnderlineSpan
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BounceInterpolator
@@ -38,13 +42,12 @@ fun View.bounce() {
   }.start()
 }
 
-
 //this make a bounce when you click the view
 fun View.onClick(click: (View) -> Unit) {
   this.setOnClickListener(BounceOnClickListenerDecorator(click))
 }
 
-class BounceOnClickListenerDecorator(private val click: (View)-> Unit): View.OnClickListener {
+class BounceOnClickListenerDecorator(private val click: (View) -> Unit) : View.OnClickListener {
 
   override fun onClick(v: View?) {
     v?.let {
@@ -144,7 +147,6 @@ fun alphaWithBounceAnimator(): ReadWriteProperty<ImageView, Int> =
 //using the alphaWithBounceAnimator we define a imageAlfa extender property for each imageview.
 //that makes the animation.
 var ImageView.imageAlfa: Int by alphaWithBounceAnimator()
-
 
 
 //the same as alphaWithBounceAnimator but for views in general
