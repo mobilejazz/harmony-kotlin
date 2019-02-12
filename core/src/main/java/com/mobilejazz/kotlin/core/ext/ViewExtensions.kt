@@ -189,7 +189,7 @@ fun alphaWithBounceAnimatorForView(): ReadWriteProperty<View, Float> =
         if (thisRef.alpha != value) {
           AnimatorSet().apply {
             playTogether(animX, animY, alpha)
-            duration = 150L
+            duration = 350L
             interpolator = AccelerateDecelerateInterpolator()
           }.start()
         }
