@@ -7,6 +7,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.mobilejazz.kotlin.core.di.Injectable
+import com.mobilejazz.kotlin.core.ext.dp
+import com.mobilejazz.kotlin.core.ext.sp
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -25,5 +27,11 @@ abstract class VMBaseActivity : AppCompatActivity(), HasSupportFragmentInjector,
   inline fun <reified VM : ViewModel> getViewModel(): VM = ViewModelProviders.of(this, viewModelFactory).get(VM::class.java)
 
   override fun invoke(): Lifecycle = lifecycle
+
+  val Int.sp
+    get() = sp(this@VMBaseActivity).toInt()
+
+  val Int.dp
+    get() = dp(this@VMBaseActivity).toInt()
 
 }
