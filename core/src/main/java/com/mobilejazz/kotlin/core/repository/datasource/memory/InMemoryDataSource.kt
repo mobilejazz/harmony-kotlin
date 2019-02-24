@@ -6,7 +6,6 @@ import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
-import com.mobilejazz.kotlin.core.repository.query.asTyped
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import javax.inject.Inject
 
@@ -17,14 +16,10 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
 
   override fun get(query: Query): Future<V> = Future {
     when (query) {
-      is KeyQuery<*> -> {
-        val keyTyped = query.asTyped<String>()
-
-        return@Future keyTyped?.let {
-          objects[it.key].run {
-            this ?: throw DataNotFoundException()
-          }
-        } ?: notSupportedQuery()
+      is KeyQuery -> {
+        return@Future objects[query.key].run {
+          this ?: throw DataNotFoundException()
+        }
       }
       else -> notSupportedQuery()
     }
@@ -33,12 +28,8 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
   override fun getAll(query: Query): Future<List<V>> {
     return Future {
       when (query) {
-        is KeyQuery<*> -> {
-          val keyTyped = query.asTyped<String>()
-
-          return@Future keyTyped?.let {
-            arrays[it.key].run { this ?: throw DataNotFoundException() }
-          } ?: notSupportedQuery()
+        is KeyQuery -> {
+          return@Future arrays[query.key].run { this ?: throw DataNotFoundException() }
         }
         else -> notSupportedQuery()
       }
@@ -47,13 +38,9 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
 
   override fun put(query: Query, value: V?): Future<V> = Future {
     when (query) {
-      is KeyQuery<*> -> {
+      is KeyQuery -> {
         value?.let {
-          val keyTyped = query.asTyped<String>()
-
-          keyTyped?.let {
-            objects.put(it.key, value).run { value }
-          } ?: notSupportedQuery()
+          objects.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
       else -> notSupportedQuery()
@@ -62,15 +49,9 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
 
   override fun putAll(query: Query, value: List<V>?): Future<List<V>> = Future {
     when (query) {
-      is KeyQuery<*> -> {
+      is KeyQuery -> {
         value?.let {
-          val keyTyped = query.asTyped<String>()
-
-          keyTyped?.let {
-            arrays.put(it.key, value).run { value }
-
-          } ?: notSupportedQuery()
-
+          arrays.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
 
       }
@@ -81,13 +62,8 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
   override fun delete(query: Query): Future<Unit> {
     return Future {
       when (query) {
-        is KeyQuery<*> -> {
-          val keyTyped = query.asTyped<String>()
-
-          keyTyped?.let {
-            objects.remove(it.key)
-          }
-
+        is KeyQuery -> {
+          objects.remove(query.key)
           return@Future
         }
         else -> notSupportedQuery()
@@ -98,13 +74,8 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
   override fun deleteAll(query: Query): Future<Unit> {
     return Future {
       when (query) {
-        is KeyQuery<*> -> {
-          val keyTyped = query.asTyped<String>()
-
-          keyTyped?.let {
-            arrays.remove(it.key)
-          }
-
+        is KeyQuery -> {
+          arrays.remove(query.key)
           return@Future
         }
         else -> notSupportedQuery()
