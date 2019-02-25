@@ -2,7 +2,6 @@ package com.mobilejazz.kotlin.core.repository.datasource
 
 import com.mobilejazz.kotlin.core.repository.datasource.memory.InMemoryDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.kotlin.core.repository.error.QueryNotSupportedException
 import com.mobilejazz.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import org.assertj.core.api.Assertions.assertThat
@@ -12,7 +11,6 @@ class InMemoryDataSourceTest {
 
   companion object {
     const val FAKE_STRING_KEY = "fake-key"
-    const val FAKE_INTEGER_KEY = 1
     val FAKE_INTEGERS_KEY = listOf(1, 2, 3)
     const val FAKE_INTEGER_VALUE = 134
   }
@@ -43,30 +41,6 @@ class InMemoryDataSourceTest {
     assertThat(value.get()).containsAll(FAKE_INTEGERS_KEY)
   }
 
-  @Test(expected = QueryNotSupportedException::class)
-  fun should_fail_storing_value_when_key_type_is_not_supported_calling_func_put() {
-    // Given
-    val inMemoryDataSource = givenAInMemoryDataSource<Int>()
-    val keyQuery = givenAKeyQuery(FAKE_INTEGER_KEY)
-
-    // When
-    val value = inMemoryDataSource.put(keyQuery, FAKE_INTEGER_VALUE)
-
-    value.propagateCauseIfNeeded()
-  }
-
-  @Test(expected = QueryNotSupportedException::class)
-  fun should_fail_storing_values_when_key_type_is_not_supported_calling_func_putAll() {
-    // Given
-    val inMemoryDataSource = givenAInMemoryDataSource<Int>()
-    val keyQuery = givenAKeyQuery(FAKE_INTEGER_KEY)
-
-    // When
-    val value = inMemoryDataSource.putAll(keyQuery, FAKE_INTEGERS_KEY)
-
-    value.propagateCauseIfNeeded()
-  }
-
   @Test
   fun should_get_value_when_get_function_is_called_and_value_stored() {
     // Given
@@ -79,20 +53,6 @@ class InMemoryDataSourceTest {
 
     // then
     assertThat(expectedValue).isEqualTo(FAKE_INTEGER_VALUE)
-  }
-
-  @Test(expected = QueryNotSupportedException::class)
-  fun should_fail_getting_value_when_key_type_is_not_supported() {
-    // Given
-    val inMemoryDataSource = givenAInMemoryDataSource<Int>()
-    val keyQuery = givenAKeyQuery(FAKE_INTEGER_KEY)
-
-    // when
-    inMemoryDataSource.put(keyQuery, FAKE_INTEGER_VALUE)
-    val value = inMemoryDataSource.get(keyQuery)
-
-    // then
-    value.propagateCauseIfNeeded()
   }
 
   @Test(expected = DataNotFoundException::class)
@@ -125,7 +85,7 @@ class InMemoryDataSourceTest {
 
   private fun <T> givenAInMemoryDataSource() = InMemoryDataSource<T>()
 
-  private fun <T> givenAKeyQuery(value: T) = KeyQuery(value)
+  private fun givenAKeyQuery(value: String) = KeyQuery(value)
 }
 
 fun <T> Future<T>.propagateCauseIfNeeded(): T {

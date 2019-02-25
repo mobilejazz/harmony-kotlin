@@ -1,123 +1,72 @@
 package com.mobilejazz.kotlin.core.repository.datasource.srpreferences
 
 import android.content.SharedPreferences
-import com.google.common.reflect.TypeToken
-import com.google.gson.Gson
 import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
-import com.mobilejazz.kotlin.core.repository.query.StringKeyQuery
-import com.mobilejazz.kotlin.core.repository.query.asTyped
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import javax.inject.Inject
 
-class StringToModelMapper<out T>(private val clz: Class<T>, private val gson: Gson) : Mapper<String, T> {
-  override fun map(from: String): T = gson.fromJson(from, clz)
-}
-
-class ModelToStringMapper<in T>(private val gson: Gson) : Mapper<T, String> {
-  override fun map(from: T): String = gson.toJson(from)
-}
-
-class StringToListModelMapper<out T>(private val gson: Gson) : Mapper<String, List<T>> {
-  override fun map(from: String): List<T> {
-    return gson.fromJson(from, object : TypeToken<List<T>>() {}.type)
-  }
-}
-
-class ListModelToStringMapper<in T>(private val gson: Gson) : Mapper<List<T>, String> {
-  override fun map(from: List<T>): String = gson.toJson(from)
-}
-
 class DeviceStorageDataSource<T> @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val toStringMapper: Mapper<T, String>,
-    private val toModelMapper: Mapper<String, T>,
-    private val toStringFromListMapper: Mapper<List<T>, String>,
-    private val toModelFromListString: Mapper<String, List<T>>
+    private val prefix: String = ""
 ) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
   override fun get(query: Query): Future<T> = Future {
     when (query) {
-      is KeyQuery<*> -> {
-        val keyTyped = query.asTyped<String>()
+      is KeyQuery -> {
+        val key = addPrefixTo(query.key)
+        if (!sharedPreferences.contains(key)) {
+          throw DataNotFoundException()
+        }
 
-        return@Future keyTyped?.let {
-          if (!sharedPreferences.contains(it.key)) {
-            throw DataNotFoundException()
-          }
-
-          sharedPreferences.getString(it.key, null)
-              .let { toModelMapper.map(it) }
-        } ?: notSupportedQuery()
+        return@Future sharedPreferences.all[key] as T
       }
       else -> notSupportedQuery()
     }
   }
 
-  override fun getAll(query: Query): Future<List<T>> {
-    return Future {
-      when (query) {
-        is StringKeyQuery -> {
+  override fun getAll(query: Query): Future<List<T>> = Future { throw UnsupportedOperationException() }
 
-          if (!sharedPreferences.contains(query.key)) {
-            throw DataNotFoundException()
-          }
-
-          sharedPreferences.getString(query.key, null)
-              .let {
-                toModelFromListString.map(it)
-              }
-        }
-        else -> notSupportedQuery()
-      }
-    }
-  }
-
-  @Suppress("USELESS_CAST")
   override fun put(query: Query, value: T?): Future<T> = Future {
     when (query) {
-      is StringKeyQuery -> {
-        if (value == null) {
-          throw IllegalArgumentException("${DeviceStorageDataSource::class.java.simpleName}: value must be not null")
-        } else {
-          sharedPreferences.edit()
-              .putString(query.key, toStringMapper.map(value))
-              .apply()
-          return@Future value as T
-        }
+      is KeyQuery -> {
+        return@Future value?.let {
+          val key = addPrefixTo(query.key)
+          val editor = sharedPreferences.edit()
+          when (value) {
+            is String -> editor.putString(key, value).apply()
+            is Boolean -> editor.putBoolean(key, value).apply()
+            is Float -> editor.putFloat(key, value).apply()
+            is Int -> editor.putInt(key, value).apply()
+            is Long -> editor.putLong(key, value).apply()
+            is Set<*> -> {
+              (value as? Set<String>)?.let { castedValue ->
+                editor.putStringSet(key, castedValue).apply()
+              } ?: throw UnsupportedOperationException("value type is not supported")
+            }
+            else -> {
+              throw UnsupportedOperationException("value type is not supported")
+            }
+          }
+
+          return@let it
+        } ?: throw IllegalArgumentException("${DeviceStorageDataSource::class.java.simpleName}: value must be not null")
       }
       else -> notSupportedQuery()
     }
   }
 
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future {
-    when (query) {
-      is StringKeyQuery -> {
-        if (value == null) {
-          throw IllegalArgumentException("${DeviceStorageDataSource::class.java.simpleName}: values must be not null")
-        } else {
-          sharedPreferences.edit()
-              .putString(query.key, toStringFromListMapper.map(value))
-              .apply()
-
-
-          return@Future value as List<T>
-        }
-      }
-      else -> notSupportedQuery()
-    }
-  }
+  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future { throw UnsupportedOperationException() }
 
   override fun delete(query: Query): Future<Unit> = Future {
     when (query) {
-      is StringKeyQuery -> {
+      is KeyQuery -> {
         sharedPreferences.edit()
-            .remove(query.key)
+            .remove(addPrefixTo(query.key))
             .apply()
       }
       else -> notSupportedQuery()
@@ -126,12 +75,14 @@ class DeviceStorageDataSource<T> @Inject constructor(
 
   override fun deleteAll(query: Query): Future<Unit> = Future {
     when (query) {
-      is StringKeyQuery -> {
+      is KeyQuery -> {
         sharedPreferences.edit()
-            .remove(query.key)
+            .remove(addPrefixTo(query.key))
             .apply()
       }
       else -> notSupportedQuery()
     }
   }
+
+  private fun addPrefixTo(key: String) = if (prefix.isEmpty()) key else "$prefix.$key"
 }

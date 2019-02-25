@@ -3,9 +3,12 @@ package com.mobilejazz.kotlin.core.ext
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BounceInterpolator
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -38,13 +41,34 @@ fun View.bounce() {
   }.start()
 }
 
+fun EditText.onTextChanged(block: (CharSequence) -> Unit) {
+  this.addTextChangedListener(object : TextWatcher {
+    override fun afterTextChanged(s: Editable) {
+    }
+
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+    }
+
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+      block(s)
+    }
+
+  }.also { tag = it })
+}
+
+fun EditText.cleanTextListener() {
+  if (tag is TextWatcher) {
+    removeTextChangedListener(tag as TextWatcher)
+  }
+}
+
 
 //this make a bounce when you click the view
 fun View.onClick(click: (View) -> Unit) {
   this.setOnClickListener(BounceOnClickListenerDecorator(click))
 }
 
-class BounceOnClickListenerDecorator(private val click: (View)-> Unit): View.OnClickListener {
+class BounceOnClickListenerDecorator(private val click: (View) -> Unit) : View.OnClickListener {
 
   override fun onClick(v: View?) {
     v?.let {
@@ -146,7 +170,6 @@ fun alphaWithBounceAnimator(): ReadWriteProperty<ImageView, Int> =
 var ImageView.imageAlfa: Int by alphaWithBounceAnimator()
 
 
-
 //the same as alphaWithBounceAnimator but for views in general
 fun alphaWithBounceAnimatorForView(): ReadWriteProperty<View, Float> =
     object : ReadWriteProperty<View, Float> {
@@ -166,7 +189,7 @@ fun alphaWithBounceAnimatorForView(): ReadWriteProperty<View, Float> =
         if (thisRef.alpha != value) {
           AnimatorSet().apply {
             playTogether(animX, animY, alpha)
-            duration = 150L
+            duration = 350L
             interpolator = AccelerateDecelerateInterpolator()
           }.start()
         }
