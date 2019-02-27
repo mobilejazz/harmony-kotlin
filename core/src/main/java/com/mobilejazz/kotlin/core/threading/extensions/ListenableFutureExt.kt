@@ -21,8 +21,8 @@ fun emptyFuture(): Future<Unit> = emptyListenableFuture()
 
 // Creation
 inline fun <A> Future(
-  executor: ExecutorService = DirectExecutor,
-  crossinline block: () -> A
+    executor: ExecutorService = DirectExecutor,
+    crossinline block: () -> A
 ): Future<A> {
   val service: ListeningExecutorService = MoreExecutors.listeningDecorator(executor)
   return service.submit(Callable<A> { block() })
@@ -38,49 +38,57 @@ fun <A> Throwable.toListenableFuture(): Future<A> = Futures.immediateFailedFutur
 
 // Monadic Operations
 inline fun <A, B> Future<A>.map(
-  executor: Executor = DirectExecutor,
-  crossinline f: (A) -> B
+    executor: Executor = DirectExecutor,
+    crossinline f: (A) -> B
 ): Future<B> =
-  Futures.transform(this, com.google.common.base.Function { f(it!!) }, executor)
+    Futures.transform(this, com.google.common.base.Function { f(it!!) }, executor)
 
 inline fun <A, B> Future<A>.flatMap(
-  executor: Executor = DirectExecutor,
-  crossinline f: (A) -> Future<B>
+    executor: Executor = DirectExecutor,
+    crossinline f: (A) -> Future<B>
 ): Future<B> =
-  Futures.transformAsync(this, AsyncFunction { f(it!!) }, executor)
+    Futures.transformAsync(this, AsyncFunction { f(it!!) }, executor)
 
 fun <A> Future<Future<A>>.flatten(): Future<A> = flatMap { it }
 
 inline fun <A> Future<A>.filter(
-  executor: Executor = DirectExecutor,
-  crossinline predicate: (A) -> Boolean
+    executor: Executor = DirectExecutor,
+    crossinline predicate: (A) -> Boolean
 ): Future<A> =
-  map(executor) {
-    if (predicate(it)) it else throw NoSuchElementException("Future.filter predicate is not satisfied")
-  }
+    map(executor) {
+      if (predicate(it)) it else throw NoSuchElementException("Future.filter predicate is not satisfied")
+    }
 
 fun <A, B> Future<A>.zip(
-  other: Future<B>,
-  executor: Executor = DirectExecutor
+    other: Future<B>,
+    executor: Executor = DirectExecutor
 ): Future<Pair<A, B>> =
-  zip(other, executor) { a, b -> a to b }
+    zip(other, executor) { a, b -> a to b }
 
 inline fun <A, B, C> Future<A>.zip(
-  other: Future<B>,
-  executor: Executor = DirectExecutor,
-  crossinline f: (A, B) -> C
+    other: Future<B>,
+    executor: Executor = DirectExecutor,
+    crossinline f: (A, B) -> C
 ): Future<C> =
-  flatMap(executor) { a -> other.map(executor) { b -> f(a, b) } }
+    flatMap(executor) { a -> other.map(executor) { b -> f(a, b) } }
 
 // Error handling / Recovery
 inline fun <A> Future<A>.recover(crossinline f: (Throwable) -> A): Future<A> =
-  Futures.catching(this, Throwable::class.java, Function { f(it!!.cause ?: it) }, DirectExecutor)
+    Futures.catching(this, Throwable::class.java, Function { f(it!!.cause ?: it) }, DirectExecutor)
 
 inline fun <A> Future<A>.recoverWith(
-  executor: Executor = DirectExecutor,
-  crossinline f: (Throwable) -> Future<A>
+    executor: Executor = DirectExecutor,
+    crossinline f: (Throwable) -> Future<A>
 ): Future<A> {
-  return Futures.catchingAsync(this, Throwable::class.java, AsyncFunction { it -> f(it!!.cause ?: it) }, executor)
+  return Futures.catchingAsync(this, Throwable::class.java, AsyncFunction { f(it!!.finalCause()) }, executor)
+}
+
+fun Throwable.finalCause(): Throwable {
+  return if (cause != null) {
+    cause!!.finalCause()
+  } else {
+    this
+  }
 }
 
 inline fun <A, reified E : Throwable> Future<A>.mapError(crossinline f: (E) -> Throwable): Future<A> {
@@ -88,10 +96,10 @@ inline fun <A, reified E : Throwable> Future<A>.mapError(crossinline f: (E) -> T
 }
 
 inline fun <A> Future<A>.fallbackTo(
-  executor: Executor = DirectExecutor,
-  crossinline f: () -> Future<A>
+    executor: Executor = DirectExecutor,
+    crossinline f: () -> Future<A>
 ): Future<A> =
-  recoverWith(executor, { f() })
+    recoverWith(executor) { f() }
 
 /**
  * This function blocks a Exception thrown by a Future.
@@ -108,8 +116,8 @@ inline fun <reified E : Throwable> Future<*>.blockError(): Future<Unit> {
 
 // Callbacks
 inline fun <A> Future<A>.onFailure(
-  executor: Executor = DirectExecutor,
-  crossinline f: (Throwable) -> Unit
+    executor: Executor = DirectExecutor,
+    crossinline f: (Throwable) -> Unit
 ): Future<A> {
   Futures.addCallback(this, object : FutureCallback<A> {
     override fun onSuccess(result: A?) {
@@ -123,8 +131,8 @@ inline fun <A> Future<A>.onFailure(
 }
 
 inline fun <A> Future<A>.onSuccess(
-  executor: Executor = DirectExecutor,
-  crossinline f: (A) -> Unit
+    executor: Executor = DirectExecutor,
+    crossinline f: (A) -> Unit
 ): Future<A> {
   Futures.addCallback(this, object : FutureCallback<A> {
     override fun onSuccess(result: A?) {
@@ -138,9 +146,9 @@ inline fun <A> Future<A>.onSuccess(
 }
 
 inline fun <A> Future<A>.onComplete(
-  executor: Executor = DirectExecutor,
-  crossinline onFailure: (Throwable) -> Unit,
-  crossinline onSuccess: (A) -> Unit
+    executor: Executor = DirectExecutor,
+    crossinline onFailure: (Throwable) -> Unit,
+    crossinline onSuccess: (A) -> Unit
 ): Future<A> {
   Futures.addCallback(this, object : FutureCallback<A> {
     override fun onSuccess(result: A?) {
@@ -155,10 +163,10 @@ inline fun <A> Future<A>.onComplete(
 }
 
 inline fun <A> Future<A>.onCompleteNullable(
-  executor: Executor = DirectExecutor,
-  crossinline onFailure: (Throwable) -> Unit,
-  crossinline onSuccess: (A?) ->
-  Unit
+    executor: Executor = DirectExecutor,
+    crossinline onFailure: (Throwable) -> Unit,
+    crossinline onSuccess: (A?) ->
+    Unit
 ): Future<A> {
   Futures.addCallback(this, object : FutureCallback<A> {
     override fun onSuccess(result: A?) {
@@ -173,70 +181,70 @@ inline fun <A> Future<A>.onCompleteNullable(
 }
 
 inline fun <A> Future<A>.onCompleteUi(
-  crossinline onFailure: (Throwable) -> Unit,
-  crossinline onSuccess: (A) -> Unit
+    crossinline onFailure: (Throwable) -> Unit,
+    crossinline onSuccess: (A) -> Unit
 ): Future<A> =
-  onComplete(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
+    onComplete(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 inline fun <A> Future<A>.onCompleteDirect(
-  crossinline onFailure: (Throwable) -> Unit,
-  crossinline onSuccess: (A) -> Unit
+    crossinline onFailure: (Throwable) -> Unit,
+    crossinline onSuccess: (A) -> Unit
 ): Future<A> =
-  onComplete(executor = DirectExecutor, onFailure = onFailure, onSuccess = onSuccess)
+    onComplete(executor = DirectExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 inline fun <A> Future<A>.onCompleteNullableUi(
-  crossinline onFailure: (Throwable) -> Unit,
-  crossinline onSuccess: (A?) -> Unit
+    crossinline onFailure: (Throwable) -> Unit,
+    crossinline onSuccess: (A?) -> Unit
 ): Future<A> =
-  onCompleteNullable(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
+    onCompleteNullable(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 object FutureObject {
 
   fun <A> allAsList(
-    futures: Iterable<Future<A>>,
-    executor: Executor = DirectExecutor
+      futures: Iterable<Future<A>>,
+      executor: Executor = DirectExecutor
   ): Future<List<A>> =
-    futures.fold(mutableListOf<A>().toListenableFuture()) { fr, fa ->
-      fr.zip(fa, executor) { r, a -> r.add(a); r }
-    }.map(executor) { it.toList() }
+      futures.fold(mutableListOf<A>().toListenableFuture()) { fr, fa ->
+        fr.zip(fa, executor) { r, a -> r.add(a); r }
+      }.map(executor) { it.toList() }
 
   fun <A> successfulList(
-    futures: Iterable<Future<A>>,
-    executor: Executor = DirectExecutor
+      futures: Iterable<Future<A>>,
+      executor: Executor = DirectExecutor
   ): Future<List<A>> =
-    futures.fold(mutableListOf<A>().toListenableFuture()) { fr, fa ->
-      fr.flatMap(executor) { r ->
-        fa
-            .map(executor) {
-              if (it != null) {
-                r.add(it)
+      futures.fold(mutableListOf<A>().toListenableFuture()) { fr, fa ->
+        fr.flatMap(executor) { r ->
+          fa
+              .map(executor) {
+                if (it != null) {
+                  r.add(it)
+                }
+                r
               }
-              r
-            }
-      }
-    }.map(executor) { it.toList() }
+        }
+      }.map(executor) { it.toList() }
 
   fun <A, R> fold(
-    futures: Iterable<Future<A>>,
-    initial: R,
-    executor: Executor = DirectExecutor,
-    op: (R, A) -> R
+      futures: Iterable<Future<A>>,
+      initial: R,
+      executor: Executor = DirectExecutor,
+      op: (R, A) -> R
   ): Future<R> =
-    fold(futures.iterator(), initial, executor, op)
+      fold(futures.iterator(), initial, executor, op)
 
   fun <A, R> fold(
-    iterator: Iterator<Future<A>>,
-    initial: R,
-    executor: Executor = DirectExecutor,
-    op: (R, A) -> R
+      iterator: Iterator<Future<A>>,
+      initial: R,
+      executor: Executor = DirectExecutor,
+      op: (R, A) -> R
   ): Future<R> =
-    if (!iterator.hasNext()) initial.toListenableFuture()
-    else iterator.next().flatMap(executor) { fold(iterator, op(initial, it), executor, op) }
+      if (!iterator.hasNext()) initial.toListenableFuture()
+      else iterator.next().flatMap(executor) { fold(iterator, op(initial, it), executor, op) }
 
   fun <A> reduce(
-    iterable: Iterable<Future<A>>,
-    executor: Executor = DirectExecutor,
-    op: (A, A) -> A
+      iterable: Iterable<Future<A>>,
+      executor: Executor = DirectExecutor,
+      op: (A, A) -> A
   ): Future<A> {
     val iterator = iterable.iterator()
     return if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
@@ -244,11 +252,11 @@ object FutureObject {
   }
 
   fun <A, B> transform(
-    iterable: Iterable<Future<A>>,
-    executor: Executor = DirectExecutor,
-    f: (A) -> B
+      iterable: Iterable<Future<A>>,
+      executor: Executor = DirectExecutor,
+      f: (A) -> B
   ): Future<List<B>> =
-    iterable.fold(mutableListOf<B>().toListenableFuture()) { fr, fa ->
-      fr.zip(fa, executor) { r, a -> r.add(f(a)); r }
-    }.map(executor) { it.toList() }
+      iterable.fold(mutableListOf<B>().toListenableFuture()) { fr, fa ->
+        fr.zip(fa, executor) { r, a -> r.add(f(a)); r }
+      }.map(executor) { it.toList() }
 }
