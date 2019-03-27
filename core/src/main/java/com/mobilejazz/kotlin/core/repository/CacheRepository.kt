@@ -26,8 +26,8 @@ class CacheRepository<V> @Inject constructor(
       operation: Operation
   ): Future<V> = when (operation) {
     is DefaultOperation -> get(query, CacheSyncOperation)
-    is MainOperation -> getMain.get(query) //MainOperation
-    is CacheOperation -> getCache.get(query) //CacheOperation
+    is MainOperation -> getMain.get(query)
+    is CacheOperation -> getCache.get(query)
     is MainSyncOperation -> getMain.get(query).flatMap { putCache.put(query, it) }
     is CacheSyncOperation ->
       getCache.get(query).recoverWith {
