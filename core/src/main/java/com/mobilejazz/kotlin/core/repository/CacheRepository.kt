@@ -69,8 +69,8 @@ class CacheRepository<V> @Inject constructor(
     is DefaultOperation -> put(query, value, MainSyncOperation)
     is MainOperation -> putMain.put(query, value)
     is CacheOperation -> putCache.put(query, value)
-    is MainSyncOperation -> putMain.put(query, value).flatMap { putCache.put(query, value) }
-    is CacheSyncOperation -> putCache.put(query, value).flatMap { putMain.put(query, value) }
+    is MainSyncOperation -> putMain.put(query, value).flatMap { putCache.put(query, it) }
+    is CacheSyncOperation -> putCache.put(query, value).flatMap { putMain.put(query, it) }
     else -> notSupportedOperation()
   }
 
@@ -82,8 +82,8 @@ class CacheRepository<V> @Inject constructor(
     is DefaultOperation -> putAll(query, value, MainSyncOperation)
     is MainOperation -> putMain.putAll(query, value)
     is CacheOperation -> putCache.putAll(query, value)
-    is MainSyncOperation -> putMain.putAll(query, value).flatMap { putCache.putAll(query, value) }
-    is CacheSyncOperation -> putCache.putAll(query, value).flatMap { putMain.putAll(query, value) }
+    is MainSyncOperation -> putMain.putAll(query, value).flatMap { putCache.putAll(query, it) }
+    is CacheSyncOperation -> putCache.putAll(query, value).flatMap { putMain.putAll(query, it) }
     else -> notSupportedOperation()
   }
 
