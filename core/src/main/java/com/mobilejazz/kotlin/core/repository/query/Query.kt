@@ -19,6 +19,8 @@ open class IdQuery<out T>(val identifier: T) : KeyQuery(identifier.toString())
 
 open class IntegerIdQuery(val id: Int) : IdQuery<Int>(id)
 
+open class StringIdQuery(val id: String) : IdQuery<String>(id)
+
 open class IdsQuery<out T>(val identifiers: Collection<T>) : KeyQuery(identifiers.toString())
 
 open class IntegerIdsQuery(val ids: Collection<Int>) : IdsQuery<Int>(ids)
