@@ -6,17 +6,15 @@ sealed class Operation
 
 object DefaultOperation : Operation()
 
-// Data stream will only use network
-object NetworkOperation : Operation()
+// Data stream will only use the main data source
+object MainOperation : Operation()
 
-// Data stream will use network and sync with storage if needed
-object NetworkSyncOperation: Operation()
+// Data stream will use the main data source and then sync result with the cache data source
+object MainSyncOperation: Operation()
 
-// Data stream will only use storage
-object StorageOperation : Operation()
-
-// Data stream will use storage and sync with network if needed
-object StorageSyncOperation: Operation()
-
-// Data stream will only use cache
+// Data stream will only use the cache data source
 object CacheOperation : Operation()
+
+// Data stream will use the cache data source and sync with the main data source
+object CacheSyncOperation: Operation()
+
