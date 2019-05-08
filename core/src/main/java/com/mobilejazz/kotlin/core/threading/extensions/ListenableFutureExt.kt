@@ -83,14 +83,6 @@ inline fun <A> Future<A>.recoverWith(
   return Futures.catchingAsync(this, Throwable::class.java, AsyncFunction { f(it!!.finalCause()) }, executor)
 }
 
-fun Throwable.finalCause(): Throwable {
-  return if (cause != null) {
-    cause!!.finalCause()
-  } else {
-    this
-  }
-}
-
 inline fun <A, reified E : Throwable> Future<A>.mapError(crossinline f: (E) -> Throwable): Future<A> {
   return Futures.catching(this, E::class.java, Function { throw f(it!!) }, DirectExecutor)
 }
