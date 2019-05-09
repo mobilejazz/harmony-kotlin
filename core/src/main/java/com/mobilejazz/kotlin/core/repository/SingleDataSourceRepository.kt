@@ -3,9 +3,12 @@ package com.mobilejazz.kotlin.core.repository
 import com.mobilejazz.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.kotlin.core.repository.datasource.PutDataSource
+import com.mobilejazz.kotlin.core.repository.mapper.Mapper
+import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
+import com.mobilejazz.kotlin.core.threading.extensions.map
 import javax.inject.Inject
 
 class SingleDataSourceRepository<T> @Inject constructor(
@@ -25,6 +28,13 @@ class SingleDataSourceRepository<T> @Inject constructor(
   override fun delete(query: Query, operation: Operation): Future<Unit> = deleteDataSource.delete(query)
 
   override fun deleteAll(query: Query, operation: Operation): Future<Unit> = deleteDataSource.deleteAll(query)
+}
+
+class SingleGetDataSourceRepositoryMapper<In, Out> @Inject constructor(private val getRepository: GetRepository<In>, private val toOutMapper: Mapper<In,
+    Out>): GetRepository<Out> {
+  override fun get(query: Query, operation: Operation): Future<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
+
+  override fun getAll(query: Query, operation: Operation): Future<List<Out>> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 }
 
 class SingleGetDataSourceRepository<T> @Inject constructor(private val getDataSource: GetDataSource<T>) : GetRepository<T> {

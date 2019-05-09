@@ -1,9 +1,8 @@
 package com.mobilejazz.kotlin.core.repository.datasource
 
-import com.mobilejazz.kotlin.core.repository.SingleDeleteDataSourceRepository
-import com.mobilejazz.kotlin.core.repository.SingleGetDataSourceRepository
-import com.mobilejazz.kotlin.core.repository.SinglePutDataSourceRepository
+import com.mobilejazz.kotlin.core.repository.*
 import com.mobilejazz.kotlin.core.repository.error.QueryNotSupportedException
+import com.mobilejazz.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.kotlin.core.repository.query.IdQuery
 import com.mobilejazz.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.kotlin.core.repository.query.Query
@@ -47,8 +46,10 @@ fun <K> DeleteDataSource.delete(id: K): Future<Unit> = delete(IdQuery(id))
 fun <K> DeleteDataSource.deleteAll(ids: List<K>): Future<Unit> = deleteAll(IdsQuery(ids))
 
 // Extensions to create
-fun <V>GetDataSource<V>.toGetRepository() = SingleGetDataSourceRepository(this)
+fun <V> GetDataSource<V>.toGetRepository() = SingleGetDataSourceRepository(this)
 
-fun <V>PutDataSource<V>.toPutRepository() = SinglePutDataSourceRepository(this)
+fun <In, Out> GetDataSource<In>.toGetRepository(mapper: Mapper<In, Out>): GetRepository<Out> = SingleGetDataSourceRepositoryMapper(toGetRepository(), mapper)
+
+fun <V> PutDataSource<V>.toPutRepository() = SinglePutDataSourceRepository(this)
 
 fun DeleteDataSource.toDeleteRepository() = SingleDeleteDataSourceRepository(this)
