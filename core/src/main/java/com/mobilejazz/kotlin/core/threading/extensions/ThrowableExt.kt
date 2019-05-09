@@ -8,3 +8,18 @@ fun Throwable.finalCause(): Throwable {
     this
   }
 }
+
+fun <T : Throwable> Throwable.unwrap(from: Class<T>): Throwable {
+
+  val cause = this.cause
+
+  return if (cause != null) {
+    if (cause::class.java == from) {
+      cause.unwrap(from)
+    } else {
+      cause
+    }
+  } else {
+    this
+  }
+}
