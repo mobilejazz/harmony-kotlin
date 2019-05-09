@@ -48,8 +48,6 @@ fun <K> DeleteDataSource.deleteAll(ids: List<K>): Future<Unit> = deleteAll(IdsQu
 // Extensions to create
 fun <V> GetDataSource<V>.toGetRepository() = SingleGetDataSourceRepository(this)
 
-fun <In, Out> GetDataSource<In>.toGetRepository(mapper: Mapper<In, Out>): GetRepository<Out> = SingleGetDataSourceRepositoryMapper(toGetRepository(), mapper)
-
 fun <V> PutDataSource<V>.toPutRepository() = SinglePutDataSourceRepository(this)
 
 fun DeleteDataSource.toDeleteRepository() = SingleDeleteDataSourceRepository(this)
