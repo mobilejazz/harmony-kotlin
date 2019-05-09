@@ -8,6 +8,7 @@ import com.mobilejazz.kotlin.core.threading.AppUiExecutor
 import com.mobilejazz.kotlin.core.threading.DirectExecutor
 import java.util.*
 import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 
@@ -80,7 +81,7 @@ inline fun <A> Future<A>.recoverWith(
     executor: Executor = DirectExecutor,
     crossinline f: (Throwable) -> Future<A>
 ): Future<A> {
-  return Futures.catchingAsync(this, Throwable::class.java, AsyncFunction { f(it!!.finalCause()) }, executor)
+  return Futures.catchingAsync(this, Throwable::class.java, AsyncFunction { f(it!!.unwrap(ExecutionException::class.java)) }, executor)
 }
 
 inline fun <A, reified E : Throwable> Future<A>.mapError(crossinline f: (E) -> Throwable): Future<A> {
