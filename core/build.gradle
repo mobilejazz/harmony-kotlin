@@ -44,7 +44,10 @@ android {
 
     release {
       minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      def proguardConfigFiles = ['proguard-rules.pro',
+                                 '../proguard/gson.pro',
+                                 '../proguard/guava.pro'].toArray()
+      consumerProguardFiles proguardConfigFiles
     }
   }
 }
