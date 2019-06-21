@@ -78,7 +78,9 @@ dependencies {
   kapt "android.arch.lifecycle:compiler:1.1.1"
 
   // Testing
-
   testImplementation 'junit:junit:4.12'
   testImplementation("org.assertj:assertj-core:3.11.1")
+
+  androidTestImplementation "com.android.support.test:runner:1.0.2"
+  androidTestImplementation "com.android.support.test:rules:1.0.2"
 }
