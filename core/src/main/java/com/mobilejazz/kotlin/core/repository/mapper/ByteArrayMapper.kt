@@ -3,21 +3,33 @@ package com.mobilejazz.kotlin.core.repository.mapper
 import java.io.*
 
 /**
- * Map a ByteArray to a class object
+ * Map a byte array to a class object
  */
-class ByteArrayToModelMapper<out T> : ObjectToListMapper<ByteArray, T> {
-  override fun map(from: ByteArray): T = from.toObject() as T
-
-  override fun mapToList(from: ByteArray): List<T> = from.toObject()
+class ByteArrayToModelMapper<out T : Serializable> : Mapper<ByteArray, T> {
+  override fun map(from: ByteArray): T = from.toObject()
 }
 
 /**
- * Map a class object to a ByteArray
+ * Map a class object to a byte array
  */
-class ModelToByteArrayMapper<in T : Serializable> : ListToObjectMapper<T, ByteArray> {
+class ModelToByteArrayMapper<in T : Serializable> : Mapper<T, ByteArray> {
   override fun map(from: T): ByteArray = from.toByteArray()
+}
 
-  override fun mapToObject(from: List<T>): ByteArray = from.toByteArray()
+/**
+ * Map a byte array to a list class object
+ */
+class ByteArrayToListModelMapper<out T : Serializable> : Mapper<ByteArray, List<T>> {
+  override fun map(from: ByteArray): List<T> {
+    return from.toObject()
+  }
+}
+
+/**
+ * Map a list class object to a byte array
+ */
+class ListModelToByteArrayMapper<in T : Serializable> : Mapper<List<T>, ByteArray> {
+  override fun map(from: List<T>): ByteArray = from.toByteArray()
 }
 
 private fun Collection<Serializable>.toByteArray(): ByteArray {

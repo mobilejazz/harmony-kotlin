@@ -37,11 +37,3 @@ fun <From, To> Mapper<From, To>.map(values: List<From>): List<To> = values.map {
 fun <From, To, K> Mapper<From, To>.map(value: Map<K, From>): Map<K, To> {
   return value.mapValues { map(it.value) }
 }
-
-interface ListToObjectMapper<in From, out To> : Mapper<From, To> {
-  fun mapToObject(from: List<From>): To
-}
-
-interface ObjectToListMapper<in From, out To> : Mapper<From, To> {
-  fun mapToList(from: From): List<To>
-}

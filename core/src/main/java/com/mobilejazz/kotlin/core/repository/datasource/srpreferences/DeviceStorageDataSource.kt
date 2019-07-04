@@ -29,7 +29,9 @@ class DeviceStorageDataSource<T> @Inject constructor(
     }
   }
 
-  override fun getAll(query: Query): Future<List<T>> = Future { throw UnsupportedOperationException() }
+  override fun getAll(query: Query): Future<List<T>> = Future {
+    throw UnsupportedOperationException("getAll not supported. Use get instead")
+  }
 
   override fun put(query: Query, value: T?): Future<T> = Future {
     when (query) {
@@ -60,7 +62,9 @@ class DeviceStorageDataSource<T> @Inject constructor(
     }
   }
 
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future { throw UnsupportedOperationException() }
+  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = Future {
+    throw UnsupportedOperationException("putAll not supported. Use put instead")
+  }
 
   override fun delete(query: Query): Future<Unit> = Future {
     when (query) {

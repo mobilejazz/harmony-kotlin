@@ -1,13 +1,11 @@
 package com.mobilejazz.kotlin.core.repository.datasource
 
-import com.mobilejazz.kotlin.core.repository.mapper.ListToObjectMapper
 import com.mobilejazz.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.kotlin.core.repository.mapper.ObjectToListMapper
-import com.mobilejazz.kotlin.core.repository.mapper.map
 import com.mobilejazz.kotlin.core.repository.query.Query
 import com.mobilejazz.kotlin.core.threading.extensions.Future
 import com.mobilejazz.kotlin.core.threading.extensions.map
 import javax.inject.Inject
+
 
 /**
  * This data source uses mappers to map objects and redirects them to the contained data source, acting as a simple "translator".
@@ -17,33 +15,33 @@ import javax.inject.Inject
  * @param getDataSource Data source with get operations
  * @param putDataSource Data source with put operations
  * @param deleteDataSource Data source with delete operations
- * @param listToObjectOutMapper Mapper to map data source objects to repository objects
- * @param objectToListInMapper Mapper to map repository objects to data source objects
+ * @param toInMapper Mapper to map data source objects to repository objects
+ * @param toInMapperFromList Mapper to map repository objects to data source objects
  */
-class ListJoinDataSourceMapper<In, Out> @Inject constructor(
-    private val getDataSource: GetDataSource<In>,
-    private val putDataSource: PutDataSource<In>,
+class SerializationDataSourceMapper<SerializedIn, Out> @Inject constructor(
+    private val getDataSource: GetDataSource<SerializedIn>,
+    private val putDataSource: PutDataSource<SerializedIn>,
     private val deleteDataSource: DeleteDataSource,
-    private val listToObjectOutMapper: ListToObjectMapper<In, Out>,
-    private val objectToListOutMapper: ObjectToListMapper<In, Out>,
-    private val listToObjectInMapper: ListToObjectMapper<Out, In>,
-    private val objectToListInMapper: ObjectToListMapper<Out, In>
+    private val toOutMapper: Mapper<SerializedIn, Out>,
+    private val toOutListMapper: Mapper<SerializedIn, List<Out>>,
+    private val toInMapper: Mapper<Out, SerializedIn>,
+    private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
-  override fun get(query: Query): Future<Out> = getDataSource.get(query).map { listToObjectOutMapper.map(it) }
+  override fun get(query: Query): Future<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
 
-  override fun getAll(query: Query): Future<List<Out>> = getDataSource.get(query).map { objectToListOutMapper.mapToList(it) }
+  override fun getAll(query: Query): Future<List<Out>> = getDataSource.get(query).map { toOutListMapper.map(it) }
 
   override fun put(query: Query, value: Out?): Future<Out> {
-    val mapped = value?.let { objectToListInMapper.map(value) }
+    val mapped = value?.let { toInMapper.map(value) }
     return putDataSource.put(query, mapped)
-        .map { listToObjectOutMapper.map(it) }
+        .map { toOutMapper.map(it) }
   }
 
   override fun putAll(query: Query, value: List<Out>?): Future<List<Out>> {
-    val mapped = value?.let { listToObjectInMapper.mapToObject(value) }
+    val mapped = value?.let { toInMapperFromList.map(value) }
     return putDataSource.put(query, mapped)
-        .map { objectToListOutMapper.mapToList(it) }
+        .map { toOutListMapper.map(it) }
   }
 
   override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
