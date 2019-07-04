@@ -15,8 +15,10 @@ import javax.inject.Inject
  * @param getDataSource Data source with get operations
  * @param putDataSource Data source with put operations
  * @param deleteDataSource Data source with delete operations
- * @param toInMapper Mapper to map data source objects to repository objects
- * @param toInMapperFromList Mapper to map repository objects to data source objects
+ * @param toOutMapper Mapper to map data source objects to repository objects
+ * @param toOutListMapper Mapper to map data source objects to repository object lists
+ * @param toInMapper Mapper to map repository objects to data source objects
+ * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
 class SerializationDataSourceMapper<SerializedIn, Out> @Inject constructor(
     private val getDataSource: GetDataSource<SerializedIn>,
