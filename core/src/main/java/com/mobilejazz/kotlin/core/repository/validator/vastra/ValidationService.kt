@@ -14,13 +14,15 @@ interface ValidationService {
     // Default value set to false;
     var isValid = false
 
-    for (strategy in strategies) {
+    loop@ for (strategy in strategies) {
       when (strategy.isValid(t)) {
         ValidationStrategyResult.VALID -> {
           isValid = true
+          break@loop
         }
         ValidationStrategyResult.INVALID -> {
           isValid = false
+          break@loop
         }
         else -> { /*result is ValidationStrategyResult.UNKNOWN, lets iterate to next strategy */
         }
