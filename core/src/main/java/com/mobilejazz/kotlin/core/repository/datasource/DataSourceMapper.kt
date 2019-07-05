@@ -17,28 +17,23 @@ import javax.inject.Inject
  * @param toInMapper Mapper to map repository objects to data source objects
  */
 class DataSourceMapper<In, Out> @Inject constructor(
-    private val getDataSource: GetDataSource<In>,
-    private val putDataSource: PutDataSource<In>,
+    getDataSource: GetDataSource<In>,
+    putDataSource: PutDataSource<In>,
     private val deleteDataSource: DeleteDataSource,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>
+    toOutMapper: Mapper<In, Out>,
+    toInMapper: Mapper<Out, In>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
-  override fun get(query: Query): Future<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
+  private val getDataSourceMapper = GetDataSourceMapper(getDataSource, toOutMapper)
+  private val putDataSourceMapper = PutDataSourceMapper(putDataSource, toOutMapper, toInMapper)
 
-  override fun getAll(query: Query): Future<List<Out>> = getDataSource.getAll(query).map { toOutMapper.map(it) }
+  override fun get(query: Query): Future<Out> = getDataSourceMapper.get(query)
 
-  override fun put(query: Query, value: Out?): Future<Out> {
-    val mapped = value?.let { toInMapper.map(value) }
-    return putDataSource.put(query, mapped)
-        .map { toOutMapper.map(it) }
-  }
+  override fun getAll(query: Query): Future<List<Out>> = getDataSourceMapper.getAll(query)
 
-  override fun putAll(query: Query, value: List<Out>?): Future<List<Out>> {
-    val mapped = value?.let { toInMapper.map(value) }
-    return putDataSource.putAll(query, mapped)
-        .map { toOutMapper.map(it) }
-  }
+  override fun put(query: Query, value: Out?): Future<Out> = putDataSourceMapper.put(query, value)
+
+  override fun putAll(query: Query, value: List<Out>?): Future<List<Out>> = putDataSourceMapper.putAll(query, value)
 
   override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
 
