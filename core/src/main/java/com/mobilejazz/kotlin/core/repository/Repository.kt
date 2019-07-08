@@ -1,5 +1,6 @@
 package com.mobilejazz.kotlin.core.repository
 
+import com.mobilejazz.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.kotlin.core.repository.operation.DefaultOperation
 import com.mobilejazz.kotlin.core.repository.operation.Operation
 import com.mobilejazz.kotlin.core.repository.query.IdQuery
@@ -43,3 +44,7 @@ fun <K, V> PutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyList(),
 fun <K> DeleteRepository.delete(id: K, operation: Operation = DefaultOperation) = delete(IdQuery(id), operation)
 
 fun <K> DeleteRepository.deleteAll(ids: List<K>, operation: Operation = DefaultOperation) = deleteAll(IdsQuery(ids), operation)
+
+fun <K, V> GetRepository<K>.withMapping(mapper: Mapper<K, V>): GetRepository<V> = GetRepositoryMapper(this, mapper)
+
+fun <K, V> PutRepository<K>.withMapping(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): PutRepository<V> = PutRepositoryMapper(this, toMapper, fromMapper)

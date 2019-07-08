@@ -47,3 +47,31 @@ class RepositoryMapper<In, Out> @Inject constructor(
   override fun deleteAll(query: Query, operation: Operation): Future<Unit> = deleteRepository.deleteAll(query, operation)
 
 }
+
+class GetRepositoryMapper<In, Out> @Inject constructor(
+    private val getRepository: GetRepository<In>,
+    private val toOutMapper: Mapper<In, Out>
+) : GetRepository<Out> {
+
+  override fun get(query: Query, operation: Operation): Future<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
+
+  override fun getAll(query: Query, operation: Operation): Future<List<Out>> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
+}
+
+class PutRepositoryMapper<In, Out> @Inject constructor(
+    private val putRepository: PutRepository<In>,
+    private val toOutMapper: Mapper<In, Out>,
+    private val toInMapper: Mapper<Out, In>): PutRepository<Out> {
+
+  override fun put(query: Query, value: Out?, operation: Operation): Future<Out> {
+    val mapped = value?.let { toInMapper.map(it) }
+    return putRepository.put(query, mapped, operation).map {
+      toOutMapper.map(it)
+    }
+  }
+
+  override fun putAll(query: Query, value: List<Out>?, operation: Operation): Future<List<Out>> {
+    val mapped = value?.let { toInMapper.map(value) }
+    return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }
+  }
+}
