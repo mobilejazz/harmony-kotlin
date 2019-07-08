@@ -1,6 +1,5 @@
 package com.mobilejazz.sample.core.data.network
 
-import android.app.DownloadManager
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.query.IntegerIdQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.IntegerIdsQuery

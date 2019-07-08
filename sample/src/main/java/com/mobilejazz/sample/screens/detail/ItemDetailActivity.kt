@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.MenuItem
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.onCompleteUi
+import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item

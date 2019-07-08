@@ -2,7 +2,6 @@ package com.mobilejazz.sample.di
 
 import android.app.Application
 import android.content.Context
-import android.support.v4.view.KeyEventDispatcher
 import com.mobilejazz.sample.App
 import com.mobilejazz.sample.di.general.*
 import com.mobilejazz.sample.di.ui.ActivityBindingsModule

@@ -1,6 +1,6 @@
 package com.mobilejazz.sample.di.ui
 
-import com.mobilejazz.harmony.kotlin.core.di.ActivityScope
+import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
 import com.mobilejazz.sample.screens.detail.ItemDetailActivity
 import com.mobilejazz.sample.screens.home.HomeActivity
 import dagger.Module

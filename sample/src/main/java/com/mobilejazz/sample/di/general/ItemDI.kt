@@ -6,8 +6,8 @@ import com.google.gson.Gson
 import com.mobilejazz.harmony.kotlin.core.repository.*
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.*
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.memory.InMemoryDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.srpreferences.DeviceStorageDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
+import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
+import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.*
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationServiceManager
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.timestamp.TimestampValidationStrategy

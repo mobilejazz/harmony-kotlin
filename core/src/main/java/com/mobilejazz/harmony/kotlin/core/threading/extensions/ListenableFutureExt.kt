@@ -4,7 +4,6 @@ package com.mobilejazz.harmony.kotlin.core.threading.extensions
 
 import com.google.common.base.Function
 import com.google.common.util.concurrent.*
-import com.mobilejazz.harmony.kotlin.core.threading.AppUiExecutor
 import com.mobilejazz.harmony.kotlin.core.threading.DirectExecutor
 import java.util.*
 import java.util.concurrent.Callable
@@ -173,23 +172,11 @@ inline fun <A> Future<A>.onCompleteNullable(
   return this
 }
 
-inline fun <A> Future<A>.onCompleteUi(
-    crossinline onFailure: (Throwable) -> Unit,
-    crossinline onSuccess: (A) -> Unit
-): Future<A> =
-    onComplete(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
-
 inline fun <A> Future<A>.onCompleteDirect(
     crossinline onFailure: (Throwable) -> Unit,
     crossinline onSuccess: (A) -> Unit
 ): Future<A> =
     onComplete(executor = DirectExecutor, onFailure = onFailure, onSuccess = onSuccess)
-
-inline fun <A> Future<A>.onCompleteNullableUi(
-    crossinline onFailure: (Throwable) -> Unit,
-    crossinline onSuccess: (A?) -> Unit
-): Future<A> =
-    onCompleteNullable(executor = AppUiExecutor, onFailure = onFailure, onSuccess = onSuccess)
 
 object FutureObject {
 

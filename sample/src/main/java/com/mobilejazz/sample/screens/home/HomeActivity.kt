@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.harmony.kotlin.core.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.repository.operation.CacheSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.operation.MainSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.onCompleteUi
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.ItemIds
