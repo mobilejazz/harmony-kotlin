@@ -1,4 +1,4 @@
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.runner.AndroidJUnit4
 import com.mobilejazz.kotlin.core.repository.datasource.database.ByteArrayStorageOpenHelper
 import com.mobilejazz.kotlin.core.repository.datasource.database.DatabaseStorageDataSource
 import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
