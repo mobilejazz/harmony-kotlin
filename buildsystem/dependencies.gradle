@@ -1,0 +1,104 @@
+allprojects {
+  repositories {
+    jcenter()
+    maven { url 'https://maven.fabric.io/public' }
+  }
+}
+
+ext {
+  //Project
+  androidApplicationId = "org.worldreader.classroom"
+  androidVersionCode = 2018042501
+  androidVersionName = "0.9.3"
+
+  //Android
+  androidBuildToolsVersion = "28.0.3"
+  androidMinSdkVersion = 16
+  androidTargetSdkVersion = 28
+  androidCompileSdkVersion = 28
+  support_libraries_version = '28.0.0'
+  multidexVersion = '1.0.1'
+  constraint_layout_version = "1.0.2"
+  android_compile_sdk_version = androidCompileSdkVersion
+  android_build_tools_version = androidBuildToolsVersion
+  android_min_sdk_version = androidMinSdkVersion
+  android_target_sdk_version = androidTargetSdkVersion
+  guava_version = '25.1-android'
+
+  //General libraries
+  daggerVersion = '2.14.1'
+  javaxAnnotationVersion = '1.2'
+  oneSignalVersion = '[3.5.8, 3.99.99]'
+  dagger_version = daggerVersion
+  gson_version = '2.8.5'
+
+  //App libraries
+  butterKnifeVersion = '8.8.1'
+  picassoVersion = '2.5.2'
+  bugfenderSdkVersion = '1.0.1'
+  crashlyticsVersion = '2.9.0@aar'
+  storIOVersion = '2.0.0'
+  sectionedRecyclerViewVersion = '0.5.0'
+
+  // Analytics
+  awsVersion = "2.2.+"
+
+  dependencies = [
+      support                  : "com.android.support:appcompat-v7:$support_libraries_version",
+      supportDesign            : "com.android.support:design:$support_libraries_version",
+      supportPalette           : "com.android.support:palette-v7:$support_libraries_version",
+      supportRecyclerView      : "com.android.support:recyclerview-v7:$support_libraries_version",
+      supportAnnotations       : "com.android.support:support-annotations:$support_libraries_version",
+      constraintLayout         : "com.android.support.constraint:constraint-layout:$constraint_layout_version",
+      multidex                 : "com.android.support:multidex:$multidexVersion",
+
+      kotlin                   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      kotlinstdlib             : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+
+      daggerCompiler           : "com.google.dagger:dagger-compiler:$daggerVersion",
+      daggerAndroidCompiler    : "com.google.dagger:dagger-android-processor:$daggerVersion",
+      dagger                   : "com.google.dagger:dagger:$daggerVersion",
+      daggerAndroid            : "com.google.dagger:dagger-android:$daggerVersion",
+      daggerAndroidSupport     : "com.google.dagger:dagger-android-support:$daggerVersion",
+      javaxAnnotation          : "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+
+      picasso                  : "com.squareup.picasso:picasso:$picassoVersion",
+
+      bugfender                : "com.bugfender.sdk:android:$bugfenderSdkVersion",
+      crashlytics              : "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion",
+
+      butterknife              : "com.jakewharton:butterknife:$butterKnifeVersion",
+      butterknifeProcessor     : "com.jakewharton:butterknife-compiler:$butterKnifeVersion",
+
+      awsCore                  : "com.amazonaws:aws-android-sdk-core:$awsVersion",
+      awsMobileAnalytics       : "com.amazonaws:aws-android-sdk-mobileanalytics:$awsVersion",
+
+      stetho                   : "com.facebook.stetho:stetho:1.5.0",
+      stethoOkhttp             : "com.facebook.stetho:stetho-okhttp3:1.5.0",
+
+      indicatorView            : "com.romandanylyk:pageindicatorview:0.2.0@aa",
+
+      retrofitGuava            : "com.squareup.retrofit2:adapter-guava:2.4.0",
+
+      storio                   : "com.pushtorefresh.storio2:sqlite:$storIOVersion",
+      storioAnnotation         : "com.pushtorefresh.storio2:sqlite-annotations:$storIOVersion",
+      storioAnnotationProcessor: "com.pushtorefresh.storio2:sqlite-annotations-processor:$storIOVersion",
+
+      sectionedRecyclerView    : "com.afollestad:sectioned-recyclerview:$sectionedRecyclerViewVersion",
+
+      epoxy                    : "com.airbnb.android:epoxy:2.7.3",
+      epoxyProcessor           : "com.airbnb.android:epoxy-processor:2.7.3",
+
+      roundedImageView         : "com.makeramen:roundedimageview:2.3.0",
+
+      sqliteAssetHelper        : "com.github.vksewaliya:android-sqlite-asset-helper:2.0.2",
+
+      androidJob               : 'com.evernote:android-job:1.2.4',
+
+      dexter                   : 'com.karumi:dexter:4.2.0'
+
+  ]
+
+  testDependencies = [
+  ]
+}

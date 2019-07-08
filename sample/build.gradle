@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+  def config = rootProject.ext
+
+
+  compileSdkVersion config.androidCompileSdkVersion
+  buildToolsVersion config.androidBuildToolsVersion
+
+  defaultConfig {
+    applicationId "com.mobilejazz.sample"
+
+    minSdkVersion config.androidMinSdkVersion
+    targetSdkVersion config.androidTargetSdkVersion
+
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+configurations.all {
+  resolutionStrategy {
+    force 'com.android.support:support-annotations:27.0.2'
+  }
+}
+
+dependencies {
+  def dependencies = rootProject.ext.dependencies
+
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+//  implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+//    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+//    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+//
+
+  implementation dependencies.support
+  implementation dependencies.supportRecyclerView
+  implementation dependencies.supportDesign
+  implementation dependencies.supportAnnotations
+  implementation dependencies.constraintLayout
+
+  implementation dependencies.kotlin
+  implementation dependencies.kotlinstdlib
+
+  implementation dependencies.retrofitGuava
+
+  implementation dependencies.dagger
+  implementation dependencies.daggerAndroid
+  implementation dependencies.daggerAndroidSupport
+  kapt dependencies.daggerCompiler
+  kapt dependencies.daggerAndroidCompiler
+
+  implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+  implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+
+  implementation 'com.google.code.gson:gson:2.8.5'
+
+  testImplementation 'junit:junit:4.12'
+
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+  implementation project(path: ':core')
+}
