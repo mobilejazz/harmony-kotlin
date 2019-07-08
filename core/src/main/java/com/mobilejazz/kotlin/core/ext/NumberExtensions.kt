@@ -60,9 +60,21 @@ fun Long.fromMillisToWeeks(): Int {
   return this.fromMillistoDays() / 7
 }
 
+/**
+ * Transforms SPs to pixels
+ * @receiver Int: the SPs
+ * @return the number of pixels for SP
+ */
 fun Int.sp(ctx: Context) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this.toFloat(), ctx.resources.displayMetrics)
 
+/**
+ * Transforms DPs to pixels
+ * @receiver Int: the DPs
+ * @return the number of pixels for DP
+ */
 fun Int.dp(ctx: Context) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), ctx.resources.displayMetrics)
+
+fun Float.dp(ctx: Context) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, ctx.resources.displayMetrics)
 
 fun Float.digits(numOfDigits: Int): String {
   return String.format("%.${numOfDigits}f", this)

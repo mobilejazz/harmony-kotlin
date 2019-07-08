@@ -5,7 +5,7 @@ import com.mobilejazz.kotlin.core.repository.validator.vastra.strategies.Validat
 import com.mobilejazz.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyResult
 import java.util.*
 
-abstract class TimestampValidationStrategyDataSource(var lastUpdate: Date, var expiryTime: Long) : ValidationStrategyDataSource
+abstract class TimestampValidationStrategyDataSource(var lastUpdate: Date = Date(), var expiryTime: Long) : ValidationStrategyDataSource
 
 class TimestampValidationStrategy : ValidationStrategy {
 

@@ -41,6 +41,10 @@ fun Date?.differenceInMonths(other: Date?): Int {
 
 }
 
+fun Date.timeIntervalSinceNow(): Long {
+  return Date().time - this.time
+}
+
 fun Date?.differenceInDays(other: Date?): Int {
   return if (this != null && other != null) (other.time - this.time).fromMillistoDays() else 0
 }
