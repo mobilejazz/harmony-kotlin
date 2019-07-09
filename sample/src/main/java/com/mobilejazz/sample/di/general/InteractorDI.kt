@@ -35,7 +35,6 @@ interface InteractorsComponent {
 
   @Subcomponent.Builder
   interface Builder {
-    fun requestModule(module: InteractorsModule): Builder
     fun build(): InteractorsComponent
   }
 

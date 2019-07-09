@@ -2,15 +2,16 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-  // Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlin_version"
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+  // Kotlin
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
   // Architecture
-  api "com.google.guava:guava:$rootProject.ext.guava_version"
+  api "com.google.guava:guava:$guava_version"
 
   // Gson
-  api "com.google.code.gson:gson:$rootProject.ext.gson_version"
+  api "com.google.code.gson:gson:$gson_version"
 
   // Injection
   api 'javax.inject:javax.inject:1'
