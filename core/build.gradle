@@ -1,88 +1,18 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group='org.bitbucket.mobilejazz'
-
-android {
-  compileSdkVersion rootProject.ext.android_compile_sdk_version
-  buildToolsVersion rootProject.ext.android_build_tools_version
-
-  defaultConfig {
-    minSdkVersion rootProject.ext.android_min_sdk_version
-    targetSdkVersion rootProject.ext.android_target_sdk_version
-
-    versionCode 1
-    versionName "1.0"
-
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-  }
-
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
-  }
-
-  sourceSets {
-    main.res.srcDirs = [
-        'src/main/res',
-        'src/main/res-load-content-layout'
-    ]
-  }
-
-  buildTypes {
-    debug {
-      debuggable = true
-    }
-
-    debugRelease {
-      debuggable = true
-      minifyEnabled false
-    }
-
-    release {
-      minifyEnabled false
-      def proguardConfigFiles = ['proguard-rules.pro',
-                                 '../proguard/gson.pro',
-                                 '../proguard/guava.pro'].toArray()
-      consumerProguardFiles proguardConfigFiles
-    }
-  }
-}
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
 
 dependencies {
-  // Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlin_version"
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-  // Android Support
-  implementation "androidx.appcompat:appcompat:1.0.2"
+  // Kotlin
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
   // Architecture
-  api "com.google.guava:guava:$rootProject.ext.guava_version"
+  api "com.google.guava:guava:$guava_version"
+
+  // Gson
+  api "com.google.code.gson:gson:$gson_version"
 
   // Injection
   api 'javax.inject:javax.inject:1'
-
-  implementation "com.google.dagger:dagger:$rootProject.ext.dagger_version"
-  implementation "com.google.dagger:dagger-android:$rootProject.ext.dagger_version"
-  implementation "com.google.dagger:dagger-android-support:$rootProject.ext.dagger_version"
-  kapt "com.google.dagger:dagger-compiler:$rootProject.ext.dagger_version"
-  kapt "com.google.dagger:dagger-android-processor:$rootProject.ext.dagger_version"
-
-  // Gson
-  implementation "com.google.code.gson:gson:$rootProject.ext.gson_version"
-
-  //arch components
-  api "androidx.lifecycle:lifecycle-runtime:2.0.0"
-  api "androidx.lifecycle:lifecycle-extensions:2.0.0"
-  kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
-
-  // Testing
-  testImplementation 'junit:junit:4.12'
-  testImplementation("org.assertj:assertj-core:3.11.1")
-
-  androidTestImplementation "com.android.support.test:runner:1.0.2"
-  androidTestImplementation "com.android.support.test:rules:1.0.2"
 }

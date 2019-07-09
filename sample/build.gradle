@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+  def config = rootProject.ext
+
+
+  compileSdkVersion config.android_compile_sdk_version
+  buildToolsVersion config.android_build_tools_version
+
+  defaultConfig {
+    applicationId "com.mobilejazz.sample"
+
+    minSdkVersion config.android_min_sdk_version
+    targetSdkVersion config.android_target_sdk_version
+
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+configurations.all {
+  resolutionStrategy {
+    force 'com.android.support:support-annotations:27.0.2'
+  }
+}
+
+dependencies {
+
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+  implementation "com.android.support:appcompat-v7:$support_libraries_version"
+  implementation "com.android.support:recyclerview-v7:$support_libraries_version"
+  implementation "com.android.support:design:$support_libraries_version"
+  implementation "com.android.support:support-annotations:$support_libraries_version"
+  implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+
+  implementation "com.squareup.retrofit2:adapter-guava:2.4.0"
+
+  implementation "com.google.dagger:dagger:$dagger_version"
+  implementation "com.google.dagger:dagger-android:$dagger_version"
+  implementation "com.google.dagger:dagger-android-support:$dagger_version"
+  kapt "com.google.dagger:dagger-compiler:$dagger_version"
+  kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+  implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+  implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.12.2'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
+
+  implementation "com.google.code.gson:gson:$gson_version"
+
+  testImplementation 'junit:junit:4.12'
+
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+  implementation project(':android')
+}
