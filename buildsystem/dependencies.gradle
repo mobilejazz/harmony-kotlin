@@ -10,6 +10,6 @@ ext {
 
   //General libraries
   guava_version = '25.1-android'
-  dagger_version = '2.22.1'
+  dagger_version = '2.16'
   gson_version = '2.8.5'
 }
