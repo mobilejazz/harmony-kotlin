@@ -1,7 +1,7 @@
 package com.mobilejazz.sample.di.ui
 
 import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
-import com.mobilejazz.harmony.kotlin.core.interactor.GetInteractor
+import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.threading.Executor
 import com.mobilejazz.sample.core.domain.model.ItemIds

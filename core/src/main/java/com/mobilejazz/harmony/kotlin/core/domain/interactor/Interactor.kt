@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.interactor
+package com.mobilejazz.harmony.kotlin.core.domain.interactor
 
 import com.mobilejazz.harmony.kotlin.core.repository.DeleteRepository
 import com.mobilejazz.harmony.kotlin.core.repository.GetRepository

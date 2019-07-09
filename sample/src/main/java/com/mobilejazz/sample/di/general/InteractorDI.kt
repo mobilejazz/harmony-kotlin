@@ -1,6 +1,6 @@
 package com.mobilejazz.sample.di.general
 
-import com.mobilejazz.harmony.kotlin.core.interactor.GetInteractor
+import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.threading.AppExecutor
 import com.mobilejazz.harmony.kotlin.core.threading.Executor
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
