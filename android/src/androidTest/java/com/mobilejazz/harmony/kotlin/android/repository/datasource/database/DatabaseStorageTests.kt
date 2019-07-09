@@ -1,10 +1,11 @@
-import androidx.test.runner.AndroidJUnit4
-import com.mobilejazz.kotlin.core.repository.datasource.database.ByteArrayStorageOpenHelper
-import com.mobilejazz.kotlin.core.repository.datasource.database.DatabaseStorageDataSource
-import com.mobilejazz.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.kotlin.core.repository.mapper.*
-import com.mobilejazz.kotlin.core.repository.query.KeyQuery
-import com.mobilejazz.kotlin.core.threading.extensions.unwrap
+package com.mobilejazz.harmony.kotlin.android.repository.datasource.database
+
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.mobilejazz.harmony.kotlin.android.InstrumentationTest
+import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
+import com.mobilejazz.harmony.kotlin.core.repository.mapper.*
+import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
+import com.mobilejazz.harmony.kotlin.core.threading.extensions.unwrap
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

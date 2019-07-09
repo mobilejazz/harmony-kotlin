@@ -9,7 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.mobilejazz.kotlin.core.R
+import com.mobilejazz.harmony.kotlin.android.R
 
 class LoadContentLayout : CoordinatorLayout {
 

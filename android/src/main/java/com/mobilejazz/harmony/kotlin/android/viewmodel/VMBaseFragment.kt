@@ -5,9 +5,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.mobilejazz.kotlin.core.di.Injectable
-import com.mobilejazz.kotlin.core.ext.dp
-import com.mobilejazz.kotlin.core.ext.sp
+import com.mobilejazz.harmony.kotlin.android.di.Injectable
+import com.mobilejazz.harmony.kotlin.android.ext.dp
+import com.mobilejazz.harmony.kotlin.android.ext.sp
 import javax.inject.Inject
 
 

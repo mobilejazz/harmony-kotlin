@@ -1,9 +1,5 @@
 package com.mobilejazz.harmony.kotlin.android.viewmodel
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.support.annotation.MainThread
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner

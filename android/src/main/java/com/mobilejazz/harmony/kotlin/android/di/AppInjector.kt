@@ -5,8 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-
-import com.mobilejazz.kotlin.core.viewmodel.VMBaseActivity
+import com.mobilejazz.harmony.kotlin.android.viewmodel.VMBaseActivity
 
 
 fun Application.initInjection() {

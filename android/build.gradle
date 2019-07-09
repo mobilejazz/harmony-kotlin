@@ -14,7 +14,7 @@ android {
     versionCode 1
     versionName "1.0"
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   compileOptions {
@@ -55,12 +55,11 @@ dependencies {
 
   api project(':core')
 
+  // Kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
   // Android Support
-  api "com.android.support:appcompat-v7:$support_libraries_version"
-  api "com.android.support:appcompat-v7:$support_libraries_version"
-  api "com.android.support:design:$support_libraries_version"
+  api "androidx.appcompat:appcompat:1.0.2"
 
   // Injection
   api 'javax.inject:javax.inject:1'
@@ -77,6 +76,8 @@ dependencies {
   kapt "android.arch.lifecycle:compiler:1.1.1"
 
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.2'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+  androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+  androidTestImplementation 'androidx.test:runner:1.2.0'
+  androidTestImplementation 'androidx.test:rules:1.2.0'
 }
