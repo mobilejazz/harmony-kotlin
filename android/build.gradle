@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.mobilejazz.harmony-kotlin'
+version = 'local'
 
 android {
   compileSdkVersion android_compile_sdk_version
