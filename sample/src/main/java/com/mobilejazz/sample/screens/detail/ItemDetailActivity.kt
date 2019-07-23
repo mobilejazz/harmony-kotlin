@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.MenuItem
+import com.mobilejazz.harmony.kotlin.android.helpers.LocalizedStrings
 import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
@@ -26,6 +27,9 @@ class ItemDetailActivity : AppCompatActivity() {
 
   @Inject
   lateinit var getItemsByIdInteractor: GetItemsByIdInteractor
+
+  @Inject
+  lateinit var localizedStrings: LocalizedStrings
 
   private val adapter by lazy {
     ItemsAdapter(listener = {
@@ -58,7 +62,7 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     item.kids?.let {
-      activity_detail_items_comments_tv.text = "LOADING COMMENTS"
+      activity_detail_items_comments_tv.text = localizedStrings.get(R.string.loading)
 
       loadComments(it)
     }
@@ -79,7 +83,7 @@ class ItemDetailActivity : AppCompatActivity() {
     getItemsByIdInteractor(ids).onCompleteUi(onSuccess = {
       adapter.reloadData(it)
 
-      activity_detail_items_comments_tv.text = "${ids.size} COMMENTS"
+      activity_detail_items_comments_tv.text = "${ids.size} " + localizedStrings.getPlural(R.plurals.comments, ids.size)
     }, onFailure = {
       // Nothing to do
     })
