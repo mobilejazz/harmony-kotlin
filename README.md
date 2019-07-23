@@ -14,7 +14,7 @@ allprojects {
 Step 2. Add the dependency
 ```groovy
 dependencies {
-    implementation 'com.github.mobilejazz.harmony-kotlin:android:0.9'
+    implementation 'com.github.mobilejazz.harmony-kotlin:android:0.9.1'
 }
 ```
 
