@@ -12,3 +12,6 @@
 - Updated sample code to demonstrate ho
   [LocalizedString](/android/src/main/java/com/mobilejazz/harmony/kotlin/android/helpers/LocalizedStrings.kt)
   work
+  
+  ## 0.9.2 (24/07/2019)
+- Fix on [ListenableFutureExt.blockError](/core/src/main/java/com/mobilejazz/harmony/kotlin/core/threading/extensions/ListenableFutureExt.kt) to avoid `kotlin.KotlinNullPointerException` when an Exception is thrown in the Future
