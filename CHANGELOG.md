@@ -12,3 +12,8 @@
 - Updated sample code to demonstrate ho
   [LocalizedString](/android/src/main/java/com/mobilejazz/harmony/kotlin/android/helpers/LocalizedStrings.kt)
   work
+  
+## 0.9.3 (30/07/2019)
+- [DeviceStorageDataSource](/core/src/main/java/com/mobilejazz/harmony/kotlin/android/repository/datasource/srpreferences/DeviceStorageDataSource.kt)
+now supports deleteAll clearing all keys with specified prefix or
+clears it otherwise.
