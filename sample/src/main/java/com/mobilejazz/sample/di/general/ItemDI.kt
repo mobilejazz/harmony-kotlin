@@ -47,7 +47,7 @@ class ItemDI {
   @Provides
   @Singleton
   fun provideSharedPreferencesStorage(sharedPreferences: SharedPreferences): DeviceStorageObjectAssemblerDataSource<ItemEntity> {
-    val deviceStorageDataSource = DeviceStorageDataSource<String>(sharedPreferences, "items")
+    val deviceStorageDataSource = DeviceStorageDataSource<String>(sharedPreferences)
 
     val gson = Gson()
     val toStringMapper = ModelToStringMapper<ItemEntity>(gson)
