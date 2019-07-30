@@ -13,6 +13,9 @@
   [LocalizedString](/android/src/main/java/com/mobilejazz/harmony/kotlin/android/helpers/LocalizedStrings.kt)
   work
   
+## 0.9.2 (24/07/2019)
+- Fix on [ListenableFutureExt.blockError](/core/src/main/java/com/mobilejazz/harmony/kotlin/core/threading/extensions/ListenableFutureExt.kt) to avoid `kotlin.KotlinNullPointerException` when an Exception is thrown in the Future
+  
 ## 0.9.3 (30/07/2019)
 - [DeviceStorageDataSource](/core/src/main/java/com/mobilejazz/harmony/kotlin/android/repository/datasource/srpreferences/DeviceStorageDataSource.kt)
 now supports deleteAll clearing all keys with specified prefix or

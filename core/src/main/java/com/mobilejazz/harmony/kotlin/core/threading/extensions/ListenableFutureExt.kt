@@ -103,7 +103,7 @@ inline fun <A> Future<A>.fallbackTo(
  *
  */
 inline fun <reified E : Throwable> Future<*>.blockError(): Future<Unit> {
-  return Futures.catching(this, E::class.java, Function { null }, DirectExecutor).map { kotlin.Unit }
+  return Futures.catching(this, E::class.java, Function { Unit }, DirectExecutor).map { kotlin.Unit }
 }
 
 // Callbacks
