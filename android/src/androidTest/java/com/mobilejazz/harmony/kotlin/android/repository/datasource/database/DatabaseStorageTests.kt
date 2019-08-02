@@ -1,5 +1,7 @@
 package com.mobilejazz.harmony.kotlin.android.repository.datasource.database
 
+import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mobilejazz.harmony.kotlin.android.InstrumentationTest
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
@@ -27,7 +29,13 @@ class DatabaseStorageTests : InstrumentationTest() {
 
   @Before
   fun setUp() {
-    val database = ByteArrayStorageOpenHelper(appContext, "test.db", 1).writableDatabase
+    val database = FrameworkSQLiteOpenHelperFactory().create(
+        SupportSQLiteOpenHelper.Configuration.builder(appContext)
+            .callback(ByteArrayStorageCallback(1))
+            .name("test.db")
+            .build()
+    ).writableDatabase
+
     databaseStorageDataSource = DatabaseStorageDataSource(database)
   }
 
@@ -51,6 +59,24 @@ class DatabaseStorageTests : InstrumentationTest() {
     Assert.assertEquals(testObject, byteArrayToModelMapper.map(byteArrayObtained))
   }
 
+  @Test
+  fun shouldGetLastStoredObject_WhenCallingGetAfterPut_GivenSerializableObject() {
+    // Given
+    val testObject1 = TestObject(1, "test.object.1")
+    val testObject2 = TestObject(2, "test.object.2")
+
+    databaseStorageDataSource.put(KeyQuery("testObject"),  modelToByteArrayMapper.map(testObject1))
+
+    val byteArrayPersisted = modelToByteArrayMapper.map(testObject2)
+    databaseStorageDataSource.put(KeyQuery("testObject"), byteArrayPersisted)
+
+    // When
+    val byteArrayObtained = databaseStorageDataSource.get(KeyQuery("testObject")).get()
+
+    // Then
+    Assert.assertTrue(byteArrayPersisted.contentEquals(byteArrayObtained))
+    Assert.assertEquals(testObject2, byteArrayToModelMapper.map(byteArrayObtained))
+  }
 
   @Test
   fun shouldGetStoredList_WhenCallingGetAfterPut_GivenListOfSerializableObjects() {
