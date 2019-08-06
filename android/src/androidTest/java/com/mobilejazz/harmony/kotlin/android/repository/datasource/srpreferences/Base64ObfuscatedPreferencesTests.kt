@@ -1,13 +1,12 @@
 package com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences
 
 import android.content.Context
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mobilejazz.harmony.kotlin.android.InstrumentationTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @RunWith(AndroidJUnit4::class)
 class Base64ObfuscatedPreferencesTests : InstrumentationTest() {
