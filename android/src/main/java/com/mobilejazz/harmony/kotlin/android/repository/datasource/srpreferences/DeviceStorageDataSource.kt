@@ -10,6 +10,10 @@ import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 import javax.inject.Inject
 
+/**
+ * This DataSource uses a [SharedPreferences] to store data.
+ * It supports the same value types that a SharedPreferences does: Boolean, Int, Float, Long, String, Set<String>
+ */
 class DeviceStorageDataSource<T> @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val prefix: String = ""
