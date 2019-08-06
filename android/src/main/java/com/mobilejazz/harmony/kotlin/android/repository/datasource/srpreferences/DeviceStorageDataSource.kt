@@ -78,14 +78,15 @@ class DeviceStorageDataSource<T> @Inject constructor(
   }
 
   override fun deleteAll(query: Query): Future<Unit> = Future {
-    when (query) {
-      is KeyQuery -> {
-        sharedPreferences.edit()
-            .remove(addPrefixTo(query.key))
-            .apply()
+    with(sharedPreferences.edit()) {
+      if (prefix.isNotEmpty()) {
+        sharedPreferences.all.keys.filter { it.contains(prefix) }.forEach { remove(it) }
+      } else {
+        clear()
       }
-      else -> notSupportedQuery()
+      apply()
     }
+
   }
 
   private fun addPrefixTo(key: String) = if (prefix.isEmpty()) key else "$prefix.$key"
