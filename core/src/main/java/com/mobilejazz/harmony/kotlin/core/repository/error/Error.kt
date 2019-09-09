@@ -4,7 +4,7 @@ package com.mobilejazz.harmony.kotlin.core.repository.error
 
 sealed class RepositoryException(override val message: String?, override val cause: Throwable?) : Exception(message)
 
-class DataNotFoundException(message: String? = "Data not found", cause: Throwable? = null) : RepositoryException(message, cause)
+open class DataNotFoundException(message: String? = "Data not found", cause: Throwable? = null) : RepositoryException(message, cause)
 
 class DeleteObjectFailException(message: String? = "Fail deleting object", cause: Throwable? = null) : RepositoryException(message, cause)
 
