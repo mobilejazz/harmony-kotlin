@@ -2,6 +2,7 @@ package com.mobilejazz.harmony.kotlin.core.repository.datasource
 
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.file.FileStreamValueDataStorage
 import com.mobilejazz.harmony.kotlin.core.repository.query.VoidQuery
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Index
 import org.junit.Rule
@@ -25,66 +26,74 @@ class FileStreamValueDataStorageTest {
 
   @Test
   fun should_store_value_and_return_same_value_when_put_function_is_called() {
-    val ds = givenAFileStreamValueDataSource()
-    val foo = givenAFooObject()
+    runBlocking {
+      val ds = givenAFileStreamValueDataSource()
+      val foo = givenAFooObject()
 
-    ds.put(VoidQuery, foo).get()
+      ds.put(VoidQuery, foo)
 
-    val result = ds.getAll(VoidQuery).get()
-    val expectedFoo = result[0]
+      val result = ds.getAll(VoidQuery)
+      val expectedFoo = result[0]
 
-    assertThat(result).isNotEmpty
-    assertThat(expectedFoo).isEqualTo(foo)
-    assertThat(expectedFoo.id).isEqualTo(FAKE_ID)
-    assertThat(expectedFoo.name).isEqualTo(FAKE_NAME)
+      assertThat(result).isNotEmpty
+      assertThat(expectedFoo).isEqualTo(foo)
+      assertThat(expectedFoo.id).isEqualTo(FAKE_ID)
+      assertThat(expectedFoo.name).isEqualTo(FAKE_NAME)
+    }
   }
 
   @Test
   fun should_store_multiple_values_and_return_same_values_when_putAll_function_is_called() {
-    val ds = givenAFileStreamValueDataSource()
-    val foos = givenAListOfFooObjects(4)
+    runBlocking {
+      val ds = givenAFileStreamValueDataSource()
+      val foos = givenAListOfFooObjects(4)
 
-    ds.putAll(VoidQuery, foos).get()
+      ds.putAll(VoidQuery, foos)
 
-    val expectedFoos = ds.getAll(VoidQuery).get()
+      val expectedFoos = ds.getAll(VoidQuery)
 
-    assertThat(expectedFoos)
-        .isNotEmpty
-        .hasSize(4)
-        .containsAll(foos)
+      assertThat(expectedFoos)
+          .isNotEmpty
+          .hasSize(4)
+          .containsAll(foos)
+    }
   }
 
   @Test
   fun should_store_multiple_values_in_different_stages_when_put_function_is_called() {
-    val ds = givenAFileStreamValueDataSource()
-    val fooJose = Foo(FAKE_ID, FAKE_NAME)
-    val fooJoan = Foo(12, "Joan Martin")
+    runBlocking {
+      val ds = givenAFileStreamValueDataSource()
+      val fooJose = Foo(FAKE_ID, FAKE_NAME)
+      val fooJoan = Foo(12, "Joan Martin")
 
-    ds.put(VoidQuery, fooJose).get()
-    ds.put(VoidQuery, fooJoan).get()
+      ds.put(VoidQuery, fooJose)
+      ds.put(VoidQuery, fooJoan)
 
-    val expectedFoos = ds.getAll(VoidQuery).get()
+      val expectedFoos = ds.getAll(VoidQuery)
 
-    assertThat(expectedFoos)
-        .isNotNull
-        .isNotEmpty
-        .hasSize(2)
-        .contains(fooJoan, Index.atIndex(0))
-        .contains(fooJose, Index.atIndex(1))
+      assertThat(expectedFoos)
+          .isNotNull
+          .isNotEmpty
+          .hasSize(2)
+          .contains(fooJoan, Index.atIndex(0))
+          .contains(fooJose, Index.atIndex(1))
+    }
   }
 
   @Test
   fun should_delete_all_values_when_deleteAll_function_is_called() {
-    val ds = givenAFileStreamValueDataSource()
-    val foos = givenAListOfFooObjects(6)
+    runBlocking {
+      val ds = givenAFileStreamValueDataSource()
+      val foos = givenAListOfFooObjects(6)
 
-    ds.putAll(VoidQuery, foos).get()
-    ds.deleteAll(VoidQuery).get()
-    val expectedFoos = ds.getAll(VoidQuery).get()
+      ds.putAll(VoidQuery, foos)
+      ds.deleteAll(VoidQuery)
+      val expectedFoos = ds.getAll(VoidQuery)
 
-    assertThat(expectedFoos)
-        .isNotNull
-        .isEmpty()
+      assertThat(expectedFoos)
+          .isNotNull
+          .isEmpty()
+    }
   }
 
   private fun givenAFileStreamValueDataSource(): FileStreamValueDataStorage<Foo> {

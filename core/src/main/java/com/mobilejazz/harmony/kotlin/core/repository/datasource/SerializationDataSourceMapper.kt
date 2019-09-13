@@ -2,8 +2,6 @@ package com.mobilejazz.harmony.kotlin.core.repository.datasource
 
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.map
 import javax.inject.Inject
 
 
@@ -30,23 +28,23 @@ class SerializationDataSourceMapper<SerializedIn, Out> @Inject constructor(
     private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
-  override fun get(query: Query): Future<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
+  override suspend fun get(query: Query): Out = getDataSource.get(query).let { toOutMapper.map(it) }
 
-  override fun getAll(query: Query): Future<List<Out>> = getDataSource.get(query).map { toOutListMapper.map(it) }
+  override suspend fun getAll(query: Query): List<Out> = getDataSource.get(query).let { toOutListMapper.map(it) }
 
-  override fun put(query: Query, value: Out?): Future<Out> {
+  override suspend fun put(query: Query, value: Out?): Out {
     val mapped = value?.let { toInMapper.map(value) }
     return putDataSource.put(query, mapped)
-        .map { toOutMapper.map(it) }
+        .let { toOutMapper.map(it) }
   }
 
-  override fun putAll(query: Query, value: List<Out>?): Future<List<Out>> {
+  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> {
     val mapped = value?.let { toInMapperFromList.map(value) }
     return putDataSource.put(query, mapped)
-        .map { toOutListMapper.map(it) }
+        .let { toOutListMapper.map(it) }
   }
 
-  override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
+  override suspend fun delete(query: Query) = deleteDataSource.delete(query)
 
-  override fun deleteAll(query: Query): Future<Unit> = deleteDataSource.deleteAll(query)
+  override suspend fun deleteAll(query: Query) = deleteDataSource.deleteAll(query)
 }

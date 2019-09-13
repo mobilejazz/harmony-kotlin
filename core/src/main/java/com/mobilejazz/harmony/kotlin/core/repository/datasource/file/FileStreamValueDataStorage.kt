@@ -4,7 +4,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 import java.io.EOFException
 import java.io.File
 import java.io.ObjectInputStream
@@ -12,43 +11,34 @@ import java.io.ObjectOutputStream
 
 class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
-  override fun get(query: Query): Future<T> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
+  override suspend fun get(query: Query): T = TODO("not implemented")
 
-  override fun getAll(query: Query): Future<List<T>> {
-    return Future {
-      val values = mutableListOf<T>()
-      val fin = file.inputStream()
-      var ois: ObjectInputStream? = null
-      try {
-        ois = ObjectInputStream(fin)
+  override suspend fun getAll(query: Query): List<T> {
+    val values = mutableListOf<T>()
+    val fin = file.inputStream()
+    var ois: ObjectInputStream? = null
+    try {
+      ois = ObjectInputStream(fin)
 
-        while (true) {
-          val value = ois.readObject() as T
-          values.add(value)
-        }
-      } catch (e: EOFException) {
-        ois?.close()
-        fin.close()
+      while (true) {
+        val value = ois.readObject() as T
+        values.add(value)
       }
-
-      return@Future values
+    } catch (e: EOFException) {
+      ois?.close()
+      fin.close()
     }
+
+    return values
   }
 
-  override fun put(query: Query, value: T?): Future<T> {
-    return Future {
-      return@Future value?.let {
-        putAll(query, listOf(value)).get()[0]
-      } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
-    }
-  }
+  override suspend fun put(query: Query, value: T?): T = value?.let {
+    putAll(query, listOf(value))[0]
+  } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
 
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> {
-    return Future {
+  override suspend fun putAll(query: Query, value: List<T>?): List<T> =
       value?.let {
-        val allCurrentValues = getAll(query).get()
+        val allCurrentValues = getAll(query)
         val fos = file.outputStream()
         val oos = ObjectOutputStream(fos)
 
@@ -61,21 +51,14 @@ class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataS
         oos.flush()
         oos.close()
         fos.close()
-        return@Future value ?: notSupportedQuery()
+        return value
       } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
-    }
-  }
 
-  override fun delete(query: Query): Future<Unit> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
+  override suspend fun delete(query: Query) = TODO("not implemented")
 
-  override fun deleteAll(query: Query): Future<Unit> {
-    return Future {
-      val outputStream = file.outputStream()
-      val objectOutputStream = ObjectOutputStream(outputStream)
-      objectOutputStream.reset()
-    }
+  override suspend fun deleteAll(query: Query) {
+    val outputStream = file.outputStream()
+    val objectOutputStream = ObjectOutputStream(outputStream)
+    objectOutputStream.reset()
   }
-
 }

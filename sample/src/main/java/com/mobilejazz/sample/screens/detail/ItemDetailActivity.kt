@@ -8,16 +8,22 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobilejazz.harmony.kotlin.android.helpers.LocalizedStrings
-import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item
 import com.mobilejazz.sample.screens.ItemsAdapter
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_item_detail.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class ItemDetailActivity : AppCompatActivity() {
+class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
+
+  override val coroutineContext: CoroutineContext
+    get() = Dispatchers.Main
 
   companion object {
     const val ITEM_KEY = "item-key"
@@ -80,13 +86,11 @@ class ItemDetailActivity : AppCompatActivity() {
 
 
   private fun loadComments(ids: List<Int>) {
-    getItemsByIdInteractor(ids).onCompleteUi(onSuccess = {
-      adapter.reloadData(it)
+    launch {
+      val items = getItemsByIdInteractor(ids)
+      adapter.reloadData(items)
 
       activity_detail_items_comments_tv.text = "${ids.size} " + localizedStrings.getPlural(R.plurals.comments, ids.size)
-    }, onFailure = {
-      // Nothing to do
-    })
+    }
   }
-
 }

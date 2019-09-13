@@ -4,9 +4,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.error.ObjectNotValidExcepti
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationService
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyDataSource
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.flatMap
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.toFuture
 import javax.inject.Inject
 
 class DataSourceVastraValidator<T : ValidationStrategyDataSource> @Inject constructor(private val getDataSource: GetDataSource<T>,
@@ -14,21 +11,21 @@ class DataSourceVastraValidator<T : ValidationStrategyDataSource> @Inject constr
                                                                                       private val deleteDataSource: DeleteDataSource,
                                                                                       private val validator: ValidationService) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
-  override fun get(query: Query): Future<T> = getDataSource.get(query).flatMap {
-    return@flatMap if (!validator.isValid(it)) throw ObjectNotValidException() else it.toFuture()
+  override suspend fun get(query: Query): T = getDataSource.get(query).let {
+    if (!validator.isValid(it)) throw ObjectNotValidException() else it
   }
 
-  override fun getAll(query: Query): Future<List<T>> = getDataSource.getAll(query).flatMap {
-    return@flatMap if (!validator.isValid(it)) throw ObjectNotValidException() else it.toFuture()
+  override suspend fun getAll(query: Query): List<T> = getDataSource.getAll(query).let {
+    if (!validator.isValid(it)) throw ObjectNotValidException() else it
   }
 
-  override fun put(query: Query, value: T?): Future<T> = putDataSource.put(query, value)
+  override suspend fun put(query: Query, value: T?): T = putDataSource.put(query, value)
 
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> = putDataSource.putAll(query, value)
+  override suspend fun putAll(query: Query, value: List<T>?): List<T> = putDataSource.putAll(query, value)
 
-  override fun delete(query: Query): Future<Unit> = deleteDataSource.delete(query)
+  override suspend fun delete(query: Query) = deleteDataSource.delete(query)
 
-  override fun deleteAll(query: Query): Future<Unit> = deleteDataSource.deleteAll(query)
+  override suspend fun deleteAll(query: Query) = deleteDataSource.deleteAll(query)
 
 }
 

@@ -20,6 +20,9 @@ dependencies {
   // Injection
   api 'javax.inject:javax.inject:1'
 
+  // Coroutiners
+  api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0")
+
   testImplementation 'junit:junit:4.12'
   testImplementation("org.assertj:assertj-core:3.11.1")
 }

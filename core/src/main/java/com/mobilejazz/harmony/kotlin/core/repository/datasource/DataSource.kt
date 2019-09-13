@@ -6,7 +6,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 
 interface DataSource {
 
@@ -15,35 +14,35 @@ interface DataSource {
 
 // DataSources
 interface GetDataSource<V> : DataSource {
-  fun get(query: Query): Future<V>
+  suspend fun get(query: Query): V
 
-  fun getAll(query: Query): Future<List<V>>
+  suspend fun getAll(query: Query): List<V>
 }
 
 interface PutDataSource<V> : DataSource {
-  fun put(query: Query, value: V?): Future<V>
+  suspend fun put(query: Query, value: V?): V
 
-  fun putAll(query: Query, value: List<V>? = emptyList()): Future<List<V>>
+  suspend fun putAll(query: Query, value: List<V>? = emptyList()): List<V>
 }
 
 interface DeleteDataSource : DataSource {
-  fun delete(query: Query): Future<Unit>
+  suspend fun delete(query: Query)
 
-  fun deleteAll(query: Query): Future<Unit>
+  suspend fun deleteAll(query: Query)
 }
 
 // Extensions
-fun <K, V> GetDataSource<V>.get(id: K): Future<V> = get(IdQuery(id))
+suspend fun <K, V> GetDataSource<V>.get(id: K): V = get(IdQuery(id))
 
-fun <K, V> GetDataSource<V>.getAll(ids: List<K>): Future<List<V>> = getAll(IdsQuery(ids))
+suspend fun <K, V> GetDataSource<V>.getAll(ids: List<K>): List<V> = getAll(IdsQuery(ids))
 
-fun <K, V> PutDataSource<V>.put(id: K, value: V?): Future<V> = put(IdQuery(id), value)
+suspend fun <K, V> PutDataSource<V>.put(id: K, value: V?): V = put(IdQuery(id), value)
 
-fun <K, V> PutDataSource<V>.putAll(ids: List<K>, values: List<V>?) = putAll(IdsQuery(ids), values)
+suspend fun <K, V> PutDataSource<V>.putAll(ids: List<K>, values: List<V>?) = putAll(IdsQuery(ids), values)
 
-fun <K> DeleteDataSource.delete(id: K): Future<Unit> = delete(IdQuery(id))
+suspend fun <K> DeleteDataSource.delete(id: K) = delete(IdQuery(id))
 
-fun <K> DeleteDataSource.deleteAll(ids: List<K>): Future<Unit> = deleteAll(IdsQuery(ids))
+suspend fun <K> DeleteDataSource.deleteAll(ids: List<K>) = deleteAll(IdsQuery(ids))
 
 // Extensions to create
 fun <V> GetDataSource<V>.toGetRepository() = SingleGetDataSourceRepository(this)

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.repository.operation.CacheSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.operation.MainSyncOperation
@@ -18,9 +17,14 @@ import com.mobilejazz.sample.screens.ItemsAdapter
 import com.mobilejazz.sample.screens.detail.ItemDetailActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), CoroutineScope {
+
+  override val coroutineContext: CoroutineContext
+    get() = Dispatchers.Main
 
   private val adapter by lazy {
     ItemsAdapter(listener = {
@@ -54,23 +58,30 @@ class HomeActivity : AppCompatActivity() {
     reloadData(false)
   }
 
+  private suspend fun getRandomValue() = withContext(Dispatchers.Default) {
+    println("entering in getRandomValue() function --> start delay")
+    delay(1000)
+    println("entering in getRandomValue() function --> finish delay")
+    return@withContext 10
+  }
+
+
   private fun reloadData(pullToRefresh: Boolean) {
-    activity_home_swipe_refresh_srl.isRefreshing = true
 
-    getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation).onCompleteUi(onFailure = {
-      // nothing to do
-      Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_SHORT)
-      Log.e("Error", it.localizedMessage)
-    }, onSuccess = {
-      getItemsByIdInteractor(it.ids).onCompleteUi(onSuccess = {
-        adapter.reloadData(it)
+    launch {
+      // CouroutineScope
+      // MainThread
+      activity_home_swipe_refresh_srl.isRefreshing = true
+      try {
+        val stories = getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation)
+        val items = getItemsByIdInteractor(stories.ids)
+        adapter.reloadData(items)
+      } catch (e: Exception) {
+        Log.e("Error", e.localizedMessage)
+        Snackbar.make(activity_home_items_rv, "Error : " + e.localizedMessage, Snackbar.LENGTH_LONG).show()
+      }
 
-        activity_home_swipe_refresh_srl.isRefreshing = false
-      }, onFailure = {
-        // nothing to do
-        Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show()
-        Log.e("Error", it.localizedMessage)
-      })
-    })
+      activity_home_swipe_refresh_srl.isRefreshing = false
+    }
   }
 }

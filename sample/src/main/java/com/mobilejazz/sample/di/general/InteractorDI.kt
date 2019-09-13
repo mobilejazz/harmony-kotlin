@@ -1,13 +1,13 @@
 package com.mobilejazz.sample.di.general
 
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
-import com.mobilejazz.harmony.kotlin.core.threading.AppExecutor
-import com.mobilejazz.harmony.kotlin.core.threading.Executor
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 
@@ -16,13 +16,14 @@ class InteractorsModule {
 
   @Provides
   @Singleton
-  fun provideAppListeningExecutorService(): Executor = AppExecutor
+  fun provideAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Default)
+
 
   // Global Interactors
   @Provides
   @Singleton
-  fun provideGetItemsByIdInteractor(executor: Executor, getItemInteractor: GetInteractor<Item>): GetItemsByIdInteractor {
-    return GetItemsByIdInteractor(executor, getItemInteractor)
+  fun provideGetItemsByIdInteractor(scope: CoroutineScope, getItemInteractor: GetInteractor<Item>): GetItemsByIdInteractor {
+    return GetItemsByIdInteractor(scope, getItemInteractor)
   }
 
 
@@ -31,7 +32,7 @@ class InteractorsModule {
 @Subcomponent
 interface InteractorsComponent {
 
-  fun appExecutor(): AppExecutor
+  fun appScope(): CoroutineScope
 
   @Subcomponent.Builder
   interface Builder {

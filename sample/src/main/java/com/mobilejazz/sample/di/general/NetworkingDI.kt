@@ -11,7 +11,6 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.guava.GuavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
@@ -27,7 +26,6 @@ class NetworkingModule {
     return Retrofit.Builder()
         .baseUrl("https://hacker-news.firebaseio.com/v0/")
         .addConverterFactory(GsonConverterFactory.create(gson))
-        .addCallAdapterFactory(GuavaCallAdapterFactory.create())
         .client(okHttpClient)
         .build()
   }

@@ -5,7 +5,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 
 class DeviceStorageObjectAssemblerDataSource<T>(
     private val toStringMapper: Mapper<T, String>,
@@ -15,43 +14,29 @@ class DeviceStorageObjectAssemblerDataSource<T>(
     private val deviceStorageDataSource: DeviceStorageDataSource<String>
 ) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
-  override fun get(query: Query): Future<T> {
-    return Future {
-      val stringValue = deviceStorageDataSource.get(query).get()
-      return@Future toModelMapper.map(stringValue)
-    }
+  override suspend fun get(query: Query): T = deviceStorageDataSource.get(query).let(toModelMapper)
+
+  override suspend fun getAll(query: Query): List<T> = deviceStorageDataSource.get(query).let(toModelFromListString)
+
+  override suspend fun put(query: Query, value: T?): T {
+    return value?.let {
+      val mappedValue = toStringMapper.map(value)
+      deviceStorageDataSource.put(query, mappedValue)
+      return@let value
+    } ?: throw IllegalArgumentException("value must be not null")
   }
 
-  override fun getAll(query: Query): Future<List<T>> {
-    return Future {
-      val stringValue = deviceStorageDataSource.get(query).get()
-      return@Future toModelFromListString.map(stringValue)
-    }
+
+  override suspend fun putAll(query: Query, value: List<T>?): List<T> {
+    return value?.let {
+      val mappedValue = toStringFromListMapper.map(value)
+      deviceStorageDataSource.put(query, mappedValue)
+      return@let value
+    } ?: throw IllegalArgumentException("value must be not null")
   }
 
-  override fun put(query: Query, value: T?): Future<T> {
-    return Future {
-      value?.let {
-        val mappedValue = toStringMapper.map(value)
-        deviceStorageDataSource.put(query, mappedValue).get()
+  override suspend fun delete(query: Query) = deviceStorageDataSource.delete(query)
 
-        return@let value
-      } ?: throw IllegalArgumentException("value must be not null")
-    }
-  }
-
-  override fun putAll(query: Query, value: List<T>?): Future<List<T>> {
-    return Future {
-      value?.let {
-        val mappedValue = toStringFromListMapper.map(value)
-        deviceStorageDataSource.put(query, mappedValue).get()
-        return@let value
-      } ?: throw IllegalArgumentException("value must be not null")
-    }
-  }
-
-  override fun delete(query: Query): Future<Unit> = deviceStorageDataSource.delete(query)
-
-  override fun deleteAll(query: Query): Future<Unit> = deviceStorageDataSource.deleteAll(query)
+  override suspend fun deleteAll(query: Query) = deviceStorageDataSource.deleteAll(query)
 
 }
