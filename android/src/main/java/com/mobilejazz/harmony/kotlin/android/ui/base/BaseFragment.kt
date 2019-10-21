@@ -20,7 +20,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
   override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
   // Perform injection here for M (API 23) due to deprecation of onAttach(Activity).
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     AndroidSupportInjection.inject(this)
     super.onAttach(context)
   }
