@@ -3,8 +3,6 @@ package com.mobilejazz.harmony.kotlin.android.ext
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.support.annotation.ColorRes
-import android.support.annotation.DrawableRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -13,6 +11,8 @@ import android.view.animation.BounceInterpolator
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

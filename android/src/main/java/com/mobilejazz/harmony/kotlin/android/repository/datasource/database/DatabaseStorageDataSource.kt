@@ -2,6 +2,9 @@ package com.mobilejazz.harmony.kotlin.android.repository.datasource.database
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteQueryBuilder
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
@@ -11,18 +14,16 @@ import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 
 
-class DatabaseStorageDataSource(private val db: SQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
+class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
   override fun get(query: Query): Future<ByteArray> =
       Future {
+        FrameworkSQLiteOpenHelperFactory()
         when (query) {
           is KeyQuery -> {
-            val cursor = db.query(BlobTable.TABLE_NAME,
-                null,
-                "${BlobTable.COLUMN_KEY} == ?",
-                arrayOf(query.key),
-                null,
-                null,
-                null
+            val cursor = db.query(
+                SupportSQLiteQueryBuilder.builder(BlobTable.TABLE_NAME)
+                    .selection("${BlobTable.COLUMN_KEY} == ?", arrayOf(query.key))
+                    .create()
             )
             if (cursor.moveToFirst()) {
               val value = cursor.getBlob(cursor.getColumnIndex(BlobTable.COLUMN_VALUE))
@@ -49,9 +50,9 @@ class DatabaseStorageDataSource(private val db: SQLiteDatabase) : GetDataSource<
         value?.also { value ->
           when (query) {
             is KeyQuery ->
-              db.replace(
+              db.insert(
                   BlobTable.TABLE_NAME,
-                  null,
+                  SQLiteDatabase.CONFLICT_REPLACE,
                   ContentValues().also {
                     it.put(BlobTable.COLUMN_KEY, query.key)
                     it.put(BlobTable.COLUMN_VALUE, value)
@@ -86,7 +87,7 @@ class DatabaseStorageDataSource(private val db: SQLiteDatabase) : GetDataSource<
   // TODO Options for deleteAll:
   // - Not supported (current implementation)
   // - Ignore query and clear database
-  // - Use a new KeysQuery(List<String>) and delete all entries with the indicated query
+      // - Use a new KeysQuery(List<String>) and delete all entries with the indicated query
       Future {
         throw UnsupportedOperationException("deleteAll not supported. Use delete instead")
       }

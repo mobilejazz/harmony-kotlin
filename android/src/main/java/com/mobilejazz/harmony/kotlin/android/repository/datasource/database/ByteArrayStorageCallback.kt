@@ -1,17 +1,10 @@
 package com.mobilejazz.harmony.kotlin.android.repository.datasource.database
 
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
-import javax.inject.Inject
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 
-class ByteArrayStorageOpenHelper @Inject constructor(
-    context: Context,
-    dbName: String,
-    dbVersion: Int
-) : SQLiteOpenHelper(context, dbName, null, dbVersion) {
-
-  override fun onCreate(db: SQLiteDatabase) {
+class ByteArrayStorageCallback(version: Int) : SupportSQLiteOpenHelper.Callback(version) {
+  override fun onCreate(db: SupportSQLiteDatabase) {
     db.execSQL("""
       | CREATE TABLE ${BlobTable.TABLE_NAME} (
       |   ${BlobTable.COLUMN_KEY} TEXT NOT NULL PRIMARY KEY,
@@ -20,7 +13,7 @@ class ByteArrayStorageOpenHelper @Inject constructor(
     """.trimMargin())
   }
 
-  override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+  override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
     db.execSQL("DROP TABLE IF EXISTS ${BlobTable.TABLE_NAME}")
     onCreate(db)
   }
@@ -30,5 +23,4 @@ object BlobTable {
   const val TABLE_NAME = "cache"
   const val COLUMN_KEY = "key"
   const val COLUMN_VALUE = "value"
-
 }

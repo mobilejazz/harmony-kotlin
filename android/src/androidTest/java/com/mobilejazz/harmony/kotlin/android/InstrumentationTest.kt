@@ -1,11 +1,11 @@
 package com.mobilejazz.harmony.kotlin.android
 
 import android.content.Context
-import android.support.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 
 open class InstrumentationTest {
   val testContext: Context
-    get() = InstrumentationRegistry.getContext()
+    get() = InstrumentationRegistry.getInstrumentation().context
   val appContext: Context
-    get() = InstrumentationRegistry.getTargetContext()
+    get() = InstrumentationRegistry.getInstrumentation().context
 }

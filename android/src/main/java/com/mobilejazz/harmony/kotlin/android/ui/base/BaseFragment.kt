@@ -2,11 +2,11 @@ package com.mobilejazz.harmony.kotlin.android.ui.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -20,7 +20,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
   override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
   // Perform injection here for M (API 23) due to deprecation of onAttach(Activity).
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     AndroidSupportInjection.inject(this)
     super.onAttach(context)
   }

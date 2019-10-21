@@ -1,9 +1,9 @@
 package com.mobilejazz.harmony.kotlin.android.ui.base
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -20,7 +20,8 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     setContentView(getContentViewResId())
   }
 
-  @LayoutRes abstract fun getContentViewResId(): Int
+  @LayoutRes
+  abstract fun getContentViewResId(): Int
 
   override fun supportFragmentInjector(): AndroidInjector<Fragment>? = fragmentInjector
 

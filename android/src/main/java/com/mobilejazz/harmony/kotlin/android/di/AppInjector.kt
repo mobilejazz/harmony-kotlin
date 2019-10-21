@@ -3,8 +3,8 @@ package com.mobilejazz.harmony.kotlin.android.di
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.mobilejazz.harmony.kotlin.android.viewmodel.VMBaseActivity
 
 
