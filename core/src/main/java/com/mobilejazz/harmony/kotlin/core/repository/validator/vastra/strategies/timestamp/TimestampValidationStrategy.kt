@@ -5,14 +5,10 @@ import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyResult
 import java.util.*
 
-abstract class TimestampValidationStrategyDataSource(lastUpdate: Date = Date()) : ValidationStrategyDataSource {
-  private val optionalLastUpdate: Date? = lastUpdate
+abstract class TimestampValidationStrategyDataSource(open var lastUpdate: Date) :
+    ValidationStrategyDataSource {
 
-  val lastUpdate: Date
-    get() = optionalLastUpdate ?: Date()
-
-  abstract val expiryTime: Long
-
+  abstract fun expiryTime(): Long
 }
 
 class TimestampValidationStrategy : ValidationStrategy {
@@ -22,7 +18,7 @@ class TimestampValidationStrategy : ValidationStrategy {
       is TimestampValidationStrategyDataSource -> {
         val diff = System.currentTimeMillis() - t.lastUpdate.time
 
-        return if (diff > t.expiryTime)
+        return if (diff > t.expiryTime())
           ValidationStrategyResult.INVALID
         else
           ValidationStrategyResult.VALID

@@ -12,5 +12,9 @@ data class ItemEntity(val id: Int,
                       val time: Int,
                       val url: String?,
                       val kids: List<Int>?,
-                      private val lu: Date = Date(),
-                      private val et: Long = TimeUnit.MINUTES.toMillis(1)) : TimestampValidationStrategyDataSource(lu, et)
+                      @Transient override var lastUpdate: Date = Date()) : TimestampValidationStrategyDataSource(lastUpdate) {
+
+  override fun expiryTime(): Long {
+    return TimeUnit.MINUTES.toMillis(1)
+  }
+}

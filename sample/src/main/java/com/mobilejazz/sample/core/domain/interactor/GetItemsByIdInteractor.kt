@@ -16,7 +16,7 @@ class GetItemsByIdInteractor @Inject constructor(private val executor: Executor,
   operator fun invoke(ids: List<Int>, executor: Executor = this.executor): Future<List<Item>> {
     return executor.submit(Callable {
       return@Callable ids.map {
-        getItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation, executor = DirectExecutor).get()
+        getItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation(), executor = DirectExecutor).get()
       }
     })
   }

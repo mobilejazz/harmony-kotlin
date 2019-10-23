@@ -6,14 +6,15 @@ import com.google.gson.Gson
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.*
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.*
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.memory.InMemoryDataSource
+import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidDeleteDataSource
+import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidPutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.*
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationServiceManager
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.timestamp.TimestampValidationStrategy
+import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.toVastraValidator
 import com.mobilejazz.sample.core.data.mapper.ItemEntityToItemMapper
 import com.mobilejazz.sample.core.data.model.ItemEntity
-import com.mobilejazz.sample.core.data.network.ItemNetworkDataProvider
+import com.mobilejazz.sample.core.data.network.ItemNetworkDataSource
 import com.mobilejazz.sample.core.domain.model.Item
 import dagger.Module
 import dagger.Provides
@@ -22,27 +23,6 @@ import javax.inject.Singleton
 
 @Module
 class ItemDI {
-
-
-  // Datasources
-  // --> Network
-  @Provides
-  @Singleton
-  fun provideGetNetworkDataProvider(dataSourceVastraValidator: DataSourceValidator<ItemEntity>): GetDataSource<ItemEntity> = dataSourceVastraValidator
-
-  @Provides
-  @Singleton
-  fun providePutNetworkDataProvider(dataSourceVastraValidator: DataSourceValidator<ItemEntity>): PutDataSource<ItemEntity> = dataSourceVastraValidator
-
-  @Provides
-  @Singleton
-  fun provideDeleteNetworkDataProvider(dataSourceVastraValidator: DataSourceValidator<ItemEntity>): DeleteDataSource = dataSourceVastraValidator
-
-  // Datasources
-  // --> Storage
-  @Provides
-  @Singleton
-  fun provideInMemoryStorage(): InMemoryDataSource<ItemEntity> = InMemoryDataSource()
 
   @Provides
   @Singleton
@@ -57,23 +37,15 @@ class ItemDI {
     return DeviceStorageObjectAssemblerDataSource(toStringMapper, toModelMapper, toListModelMapper, toStringListMapper, deviceStorageDataSource)
   }
 
-  // Datasources
-  // --> Validator
-
-  @Provides
-  @Singleton
-  fun provideVastraValidator(sharedPreferencesDataSource: DeviceStorageObjectAssemblerDataSource<ItemEntity>): DataSourceValidator<ItemEntity> {
-    val validationServiceManager = ValidationServiceManager(arrayListOf(TimestampValidationStrategy())).toVastraValidator<ItemEntity>()
-
-    return DataSourceValidator(sharedPreferencesDataSource, sharedPreferencesDataSource, sharedPreferencesDataSource, validationServiceManager)
-  }
-
   // Repositories
   // --> Main
   @Provides
   @Singleton
-  fun provideCacheRepository(dataSourceVastraValidator: DataSourceValidator<ItemEntity>, ind: ItemNetworkDataProvider): CacheRepository<ItemEntity> {
-    return CacheRepository(dataSourceVastraValidator, dataSourceVastraValidator, dataSourceVastraValidator, ind, VoidPutDataSource(), VoidDeleteDataSource())
+  fun provideCacheRepository(cacheDataSource: DeviceStorageObjectAssemblerDataSource<ItemEntity>, mainDataSource: ItemNetworkDataSource): CacheRepository<ItemEntity> {
+    return CacheRepository(
+        cacheDataSource, cacheDataSource, cacheDataSource,
+        mainDataSource, VoidPutDataSource(), VoidDeleteDataSource(),
+        ValidationServiceManager(arrayListOf(TimestampValidationStrategy())).toVastraValidator())
   }
 
   @Provides

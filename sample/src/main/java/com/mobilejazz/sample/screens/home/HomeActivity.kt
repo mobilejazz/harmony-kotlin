@@ -57,20 +57,25 @@ class HomeActivity : AppCompatActivity() {
   private fun reloadData(pullToRefresh: Boolean) {
     activity_home_swipe_refresh_srl.isRefreshing = true
 
-    getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation).onCompleteUi(onFailure = {
-      // nothing to do
-      Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_SHORT)
-      Log.e("Error", it.localizedMessage)
-    }, onSuccess = {
-      getItemsByIdInteractor(it.ids).onCompleteUi(onSuccess = {
-        adapter.reloadData(it)
+    getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation(fallback = { false }))
+        .onCompleteUi(
+            onSuccess = {
+              getItemsByIdInteractor(it.ids).onCompleteUi(
+                  onSuccess = {
+                    adapter.reloadData(it)
 
-        activity_home_swipe_refresh_srl.isRefreshing = false
-      }, onFailure = {
-        // nothing to do
-        Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show()
-        Log.e("Error", it.localizedMessage)
-      })
-    })
+                    activity_home_swipe_refresh_srl.isRefreshing = false
+                  },
+                  onFailure = {
+                    // nothing to do
+                    Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show()
+                    Log.e("Error", it.localizedMessage)
+                  })
+            },
+            onFailure = {
+              // nothing to do
+              Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_SHORT)
+              Log.e("Error", it.localizedMessage)
+            })
   }
 }

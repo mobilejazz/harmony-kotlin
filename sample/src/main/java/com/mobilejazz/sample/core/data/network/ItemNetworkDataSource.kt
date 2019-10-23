@@ -7,18 +7,15 @@ import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 import com.mobilejazz.sample.core.data.model.ItemEntity
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class ItemNetworkDataProvider @Inject constructor(private val hackerNewsItemService: HackerNewsItemService) : GetDataSource<ItemEntity> {
+class ItemNetworkDataSource @Inject constructor(private val hackerNewsItemService: HackerNewsItemService) : GetDataSource<ItemEntity> {
 
   override fun get(query: Query): Future<ItemEntity> = when (query) {
     is IntegerIdQuery -> {
       Future {
         val item = hackerNewsItemService.newItem(query.identifier).get()
-        item.lastUpdate = Date()
-        item.expiryTime = TimeUnit.MINUTES.toMillis(5)
-
+        item.copy(lastUpdate = Date())
         return@Future item
 
       }
