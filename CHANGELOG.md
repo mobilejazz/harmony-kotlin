@@ -1,4 +1,10 @@
 # CHANGELOG
+
+## 1.0.1 (25/10/2019)
+- Exact same version as 1.0. It is created to solve a issue with JitPack
+that currently is using a older invalid build with version 1.0 which 
+can't be removed
+
 ## 1.0 (25/10/2019)
 - Migration to AndroidX
 - Improved CacheRepository and CacheSyncOperation to allow returning a
