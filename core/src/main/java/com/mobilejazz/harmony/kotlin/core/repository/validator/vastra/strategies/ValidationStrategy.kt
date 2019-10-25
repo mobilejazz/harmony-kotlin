@@ -1,12 +1,14 @@
 package com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies
 
-public enum class ValidationStrategyResult {
+import java.io.Serializable
+
+enum class ValidationStrategyResult {
   UNKNOWN,
   VALID,
   INVALID
 }
 
-interface ValidationStrategyDataSource
+interface ValidationStrategyDataSource : Serializable
 
 interface ValidationStrategy {
 
