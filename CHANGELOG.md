@@ -1,4 +1,12 @@
 # CHANGELOG
+## 1.0 (25/10/2019)
+- Migration to AndroidX
+- Improved CacheRepository and CacheSyncOperation to allow returning a
+  non valid object when MainOperation fails
+  [PR #9](https://github.com/mobilejazz/harmony-kotlin/pull/9)
+- Changes on TimestampValidationStrategy usage.
+- Removed DataSourceValidator and DataSourceVastraValidator
+
 ## 0.9.5 (09/09/2019)
 - Make DataNotFoundException open to be able to use custom Exceptions with
 CacheRepository
