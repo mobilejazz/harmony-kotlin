@@ -2,6 +2,7 @@ package com.mobilejazz.sample.screens.home
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,14 +13,17 @@ import com.mobilejazz.harmony.kotlin.core.repository.operation.MainSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
+import com.mobilejazz.sample.core.domain.model.Item
 import com.mobilejazz.sample.core.domain.model.ItemIds
 import com.mobilejazz.sample.screens.ItemsAdapter
 import com.mobilejazz.sample.screens.detail.ItemDetailActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 class HomeActivity : AppCompatActivity(), CoroutineScope {
 
@@ -65,13 +69,28 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     return@withContext 10
   }
 
+  private fun Button.clicks(): Flow<Unit> = flow { setOnClickListener { launch { emit(Unit) }} }
+
 
   private fun reloadData(pullToRefresh: Boolean) {
 
+
+    val refresh: Button? = null
+
     launch {
+      activity_home_swipe_refresh_srl.isRefreshing = true
+
+      flowOf(getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation))
+          .flatMapMerge { flowOf(getItemsByIdInteractor(it.ids)) }
+          .catch { Log.e("Error", it.localizedMessage)
+            Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show() }
+          .collect {
+            adapter.reloadData(it)
+            activity_home_swipe_refresh_srl.isRefreshing = false
+          }
       // CouroutineScope
       // MainThread
-      activity_home_swipe_refresh_srl.isRefreshing = true
+      /*activity_home_swipe_refresh_srl.isRefreshing = true
       try {
         val stories = getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation)
         val items = getItemsByIdInteractor(stories.ids)
@@ -81,7 +100,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         Snackbar.make(activity_home_items_rv, "Error : " + e.localizedMessage, Snackbar.LENGTH_LONG).show()
       }
 
-      activity_home_swipe_refresh_srl.isRefreshing = false
+      activity_home_swipe_refresh_srl.isRefreshing = false*/
     }
   }
 }
