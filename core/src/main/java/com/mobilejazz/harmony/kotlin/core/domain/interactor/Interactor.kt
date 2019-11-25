@@ -50,7 +50,7 @@ class PutAllInteractor<M> @Inject constructor(private val scope: CoroutineScope,
 class DeleteInteractor @Inject constructor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
-      scope.launch {
+      withContext(scope.coroutineContext) {
         deleteRepository.delete(query, operation)
       }
 }
@@ -58,7 +58,7 @@ class DeleteInteractor @Inject constructor(private val scope: CoroutineScope, pr
 class DeleteAllInteractor @Inject constructor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
-      scope.launch {
+      withContext(scope.coroutineContext) {
         deleteRepository.deleteAll(query, operation)
       }
 }

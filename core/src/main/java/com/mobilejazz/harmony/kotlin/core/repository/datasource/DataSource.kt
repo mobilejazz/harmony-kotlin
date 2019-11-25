@@ -6,6 +6,7 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import java.util.Collections.emptyList
 
 interface DataSource {
 
