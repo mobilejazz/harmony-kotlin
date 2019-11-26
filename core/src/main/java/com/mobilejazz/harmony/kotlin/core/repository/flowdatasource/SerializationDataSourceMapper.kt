@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.datasource.flow
+package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query

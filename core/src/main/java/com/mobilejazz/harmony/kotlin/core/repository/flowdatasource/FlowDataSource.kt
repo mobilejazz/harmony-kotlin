@@ -1,9 +1,11 @@
-package com.mobilejazz.harmony.kotlin.core.repository.datasource.flow
+package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.error.QueryNotSupportedException
+import com.mobilejazz.harmony.kotlin.core.repository.flow.*
+import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
@@ -61,3 +63,18 @@ fun <K> FlowDeleteDataSource.deleteAll(ids: List<K>): Flow<Unit> = deleteAll(Ids
 fun <K> DeleteDataSource.deleteAll(ids: List<K>): Flow<Unit> = flow { emit(deleteAll(IdsQuery(ids))) }
 
 fun <K> FlowDeleteDataSource.deleteAll(vararg ids: K): Flow<Unit> = deleteAll(IdsQuery(listOf(ids)))
+
+
+//region Creation
+
+// Extensions to create
+fun <V> FlowGetDataSource<V>.toFlowGetRepository() = SingleFlowGetDataSourceRepository(this)
+
+fun <K, V> FlowGetDataSource<K>.toFlowGetRepository(mapper: Mapper<K, V>): FlowGetRepository<V> = toFlowGetRepository().withMapping(mapper)
+
+fun <V> FlowPutDataSource<V>.toPutRepository() = SingleFlowPutDataSourceRepository(this)
+
+fun <K, V> FlowPutDataSource<K>.toPutRepository(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): FlowPutRepository<V> = toPutRepository().withMapping(toMapper, fromMapper)
+
+fun FlowDeleteDataSource.toDeleteRepository() = SingleFlowDeleteDataSourceRepository(this)
+//endregion
