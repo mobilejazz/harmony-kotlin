@@ -10,10 +10,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.harmony.kotlin.data.operation.CacheSyncOperation
 import com.harmony.kotlin.data.operation.MainSyncOperation
 import com.harmony.kotlin.data.query.KeyQuery
-import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
+import com.harmony.kotlin.domain.interactor.GetInteractor
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
-import com.mobilejazz.sample.core.domain.model.Item
 import com.mobilejazz.sample.core.domain.model.ItemIds
 import com.mobilejazz.sample.screens.ItemsAdapter
 import com.mobilejazz.sample.screens.detail.ItemDetailActivity
@@ -23,7 +22,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.suspendCoroutine
 
 class HomeActivity : AppCompatActivity(), CoroutineScope {
 

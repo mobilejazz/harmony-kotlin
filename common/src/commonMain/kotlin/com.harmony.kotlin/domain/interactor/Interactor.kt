@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.domain.interactor
+package com.harmony.kotlin.domain.interactor
 
 import com.harmony.kotlin.data.operation.DefaultOperation
 import com.harmony.kotlin.data.operation.Operation
