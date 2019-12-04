@@ -4,7 +4,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * This data source uses mappers to map objects and redirects them to the contained data source, acting as a simple "translator".
@@ -15,7 +14,7 @@ import javax.inject.Inject
  * @param toOutMapper Mapper to map data source objects to repository objects
  * @param toInMapper Mapper to map repository objects to data source objects
  */
-class FlowDataSourceMapper<In, Out> @Inject constructor(
+class FlowDataSourceMapper<In, Out>(
     getDataSource: FlowGetDataSource<In>,
     putDataSource: FlowPutDataSource<In>,
     private val deleteDataSource: FlowDeleteDataSource,
@@ -39,7 +38,7 @@ class FlowDataSourceMapper<In, Out> @Inject constructor(
   override fun deleteAll(query: Query): Flow<Unit> = deleteDataSource.deleteAll(query)
 }
 
-class FlowGetDataSourceMapper<In, Out> @Inject constructor(
+class FlowGetDataSourceMapper<In, Out>(
     private val getDataSource: FlowGetDataSource<In>,
     private val toOutMapper: Mapper<In, Out>) : FlowGetDataSource<Out> {
 
@@ -49,7 +48,7 @@ class FlowGetDataSourceMapper<In, Out> @Inject constructor(
 
 }
 
-class FlowPutDataSourceMapper<In, Out> @Inject constructor(
+class FlowPutDataSourceMapper<In, Out>(
     private val putDataSource: FlowPutDataSource<In>,
     private val toOutMapper: Mapper<In, Out>,
     private val toInMapper: Mapper<Out, In>) : FlowPutDataSource<Out> {

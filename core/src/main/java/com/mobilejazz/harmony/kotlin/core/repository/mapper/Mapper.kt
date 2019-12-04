@@ -1,7 +1,5 @@
 package com.mobilejazz.harmony.kotlin.core.repository.mapper
 
-import javax.inject.Inject
-
 /**
  * Interface to map an object type to another object type
  */
@@ -20,7 +18,7 @@ class BlankMapper<T> : Mapper<T, T> {
   override fun map(from: T): T = from
 }
 
-class ClosureMapper<in From, out To> @Inject constructor(val closure: (from: From) -> To) : Mapper<From, To> {
+class ClosureMapper<in From, out To>(val closure: (from: From) -> To) : Mapper<From, To> {
 
   override fun map(from: From): To = closure(from)
 }

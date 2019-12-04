@@ -1,1 +1,3 @@
-include ':core', ':android', ':sample'
+enableFeaturePreview("GRADLE_METADATA")
+
+include ':core', ':android', ':sample', ':common'

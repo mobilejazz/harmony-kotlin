@@ -6,7 +6,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 
 /**
@@ -18,7 +17,7 @@ import javax.inject.Inject
  * @param toOutMapper Mapper to map data objects to domain objects
  * @param toInMapper Mapper to map domain objects to data objects
  */
-class FlowRepositoryMapper<In, Out> @Inject constructor(
+class FlowRepositoryMapper<In, Out>(
     private val getRepository: FlowGetRepository<In>,
     private val putRepository: FlowPutRepository<In>,
     private val deleteRepository: FlowDeleteRepository,
@@ -48,7 +47,7 @@ class FlowRepositoryMapper<In, Out> @Inject constructor(
 
 }
 
-class FlowGetRepositoryMapper<In, Out> @Inject constructor(
+class FlowGetRepositoryMapper<In, Out>(
     private val getRepository: FlowGetRepository<In>,
     private val toOutMapper: Mapper<In, Out>
 ) : FlowGetRepository<Out> {
@@ -58,7 +57,7 @@ class FlowGetRepositoryMapper<In, Out> @Inject constructor(
   override fun getAll(query: Query, operation: Operation): Flow<List<Out>> = getRepository.getAll(query, operation).map { it.map(toOutMapper) }
 }
 
-class FlowPutRepositoryMapper<In, Out> @Inject constructor(
+class FlowPutRepositoryMapper<In, Out>(
     private val putRepository: FlowPutRepository<In>,
     private val toOutMapper: Mapper<In, Out>,
     private val toInMapper: Mapper<Out, In>) : FlowPutRepository<Out> {

@@ -3,6 +3,7 @@ package com.mobilejazz.sample.di.general
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.FlowGetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.toFlowGetInteractor
+import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowGetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.toFlowGetRepository
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Singleton
 
-
 @Module(subcomponents = [(InteractorsComponent::class)])
 class InteractorsModule {
 
@@ -31,6 +31,12 @@ class InteractorsModule {
   @Singleton
   fun provideGetItemsByIdInteractor(scope: CoroutineScope, getItemInteractor: GetInteractor<Item>): GetItemsByIdInteractor {
     return GetItemsByIdInteractor(scope, getItemInteractor)
+  }
+
+  @Provides
+  @Singleton
+  fun providerGetItemInteractor(scope: CoroutineScope, repository: GetRepository<Item>): GetInteractor<Item> {
+    return GetInteractor(scope, repository)
   }
 
   @Provides

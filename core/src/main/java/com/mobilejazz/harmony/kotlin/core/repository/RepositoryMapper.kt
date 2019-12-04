@@ -4,8 +4,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.map
 import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import javax.inject.Inject
-
 
 /**
  * This repository uses mappers to map objects and redirects them to the contained repository, acting as a simple "translator".
@@ -16,7 +14,7 @@ import javax.inject.Inject
  * @param toOutMapper Mapper to map data objects to domain objects
  * @param toInMapper Mapper to map domain objects to data objects
  */
-class RepositoryMapper<In, Out> @Inject constructor(
+class RepositoryMapper<In, Out>(
     private val getRepository: GetRepository<In>,
     private val putRepository: PutRepository<In>,
     private val deleteRepository: DeleteRepository,
@@ -46,7 +44,7 @@ class RepositoryMapper<In, Out> @Inject constructor(
 
 }
 
-class GetRepositoryMapper<In, Out> @Inject constructor(
+class GetRepositoryMapper<In, Out>(
     private val getRepository: GetRepository<In>,
     private val toOutMapper: Mapper<In, Out>
 ) : GetRepository<Out> {
@@ -56,7 +54,7 @@ class GetRepositoryMapper<In, Out> @Inject constructor(
   override suspend fun getAll(query: Query, operation: Operation): List<Out> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 }
 
-class PutRepositoryMapper<In, Out> @Inject constructor(
+class PutRepositoryMapper<In, Out>(
     private val putRepository: PutRepository<In>,
     private val toOutMapper: Mapper<In, Out>,
     private val toInMapper: Mapper<Out, In>) : PutRepository<Out> {

@@ -6,9 +6,8 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import javax.inject.Inject
 
-class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
+class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
 
   private val objects: MutableMap<String, V> = mutableMapOf()
   private val arrays: MutableMap<String, List<V>> = mutableMapOf()

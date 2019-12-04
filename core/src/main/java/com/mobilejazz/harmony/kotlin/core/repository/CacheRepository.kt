@@ -7,9 +7,8 @@ import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
 import com.mobilejazz.harmony.kotlin.core.repository.error.ObjectNotValidException
 import com.mobilejazz.harmony.kotlin.core.repository.operation.*
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import javax.inject.Inject
 
-class CacheRepository<V> @Inject constructor(
+class CacheRepository<V>(
     private val getCache: GetDataSource<V>,
     private val putCache: PutDataSource<V>,
     private val deleteCache: DeleteDataSource,

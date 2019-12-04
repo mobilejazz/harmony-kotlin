@@ -11,11 +11,9 @@ import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.query.VoidQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class GetInteractor<M> @Inject constructor(val scope: CoroutineScope, val getRepository: GetRepository<M>) {
+class GetInteractor<M>(private val scope: CoroutineScope, private val getRepository: GetRepository<M>) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
       withContext(scope.coroutineContext) {
@@ -23,7 +21,7 @@ class GetInteractor<M> @Inject constructor(val scope: CoroutineScope, val getRep
       }
 }
 
-class GetAllInteractor<M> @Inject constructor(private val scope: CoroutineScope, private val getRepository: GetRepository<M>) {
+class GetAllInteractor<M>(private val scope: CoroutineScope, private val getRepository: GetRepository<M>) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
       withContext(scope.coroutineContext) {
@@ -31,7 +29,7 @@ class GetAllInteractor<M> @Inject constructor(private val scope: CoroutineScope,
       }
 }
 
-class PutInteractor<M> @Inject constructor(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
+class PutInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
 
   suspend operator fun invoke(m: M?, query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
       withContext(scope.coroutineContext) {
@@ -39,7 +37,7 @@ class PutInteractor<M> @Inject constructor(private val scope: CoroutineScope, pr
       }
 }
 
-class PutAllInteractor<M> @Inject constructor(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
+class PutAllInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
 
   suspend operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
       withContext(scope.coroutineContext) {
@@ -47,7 +45,7 @@ class PutAllInteractor<M> @Inject constructor(private val scope: CoroutineScope,
       }
 }
 
-class DeleteInteractor @Inject constructor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
+class DeleteInteractor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
       withContext(scope.coroutineContext) {
@@ -55,7 +53,7 @@ class DeleteInteractor @Inject constructor(private val scope: CoroutineScope, pr
       }
 }
 
-class DeleteAllInteractor @Inject constructor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
+class DeleteAllInteractor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
       withContext(scope.coroutineContext) {

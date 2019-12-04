@@ -3,7 +3,6 @@ package com.mobilejazz.harmony.kotlin.core.repository.datasource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.map
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import javax.inject.Inject
 
 /**
  * This data source uses mappers to map objects and redirects them to the contained data source, acting as a simple "translator".
@@ -14,7 +13,7 @@ import javax.inject.Inject
  * @param toOutMapper Mapper to map data source objects to repository objects
  * @param toInMapper Mapper to map repository objects to data source objects
  */
-class DataSourceMapper<In, Out> @Inject constructor(
+class DataSourceMapper<In, Out>(
     getDataSource: GetDataSource<In>,
     putDataSource: PutDataSource<In>,
     private val deleteDataSource: DeleteDataSource,
@@ -38,7 +37,7 @@ class DataSourceMapper<In, Out> @Inject constructor(
   override suspend fun deleteAll(query: Query): Unit = deleteDataSource.deleteAll(query)
 }
 
-class GetDataSourceMapper<In, Out> @Inject constructor(
+class GetDataSourceMapper<In, Out>(
     private val getDataSource: GetDataSource<In>,
     private val toOutMapper: Mapper<In, Out>) : GetDataSource<Out> {
 
@@ -47,7 +46,7 @@ class GetDataSourceMapper<In, Out> @Inject constructor(
   override suspend fun getAll(query: Query): List<Out> = getDataSource.getAll(query).let { toOutMapper.map(it) }
 }
 
-class PutDataSourceMapper<In, Out> @Inject constructor(
+class PutDataSourceMapper<In, Out>(
     private val putDataSource: PutDataSource<In>,
     private val toOutMapper: Mapper<In, Out>,
     private val toInMapper: Mapper<Out, In>) : PutDataSource<Out> {

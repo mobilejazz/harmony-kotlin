@@ -4,7 +4,6 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * This data source uses mappers to map objects and redirects them to the contained data source, acting as a simple "translator".
@@ -19,7 +18,7 @@ import javax.inject.Inject
  * @param toInMapper Mapper to map repository objects to data source objects
  * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
-class FlowSerializationDataSourceMapper<SerializedIn, Out> @Inject constructor(
+class FlowSerializationDataSourceMapper<SerializedIn, Out>(
     private val getDataSource: FlowGetDataSource<SerializedIn>,
     private val putDataSource: FlowPutDataSource<SerializedIn>,
     private val deleteDataSource: FlowDeleteDataSource,
