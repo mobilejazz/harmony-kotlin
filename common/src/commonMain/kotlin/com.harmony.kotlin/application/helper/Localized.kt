@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.helpers
+package com.harmony.kotlin.application.helper
 
 
 interface Localized<T> {

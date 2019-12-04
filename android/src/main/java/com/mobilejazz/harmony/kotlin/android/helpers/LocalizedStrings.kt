@@ -1,9 +1,7 @@
 package com.mobilejazz.harmony.kotlin.android.helpers
 
 import android.content.Context
-import android.content.res.Resources
-import com.mobilejazz.harmony.kotlin.android.ext.WeakRef
-import com.mobilejazz.harmony.kotlin.core.helpers.Localized
+import com.harmony.kotlin.application.helper.Localized
 import javax.inject.Inject
 
 
