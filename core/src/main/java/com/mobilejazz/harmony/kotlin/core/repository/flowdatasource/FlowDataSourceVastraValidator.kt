@@ -1,5 +1,8 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
+import com.harmony.kotlin.data.datasource.flow.FlowDeleteDataSource
+import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
+import com.harmony.kotlin.data.datasource.flow.FlowPutDataSource
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationService

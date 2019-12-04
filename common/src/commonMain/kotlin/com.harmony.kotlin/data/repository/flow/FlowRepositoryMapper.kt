@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.flow
+package com.harmony.kotlin.data.repository.flow
 
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.map
@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.map
  * @param toInMapper Mapper to map domain objects to data objects
  */
 class FlowRepositoryMapper<In, Out>(
-        private val getRepository: FlowGetRepository<In>,
-        private val putRepository: FlowPutRepository<In>,
-        private val deleteRepository: FlowDeleteRepository,
-        private val toOutMapper: Mapper<In, Out>,
-        private val toInMapper: Mapper<Out, In>
+    private val getRepository: FlowGetRepository<In>,
+    private val putRepository: FlowPutRepository<In>,
+    private val deleteRepository: FlowDeleteRepository,
+    private val toOutMapper: Mapper<In, Out>,
+    private val toInMapper: Mapper<Out, In>
 ) : FlowGetRepository<Out>, FlowPutRepository<Out>, FlowDeleteRepository {
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
@@ -63,8 +63,8 @@ class FlowPutRepositoryMapper<In, Out>(
     private val toInMapper: Mapper<Out, In>) : FlowPutRepository<Out> {
 
   override fun put(query: Query, value: Out?, operation: Operation): Flow<Out> {
-      val mapped = value?.let { toInMapper.map(it) }
-      return putRepository.put(query, mapped, operation).map {
+    val mapped = value?.let { toInMapper.map(it) }
+    return putRepository.put(query, mapped, operation).map {
       toOutMapper.map(it)
     }
   }

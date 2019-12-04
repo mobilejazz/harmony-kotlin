@@ -3,11 +3,11 @@ package com.mobilejazz.sample.di.ui
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
-import com.mobilejazz.harmony.kotlin.core.domain.interactor.FlowGetInteractor
+import com.harmony.kotlin.domain.interactor.FlowGetInteractor
 import com.harmony.kotlin.domain.interactor.GetInteractor
-import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowGetRepositoryMapper
-import com.mobilejazz.harmony.kotlin.core.repository.flow.SingleFlowGetDataSourceRepository
-import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowGetDataSource
+import com.harmony.kotlin.data.repository.flow.FlowGetRepositoryMapper
+import com.harmony.kotlin.data.repository.flow.SingleFlowGetDataSourceRepository
+import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
 import com.mobilejazz.sample.core.data.mapper.ItemIdsEntityToItemIdsMapper
 import com.mobilejazz.sample.core.data.model.ItemIdsEntity
 import com.mobilejazz.sample.core.data.network.HackerNewsItemService

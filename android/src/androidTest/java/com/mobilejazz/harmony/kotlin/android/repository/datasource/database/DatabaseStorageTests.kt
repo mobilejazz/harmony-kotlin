@@ -3,9 +3,12 @@ package com.mobilejazz.harmony.kotlin.android.repository.datasource.database
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.harmony.kotlin.data.mapper.ByteArrayToListModelMapper
+import com.harmony.kotlin.data.mapper.ByteArrayToModelMapper
+import com.harmony.kotlin.data.mapper.ListModelToByteArrayMapper
+import com.harmony.kotlin.data.mapper.ModelToByteArrayMapper
 import com.mobilejazz.harmony.kotlin.android.InstrumentationTest
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.*
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.unwrap
 import kotlinx.coroutines.runBlocking

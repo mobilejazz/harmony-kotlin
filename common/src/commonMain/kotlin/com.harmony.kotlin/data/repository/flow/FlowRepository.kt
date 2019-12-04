@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.flow
+package com.harmony.kotlin.data.repository.flow
 
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.operation.DefaultOperation

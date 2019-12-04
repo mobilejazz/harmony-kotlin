@@ -1,45 +1,46 @@
 plugins {
-    id 'org.jetbrains.kotlin.multiplatform'
+  id 'org.jetbrains.kotlin.multiplatform'
 }
 
 group 'com.harmony.core'
 version '0.0.1'
 
 kotlin {
-    jvm()
+  jvm()
 
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation kotlin('stdlib-common')
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation kotlin('stdlib-common')
 
-              implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-              implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.2'
-            }
-        }
-        commonTest {
-            dependencies {
-
-              implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2'
-
-                implementation kotlin('test-common')
-                implementation kotlin('test-annotations-common')
-            }
-        }
-        jvmMain {
-            dependencies {
-                implementation kotlin('stdlib-jdk8')
-            }
-        }
-        jvmTest {
-            dependencies {
-                implementation kotlin('test')
-                implementation kotlin('test-junit')
-            }
-        }
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.2'
+      }
     }
+    commonTest {
+      dependencies {
+
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2'
+
+        implementation kotlin('test-common')
+        implementation kotlin('test-annotations-common')
+      }
+    }
+    jvmMain {
+      dependencies {
+        implementation kotlin('stdlib-jdk8')
+        api "com.google.code.gson:gson:$gson_version"
+      }
+    }
+    jvmTest {
+      dependencies {
+        implementation kotlin('test')
+        implementation kotlin('test-junit')
+      }
+    }
+  }
 }
 
 configurations {
-    compileClasspath
+  compileClasspath
 }

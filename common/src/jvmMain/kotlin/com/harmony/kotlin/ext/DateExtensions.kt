@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.ext
+package com.harmony.kotlin.ext
 
 import java.text.SimpleDateFormat
 import java.util.*

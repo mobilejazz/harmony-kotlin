@@ -1,8 +1,7 @@
-package com.mobilejazz.harmony.kotlin.core.repository.mapper
+package com.harmony.kotlin.data.mapper
 
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.harmony.kotlin.data.mapper.Mapper
+import com.google.gson.reflect.TypeToken
 
 /**
  * Map a json string to a class object

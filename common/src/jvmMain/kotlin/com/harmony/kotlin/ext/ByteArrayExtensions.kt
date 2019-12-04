@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.ext
+package com.harmony.kotlin.ext
 
 /**
  * Transforms the [ByteArray] into a hexadecimal [String]

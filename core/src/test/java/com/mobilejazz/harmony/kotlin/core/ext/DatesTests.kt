@@ -1,5 +1,6 @@
 package com.mobilejazz.harmony.kotlin.core.ext
 
+import com.harmony.kotlin.ext.Dates
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.datasource.file
+package com.harmony.kotlin.data.datasource.file
 
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource

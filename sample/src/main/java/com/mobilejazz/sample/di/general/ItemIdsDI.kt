@@ -1,8 +1,8 @@
 package com.mobilejazz.sample.di.general
 
 import android.content.SharedPreferences
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.harmony.kotlin.data.repository.CacheRepository
 import com.harmony.kotlin.data.repository.RepositoryMapper
 import com.harmony.kotlin.data.datasource.VoidDeleteDataSource
@@ -10,10 +10,10 @@ import com.harmony.kotlin.data.datasource.VoidPutDataSource
 import com.harmony.kotlin.data.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.ListModelToStringMapper
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.ModelToStringMapper
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.StringToListModelMapper
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.StringToModelMapper
+import com.harmony.kotlin.data.mapper.ListModelToStringMapper
+import com.harmony.kotlin.data.mapper.ModelToStringMapper
+import com.harmony.kotlin.data.mapper.StringToListModelMapper
+import com.harmony.kotlin.data.mapper.StringToModelMapper
 import com.mobilejazz.sample.core.data.mapper.ItemIdsEntityToItemIdsMapper
 import com.mobilejazz.sample.core.data.mapper.ItemIdsToItemIdsEntityMapper
 import com.mobilejazz.sample.core.data.model.ItemIdsEntity

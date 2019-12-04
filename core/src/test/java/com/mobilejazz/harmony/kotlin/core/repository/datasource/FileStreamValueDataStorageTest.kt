@@ -1,7 +1,7 @@
 package com.mobilejazz.harmony.kotlin.core.repository.datasource
 
 import com.harmony.kotlin.data.query.VoidQuery
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.file.FileStreamValueDataStorage
+import com.harmony.kotlin.data.datasource.file.FileStreamValueDataStorage
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Index

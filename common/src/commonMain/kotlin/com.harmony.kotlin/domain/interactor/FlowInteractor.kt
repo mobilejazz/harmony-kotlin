@@ -1,17 +1,17 @@
-package com.mobilejazz.harmony.kotlin.core.domain.interactor
+package com.harmony.kotlin.domain.interactor
 
 import com.harmony.kotlin.data.operation.DefaultOperation
 import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.query.VoidQuery
-import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowDeleteRepository
-import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowGetRepository
-import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowPutRepository
+import com.harmony.kotlin.data.repository.flow.FlowDeleteRepository
+import com.harmony.kotlin.data.repository.flow.FlowGetRepository
+import com.harmony.kotlin.data.repository.flow.FlowPutRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-class FlowGetInteractor<M>(val scope: CoroutineScope, val getRepository: FlowGetRepository<M>) {
+class FlowGetInteractor<M>(private val scope: CoroutineScope, private val getRepository: FlowGetRepository<M>) {
 
   operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<M> = getRepository.get(query, operation)
 }

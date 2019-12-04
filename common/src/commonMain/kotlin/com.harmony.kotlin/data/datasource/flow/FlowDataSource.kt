@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
+package com.harmony.kotlin.data.datasource.flow
 
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
@@ -8,7 +8,7 @@ import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.IdQuery
 import com.harmony.kotlin.data.query.IdsQuery
 import com.harmony.kotlin.data.query.Query
-import com.mobilejazz.harmony.kotlin.core.repository.flow.*
+import com.harmony.kotlin.data.repository.flow.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

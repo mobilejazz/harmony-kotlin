@@ -1,5 +1,6 @@
-package com.mobilejazz.harmony.kotlin.core.ext
+package com.harmony.kotlin.ext
 
+import com.harmony.kotlin.ext.toHexString
 import java.security.SecureRandom
 
 /**

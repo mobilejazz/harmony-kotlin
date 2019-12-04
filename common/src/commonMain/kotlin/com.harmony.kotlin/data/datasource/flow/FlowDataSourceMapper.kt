@@ -1,4 +1,4 @@
-package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
+package com.harmony.kotlin.data.datasource.flow
 
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.map
