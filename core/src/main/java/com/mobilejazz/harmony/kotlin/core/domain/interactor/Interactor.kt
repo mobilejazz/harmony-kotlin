@@ -1,14 +1,14 @@
 package com.mobilejazz.harmony.kotlin.core.domain.interactor
 
-import com.mobilejazz.harmony.kotlin.core.repository.DeleteRepository
-import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
-import com.mobilejazz.harmony.kotlin.core.repository.PutRepository
-import com.mobilejazz.harmony.kotlin.core.repository.operation.DefaultOperation
-import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.repository.query.VoidQuery
+import com.harmony.kotlin.data.operation.DefaultOperation
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.IdQuery
+import com.harmony.kotlin.data.query.IdsQuery
+import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.query.VoidQuery
+import com.harmony.kotlin.data.repository.DeleteRepository
+import com.harmony.kotlin.data.repository.GetRepository
+import com.harmony.kotlin.data.repository.PutRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

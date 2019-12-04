@@ -1,6 +1,6 @@
 package com.mobilejazz.sample.core.data.mapper
 
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
+import com.harmony.kotlin.data.mapper.Mapper
 import com.mobilejazz.sample.core.data.model.ItemEntity
 import com.mobilejazz.sample.core.data.model.ItemIdsEntity
 import com.mobilejazz.sample.core.domain.model.Item

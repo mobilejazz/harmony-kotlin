@@ -1,9 +1,9 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flow
 
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.map
-import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.mapper.map
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.map
  * @param toInMapper Mapper to map domain objects to data objects
  */
 class FlowRepositoryMapper<In, Out>(
-    private val getRepository: FlowGetRepository<In>,
-    private val putRepository: FlowPutRepository<In>,
-    private val deleteRepository: FlowDeleteRepository,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>
+        private val getRepository: FlowGetRepository<In>,
+        private val putRepository: FlowPutRepository<In>,
+        private val deleteRepository: FlowDeleteRepository,
+        private val toOutMapper: Mapper<In, Out>,
+        private val toInMapper: Mapper<Out, In>
 ) : FlowGetRepository<Out>, FlowPutRepository<Out>, FlowDeleteRepository {
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
@@ -30,7 +30,7 @@ class FlowRepositoryMapper<In, Out>(
   override fun getAll(query: Query, operation: Operation) = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 
   override fun put(query: Query, value: Out?, operation: Operation): Flow<Out> {
-    val mapped = value?.let(toInMapper)
+    val mapped = value?.let { toInMapper.map(it) }
     return putRepository.put(query, mapped, operation).map {
       toOutMapper.map(it)
     }
@@ -52,9 +52,9 @@ class FlowGetRepositoryMapper<In, Out>(
     private val toOutMapper: Mapper<In, Out>
 ) : FlowGetRepository<Out> {
 
-  override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { it.let(toOutMapper) }
+  override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { it.let { toOutMapper.map(it) } }
 
-  override fun getAll(query: Query, operation: Operation): Flow<List<Out>> = getRepository.getAll(query, operation).map { it.map(toOutMapper) }
+  override fun getAll(query: Query, operation: Operation): Flow<List<Out>> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 }
 
 class FlowPutRepositoryMapper<In, Out>(
@@ -63,14 +63,14 @@ class FlowPutRepositoryMapper<In, Out>(
     private val toInMapper: Mapper<Out, In>) : FlowPutRepository<Out> {
 
   override fun put(query: Query, value: Out?, operation: Operation): Flow<Out> {
-    val mapped = value?.let(toInMapper)
-    return putRepository.put(query, mapped, operation).map {
+      val mapped = value?.let { toInMapper.map(it) }
+      return putRepository.put(query, mapped, operation).map {
       toOutMapper.map(it)
     }
   }
 
   override fun putAll(query: Query, value: List<Out>?, operation: Operation): Flow<List<Out>> {
-    val mapped = value?.map(toInMapper)
+    val mapped = value?.let { toInMapper.map(it) }
     return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }
   }
 }

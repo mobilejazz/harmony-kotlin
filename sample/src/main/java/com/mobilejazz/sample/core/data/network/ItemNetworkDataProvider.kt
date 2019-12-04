@@ -1,9 +1,9 @@
 package com.mobilejazz.sample.core.data.network
 
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.query.IntegerIdQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.IntegerIdsQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.query.IntegerIdQuery
+import com.harmony.kotlin.data.query.IntegerIdsQuery
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.sample.core.data.model.ItemEntity
 import java.util.*
 import java.util.concurrent.TimeUnit

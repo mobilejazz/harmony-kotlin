@@ -4,7 +4,7 @@ import android.util.Log
 import com.mobilejazz.sample.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import sample.Platform
+import com.harmony.kotlin.Platform
 
 class App : DaggerApplication() {
 

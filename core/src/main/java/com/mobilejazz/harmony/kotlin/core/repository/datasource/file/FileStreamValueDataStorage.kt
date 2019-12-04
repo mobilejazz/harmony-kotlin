@@ -1,9 +1,9 @@
 package com.mobilejazz.harmony.kotlin.core.repository.datasource.file
 
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.datasource.DeleteDataSource
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.query.Query
 import java.io.EOFException
 import java.io.File
 import java.io.ObjectInputStream

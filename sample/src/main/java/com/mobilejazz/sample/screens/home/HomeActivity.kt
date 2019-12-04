@@ -7,10 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.harmony.kotlin.data.operation.CacheSyncOperation
+import com.harmony.kotlin.data.operation.MainSyncOperation
+import com.harmony.kotlin.data.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
-import com.mobilejazz.harmony.kotlin.core.repository.operation.CacheSyncOperation
-import com.mobilejazz.harmony.kotlin.core.repository.operation.MainSyncOperation
-import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item

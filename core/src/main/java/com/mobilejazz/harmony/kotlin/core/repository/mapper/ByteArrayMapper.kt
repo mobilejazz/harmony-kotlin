@@ -1,5 +1,6 @@
 package com.mobilejazz.harmony.kotlin.core.repository.mapper
 
+import com.harmony.kotlin.data.mapper.Mapper
 import java.io.*
 
 /**

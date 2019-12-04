@@ -1,7 +1,8 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.mapper.map
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,29 +20,29 @@ import kotlinx.coroutines.flow.map
  * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
 class FlowSerializationDataSourceMapper<SerializedIn, Out>(
-    private val getDataSource: FlowGetDataSource<SerializedIn>,
-    private val putDataSource: FlowPutDataSource<SerializedIn>,
-    private val deleteDataSource: FlowDeleteDataSource,
-    private val toOutMapper: Mapper<SerializedIn, Out>,
-    private val toOutListMapper: Mapper<SerializedIn, List<Out>>,
-    private val toInMapper: Mapper<Out, SerializedIn>,
-    private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
+        private val getDataSource: FlowGetDataSource<SerializedIn>,
+        private val putDataSource: FlowPutDataSource<SerializedIn>,
+        private val deleteDataSource: FlowDeleteDataSource,
+        private val toOutMapper: Mapper<SerializedIn, Out>,
+        private val toOutListMapper: Mapper<SerializedIn, List<Out>>,
+        private val toInMapper: Mapper<Out, SerializedIn>,
+        private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
 ) : FlowGetDataSource<Out>, FlowPutDataSource<Out>, FlowDeleteDataSource {
 
   override fun get(query: Query) = getDataSource.get(query).map { toOutMapper.map(it) }
 
-  override fun getAll(query: Query): Flow<List<Out>> = getDataSource.get(query).map { it.let(toOutListMapper) }
+  override fun getAll(query: Query): Flow<List<Out>> = getDataSource.get(query).map { toOutListMapper.map(it) }
 
   override fun put(query: Query, value: Out?): Flow<Out> {
-    val mapped = value?.let(toInMapper)
+    val mapped = value?.let { toInMapper.map(it) }
     return putDataSource.put(query, mapped)
-        .map { it.let(toOutMapper)}
+        .map { toOutMapper.map(it)}
   }
 
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> {
-    val mapped = value?.let(toInMapperFromList)
+    val mapped = value?.let { toInMapperFromList.map(it) }
     return putDataSource.put(query, mapped)
-        .map { it.let(toOutListMapper) }
+        .map { toOutListMapper.map(it) }
   }
 
   override fun delete(query: Query) = deleteDataSource.delete(query)

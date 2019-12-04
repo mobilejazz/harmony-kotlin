@@ -1,7 +1,7 @@
 package com.mobilejazz.sample.core.data.network
 
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.sample.core.data.model.ItemIdsEntity
 import javax.inject.Inject
 

@@ -1,7 +1,10 @@
 package com.mobilejazz.harmony.kotlin.core.repository.datasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.error.ObjectNotValidException
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.datasource.DeleteDataSource
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationService
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyDataSource
 

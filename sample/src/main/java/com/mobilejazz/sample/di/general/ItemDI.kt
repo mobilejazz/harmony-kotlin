@@ -3,9 +3,11 @@ package com.mobilejazz.sample.di.general
 import android.content.SharedPreferences
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.mobilejazz.harmony.kotlin.core.repository.*
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.*
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.memory.InMemoryDataSource
+import com.harmony.kotlin.data.datasource.*
+import com.mobilejazz.harmony.kotlin.core.repository.datasource.DataSourceVastraValidator
+import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
+import com.harmony.kotlin.data.mapper.VoidMapper
+import com.harmony.kotlin.data.repository.*
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.*

@@ -1,14 +1,14 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.error.QueryNotSupportedException
+import com.harmony.kotlin.data.datasource.DeleteDataSource
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.QueryNotSupportedException
+import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.query.IdQuery
+import com.harmony.kotlin.data.query.IdsQuery
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.flow.*
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

@@ -1,11 +1,11 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flow
 
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.harmony.kotlin.core.repository.operation.DefaultOperation
-import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.operation.DefaultOperation
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.IdQuery
+import com.harmony.kotlin.data.query.IdsQuery
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 
 interface FlowRepository {

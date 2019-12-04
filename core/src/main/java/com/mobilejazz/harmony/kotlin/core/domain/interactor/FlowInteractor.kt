@@ -1,12 +1,12 @@
 package com.mobilejazz.harmony.kotlin.core.domain.interactor
 
+import com.harmony.kotlin.data.operation.DefaultOperation
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.query.VoidQuery
 import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowDeleteRepository
 import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowGetRepository
 import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowPutRepository
-import com.mobilejazz.harmony.kotlin.core.repository.operation.DefaultOperation
-import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import com.mobilejazz.harmony.kotlin.core.repository.query.VoidQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

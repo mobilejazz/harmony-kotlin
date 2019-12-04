@@ -1,15 +1,14 @@
 package com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences
 
 import android.content.SharedPreferences
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-import javax.inject.Inject
+import com.harmony.kotlin.data.datasource.DeleteDataSource
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.query.KeyQuery
+import com.harmony.kotlin.data.query.Query
 
-class DeviceStorageDataSource<T> @Inject constructor(
+class DeviceStorageDataSource<T>(
     private val sharedPreferences: SharedPreferences,
     private val prefix: String = ""
 ) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {

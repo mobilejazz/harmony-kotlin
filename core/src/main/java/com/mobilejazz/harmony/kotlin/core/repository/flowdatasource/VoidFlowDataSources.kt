@@ -1,6 +1,6 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 
 class VoidDataSource<V> : FlowGetDataSource<V>, FlowPutDataSource<V>, FlowDeleteDataSource {

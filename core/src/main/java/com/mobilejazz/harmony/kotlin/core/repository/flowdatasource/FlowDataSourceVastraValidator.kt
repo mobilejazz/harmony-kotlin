@@ -1,7 +1,7 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.error.ObjectNotValidException
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationService
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyDataSource
 import kotlinx.coroutines.flow.map

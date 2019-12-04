@@ -1,13 +1,16 @@
 package com.mobilejazz.sample.di.ui
 
+import com.harmony.kotlin.data.mapper.VoidMapper
+import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.FlowGetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
-import com.mobilejazz.harmony.kotlin.core.domain.interactor.toFlowGetInteractor
-import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
+import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowGetRepositoryMapper
+import com.mobilejazz.harmony.kotlin.core.repository.flow.FlowRepositoryMapper
+import com.mobilejazz.harmony.kotlin.core.repository.flow.SingleFlowGetDataSourceRepository
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowGetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.toFlowGetRepository
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.sample.core.data.mapper.ItemIdsEntityToItemIdsMapper
 import com.mobilejazz.sample.core.data.model.ItemIdsEntity
 import com.mobilejazz.sample.core.data.network.HackerNewsItemService
@@ -44,7 +47,8 @@ class HomeModule {
       }
 
     }
-
-    return flowDatasource.toFlowGetRepository(ItemIdsEntityToItemIdsMapper()).toFlowGetInteractor()
+      val singleFlowGetDataSourceRepository = SingleFlowGetDataSourceRepository(flowDatasource)
+      val repositoryMapper = FlowGetRepositoryMapper(singleFlowGetDataSourceRepository, ItemIdsEntityToItemIdsMapper())
+      return FlowGetInteractor(scope, repositoryMapper)
   }
 }

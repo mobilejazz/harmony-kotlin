@@ -1,12 +1,12 @@
 package com.mobilejazz.sample.di.general
 
+import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.FlowGetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.toFlowGetInteractor
-import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowGetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.toFlowGetRepository
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item
 import dagger.Module

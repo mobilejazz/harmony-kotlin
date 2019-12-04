@@ -1,7 +1,8 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flowdatasource
 
-import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
+import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.mapper.map
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -42,9 +43,9 @@ class FlowGetDataSourceMapper<In, Out>(
     private val getDataSource: FlowGetDataSource<In>,
     private val toOutMapper: Mapper<In, Out>) : FlowGetDataSource<Out> {
 
-  override fun get(query: Query): Flow<Out> = getDataSource.get(query).map { toOutMapper(it) }
+  override fun get(query: Query): Flow<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
 
-  override fun getAll(query: Query): Flow<List<Out>> = getDataSource.getAll(query).map { it.map(toOutMapper) }
+  override fun getAll(query: Query): Flow<List<Out>> = getDataSource.getAll(query).map { toOutMapper.map(it) }
 
 }
 
@@ -54,14 +55,14 @@ class FlowPutDataSourceMapper<In, Out>(
     private val toInMapper: Mapper<Out, In>) : FlowPutDataSource<Out> {
 
   override fun put(query: Query, value: Out?): Flow<Out> {
-    val mapped = value?.let(toInMapper)
+    val mapped = value?.let { toInMapper.map(it) }
     return putDataSource.put(query, mapped)
         .map { toOutMapper.map(it) }
   }
 
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> {
-    val mapped = value?.map(toInMapper)
+    val mapped = value?.map { toInMapper.map(it) }
     return putDataSource.putAll(query, mapped)
-        .map { it.map(toOutMapper) }
+        .map { toOutMapper.map(it) }
   }
 }

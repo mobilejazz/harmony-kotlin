@@ -1,10 +1,10 @@
 package com.mobilejazz.harmony.kotlin.core.repository.flow
 
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowDeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowGetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.flowdatasource.FlowPutDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.operation.Operation
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import kotlinx.coroutines.flow.Flow
 
 class SingleFlowDataSourceRepository<T>(

@@ -3,11 +3,11 @@ package com.mobilejazz.sample.di.general
 import android.content.SharedPreferences
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.mobilejazz.harmony.kotlin.core.repository.CacheRepository
-import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
-import com.mobilejazz.harmony.kotlin.core.repository.RepositoryMapper
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidDeleteDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidPutDataSource
+import com.harmony.kotlin.data.repository.CacheRepository
+import com.harmony.kotlin.data.repository.RepositoryMapper
+import com.harmony.kotlin.data.datasource.VoidDeleteDataSource
+import com.harmony.kotlin.data.datasource.VoidPutDataSource
+import com.harmony.kotlin.data.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.ListModelToStringMapper
@@ -48,13 +48,13 @@ class ItemIdsDI {
 
     // We want to establish a simple caching system, so we are going to use the CacheRepository to automatically have this feature.
     val cacheRepository = CacheRepository(deviceStorageObjectAssemblerDataSource, deviceStorageObjectAssemblerDataSource,
-        deviceStorageObjectAssemblerDataSource,
-        itemIdsNetworkDataSource, VoidPutDataSource(), VoidDeleteDataSource())
+            deviceStorageObjectAssemblerDataSource,
+            itemIdsNetworkDataSource, VoidPutDataSource(), VoidDeleteDataSource())
 
     // As our business model only understand the ItemIds model instead of the ItemIdsEntity model, we need to use the RepositoryMapper to map the different
     // types
     return RepositoryMapper(cacheRepository, cacheRepository, cacheRepository, ItemIdsEntityToItemIdsMapper(),
-        ItemIdsToItemIdsEntityMapper())
+            ItemIdsToItemIdsEntityMapper())
   }
 
 

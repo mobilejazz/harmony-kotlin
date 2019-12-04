@@ -4,13 +4,12 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
-import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
-import com.mobilejazz.harmony.kotlin.core.repository.query.Query
-
+import com.harmony.kotlin.data.datasource.DeleteDataSource
+import com.harmony.kotlin.data.datasource.GetDataSource
+import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.query.KeyQuery
+import com.harmony.kotlin.data.query.Query
 
 class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
   override suspend fun get(query: Query): ByteArray {
