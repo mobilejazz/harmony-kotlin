@@ -1,7 +1,9 @@
 package com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.timestamp
 
+import com.harmony.kotlin.data.validator.vastra.strategy.TimestampValidationStrategy
+import com.harmony.kotlin.data.validator.vastra.strategy.TimestampValidationStrategyDataSource
 import com.harmony.kotlin.ext.Dates
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationServiceManager
+import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.*

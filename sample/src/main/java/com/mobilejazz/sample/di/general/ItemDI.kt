@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.harmony.kotlin.data.datasource.*
-import com.mobilejazz.harmony.kotlin.core.repository.datasource.DataSourceVastraValidator
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.mapper.ListModelToStringMapper
 import com.harmony.kotlin.data.mapper.ModelToStringMapper
@@ -12,10 +11,10 @@ import com.harmony.kotlin.data.mapper.StringToListModelMapper
 import com.harmony.kotlin.data.mapper.StringToModelMapper
 import com.harmony.kotlin.data.mapper.VoidMapper
 import com.harmony.kotlin.data.repository.*
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.ValidationServiceManager
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.timestamp.TimestampValidationStrategy
+import com.harmony.kotlin.android.data.datasource.DeviceStorageDataSource
+import com.harmony.kotlin.android.data.datasource.DeviceStorageObjectAssemblerDataSource
+import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
+import com.harmony.kotlin.data.validator.vastra.strategy.TimestampValidationStrategy
 import com.mobilejazz.sample.core.data.mapper.ItemEntityToItemMapper
 import com.mobilejazz.sample.core.data.model.ItemEntity
 import com.mobilejazz.sample.core.data.network.ItemNetworkDataProvider

@@ -7,7 +7,7 @@ import android.text.Html
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mobilejazz.harmony.kotlin.android.helpers.LocalizedStrings
+import com.harmony.kotlin.android.application.helpers.LocalizedStrings
 import com.mobilejazz.sample.R
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item

@@ -1,6 +1,6 @@
 package com.mobilejazz.sample.core.data.model
 
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.timestamp.TimestampValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategy.TimestampValidationStrategyDataSource
 import java.util.*
 import java.util.concurrent.TimeUnit
 

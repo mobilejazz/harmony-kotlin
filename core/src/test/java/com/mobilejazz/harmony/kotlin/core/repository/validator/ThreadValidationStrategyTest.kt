@@ -1,8 +1,8 @@
 package com.mobilejazz.harmony.kotlin.core.repository.validator
 
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyDataSource
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyResult
-import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.threading.ThreadValidationStrategy
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
+import com.harmony.kotlin.data.validator.vastra.strategy.ThreadValidationStrategy
 import org.junit.Assert
 import org.junit.Test
 

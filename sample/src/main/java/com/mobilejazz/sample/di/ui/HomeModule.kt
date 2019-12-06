@@ -2,7 +2,7 @@ package com.mobilejazz.sample.di.ui
 
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
-import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
+import com.harmony.kotlin.android.application.di.ActivityScope
 import com.harmony.kotlin.domain.interactor.FlowGetInteractor
 import com.harmony.kotlin.domain.interactor.GetInteractor
 import com.harmony.kotlin.data.repository.flow.FlowGetRepositoryMapper

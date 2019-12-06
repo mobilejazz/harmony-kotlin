@@ -8,8 +8,8 @@ import com.harmony.kotlin.data.repository.RepositoryMapper
 import com.harmony.kotlin.data.datasource.VoidDeleteDataSource
 import com.harmony.kotlin.data.datasource.VoidPutDataSource
 import com.harmony.kotlin.data.repository.GetRepository
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
+import com.harmony.kotlin.android.data.datasource.DeviceStorageDataSource
+import com.harmony.kotlin.android.data.datasource.DeviceStorageObjectAssemblerDataSource
 import com.harmony.kotlin.data.mapper.ListModelToStringMapper
 import com.harmony.kotlin.data.mapper.ModelToStringMapper
 import com.harmony.kotlin.data.mapper.StringToListModelMapper
