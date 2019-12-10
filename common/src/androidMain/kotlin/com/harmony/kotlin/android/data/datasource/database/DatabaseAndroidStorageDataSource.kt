@@ -11,7 +11,8 @@ import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 
-class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
+@Deprecated("This class is deprecated, please use the new native @class CacheSQLStorageDataSource. This class was called DatabaseStorageDataSource")
+class DatabaseAndroidStorageDataSource(private val db: SupportSQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
   override suspend fun get(query: Query): ByteArray {
     return when (query) {
       is KeyQuery -> {
