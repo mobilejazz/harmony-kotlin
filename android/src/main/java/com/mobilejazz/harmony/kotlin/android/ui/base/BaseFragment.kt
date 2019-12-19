@@ -15,20 +15,27 @@ import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
-  @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+  @Inject
+  lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
   override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
-  // Perform injection here for M (API 23) due to deprecation of onAttach(Activity).
+  open fun injectDependencies() {
+    try {
+      AndroidSupportInjection.inject(this)
+    } catch (t: Throwable) {
+    }
+  }
+
   override fun onAttach(context: Context) {
-    AndroidSupportInjection.inject(this)
+    injectDependencies()
     super.onAttach(context)
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
   ): View? {
     return inflater.inflate(getContentViewResId(), container, false)
   }

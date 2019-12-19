@@ -12,10 +12,19 @@ import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
-  @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+  @Inject
+  lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+
+  open fun injectDependencies() {
+    try {
+      AndroidInjection.inject(this)
+    } catch (t: Throwable) {
+    }
+  }
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    AndroidInjection.inject(this)
+    injectDependencies()
     super.onCreate(savedInstanceState)
     setContentView(getContentViewResId())
   }
