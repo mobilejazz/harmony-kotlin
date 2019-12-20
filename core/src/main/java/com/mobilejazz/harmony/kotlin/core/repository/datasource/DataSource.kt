@@ -29,6 +29,7 @@ interface PutDataSource<V> : DataSource {
 interface DeleteDataSource : DataSource {
   fun delete(query: Query): Future<Unit>
 
+  @Deprecated("Use delete with AllObjectsQuery to remove all entries or with any other Query to remove one or more entries")
   fun deleteAll(query: Query): Future<Unit>
 }
 

@@ -9,6 +9,7 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
+import com.mobilejazz.harmony.kotlin.core.repository.query.AllObjectsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
@@ -71,6 +72,11 @@ class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetData
   override fun delete(query: Query): Future<Unit> =
       Future {
         when (query) {
+          is AllObjectsQuery -> {
+            db.delete(BlobTable.TABLE_NAME, null, null)
+            return@Future
+          }
+
           is KeyQuery -> {
             db.delete(
                 BlobTable.TABLE_NAME,
@@ -84,10 +90,6 @@ class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetData
       }
 
   override fun deleteAll(query: Query): Future<Unit> =
-  // TODO Options for deleteAll:
-  // - Not supported (current implementation)
-  // - Ignore query and clear database
-      // - Use a new KeysQuery(List<String>) and delete all entries with the indicated query
       Future {
         throw UnsupportedOperationException("deleteAll not supported. Use delete instead")
       }
