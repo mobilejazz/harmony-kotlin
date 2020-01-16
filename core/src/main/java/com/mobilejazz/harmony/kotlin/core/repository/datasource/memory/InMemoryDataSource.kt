@@ -42,6 +42,7 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
     when (query) {
       is KeyQuery -> {
         value?.let {
+          arrays.remove(query.key)
           objects.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
@@ -53,6 +54,7 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
     when (query) {
       is KeyQuery -> {
         value?.let {
+          objects.remove(query.key)
           arrays.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
 
