@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2 (16/01/2020)
+-  Deprecated deleteAll() and redirected to delete() on generic DataSources [PR #14](https://github.com/mobilejazz/harmony-kotlin/pull/14)
+- Support for using BaseActivity and BaseFragment without Dagger [PR #12](https://github.com/mobilejazz/harmony-kotlin/pull/12)
+
 ## 1.0.1 (25/10/2019)
 - Exact same version as 1.0. It is created to solve a issue with JitPack
 that currently is using a older invalid build with version 1.0 which 
