@@ -7,6 +7,7 @@ import com.mobilejazz.harmony.kotlin.core.repository.mapper.Mapper
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 
+@Deprecated("Use SerializationDataSourceMapper to serialize/deserialize your model")
 class DeviceStorageObjectAssemblerDataSource<T>(
     private val toStringMapper: Mapper<T, String>,
     private val toModelMapper: Mapper<String, T>,

@@ -5,6 +5,7 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
+import com.mobilejazz.harmony.kotlin.core.repository.query.AllObjectsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
@@ -72,6 +73,16 @@ class DeviceStorageDataSource<T> @Inject constructor(
 
   override fun delete(query: Query): Future<Unit> = Future {
     when (query) {
+      is AllObjectsQuery -> {
+        with(sharedPreferences.edit()) {
+          if (prefix.isNotEmpty()) {
+            sharedPreferences.all.keys.filter { it.contains(prefix) }.forEach { remove(it) }
+          } else {
+            clear()
+          }
+          apply()
+        }
+      }
       is KeyQuery -> {
         sharedPreferences.edit()
             .remove(addPrefixTo(query.key))
@@ -81,17 +92,8 @@ class DeviceStorageDataSource<T> @Inject constructor(
     }
   }
 
-  override fun deleteAll(query: Query): Future<Unit> = Future {
-    with(sharedPreferences.edit()) {
-      if (prefix.isNotEmpty()) {
-        sharedPreferences.all.keys.filter { it.contains(prefix) }.forEach { remove(it) }
-      } else {
-        clear()
-      }
-      apply()
-    }
+  override fun deleteAll(query: Query): Future<Unit> = delete(AllObjectsQuery())
 
-  }
 
   private fun addPrefixTo(key: String) = if (prefix.isEmpty()) key else "$prefix.$key"
 }

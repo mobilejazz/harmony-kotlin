@@ -28,6 +28,7 @@ interface PutRepository<V> : Repository {
 
 interface DeleteRepository : Repository {
   fun delete(query: Query, operation: Operation = DefaultOperation): Future<Unit>
+  @Deprecated("Use delete with AllObjectsQuery to remove all entries or with any other Query to remove one or more entries")
   fun deleteAll(query: Query, operation: Operation = DefaultOperation): Future<Unit>
 }
 

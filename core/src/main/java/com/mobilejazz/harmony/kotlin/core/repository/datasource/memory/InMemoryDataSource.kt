@@ -4,6 +4,8 @@ import com.mobilejazz.harmony.kotlin.core.repository.datasource.DeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.GetDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.PutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.error.DataNotFoundException
+import com.mobilejazz.harmony.kotlin.core.repository.query.AllObjectsQuery
+import com.mobilejazz.harmony.kotlin.core.repository.query.IdsQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
 import com.mobilejazz.harmony.kotlin.core.repository.query.Query
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
@@ -40,6 +42,7 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
     when (query) {
       is KeyQuery -> {
         value?.let {
+          arrays.remove(query.key)
           objects.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
@@ -51,6 +54,7 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
     when (query) {
       is KeyQuery -> {
         value?.let {
+          objects.remove(query.key)
           arrays.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
 
@@ -62,19 +66,22 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
   override fun delete(query: Query): Future<Unit> {
     return Future {
       when (query) {
-        is KeyQuery -> {
-          objects.remove(query.key)
+        is AllObjectsQuery -> {
+          objects.clear()
+          arrays.clear()
           return@Future
         }
-        else -> notSupportedQuery()
-      }
-    }
-  }
-
-  override fun deleteAll(query: Query): Future<Unit> {
-    return Future {
-      when (query) {
+        is IdsQuery<*> -> {
+          query.identifiers.forEach {
+            if (it is String) {
+              objects.remove(it)
+              arrays.remove(it)
+            } else notSupportedQuery()
+          }
+          return@Future
+        }
         is KeyQuery -> {
+          objects.remove(query.key)
           arrays.remove(query.key)
           return@Future
         }
@@ -82,4 +89,6 @@ class InMemoryDataSource<V> @Inject constructor() : GetDataSource<V>, PutDataSou
       }
     }
   }
+
+  override fun deleteAll(query: Query): Future<Unit> = delete(query)
 }
