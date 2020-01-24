@@ -12,7 +12,7 @@ data class ItemEntity(val id: Int,
                       val time: Int,
                       val url: String?,
                       val kids: List<Int>?,
-                      @Transient override var lastUpdate: Date = Date()) : TimestampValidationStrategyDataSource(lastUpdate) {
+                      override var lastUpdate: Date = Date()) : TimestampValidationStrategyDataSource(lastUpdate) {
 
   override fun expiryTime(): Long {
     return TimeUnit.MINUTES.toMillis(1)
