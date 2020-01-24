@@ -3,13 +3,13 @@ package com.mobilejazz.sample.di.general
 import android.content.SharedPreferences
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.CacheRepository
 import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.repository.RepositoryMapper
+import com.mobilejazz.harmony.kotlin.core.repository.datasource.SerializationDataSourceMapper
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidDeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidPutDataSource
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.ListModelToStringMapper
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.ModelToStringMapper
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.StringToListModelMapper
@@ -41,7 +41,14 @@ class ItemIdsDI {
     val toListModelMapper = ListModelToStringMapper<ItemIdsEntity>(gson)
     val toStringListMapper = StringToListModelMapper(object : TypeToken<List<ItemIdsEntity>>() {}, gson)
 
-    val deviceStorageObjectAssemblerDataSource = DeviceStorageObjectAssemblerDataSource(toStringMapper, toModelMapper, toListModelMapper, toStringListMapper, deviceStorageDataSource)
+    val deviceStorageObjectAssemblerDataSource = SerializationDataSourceMapper(
+        deviceStorageDataSource,
+        deviceStorageDataSource,
+        deviceStorageDataSource,
+        toModelMapper,
+        toStringListMapper,
+        toStringMapper,
+        toListModelMapper)
 
     // Now, we need to get a network dataSource to fetch the item ids
     val itemIdsNetworkDataSource = ItemIdsNetworkDataSource(hackerNewsItemService)
