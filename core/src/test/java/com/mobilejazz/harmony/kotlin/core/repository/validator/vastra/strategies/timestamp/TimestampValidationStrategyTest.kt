@@ -7,30 +7,32 @@ import org.junit.Test
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-data class Foo(val id: String, val updatedAt: Date, override var expiryTime: Long) : TimestampValidationStrategyDataSource(lastUpdate = updatedAt, expiryTime = expiryTime)
+data class Foo(val id: String, val updatedAt: Date) : TimestampValidationStrategyDataSource(lastUpdate = updatedAt) {
+  override fun expiryTime(): Long = TimeUnit.SECONDS.toMillis(1)
+}
 
 class TimestampValidationStrategyTest {
-    @Test
-    internal fun should_value_be_valid_if_value_is_not_expired() {
-        val foo = Foo("bar", updatedAt = Date(), expiryTime = TimeUnit.MINUTES.toMillis(1))
+  @Test
+  internal fun should_value_be_valid_if_value_is_not_expired() {
+    val foo = Foo("bar", updatedAt = Date())
 
-        val timestampValidationStrategy = TimestampValidationStrategy()
-        val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
+    val timestampValidationStrategy = TimestampValidationStrategy()
+    val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
 
-        val isValid = validationServiceManager.isValid(foo)
+    val isValid = validationServiceManager.isValid(foo)
 
-        assertThat(isValid).isTrue()
-    }
+    assertThat(isValid).isTrue()
+  }
 
-    @Test
-    fun should_value_be_invalid_if_value_is_expired() {
-        val foo = Foo("bar", updatedAt = Dates.yesterday(), expiryTime = TimeUnit.MINUTES.toMillis(1))
+  @Test
+  fun should_value_be_invalid_if_value_is_expired() {
+    val foo = Foo("bar", updatedAt = Dates.yesterday())
 
-        val timestampValidationStrategy = TimestampValidationStrategy()
-        val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
+    val timestampValidationStrategy = TimestampValidationStrategy()
+    val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
 
-        val isValid = validationServiceManager.isValid(foo)
+    val isValid = validationServiceManager.isValid(foo)
 
-        assertThat(isValid).isFalse()
-    }
+    assertThat(isValid).isFalse()
+  }
 }
