@@ -24,7 +24,7 @@ Mobile Jazz, info@mobilejazz.com
 
 ## API Reference 
 
-[https://github.com/mobilejazz/harmony-reference/](https://github.com/mobilejazz/harmony-reference)
+[https://harmony.mobilejazz.com/](https://harmony.mobilejazz.com/)
 
 ## License
 
