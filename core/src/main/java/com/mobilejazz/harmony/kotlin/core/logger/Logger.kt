@@ -3,12 +3,12 @@ package com.mobilejazz.harmony.kotlin.core.logger
 /** Logging interface.  */
 interface Logger {
 
-  enum class Level {
-    VERBOSE,
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR
+  enum class Level(val representation: String) {
+    VERBOSE("VERBOSE"),
+    DEBUG("DEBUG"),
+    INFO("INFO"),
+    WARNING("WARNING"),
+    ERROR("ERROR")
   }
 
 

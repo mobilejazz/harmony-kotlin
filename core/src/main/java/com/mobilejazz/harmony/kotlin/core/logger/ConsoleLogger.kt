@@ -5,8 +5,8 @@ class ConsoleLogger : Logger {
 
   override fun log(level: Logger.Level, tag: String?, message: String) {
     tag?.let {
-      println("${level.levelStringRepresentation()} - [$it]: $message")
-    } ?: println("${level.levelStringRepresentation()}: $message")
+      println("${level.representation} - [$it]: $message")
+    } ?: println("${level.representation}: $message")
   }
 
   override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
@@ -46,14 +46,4 @@ class ConsoleLogger : Logger {
 
   override val deviceIdentifier: String
     get() = ""
-
-  private fun Logger.Level.levelStringRepresentation(): String {
-    return when (this) {
-      Logger.Level.VERBOSE -> "VERBOSE"
-      Logger.Level.DEBUG -> "DEBUG"
-      Logger.Level.INFO -> "INFO"
-      Logger.Level.WARNING -> "WARNING"
-      Logger.Level.ERROR -> "ERROR"
-    }
-  }
 }
