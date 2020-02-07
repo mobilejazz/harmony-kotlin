@@ -21,31 +21,31 @@ class ConsoleLogger : Logger {
   }
 
   override fun sendIssue(tag: String, message: String) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, tag, message)
   }
 
   override fun setDeviceBoolean(key: String, value: Boolean) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, key, value.toString())
   }
 
   override fun setDeviceString(key: String, value: String) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, key, value)
   }
 
   override fun setDeviceInteger(key: String, value: Int) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, key, value.toString())
   }
 
   override fun setDeviceFloat(key: String, value: Float) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, key, value.toString())
   }
 
   override fun removeDeviceKey(key: String) {
-    // Nothing to do
+    this.log(Logger.Level.DEBUG, "RemoveDeviceKey", key)
   }
 
   override val deviceIdentifier: String
-    get() = TODO("not implemented")
+    get() = ""
 
   private fun Logger.Level.levelStringRepresentation(): String {
     return when (this) {
