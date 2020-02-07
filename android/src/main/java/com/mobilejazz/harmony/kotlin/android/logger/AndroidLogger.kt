@@ -13,36 +13,36 @@ open class AndroidLogger : Logger {
     private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
   }
 
-  override fun log(level: Logger.LogLevel, tag: String?, message: String) {
+  override fun log(level: Logger.Level, tag: String?, message: String) {
     val tag = tag ?: createClassTag()
     if (BuildConfig.DEBUG) {
       when (level) {
-        Logger.LogLevel.VERBOSE -> Log.v(tag, message)
-        Logger.LogLevel.DEBUG -> Log.d(tag, message)
-        Logger.LogLevel.INFO -> Log.i(tag, message)
-        Logger.LogLevel.WARNING -> Log.w(tag, message)
-        Logger.LogLevel.ERROR -> Log.e(tag, message)
+        Logger.Level.VERBOSE -> Log.v(tag, message)
+        Logger.Level.DEBUG -> Log.d(tag, message)
+        Logger.Level.INFO -> Log.i(tag, message)
+        Logger.Level.WARNING -> Log.w(tag, message)
+        Logger.Level.ERROR -> Log.e(tag, message)
       }
     }
   }
 
-  override fun log(level: Logger.LogLevel, throwable: Throwable, tag: String?, message: String) {
+  override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
     val tag = tag ?: createClassTag()
     if (BuildConfig.DEBUG) {
       when (level) {
-        Logger.LogLevel.VERBOSE -> Log.v(tag, message, throwable)
-        Logger.LogLevel.DEBUG -> Log.d(tag, message, throwable)
-        Logger.LogLevel.INFO -> Log.i(tag, message, throwable)
-        Logger.LogLevel.WARNING -> Log.w(tag, message, throwable)
-        Logger.LogLevel.ERROR -> Log.e(tag, message, throwable)
+        Logger.Level.VERBOSE -> Log.v(tag, message, throwable)
+        Logger.Level.DEBUG -> Log.d(tag, message, throwable)
+        Logger.Level.INFO -> Log.i(tag, message, throwable)
+        Logger.Level.WARNING -> Log.w(tag, message, throwable)
+        Logger.Level.ERROR -> Log.e(tag, message, throwable)
       }
     }
   }
 
   override fun log(key: String, value: Any?) {
     value?.let {
-      log(Logger.LogLevel.INFO, "KEY", "$key: $it")
-    } ?: log(Logger.LogLevel.INFO, "KEY", "$key: null")
+      log(Logger.Level.INFO, "KEY", "$key: $it")
+    } ?: log(Logger.Level.INFO, "KEY", "$key: null")
   }
 
   override fun sendIssue(tag: String, message: String) {

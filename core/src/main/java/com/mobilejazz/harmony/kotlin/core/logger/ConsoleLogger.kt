@@ -3,21 +3,21 @@ package com.mobilejazz.harmony.kotlin.core.logger
 
 class ConsoleLogger : Logger {
 
-  override fun log(level: Logger.LogLevel, tag: String?, message: String) {
+  override fun log(level: Logger.Level, tag: String?, message: String) {
     tag?.let {
       println("${level.levelStringRepresentation()} - [$it]: $message")
     } ?: println("${level.levelStringRepresentation()}: $message")
   }
 
-  override fun log(level: Logger.LogLevel, throwable: Throwable, tag: String?, message: String) {
+  override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
     log(level, tag, message)
     throwable.printStackTrace()
   }
 
   override fun log(key: String, value: Any?) {
     value?.let {
-      log(Logger.LogLevel.INFO, "KEY", "$key: $it")
-    } ?: log(Logger.LogLevel.INFO, "KEY", "$key: null")
+      log(Logger.Level.INFO, "KEY", "$key: $it")
+    } ?: log(Logger.Level.INFO, "KEY", "$key: null")
   }
 
   override fun sendIssue(tag: String, message: String) {
@@ -47,13 +47,13 @@ class ConsoleLogger : Logger {
   override val deviceIdentifier: String
     get() = TODO("not implemented")
 
-  private fun Logger.LogLevel.levelStringRepresentation(): String {
+  private fun Logger.Level.levelStringRepresentation(): String {
     return when (this) {
-      Logger.LogLevel.VERBOSE -> "VERBOSE"
-      Logger.LogLevel.DEBUG -> "DEBUG"
-      Logger.LogLevel.INFO -> "INFO"
-      Logger.LogLevel.WARNING -> "WARNING"
-      Logger.LogLevel.ERROR -> "ERROR"
+      Logger.Level.VERBOSE -> "VERBOSE"
+      Logger.Level.DEBUG -> "DEBUG"
+      Logger.Level.INFO -> "INFO"
+      Logger.Level.WARNING -> "WARNING"
+      Logger.Level.ERROR -> "ERROR"
     }
   }
 }
