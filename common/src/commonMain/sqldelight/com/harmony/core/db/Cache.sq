@@ -1,0 +1,18 @@
+
+CREATE TABLE cache (
+    key TEXT NOT NULL PRIMARY KEY,
+    value BLOB NOT NULL
+);
+
+value:
+SELECT *
+FROM cache
+WHERE key LIKE ?;
+
+delete:
+DELETE FROM cache WHERE key LIKE ?;
+
+insertOrUpdate:
+INSERT OR REPLACE INTO cache(key, value)
+VALUES(?, ?);
+
