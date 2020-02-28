@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
+import com.mobilejazz.harmony.kotlin.core.logger.Logger
 import com.mobilejazz.harmony.kotlin.core.repository.operation.CacheSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.operation.MainSyncOperation
 import com.mobilejazz.harmony.kotlin.core.repository.query.KeyQuery
@@ -19,6 +20,7 @@ import com.mobilejazz.sample.screens.detail.ItemDetailActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class HomeActivity : AppCompatActivity() {
 
@@ -33,6 +35,11 @@ class HomeActivity : AppCompatActivity() {
   @Inject
   lateinit var getAskStoriesInteractor: GetInteractor<ItemIds>
 
+  @field:[Inject Named("ConsoleLogger")]
+  lateinit var consoleLogger: Logger
+
+  @field:[Inject Named("AndroidLogger")]
+  lateinit var androidLogger: Logger
 
   override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)
@@ -52,6 +59,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     reloadData(false)
+
+    printLoggers()
   }
 
   private fun reloadData(pullToRefresh: Boolean) {
@@ -77,5 +86,16 @@ class HomeActivity : AppCompatActivity() {
               Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_SHORT)
               Log.e("Error", it.localizedMessage)
             })
+  }
+
+  private fun printLoggers() {
+    consoleLogger.d("TAG", "HomeActivity onCreate consoleLogger")
+    androidLogger.d("TAG", "HomeActivity onCreate consoleLogger")
+
+    consoleLogger.i("HomeActivity onCreate consoleLogger NO TAG")
+    androidLogger.i("HomeActivity onCreate consoleLogger NO TAG")
+
+    consoleLogger.e("TAG", Throwable(), "HomeActivity onCreate consoleLogger Throwable")
+    androidLogger.e("TAG", Throwable(), "HomeActivity onCreate consoleLogger Throwable")
   }
 }
