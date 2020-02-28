@@ -5,7 +5,7 @@ import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies
 import com.mobilejazz.harmony.kotlin.core.repository.validator.vastra.strategies.ValidationStrategyResult
 import java.util.*
 
-abstract class TimestampValidationStrategyDataSource(open var lastUpdate: Date) :
+abstract class TimestampValidationStrategyDataSource(@Transient open var lastUpdate: Date = Date()) :
     ValidationStrategyDataSource {
 
   abstract fun expiryTime(): Long

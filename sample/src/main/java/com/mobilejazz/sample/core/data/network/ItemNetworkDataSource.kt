@@ -13,11 +13,10 @@ class ItemNetworkDataSource @Inject constructor(private val hackerNewsItemServic
 
   override fun get(query: Query): Future<ItemEntity> = when (query) {
     is IntegerIdQuery -> {
+
       Future {
         val item = hackerNewsItemService.newItem(query.identifier).get()
-        item.copy(lastUpdate = Date())
-        return@Future item
-
+        return@Future item.copy(lastUpdate = Date())
       }
 
     }
@@ -27,11 +26,13 @@ class ItemNetworkDataSource @Inject constructor(private val hackerNewsItemServic
 
   override fun getAll(query: Query): Future<List<ItemEntity>> = when (query) {
     is IntegerIdsQuery -> {
+
       Future {
         return@Future query.identifiers.map {
           get(IntegerIdQuery(it)).get()
         }
       }
+
     }
     else -> throw IllegalArgumentException("Query not mapped correctly!")
   }

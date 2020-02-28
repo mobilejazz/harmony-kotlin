@@ -4,8 +4,8 @@ import android.content.SharedPreferences
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageDataSource
-import com.mobilejazz.harmony.kotlin.android.repository.datasource.srpreferences.DeviceStorageObjectAssemblerDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.*
+import com.mobilejazz.harmony.kotlin.core.repository.datasource.SerializationDataSourceMapper
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidDeleteDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.datasource.VoidPutDataSource
 import com.mobilejazz.harmony.kotlin.core.repository.mapper.*
@@ -26,7 +26,7 @@ class ItemDI {
 
   @Provides
   @Singleton
-  fun provideSharedPreferencesStorage(sharedPreferences: SharedPreferences): DeviceStorageObjectAssemblerDataSource<ItemEntity> {
+  fun provideSharedPreferencesStorage(sharedPreferences: SharedPreferences): SerializationDataSourceMapper<String, ItemEntity> {
     val deviceStorageDataSource = DeviceStorageDataSource<String>(sharedPreferences)
 
     val gson = Gson()
@@ -34,14 +34,21 @@ class ItemDI {
     val toModelMapper = StringToModelMapper(ItemEntity::class.java, gson)
     val toListModelMapper = ListModelToStringMapper<ItemEntity>(gson)
     val toStringListMapper = StringToListModelMapper(object : TypeToken<List<ItemEntity>>() {}, gson)
-    return DeviceStorageObjectAssemblerDataSource(toStringMapper, toModelMapper, toListModelMapper, toStringListMapper, deviceStorageDataSource)
+    return SerializationDataSourceMapper(
+        deviceStorageDataSource,
+        deviceStorageDataSource,
+        deviceStorageDataSource,
+        toModelMapper,
+        toStringListMapper,
+        toStringMapper,
+        toListModelMapper)
   }
 
   // Repositories
   // --> Main
   @Provides
   @Singleton
-  fun provideCacheRepository(cacheDataSource: DeviceStorageObjectAssemblerDataSource<ItemEntity>, mainDataSource: ItemNetworkDataSource): CacheRepository<ItemEntity> {
+  fun provideCacheRepository(cacheDataSource: SerializationDataSourceMapper<String, ItemEntity>, mainDataSource: ItemNetworkDataSource): CacheRepository<ItemEntity> {
     return CacheRepository(
         cacheDataSource, cacheDataSource, cacheDataSource,
         mainDataSource, VoidPutDataSource(), VoidDeleteDataSource(),
