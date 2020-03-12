@@ -8,10 +8,7 @@ import com.harmony.kotlin.data.query.ObjectQuery
 import com.harmony.kotlin.data.query.PaginationOffsetLimitQuery
 import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
-import io.ktor.client.request.delete
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.put
+import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.KSerializer
@@ -22,7 +19,8 @@ open class GetNetworkDataSource<T>(
     private val url: String,
     private val httpClient: HttpClient,
     private val serializer: KSerializer<T>,
-    private val json: Json
+    private val json: Json,
+    private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : GetDataSource<T> {
 
   override suspend fun get(query: Query): T {
@@ -33,12 +31,14 @@ open class GetNetworkDataSource<T>(
             httpClient.get<String>(url) {
               oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
               paginationOffsetLimitParams(query.offset, query.limit)
+              headers(globalHeaders)
             }
           }
           is OAuthPasswordIntegerIdQuery -> {
             val url = "${url}/${query.id}"
             httpClient.get<String>(url) {
               oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
             }
           }
           else -> notSupportedQuery()
@@ -47,14 +47,19 @@ open class GetNetworkDataSource<T>(
       is PaginationOffsetLimitQuery -> {
         httpClient.get<String>(url) {
           paginationOffsetLimitParams(query.offset, query.limit)
+          headers(globalHeaders)
         }
       }
       is IntegerIdQuery -> {
         val url = "${url}/${query.id}"
-        httpClient.get<String>(url)
+        httpClient.get<String>(url) {
+          headers(globalHeaders)
+        }
       }
       else -> {
-        httpClient.get<String>(url)
+        httpClient.get<String>(url) {
+          headers(globalHeaders)
+        }
       }
     }
 
@@ -71,7 +76,8 @@ open class PutNetworkDataSource<T>(
     private val url: String,
     private val httpClient: HttpClient,
     private val serializer: KSerializer<T>,
-    private val json: Json
+    private val json: Json,
+    private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : PutDataSource<T> {
   override suspend fun put(query: Query, value: T?): T {
     val response = when (query) {
@@ -82,6 +88,7 @@ open class PutNetworkDataSource<T>(
               httpClient.post<String>(url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 contentType(ContentType.Application.Json)
+                headers(globalHeaders)
                 body = it
               }
             } ?: throw IllegalArgumentException("ObjectQuery value is null")
@@ -91,6 +98,7 @@ open class PutNetworkDataSource<T>(
               httpClient.put<String>("${url}/${query.id}") {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 contentType(ContentType.Application.Json)
+                headers(globalHeaders)
                 body = value
               }
             } ?: throw IllegalArgumentException("value != null")
@@ -102,6 +110,7 @@ open class PutNetworkDataSource<T>(
         query.value?.let {
           httpClient.post<String>(url) {
             contentType(ContentType.Application.Json)
+            headers(globalHeaders)
             body = it
           }
         } ?: throw IllegalArgumentException("ObjectQuery value is null")
@@ -110,6 +119,7 @@ open class PutNetworkDataSource<T>(
         value?.let {
           httpClient.post<String>("${url}/${query.id}") {
             contentType(ContentType.Application.Json)
+            headers(globalHeaders)
             body = value
           }
         } ?: throw IllegalArgumentException("value != null")
@@ -126,7 +136,8 @@ open class PutNetworkDataSource<T>(
 
 class DeleteNetworkDataSource(
     private val url: String,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
+    private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : DeleteDataSource {
 
   override suspend fun delete(query: Query) {
@@ -136,17 +147,21 @@ class DeleteNetworkDataSource(
           is OAuthPasswordIntegerIdQuery -> {
             httpClient.delete<Unit>("${url}/${query.id}") {
               oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
             }
           }
           is OAuthApplicationIntegerIdQuery -> {
             httpClient.delete<Unit>("${url}/${query.id}") {
               oauthApplicationCredentialHeader(query.getApplicationTokenInteractor)
+              headers(globalHeaders)
             }
           }
         }
       }
       is IntegerIdQuery -> {
-        httpClient.delete<Unit>("${url}/${query.id}")
+        httpClient.delete<Unit>("${url}/${query.id}") {
+          headers(globalHeaders)
+        }
       }
     }
   }

@@ -5,6 +5,10 @@ import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInt
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 import io.ktor.client.request.HttpRequestBuilder
 
+fun HttpRequestBuilder.headers(values: List<Pair<String, String>>) {
+    values.forEach { headers.append(it.first, it.second) }
+}
+
 suspend fun HttpRequestBuilder.oauthPasswordHeader(
     tokenIdentifier: String = Default.TOKEN_IDENTIFIER,
     getPasswordTokenInteractor: GetPasswordTokenInteractor
