@@ -18,6 +18,7 @@ plugins {
   id 'org.jetbrains.kotlin.multiplatform'
   id 'kotlin-kapt'
   id 'kotlin-android-extensions'
+  id 'kotlinx-serialization'
 }
 
 apply plugin: "com.squareup.sqldelight"
@@ -61,6 +62,15 @@ kotlin {
 
         // SQL Delight
         implementation "com.squareup.sqldelight:runtime:$sql_delight_version"
+
+        // http client library
+        implementation "io.ktor:ktor-client-core:$ktor_version"
+        implementation "io.ktor:ktor-client-json:$ktor_version"
+        implementation "io.ktor:ktor-client-logging:$ktor_version"
+        implementation "io.ktor:ktor-client-serialization:$ktor_version"
+
+        // date library
+        implementation "com.soywiz.korlibs.klock:klock:$klock_version" // Common
       }
     }
 
@@ -125,7 +135,12 @@ kotlin {
         // serialization
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
 
-//        dependsOn jvmMain
+        // ktor android
+        implementation "io.ktor:ktor-client-android:$ktor_version"
+        implementation "io.ktor:ktor-client-core-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-json-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-logging-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-serialization-jvm:$ktor_version"
       }
     }
     androidTest {
@@ -134,6 +149,8 @@ kotlin {
 
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+        implementation "io.ktor:ktor-client-mock-jvm:$ktor_version"
       }
     }
     iosMain {
@@ -142,6 +159,13 @@ kotlin {
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutines_version"
 
         implementation "com.squareup.sqldelight:native-driver:$sql_delight_version"
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
+
+        // ktor ios runtine
+        implementation("io.ktor:ktor-client-ios:$ktor_version")
+        implementation("io.ktor:ktor-client-json-native:$ktor_version")
+        implementation("io.ktor:ktor-client-serialization-native:$ktor_version")
+        implementation("io.ktor:ktor-client-logging-native:$ktor_version")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
 
       }
