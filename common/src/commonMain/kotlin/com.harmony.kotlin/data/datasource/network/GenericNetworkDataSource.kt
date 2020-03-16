@@ -188,7 +188,7 @@ class DeleteNetworkDataSource(
         }
       }
       else -> {
-        httpClient.delete<Unit>("$url") {
+        httpClient.delete<Unit>(url) {
           headers(globalHeaders)
         }
       }
