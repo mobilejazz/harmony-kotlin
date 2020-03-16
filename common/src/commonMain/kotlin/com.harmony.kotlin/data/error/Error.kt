@@ -2,7 +2,7 @@ package com.harmony.kotlin.data.error
 
 // Errors
 
-sealed class RepositoryException(override val message: String?, override val cause: Throwable?) : Exception(message)
+open class RepositoryException(message: String? = null, cause: Throwable? = null) : Exception(message)
 
 open class DataNotFoundException(message: String? = "Data not found", cause: Throwable? = null) : RepositoryException(message, cause)
 
