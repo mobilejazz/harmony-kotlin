@@ -3,10 +3,7 @@ package com.harmony.kotlin.data.datasource.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.query.IntegerIdQuery
-import com.harmony.kotlin.data.query.ObjectQuery
-import com.harmony.kotlin.data.query.PaginationOffsetLimitQuery
-import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.query.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 import io.ktor.http.ContentType
@@ -41,6 +38,13 @@ open class GetNetworkDataSource<T>(
               headers(globalHeaders)
             }
           }
+          is OAuthPasswordIdQuery<*> -> {
+            val url = "${url}/${query.identifier}"
+            httpClient.get<String>(url) {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
+            }
+          }
           else -> notSupportedQuery()
         }
       }
@@ -52,6 +56,12 @@ open class GetNetworkDataSource<T>(
       }
       is IntegerIdQuery -> {
         val url = "${url}/${query.id}"
+        httpClient.get<String>(url) {
+          headers(globalHeaders)
+        }
+      }
+      is IdQuery<*> -> {
+        val url = "${url}/${query.identifier}"
         httpClient.get<String>(url) {
           headers(globalHeaders)
         }
@@ -117,7 +127,16 @@ open class PutNetworkDataSource<T>(
       }
       is IntegerIdQuery -> {
         value?.let {
-          httpClient.post<String>("${url}/${query.id}") {
+          httpClient.put<String>("${url}/${query.id}") {
+            contentType(ContentType.Application.Json)
+            headers(globalHeaders)
+            body = value
+          }
+        } ?: throw IllegalArgumentException("value != null")
+      }
+      is IdQuery<*> -> {
+        value?.let {
+          httpClient.put<String>("${url}/${query.identifier}") {
             contentType(ContentType.Application.Json)
             headers(globalHeaders)
             body = value
@@ -160,6 +179,16 @@ class DeleteNetworkDataSource(
       }
       is IntegerIdQuery -> {
         httpClient.delete<Unit>("${url}/${query.id}") {
+          headers(globalHeaders)
+        }
+      }
+      is IdQuery<*> -> {
+        httpClient.delete<Unit>("${url}/${query.identifier}") {
+          headers(globalHeaders)
+        }
+      }
+      else -> {
+        httpClient.delete<Unit>("$url") {
           headers(globalHeaders)
         }
       }

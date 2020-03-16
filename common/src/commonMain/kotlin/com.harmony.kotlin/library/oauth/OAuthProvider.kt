@@ -14,10 +14,7 @@ import com.harmony.kotlin.library.oauth.data.datasource.network.OAuthNetworkData
 import com.harmony.kotlin.library.oauth.data.datasource.network.mapper.ClientRequestExceptionToNetworkErrorExceptionMapper
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.mapper.OAuthTokenEntityToOAuthTokenMapper
-import com.harmony.kotlin.library.oauth.domain.interactor.AuthenticatePasswordCredentialInteractor
-import com.harmony.kotlin.library.oauth.domain.interactor.DeletePasswordTokenInteractor
-import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
-import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
+import com.harmony.kotlin.library.oauth.domain.interactor.*
 import com.harmony.kotlin.library.oauth.domain.model.OAuthStorageConfiguration
 import com.harmony.kotlin.library.oauth.domain.model.OAuthToken
 import com.harmony.kotlin.library.oauth.domain.model.oauthStorageConfigurationInMemory
@@ -55,7 +52,7 @@ class OAuthDefaultModule(
   override fun authenticatePasswordCredentialInteractor(): AuthenticatePasswordCredentialInteractor =
       AuthenticatePasswordCredentialInteractor(coroutineScope, putTokenInteractor)
 
-  override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetPasswordTokenInteractor(coroutineScope, getTokenInteractor)
+  override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetDefaultPasswordTokenInteractor(coroutineScope, getTokenInteractor)
 
   override fun getApplicationTokenInteractor(): GetApplicationTokenInteractor = GetApplicationTokenInteractor(coroutineScope, clientId, clientSecret,
       putTokenInteractor)
