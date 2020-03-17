@@ -83,8 +83,37 @@ open class GetNetworkDataSource<T>(
   }
 
   override suspend fun getAll(query: Query): List<T> {
-    val raw = httpClient.get<String>(url)
-    return json.parse(serializer.list, raw)
+    val response = when (query) {
+      is OAuthClientQuery -> {
+        when (query) {
+          is OAuthPasswordPaginationOffsetLimitQuery -> {
+            httpClient.get<String>(url) {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              paginationOffsetLimitParams(query.offset, query.limit)
+              headers(globalHeaders)
+            }
+          }
+          is DefaultOAuthClientQuery -> {
+            httpClient.get<String>(url) {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
+            }
+          }
+
+          is OAuthPasswordIdQuery<*> -> {
+            httpClient.get<String>(url) {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
+            }
+          }
+          else -> notSupportedQuery()
+        }
+      }
+      else -> {
+        httpClient.get<String>(url)
+      }
+    }
+    return json.parse(serializer.list, response)
   }
 }
 
