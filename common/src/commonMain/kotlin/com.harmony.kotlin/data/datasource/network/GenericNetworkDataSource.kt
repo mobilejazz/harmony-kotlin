@@ -45,6 +45,12 @@ open class GetNetworkDataSource<T>(
               headers(globalHeaders)
             }
           }
+          is DefaultOAuthClientQuery -> {
+            httpClient.get<String>(url) {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+              headers(globalHeaders)
+            }
+          }
           else -> notSupportedQuery()
         }
       }

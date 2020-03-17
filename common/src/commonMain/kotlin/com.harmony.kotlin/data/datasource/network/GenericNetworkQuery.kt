@@ -1,14 +1,13 @@
 package com.harmony.kotlin.data.datasource.network
 
-import com.harmony.kotlin.data.query.IdQuery
-import com.harmony.kotlin.data.query.IntegerIdQuery
-import com.harmony.kotlin.data.query.ObjectQuery
-import com.harmony.kotlin.data.query.PaginationOffsetLimitQuery
+import com.harmony.kotlin.data.query.*
 import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.interactor.GetDefaultPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 
 interface OAuthClientQuery
+
+class DefaultOAuthClientQuery(val getPasswordTokenInteractor: GetPasswordTokenInteractor) : Query(), OAuthClientQuery
 
 // OAuth integer id query
 class OAuthPasswordIntegerIdQuery(id: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IntegerIdQuery(id),
