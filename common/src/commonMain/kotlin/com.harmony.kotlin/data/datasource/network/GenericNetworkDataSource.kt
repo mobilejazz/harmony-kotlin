@@ -119,6 +119,16 @@ open class PutNetworkDataSource<T>(
               }
             } ?: throw IllegalArgumentException("value != null")
           }
+          is OAuthPasswordIdQuery<*> -> {
+            value?.let {
+              httpClient.put<String>("${url}/${query.identifier}") {
+                oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                contentType(ContentType.Application.Json)
+                headers(globalHeaders)
+                body = value
+              }
+            } ?: throw IllegalArgumentException("value != null")
+          }
           else -> notSupportedQuery()
         }
       }
@@ -178,6 +188,12 @@ class DeleteNetworkDataSource(
           is OAuthApplicationIntegerIdQuery -> {
             httpClient.delete<Unit>("${url}/${query.id}") {
               oauthApplicationCredentialHeader(query.getApplicationTokenInteractor)
+              headers(globalHeaders)
+            }
+          }
+          is OAuthPasswordIdQuery<*> -> {
+            httpClient.delete<Unit>("${url}/${query.identifier}") {
+              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
               headers(globalHeaders)
             }
           }
