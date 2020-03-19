@@ -13,10 +13,6 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
-class WeakRef<T>(element: T) {
-  private val weak = WeakReference(element)
-  operator fun getValue(thisRef: Any, property: KProperty<*>): T? = weak.get()
-}
 
 class BundleParam<out Param>(val name: String, private val default: Param? = null) : ReadOnlyProperty<Activity, Param> {
 
