@@ -141,6 +141,9 @@ kotlin {
         implementation "io.ktor:ktor-client-json-jvm:$ktor_version"
         implementation "io.ktor:ktor-client-logging-jvm:$ktor_version"
         implementation "io.ktor:ktor-client-serialization-jvm:$ktor_version"
+
+        // bugfender
+        implementation "com.bugfender.sdk:android:3.+"
       }
     }
     androidTest {

@@ -1,10 +1,16 @@
 package com.harmony.kotlin.common.logger
 
+import android.content.Context
 import android.os.Build
-import android.util.Log
+import com.bugfender.sdk.Bugfender
 import java.util.regex.Pattern
 
-open class AndroidLogger(private val isDebug: Boolean) : Logger {
+open class BugfenderLogger(context: Context,
+                           applicationKey: String,
+                           private val isDebug: Boolean) : Logger {
+  init {
+    Bugfender.init(context, applicationKey, isDebug)
+  }
 
   companion object {
     private const val MAX_TAG_LENGTH = 23
@@ -12,27 +18,43 @@ open class AndroidLogger(private val isDebug: Boolean) : Logger {
   }
 
   override fun log(level: Logger.Level, tag: String?, message: String) {
-    val tag = tag ?: createClassTag()
+    val t = tag ?: createClassTag()
     if (isDebug) {
       when (level) {
-        Logger.Level.VERBOSE -> Log.v(tag, message)
-        Logger.Level.DEBUG -> Log.d(tag, message)
-        Logger.Level.INFO -> Log.i(tag, message)
-        Logger.Level.WARNING -> Log.w(tag, message)
-        Logger.Level.ERROR -> Log.e(tag, message)
+        Logger.Level.VERBOSE -> Bugfender.d(t, message)
+        Logger.Level.DEBUG -> Bugfender.d(t, message)
+        Logger.Level.INFO -> Bugfender.i(t, message)
+        Logger.Level.WARNING -> Bugfender.w(t, message)
+        Logger.Level.ERROR -> Bugfender.e(t, message)
       }
     }
   }
 
   override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
-    val tag = tag ?: createClassTag()
+    val t = tag ?: createClassTag()
+
     if (isDebug) {
       when (level) {
-        Logger.Level.VERBOSE -> Log.v(tag, message, throwable)
-        Logger.Level.DEBUG -> Log.d(tag, message, throwable)
-        Logger.Level.INFO -> Log.i(tag, message, throwable)
-        Logger.Level.WARNING -> Log.w(tag, message, throwable)
-        Logger.Level.ERROR -> Log.e(tag, message, throwable)
+        Logger.Level.VERBOSE -> {
+          Bugfender.d(t, throwable.message)
+          Bugfender.d(t, message)
+        }
+        Logger.Level.DEBUG -> {
+          Bugfender.d(t, throwable.message)
+          Bugfender.d(t, message)
+        }
+        Logger.Level.INFO -> {
+          Bugfender.i(t, throwable.message)
+          Bugfender.i(t, message)
+        }
+        Logger.Level.WARNING -> {
+          Bugfender.w(t, throwable.message)
+          Bugfender.w(t, message)
+        }
+        Logger.Level.ERROR -> {
+          Bugfender.e(t, throwable.message)
+          Bugfender.e(t, message)
+        }
       }
     }
   }
@@ -44,31 +66,31 @@ open class AndroidLogger(private val isDebug: Boolean) : Logger {
   }
 
   override fun sendIssue(tag: String, message: String) {
-    log(Logger.Level.DEBUG, tag, message)
+    Bugfender.sendIssue(tag, message)
   }
 
   override fun setDeviceBoolean(key: String, value: Boolean) {
-    log(Logger.Level.DEBUG, key, value.toString())
+    Bugfender.setDeviceBoolean(key, value)
   }
 
   override fun setDeviceString(key: String, value: String) {
-    log(Logger.Level.DEBUG, key, value)
+    Bugfender.setDeviceString(key, value)
   }
 
   override fun setDeviceInteger(key: String, value: Int) {
-    log(Logger.Level.DEBUG, key, value.toString())
+    Bugfender.setDeviceInteger(key, value)
   }
 
   override fun setDeviceFloat(key: String, value: Float) {
-    log(Logger.Level.DEBUG, key, value.toString())
+    Bugfender.setDeviceFloat(key, value)
   }
 
   override fun removeDeviceKey(key: String) {
-    log(Logger.Level.DEBUG, key, "RemoveDeviceKey")
+    Bugfender.removeDeviceKey(key)
   }
 
   override val deviceIdentifier: String
-    get() = ""
+    get() = Bugfender.getDeviceUrl().toString()
 
   private fun createClassTag(): String? {
     val ignoreClass = listOf(
@@ -90,4 +112,3 @@ open class AndroidLogger(private val isDebug: Boolean) : Logger {
     }
   }
 }
-
