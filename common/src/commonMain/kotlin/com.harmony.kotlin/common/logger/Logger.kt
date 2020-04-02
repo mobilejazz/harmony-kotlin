@@ -11,7 +11,6 @@ interface Logger {
     ERROR("ERROR")
   }
 
-
   /** Logs a String object using a given level.  */
   fun log(level: Level, tag: String? = null, message: String)
 
