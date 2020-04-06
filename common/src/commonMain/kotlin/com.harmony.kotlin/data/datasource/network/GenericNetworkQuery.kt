@@ -14,7 +14,7 @@ class OAuthPasswordIntegerIdQuery(id: Int, val getPasswordTokenInteractor: GetPa
     OAuthClientQuery
 
 // OAuth integer id query
-class OAuthPasswordIdQuery<T>(id: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IdQuery<T>(id),
+open class OAuthPasswordIdQuery<T>(id: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IdQuery<T>(id),
     OAuthClientQuery
 
 class OAuthApplicationIntegerIdQuery(id: Int, val getApplicationTokenInteractor: GetApplicationTokenInteractor) : IntegerIdQuery(id),
