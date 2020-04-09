@@ -110,7 +110,7 @@ open class GetNetworkDataSource<T>(
             }
 
             is OAuthPasswordIdQuery<*> -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>("${url}/${query.identifier}") {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
