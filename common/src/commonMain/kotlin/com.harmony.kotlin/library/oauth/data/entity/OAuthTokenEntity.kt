@@ -15,10 +15,13 @@ internal data class OAuthTokenEntity(
 ) {
 
   fun isValid(): Boolean {
-    val now = DateTime.now()
-    val diff = now.seconds - DateTime(createdAt).seconds
+    val now = DateTime.now().unixMillisLong
+    val createdAt = DateTime(createdAt).unixMillisLong
 
-    return diff < (expiresIn - 120 /*2 minutes*/)
+    val diff = now - createdAt
+    val diffSeconds = diff / 1000
+
+    return diffSeconds < (expiresIn - 120 /* 2 minutes */)
   }
 }
 
