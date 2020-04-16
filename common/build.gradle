@@ -35,6 +35,17 @@ android {
   packagingOptions {
     exclude "META-INF/*"
   }
+
+  sourceSets {
+    main {
+      manifest.srcFile 'src/androidMain/AndroidManifest.xml'
+      java.srcDirs = ['src/androidMain/kotlin']
+      resources.srcDirs = ['src/androidMain/kotlin']
+    }
+    test {
+      java.srcDirs = ['src/androidTest/kotlin']
+    }
+  }
 }
 
 kotlin {
@@ -87,7 +98,11 @@ kotlin {
     jvmMain {
       dependencies {
         implementation kotlin('stdlib-jdk8')
+
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+
         api "com.google.code.gson:gson:$gson_version"
+
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
         implementation "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
       }
@@ -144,6 +159,8 @@ kotlin {
 
         // bugfender
         implementation "com.bugfender.sdk:android:3.+"
+
+        dependsOn jvmMain
       }
     }
     androidTest {
