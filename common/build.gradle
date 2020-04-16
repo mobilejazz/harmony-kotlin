@@ -66,6 +66,11 @@ android {
 }
 
 kotlin {
+
+  android {
+    publishLibraryVariants("release", "debug")
+  }
+
   final def iosTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") ? presets.iosArm64 : presets.iosX64
   targetFromPreset(iosTarget, "ios") {
     binaries {
@@ -122,6 +127,13 @@ kotlin {
 
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
         implementation "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
+
+        // ktor
+        implementation "io.ktor:ktor-client-okhttp:$ktor_version"
+        implementation "io.ktor:ktor-client-core-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-json-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-logging-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-serialization-jvm:$ktor_version"
       }
     }
 
@@ -177,7 +189,7 @@ kotlin {
         // bugfender
         implementation "com.bugfender.sdk:android:3.+"
 
-        dependsOn jvmMain
+//        dependsOn jvmMain
       }
     }
     androidTest {
@@ -204,7 +216,6 @@ kotlin {
         implementation("io.ktor:ktor-client-serialization-native:$ktor_version")
         implementation("io.ktor:ktor-client-logging-native:$ktor_version")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
-
       }
 
     }
@@ -260,11 +271,13 @@ afterEvaluate {
 }
 
 def getBintrayUserProperty() {
-  return hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+  return "joselufo-mj"
+//  return hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
 }
 
 def getBintrayApiKeyProperty() {
-  return hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+  return "9ddf8319ad2ee90c08d73985ff42fd0144a9e820"
+//  return hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 }
 
 bintray {
@@ -277,11 +290,12 @@ bintray {
   //f you set publish to true, the new version will be published the moment you upload to bintray. If false, it will not be published unless you press the publish button on the bintray web.
   // It is recommended that you make it false because it can prevent an accident that you accidentally release the latest version.
   publish = false
+  override = true
 
   pkg {
     repo = BINTRAY_REPOSITORY
     name = ARTIFACT_ID
-    userOrg = BINTRAY_ORGANIZATION
+    userOrg = getBintrayUserProperty()
     licenses = ['Apache-2.0']
     vcsUrl = VCS_URL
     websiteUrl = SITE_URL

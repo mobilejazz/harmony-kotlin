@@ -9,7 +9,7 @@ import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-class FileStreamValueDataStorage<T>(val file: File) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+class FileStreamValueDataStorage<T>(private val file: File) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
   override suspend fun get(query: Query): T = TODO("not implemented")
 
