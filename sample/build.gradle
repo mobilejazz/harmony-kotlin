@@ -69,5 +69,7 @@ dependencies {
 
   testImplementation 'junit:junit:4.12'
 
-  implementation project(':common')
+//  implementation project(':common')
+//  implementation 'com.mobilejazz:harmony-kotlin-androidRelease:0.1'
+  implementation 'com.mobilejazz:harmony-kotlin-jvm:0.1'
 }

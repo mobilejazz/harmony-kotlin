@@ -290,7 +290,6 @@ bintray {
   //f you set publish to true, the new version will be published the moment you upload to bintray. If false, it will not be published unless you press the publish button on the bintray web.
   // It is recommended that you make it false because it can prevent an accident that you accidentally release the latest version.
   publish = false
-  override = true
 
   pkg {
     repo = BINTRAY_REPOSITORY
