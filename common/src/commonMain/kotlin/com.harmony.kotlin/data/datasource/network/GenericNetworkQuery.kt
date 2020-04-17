@@ -21,7 +21,7 @@ class OAuthApplicationIntegerIdQuery(id: Int, val getApplicationTokenInteractor:
     OAuthClientQuery
 
 // OAuth password pagination query
-class OAuthPasswordPaginationOffsetLimitQuery(offset: Int, limit: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) :
+open class OAuthPasswordPaginationOffsetLimitQuery(offset: Int, limit: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) :
     PaginationOffsetLimitQuery(offset, limit),
     OAuthClientQuery
 
