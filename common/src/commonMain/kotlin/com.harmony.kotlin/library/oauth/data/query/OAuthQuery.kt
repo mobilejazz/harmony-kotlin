@@ -9,5 +9,7 @@ internal sealed class OAuthQuery(private val grantType: String, private val id: 
   class RefreshToken(id: String, val refreshToken: String) : OAuthQuery("refresh_token", id)
 
   class ClientCredentials(val clientId: String, val clientSecret: String) : OAuthQuery("client_credentials", "$clientId:$clientSecret")
+
+  class Custom<T>(val value: T, grantType: String, id: String) : OAuthQuery(grantType, id)
 }
 

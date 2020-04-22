@@ -12,7 +12,7 @@ import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
 import com.soywiz.klock.DateTime
 import com.soywiz.klock.DateTimeRange
 
-internal class OAuthTokenRepository(
+class OAuthTokenRepository(
     private val putNetworkDataSource: PutDataSource<OAuthTokenEntity>,
     private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
     private val putStorageDataSource: PutDataSource<OAuthTokenEntity>) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
