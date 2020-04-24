@@ -2,7 +2,7 @@ package com.harmony.kotlin.data.operation
 
 // Operations
 
-sealed class Operation
+open class Operation
 
 object DefaultOperation : Operation()
 
