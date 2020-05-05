@@ -31,7 +31,7 @@ class GetAllInteractor<M>(private val scope: CoroutineScope, private val getRepo
 
 class PutInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
 
-  suspend operator fun invoke(m: M?, query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
+  suspend operator fun invoke(m: M? = null, query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
       withContext(scope.coroutineContext) {
         putRepository.put(query, m, operation)
       }
@@ -39,7 +39,7 @@ class PutInteractor<M>(private val scope: CoroutineScope, private val putReposit
 
 class PutAllInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
 
-  suspend operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
+  suspend operator fun invoke(m: List<M>? = null, query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
       withContext(scope.coroutineContext) {
         putRepository.putAll(query, m, operation)
       }
