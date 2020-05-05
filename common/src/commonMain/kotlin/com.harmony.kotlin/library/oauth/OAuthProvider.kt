@@ -1,5 +1,6 @@
 package com.harmony.kotlin.library.oauth
 
+import com.harmony.kotlin.common.logger.KtorHarmonyLogger
 import com.harmony.kotlin.data.datasource.DataSourceMapper
 import com.harmony.kotlin.data.mapper.CBORByteArrayToObject
 import com.harmony.kotlin.data.mapper.CBORObjectToByteArray
@@ -46,7 +47,8 @@ class OAuthDefaultModule(
     private val coroutineScope: CoroutineScope,
     private val clientId: String,
     private val clientSecret: String,
-    private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory()
+    private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(),
+    private val moduleLogger: com.harmony.kotlin.common.logger.Logger
 ) : OAuthComponent {
 
   override fun authenticatePasswordCredentialInteractor(): AuthenticatePasswordCredentialInteractor =
@@ -90,7 +92,7 @@ class OAuthDefaultModule(
         serializer = KotlinxSerializer(Json.nonstrict)
       }
       install(Logging) {
-        logger = Logger.SIMPLE
+        logger = KtorHarmonyLogger(moduleLogger)
         level = LogLevel.ALL
       }
     }
