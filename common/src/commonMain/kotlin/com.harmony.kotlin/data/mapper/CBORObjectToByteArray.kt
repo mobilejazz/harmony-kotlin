@@ -1,8 +1,8 @@
 package com.harmony.kotlin.data.mapper
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.list
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.cbor.*
 
 class CBORObjectToByteArray<T>(private val cbor: Cbor, private val serializer: KSerializer<T>): Mapper<T, ByteArray> {
     override fun map(from: T): ByteArray = cbor.dump(serializer, from)
