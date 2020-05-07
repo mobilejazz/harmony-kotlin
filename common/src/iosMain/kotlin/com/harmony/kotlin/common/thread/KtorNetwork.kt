@@ -5,7 +5,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import platform.Foundation.NSThread
 
-internal actual suspend fun <R> network(block: suspend () -> R): R = coroutineScope {
+actual suspend fun <R> network(block: suspend () -> R): R = coroutineScope {
   withContext(childContext()) {
     if (!isMainThread) error("Ktor calls must be run in main thread")
     block()
