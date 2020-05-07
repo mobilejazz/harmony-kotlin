@@ -1,5 +1,7 @@
 package com.harmony.kotlin.library.oauth.data.datasource.network
 
+import co.touchlab.stately.ensureNeverFrozen
+import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.NetworkErrorException
 import com.harmony.kotlin.data.mapper.Mapper
@@ -22,26 +24,30 @@ internal class OAuthNetworkDataSource(
 ) : PutDataSource<OAuthTokenEntity> {
 
     override suspend fun put(query: Query, value: OAuthTokenEntity?): OAuthTokenEntity {
-        val bodyRequest = when (query) {
-            is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
-            is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
-            is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(query.clientId, query.clientSecret)
-            else -> notSupportedQuery()
-        }
-
-        try {
-            val url = "${apiPath}/auth/token"
-            val response = httpClient.post<OAuthTokenEntity>(url) {
-                header(
-                    "Authorization", "Basic $basicAuthorizationCode"
+        return network {
+            val bodyRequest = when (query) {
+                is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
+                is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
+                is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
+                    query.clientId,
+                    query.clientSecret
                 )
-                contentType(ContentType.Application.Json)
-                body = bodyRequest
+                else -> notSupportedQuery()
             }
-            return response
-        } catch (e: ClientRequestException) {
-            val networkErrorException = errorMapper.map(e)
-            throw networkErrorException
+
+            try {
+                val url = "${apiPath}/auth/token"
+                httpClient.post<OAuthTokenEntity>(url) {
+                    header(
+                        "Authorization", "Basic $basicAuthorizationCode"
+                    )
+                    contentType(ContentType.Application.Json)
+                    body = bodyRequest
+                }
+            } catch (e: ClientRequestException) {
+                val networkErrorException = errorMapper.map(e)
+                throw networkErrorException
+            }
         }
     }
 

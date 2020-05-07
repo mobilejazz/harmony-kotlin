@@ -74,6 +74,8 @@ kotlin {
 
         // date library
         implementation "com.soywiz.korlibs.klock:klock:$klock_version" // Common
+
+        api "co.touchlab:stately-common:1.0.2"
       }
     }
 

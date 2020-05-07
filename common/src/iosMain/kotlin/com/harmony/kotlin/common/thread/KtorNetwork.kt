@@ -4,10 +4,11 @@ import co.touchlab.stately.concurrency.GuardedStableRef
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import platform.Foundation.NSThread
+import kotlinx.coroutines.Dispatchers
 
 actual suspend fun <R> network(block: suspend () -> R): R = coroutineScope {
   withContext(childContext()) {
-    if (!isMainThread) error("Ktor calls must be run in main thread")
+    // if (!isMainThread) error("Ktor calls must be run in main thread")
     block()
   }
 }
@@ -34,5 +35,5 @@ internal fun CoroutineScope.childContext(): CoroutineContext {
   return coroutineContext + ktorJob
 }
 
-internal val isMainThread: Boolean
+actual val isMainThread: Boolean
   get() = NSThread.isMainThread
