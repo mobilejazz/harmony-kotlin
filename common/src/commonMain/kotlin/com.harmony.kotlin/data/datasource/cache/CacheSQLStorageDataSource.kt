@@ -23,7 +23,20 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     }
   }
 
-  override suspend fun getAll(query: Query): List<ByteArray> = throw NotImplementedError("getAll not supported. Use get instead")
+  override suspend fun getAll(query: Query): List<ByteArray> {
+    when (query) {
+      is KeyQuery -> {
+        val sql = "${query.key}-%"
+        val response = database.cacheQueries.value(sql).executeAsList()
+        if (response.isEmpty()) throw DataNotFoundException()
+
+        return response.map {
+          it.value
+        }
+      }
+      else -> notSupportedQuery()
+    }
+  }
 
   override suspend fun put(query: Query, value: ByteArray?): ByteArray {
     return value?.also {
@@ -38,10 +51,24 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     } ?: throw IllegalArgumentException("value != null")
   }
 
-  override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> = throw NotImplementedError("getAll not supported. Use get instead")
+  override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> {
+    return when (query) {
+      is KeyQuery -> {
+        value?.let {
+          database.transaction {
+            it.forEachIndexed { idx, raw ->
+              database.cacheQueries.insertOrUpdate("${query.key}-$idx", raw)
+            }
+          }
+          return it
+        } ?: emptyList<ByteArray>()
+      }
+      else -> notSupportedQuery()
+    }
+  }
 
   override suspend fun delete(query: Query) {
-    when(query) {
+    when (query) {
       is KeyQuery -> {
         database.cacheQueries.delete(query.key)
       }
