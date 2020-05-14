@@ -9,6 +9,9 @@ interface OAuthClientQuery
 
 class DefaultOAuthClientQuery(val getPasswordTokenInteractor: GetPasswordTokenInteractor) : Query(), OAuthClientQuery
 
+// OAuth key query base
+class OAuthPasswordKeyQuery(key: String, val getPasswordTokenInteractor: GetPasswordTokenInteractor): KeyQuery(key), OAuthClientQuery
+
 // OAuth integer id query
 class OAuthPasswordIntegerIdQuery(id: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IntegerIdQuery(id),
     OAuthClientQuery

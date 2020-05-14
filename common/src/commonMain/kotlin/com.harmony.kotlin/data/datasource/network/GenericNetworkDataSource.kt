@@ -58,6 +58,12 @@ open class GetNetworkDataSource<T>(
                   headers(globalHeaders)
                 }
               }
+              is OAuthPasswordKeyQuery -> {
+                httpClient.get<String>(url) {
+                  oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                  headers(globalHeaders)
+                }
+              }
               else -> notSupportedQuery()
             }
           }
@@ -115,6 +121,12 @@ open class GetNetworkDataSource<T>(
 
               is OAuthPasswordIdQuery<*> -> {
                 httpClient.get<String>("${url}/${query.identifier}") {
+                  oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                  headers(globalHeaders)
+                }
+              }
+              is OAuthPasswordKeyQuery -> {
+                httpClient.get<String>(url) {
                   oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                   headers(globalHeaders)
                 }
