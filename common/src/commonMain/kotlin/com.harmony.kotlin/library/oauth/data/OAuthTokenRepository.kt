@@ -9,10 +9,11 @@ import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.PutRepository
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.DateTimeRange
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 
 internal class OAuthTokenRepository(
+    private val coroutineScope: CoroutineScope,
     private val putNetworkDataSource: PutDataSource<OAuthTokenEntity>,
     private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
     private val putStorageDataSource: PutDataSource<OAuthTokenEntity>) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
@@ -20,15 +21,20 @@ internal class OAuthTokenRepository(
   override suspend fun get(query: Query, operation: Operation): OAuthTokenEntity {
     when (query) {
       is KeyQuery -> {
-        val tokenEntity = getStorageDataSource.get(query)
+        // blocking thread to be sync to avoid issues with the refresh-token
+        val deferred = coroutineScope.async {
+          val tokenEntity = getStorageDataSource.get(query)
 
-        return if (!tokenEntity.isValid()) {
-          tokenEntity.refreshToken?.let {
-            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
-          } ?: tokenEntity
-        } else {
-          tokenEntity
+          return@async if (!tokenEntity.isValid()) {
+            tokenEntity.refreshToken?.let {
+              put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
+            } ?: tokenEntity
+          } else {
+            tokenEntity
+          }
         }
+
+        return deferred.await()
       }
       else -> notSupportedQuery()
     }
