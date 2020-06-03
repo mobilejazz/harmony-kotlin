@@ -47,6 +47,7 @@ class OAuthDefaultModule(
     private val coroutineScope: CoroutineScope,
     private val clientId: String,
     private val clientSecret: String,
+    private val basicAuthorizationCode: String, // todo: temporal until we find a way to hash the clientId and clientSecret in base 64
     private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(),
     private val moduleLogger: com.harmony.kotlin.common.logger.Logger
 ) : OAuthComponent {
@@ -62,7 +63,7 @@ class OAuthDefaultModule(
   override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineScope, deleteTokenInteractor)
 
   private val oauthRepository: RepositoryMapper<OAuthTokenEntity, OAuthToken> by lazy {
-    val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, "bW9iaWxlLWlvczpZQ2hxTXRxckVqazJONFVwZXRDdXFxMG0xMFZs", ClientRequestExceptionToNetworkErrorExceptionMapper)
+    val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode, ClientRequestExceptionToNetworkErrorExceptionMapper)
 
     val cbor = Cbor()
     val dataSourceMapper = DataSourceMapper(oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
