@@ -25,9 +25,9 @@ open class IdsQuery<out T>(val identifiers: Collection<T>) : KeyQuery(identifier
 
 open class IntegerIdsQuery(val ids: Collection<Int>) : IdsQuery<Int>(ids)
 
-open class PaginationQuery : Query()
+open class PaginationQuery(identifier: String) : KeyQuery(identifier)
 
-open class PaginationOffsetLimitQuery(val offset: Int, val limit: Int) : PaginationQuery()
+open class PaginationOffsetLimitQuery(identifier: String, val offset: Int, val limit: Int) : PaginationQuery("$identifier-$offset-$limit")
 
 // Key value queries
 open class KeyQuery(val key: String /* key associated to the query */) : Query()

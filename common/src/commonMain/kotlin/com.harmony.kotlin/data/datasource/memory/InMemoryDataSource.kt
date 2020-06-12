@@ -4,6 +4,7 @@ import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.query.AllObjectsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 
@@ -54,6 +55,10 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
 
   override suspend fun delete(query: Query) {
     when (query) {
+      is AllObjectsQuery -> {
+        objects.clear()
+        arrays.clear()
+      }
       is KeyQuery -> {
         objects.remove(query.key)
       }

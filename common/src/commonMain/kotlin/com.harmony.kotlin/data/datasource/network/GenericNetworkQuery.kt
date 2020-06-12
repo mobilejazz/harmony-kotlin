@@ -10,7 +10,7 @@ interface OAuthClientQuery
 class DefaultOAuthClientQuery(val getPasswordTokenInteractor: GetPasswordTokenInteractor) : Query(), OAuthClientQuery
 
 // OAuth key query base
-class OAuthPasswordKeyQuery(key: String, val getPasswordTokenInteractor: GetPasswordTokenInteractor): KeyQuery(key), OAuthClientQuery
+class OAuthPasswordKeyQuery(key: String, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : KeyQuery(key), OAuthClientQuery
 
 // OAuth integer id query
 class OAuthPasswordIntegerIdQuery(id: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IntegerIdQuery(id),
@@ -24,9 +24,8 @@ class OAuthApplicationIntegerIdQuery(id: Int, val getApplicationTokenInteractor:
     OAuthClientQuery
 
 // OAuth password pagination query
-open class OAuthPasswordPaginationOffsetLimitQuery(offset: Int, limit: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) :
-    PaginationOffsetLimitQuery(offset, limit),
-    OAuthClientQuery
+open class OAuthPasswordPaginationOffsetLimitQuery(identifier: String? = null, offset: Int, limit: Int, val getPasswordTokenInteractor:
+GetPasswordTokenInteractor) : PaginationOffsetLimitQuery(identifier ?: "$offset-$limit", offset, limit), OAuthClientQuery
 
 // OAuth password object query
 class OAuthPasswordObjectQuery<T>(value: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : ObjectQuery<T>(value),

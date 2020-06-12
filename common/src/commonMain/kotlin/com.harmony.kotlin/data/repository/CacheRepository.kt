@@ -22,7 +22,9 @@ class CacheRepository<V>(
       is DefaultOperation -> get(query, CacheSyncOperation)
       is MainOperation -> getMain.get(query)
       is CacheOperation -> getCache.get(query)
-      is MainSyncOperation -> getMain.get(query).let { putCache.put(query, it) }
+      is MainSyncOperation -> getMain.get(query).let {
+        putCache.put(query, it)
+      }
       is CacheSyncOperation -> {
         try {
           return getCache.get(query)
