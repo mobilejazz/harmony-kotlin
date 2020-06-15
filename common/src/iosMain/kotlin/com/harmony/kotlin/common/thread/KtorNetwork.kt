@@ -9,7 +9,13 @@ import kotlinx.coroutines.Dispatchers
 actual suspend fun <R> network(block: suspend () -> R): R = coroutineScope {
   withContext(childContext()) {
     // if (!isMainThread) error("Ktor calls must be run in main thread")
-    block()
+    // This is a patch to prevent a crash thrown by ktor https://github.com/ktorio/ktor/issues/1165
+    // This issue is now solved but still not released. In the future should not be necessary
+    try {
+      block()
+    } catch (t:Throwable) {
+      throw Exception(t)
+    }
   }
 }
 
