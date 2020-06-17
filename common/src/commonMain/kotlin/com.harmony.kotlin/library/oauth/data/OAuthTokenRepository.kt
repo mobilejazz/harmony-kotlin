@@ -9,11 +9,14 @@ import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.PutRepository
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 
 internal class OAuthTokenRepository(
     private val putNetworkDataSource: PutDataSource<OAuthTokenEntity>,
     private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
-    private val putStorageDataSource: PutDataSource<OAuthTokenEntity>) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
+    private val putStorageDataSource: PutDataSource<OAuthTokenEntity>,
+    private val coroutineScope: CoroutineScope) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
 
   override suspend fun get(query: Query, operation: Operation): OAuthTokenEntity {
     when (query) {
@@ -21,9 +24,12 @@ internal class OAuthTokenRepository(
         // blocking thread to be sync to avoid issues with the refresh-token
         val tokenEntity = getStorageDataSource.get(query)
         return if (!tokenEntity.isValid()) {
-          tokenEntity.refreshToken?.let {
-            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
-          } ?: tokenEntity
+
+          return coroutineScope.async(coroutineScope.coroutineContext) {
+            tokenEntity.refreshToken?.let {
+              put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
+            } ?: tokenEntity
+          }.await()
         } else {
           tokenEntity
         }

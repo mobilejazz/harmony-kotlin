@@ -69,7 +69,7 @@ class OAuthDefaultModule(
     val dataSourceMapper = DataSourceMapper(oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
         CBORByteArrayToObject(cbor, OAuthTokenEntity.serializer()), CBORObjectToByteArray(cbor, OAuthTokenEntity.serializer()))
 
-    val repository = OAuthTokenRepository(networkDataSource, dataSourceMapper, dataSourceMapper)
+    val repository = OAuthTokenRepository(networkDataSource, dataSourceMapper, dataSourceMapper, coroutineScope)
 
     return@lazy RepositoryMapper(repository, repository, SingleDeleteDataSourceRepository(dataSourceMapper), OAuthTokenEntityToOAuthTokenMapper(), VoidMapper())
   }
