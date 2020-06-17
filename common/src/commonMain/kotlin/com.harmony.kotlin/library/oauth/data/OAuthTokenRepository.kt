@@ -15,15 +15,26 @@ internal class OAuthTokenRepository(
     private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
     private val putStorageDataSource: PutDataSource<OAuthTokenEntity>) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
 
+  private var atomicInt: Int = 0
+
   override suspend fun get(query: Query, operation: Operation): OAuthTokenEntity {
     when (query) {
       is KeyQuery -> {
         // blocking thread to be sync to avoid issues with the refresh-token
         val tokenEntity = getStorageDataSource.get(query)
+
+
         return if (!tokenEntity.isValid()) {
-          tokenEntity.refreshToken?.let {
+          atomicInt++
+          println("TOKEN: refresh token start with int: $atomicInt")
+
+          val result = tokenEntity.refreshToken?.let {
             put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
           } ?: tokenEntity
+
+          println("TOKEN: refresh token finish with int: $atomicInt")
+
+          result
         } else {
           tokenEntity
         }
