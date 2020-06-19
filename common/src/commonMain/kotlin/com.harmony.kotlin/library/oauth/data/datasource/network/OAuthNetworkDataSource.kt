@@ -1,16 +1,12 @@
 package com.harmony.kotlin.library.oauth.data.datasource.network
 
-import co.touchlab.stately.ensureNeverFrozen
 import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.NetworkErrorException
-import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.library.oauth.data.datasource.network.model.OAuthBodyRequest
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
 import io.ktor.client.HttpClient
-import io.ktor.client.features.ClientRequestException
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
@@ -19,38 +15,30 @@ import io.ktor.http.contentType
 internal class OAuthNetworkDataSource(
     private val httpClient: HttpClient,
     private val apiPath: String,
-    private val basicAuthorizationCode: String,
-    private val errorMapper: Mapper<ClientRequestException, NetworkErrorException>
+    private val basicAuthorizationCode: String
 ) : PutDataSource<OAuthTokenEntity> {
 
-    override suspend fun put(query: Query, value: OAuthTokenEntity?): OAuthTokenEntity {
-        return network {
-            val bodyRequest = when (query) {
-                is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
-                is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
-                is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
-                    query.clientId,
-                    query.clientSecret
-                )
-                else -> notSupportedQuery()
-            }
+  override suspend fun put(query: Query, value: OAuthTokenEntity?): OAuthTokenEntity {
+    return network {
+      val bodyRequest = when (query) {
+        is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
+        is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
+        is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
+            query.clientId,
+            query.clientSecret
+        )
+        else -> notSupportedQuery()
+      }
 
-            try {
-                val url = "${apiPath}/auth/token"
-                httpClient.post<OAuthTokenEntity>(url) {
-                    header(
-                        "Authorization", "Basic $basicAuthorizationCode"
-                    )
-                    contentType(ContentType.Application.Json)
-                    body = bodyRequest
-                }
-            } catch (e: ClientRequestException) {
-                val networkErrorException = errorMapper.map(e)
-                throw networkErrorException
-            }
-        }
+      val url = "${apiPath}/auth/token"
+      httpClient.post<OAuthTokenEntity>(url) {
+        header("Authorization", "Basic $basicAuthorizationCode")
+        contentType(ContentType.Application.Json)
+        body = bodyRequest
+      }
     }
+  }
 
-    override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?): List<OAuthTokenEntity> =
-        throw NotImplementedError()
+  override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?): List<OAuthTokenEntity> =
+      throw NotImplementedError()
 }
