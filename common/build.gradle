@@ -126,12 +126,21 @@ kotlin {
       dependencies {
         implementation kotlin('stdlib-jdk8')
 
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+
         api "com.google.code.gson:gson:$gson_version"
 
         api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
         api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
 
         api "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
+
+        // ktor
+        api "io.ktor:ktor-client-okhttp:$ktor_version"
+        api "io.ktor:ktor-client-core-jvm:$ktor_version"
+        api "io.ktor:ktor-client-json-jvm:$ktor_version"
+        api "io.ktor:ktor-client-logging-jvm:$ktor_version"
+        api "io.ktor:ktor-client-serialization-jvm:$ktor_version"
       }
     }
 
@@ -276,12 +285,12 @@ afterEvaluate {
 }
 
 def getBintrayUserProperty() {
-  return "joselufo-mj"
+  return "montiel"
 //  return hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
 }
 
 def getBintrayApiKeyProperty() {
-  return "9ddf8319ad2ee90c08d73985ff42fd0144a9e820"
+  return "cce0568278b6f4081ce535dbc97a355b9b192fc7"
 //  return hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 }
 
