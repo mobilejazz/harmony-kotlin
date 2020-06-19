@@ -2,6 +2,9 @@ package com.harmony.kotlin.library.oauth
 
 import com.harmony.kotlin.common.logger.KtorHarmonyLogger
 import com.harmony.kotlin.data.datasource.DataSourceMapper
+import com.harmony.kotlin.data.datasource.network.DefaultUnauthorizedResolution
+import com.harmony.kotlin.data.datasource.network.UnauthorizedResolution
+import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMapping
 import com.harmony.kotlin.data.mapper.CBORByteArrayToObject
 import com.harmony.kotlin.data.mapper.CBORObjectToByteArray
 import com.harmony.kotlin.data.mapper.VoidMapper
@@ -12,7 +15,6 @@ import com.harmony.kotlin.domain.interactor.GetInteractor
 import com.harmony.kotlin.domain.interactor.PutInteractor
 import com.harmony.kotlin.library.oauth.data.OAuthTokenRepository
 import com.harmony.kotlin.library.oauth.data.datasource.network.OAuthNetworkDataSource
-import com.harmony.kotlin.library.oauth.data.datasource.network.mapper.ClientRequestExceptionToNetworkErrorExceptionMapper
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.mapper.OAuthTokenEntityToOAuthTokenMapper
 import com.harmony.kotlin.library.oauth.domain.interactor.*
@@ -23,9 +25,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
-import io.ktor.client.features.logging.SIMPLE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.cbor.Cbor
@@ -47,6 +47,7 @@ class OAuthDefaultModule(
     private val coroutineScope: CoroutineScope,
     private val clientId: String,
     private val clientSecret: String,
+    private val resolution: UnauthorizedResolution = DefaultUnauthorizedResolution,
     private val basicAuthorizationCode: String, // todo: temporal until we find a way to hash the clientId and clientSecret in base 64
     private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(),
     private val moduleLogger: com.harmony.kotlin.common.logger.Logger
@@ -63,7 +64,7 @@ class OAuthDefaultModule(
   override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineScope, deleteTokenInteractor)
 
   private val oauthRepository: RepositoryMapper<OAuthTokenEntity, OAuthToken> by lazy {
-    val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode, ClientRequestExceptionToNetworkErrorExceptionMapper)
+    val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode)
 
     val cbor = Cbor()
     val dataSourceMapper = DataSourceMapper(oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
@@ -96,6 +97,8 @@ class OAuthDefaultModule(
         logger = KtorHarmonyLogger(moduleLogger)
         level = LogLevel.ALL
       }
+      configureExceptionErrorMapping(resolution)
+      expectSuccess = false
     }
   }
 }

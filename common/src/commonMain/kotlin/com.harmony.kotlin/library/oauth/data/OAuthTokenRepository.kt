@@ -18,15 +18,15 @@ internal class OAuthTokenRepository(
   override suspend fun get(query: Query, operation: Operation): OAuthTokenEntity {
     when (query) {
       is KeyQuery -> {
-        // blocking thread to be sync to avoid issues with the refresh-token
         val tokenEntity = getStorageDataSource.get(query)
-        return if (!tokenEntity.isValid()) {
-          tokenEntity.refreshToken?.let {
-            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
-          } ?: tokenEntity
-        } else {
-          tokenEntity
-        }
+        return tokenEntity.copy(accessToken = "asd")
+//        return if (!tokenEntity.isValid()) {
+//          tokenEntity.refreshToken?.let {
+//            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
+//          } ?: tokenEntity
+//        } else {
+//          tokenEntity
+//        }
       }
       else -> notSupportedQuery()
     }
