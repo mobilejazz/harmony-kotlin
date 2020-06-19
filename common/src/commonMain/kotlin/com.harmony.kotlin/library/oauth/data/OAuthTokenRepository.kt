@@ -19,14 +19,13 @@ internal class OAuthTokenRepository(
     when (query) {
       is KeyQuery -> {
         val tokenEntity = getStorageDataSource.get(query)
-        return tokenEntity.copy(accessToken = "asd")
-//        return if (!tokenEntity.isValid()) {
-//          tokenEntity.refreshToken?.let {
-//            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
-//          } ?: tokenEntity
-//        } else {
-//          tokenEntity
-//        }
+        return if (!tokenEntity.isValid()) {
+          tokenEntity.refreshToken?.let {
+            put(OAuthQuery.RefreshToken(query.key, tokenEntity.refreshToken), null)
+          } ?: tokenEntity
+        } else {
+          tokenEntity
+        }
       }
       else -> notSupportedQuery()
     }
