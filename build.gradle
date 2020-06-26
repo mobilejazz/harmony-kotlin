@@ -8,9 +8,6 @@ buildscript {
     google()
     jcenter()
     mavenCentral()
-    maven {
-      url "https://dl.bintray.com/joselufo-mj/harmony-kotlin"
-    }
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:3.5.3'
@@ -32,7 +29,7 @@ allprojects {
     jcenter()
     mavenCentral()
     maven {
-      url "https://dl.bintray.com/joselufo-mj/harmony-kotlin"
+      url "https://dl.bintray.com/mobile-jazz/harmony-kotlin"
     }
   }
 }

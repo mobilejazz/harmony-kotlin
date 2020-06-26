@@ -1,3 +1,5 @@
+bintray-credentials.properties
+
 .gradle
 /local.properties
 /.idea/workspace.xml
