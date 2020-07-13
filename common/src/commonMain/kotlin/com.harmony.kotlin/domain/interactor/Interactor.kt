@@ -9,54 +9,53 @@ import com.harmony.kotlin.data.query.VoidQuery
 import com.harmony.kotlin.data.repository.DeleteRepository
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.PutRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
-class GetInteractor<M>(private val scope: CoroutineScope, private val getRepository: GetRepository<M>) {
+class GetInteractor<M>(private val coroutineContext: CoroutineContext, private val getRepository: GetRepository<M>) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         getRepository.get(query, operation)
       }
 }
 
-class GetAllInteractor<M>(private val scope: CoroutineScope, private val getRepository: GetRepository<M>) {
+class GetAllInteractor<M>(private val coroutineContext: CoroutineContext, private val getRepository: GetRepository<M>) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         getRepository.getAll(query, operation)
       }
 }
 
-class PutInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
+class PutInteractor<M>(private val coroutineContext: CoroutineContext, private val putRepository: PutRepository<M>) {
 
   suspend operator fun invoke(m: M? = null, query: Query = VoidQuery, operation: Operation = DefaultOperation): M =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         putRepository.put(query, m, operation)
       }
 }
 
-class PutAllInteractor<M>(private val scope: CoroutineScope, private val putRepository: PutRepository<M>) {
+class PutAllInteractor<M>(private val coroutineContext: CoroutineContext, private val putRepository: PutRepository<M>) {
 
   suspend operator fun invoke(m: List<M>? = null, query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         putRepository.putAll(query, m, operation)
       }
 }
 
-class DeleteInteractor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
+class DeleteInteractor(private val coroutineContext: CoroutineContext, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         deleteRepository.delete(query, operation)
       }
 }
 
-class DeleteAllInteractor(private val scope: CoroutineScope, private val deleteRepository: DeleteRepository) {
+class DeleteAllInteractor(private val coroutineContext: CoroutineContext, private val deleteRepository: DeleteRepository) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
-      withContext(scope.coroutineContext) {
+      withContext(coroutineContext) {
         deleteRepository.deleteAll(query, operation)
       }
 }
@@ -75,14 +74,14 @@ suspend fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOp
 suspend fun <K> DeleteAllInteractor.execute(ids: List<K>, operation: Operation = DefaultOperation) = this.invoke(IdsQuery(ids), operation)
 
 
-fun <V> GetRepository<V>.toGetInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = GetInteractor(scope, this)
+fun <V> GetRepository<V>.toGetInteractor(coroutineContext: CoroutineContext) = GetInteractor(coroutineContext, this)
 
-fun <V> GetRepository<V>.toGetAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = GetAllInteractor(scope, this)
+fun <V> GetRepository<V>.toGetAllInteractor(coroutineContext: CoroutineContext) = GetAllInteractor(coroutineContext, this)
 
-fun <V> PutRepository<V>.toPutInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = PutInteractor(scope, this)
+fun <V> PutRepository<V>.toPutInteractor(coroutineContext: CoroutineContext) = PutInteractor(coroutineContext, this)
 
-fun <V> PutRepository<V>.toPutAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = PutAllInteractor(scope, this)
+fun <V> PutRepository<V>.toPutAllInteractor(coroutineContext: CoroutineContext) = PutAllInteractor(coroutineContext, this)
 
-fun DeleteRepository.toDeleteInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = DeleteInteractor(scope, this)
+fun DeleteRepository.toDeleteInteractor(coroutineContext: CoroutineContext) = DeleteInteractor(coroutineContext, this)
 
-fun DeleteRepository.toDeleteAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = DeleteAllInteractor(scope, this)
+fun DeleteRepository.toDeleteAllInteractor(coroutineContext: CoroutineContext) = DeleteAllInteractor(coroutineContext, this)

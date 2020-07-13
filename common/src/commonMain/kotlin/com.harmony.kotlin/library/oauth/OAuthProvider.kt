@@ -26,10 +26,10 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.CoroutineContext
 
 object Default {
   const val TOKEN_IDENTIFIER = "user-token-default-identifier"
@@ -44,7 +44,7 @@ interface OAuthComponent {
 
 class OAuthDefaultModule(
     private val apiPath: String,
-    private val coroutineScope: CoroutineScope,
+    private val coroutineContext: CoroutineContext,
     private val clientId: String,
     private val clientSecret: String,
     private val resolution: UnauthorizedResolution = DefaultUnauthorizedResolution,
@@ -54,14 +54,14 @@ class OAuthDefaultModule(
 ) : OAuthComponent {
 
   override fun authenticatePasswordCredentialInteractor(): AuthenticatePasswordCredentialInteractor =
-      AuthenticatePasswordCredentialInteractor(coroutineScope, putTokenInteractor)
+      AuthenticatePasswordCredentialInteractor(coroutineContext, putTokenInteractor)
 
-  override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetDefaultPasswordTokenInteractor(coroutineScope, getTokenInteractor)
+  override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetDefaultPasswordTokenInteractor(coroutineContext, getTokenInteractor)
 
-  override fun getApplicationTokenInteractor(): GetApplicationTokenInteractor = GetApplicationTokenInteractor(coroutineScope, clientId, clientSecret,
+  override fun getApplicationTokenInteractor(): GetApplicationTokenInteractor = GetApplicationTokenInteractor(coroutineContext, clientId, clientSecret,
       putTokenInteractor)
 
-  override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineScope, deleteTokenInteractor)
+  override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineContext, deleteTokenInteractor)
 
   private val oauthRepository: RepositoryMapper<OAuthTokenEntity, OAuthToken> by lazy {
     val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode)
@@ -76,15 +76,15 @@ class OAuthDefaultModule(
   }
 
   private val putTokenInteractor: PutInteractor<OAuthToken> by lazy {
-    PutInteractor(coroutineScope, oauthRepository)
+    PutInteractor(coroutineContext, oauthRepository)
   }
 
   private val getTokenInteractor: GetInteractor<OAuthToken> by lazy {
-    GetInteractor(coroutineScope, oauthRepository)
+    GetInteractor(coroutineContext, oauthRepository)
   }
 
   private val deleteTokenInteractor: DeleteInteractor by lazy {
-    DeleteInteractor(coroutineScope, oauthRepository)
+    DeleteInteractor(coroutineContext, oauthRepository)
   }
 
   @UnstableDefault
