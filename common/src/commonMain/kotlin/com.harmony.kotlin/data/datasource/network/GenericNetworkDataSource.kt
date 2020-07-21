@@ -4,21 +4,17 @@ import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.ktor.KtorNetworkException
-import com.harmony.kotlin.data.mapper.Mapper
-import com.harmony.kotlin.data.query.*
+import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
-import io.ktor.client.features.ClientRequestException
 import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
 
 open class GetNetworkDataSource<T>(
-    private val url: String,
+    private val _url: String,
     private val httpClient: HttpClient,
     private val serializer: KSerializer<T>,
     private val json: Json,
@@ -28,37 +24,59 @@ open class GetNetworkDataSource<T>(
   override suspend fun get(query: Query): T {
     return network {
       val response = when (query) {
+
+        is GenericOAuthNetworkQuery -> {
+          httpClient.get<String> {
+            oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        is GenericNetworkQuery -> {
+          httpClient.get<String>() {
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        else -> {
+          httpClient.get<String>(_url) {
+            headers(globalHeaders)
+          }
+        }
+
+        /*
+
         is OAuthClientQuery -> {
           when (query) {
             is OAuthPasswordPaginationOffsetLimitQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 paginationOffsetLimitParams(query.offset, query.limit)
                 headers(globalHeaders)
               }
             }
             is OAuthPasswordIntegerIdQuery -> {
-              val url = "${url}/${query.id}"
+              val url = "${_url}/${query.id}"
               httpClient.get<String>(url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is OAuthPasswordIdQuery<*> -> {
-              val url = "${url}/${query.identifier}"
+              val url = "${_url}/${query.identifier}"
               httpClient.get<String>(url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is DefaultOAuthClientQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is OAuthPasswordKeyQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
@@ -67,28 +85,25 @@ open class GetNetworkDataSource<T>(
           }
         }
         is PaginationOffsetLimitQuery -> {
-          httpClient.get<String>(url) {
+          httpClient.get<String>(_url) {
             paginationOffsetLimitParams(query.offset, query.limit)
             headers(globalHeaders)
           }
         }
         is IntegerIdQuery -> {
-          val url = "${url}/${query.id}"
+          val url = "${_url}/${query.id}"
           httpClient.get<String>(url) {
             headers(globalHeaders)
           }
         }
         is IdQuery<*> -> {
-          val url = "${url}/${query.identifier}"
+          val url = "${_url}/${query.identifier}"
           httpClient.get<String>(url) {
             headers(globalHeaders)
           }
         }
-        else -> {
-          httpClient.get<String>(url) {
-            headers(globalHeaders)
-          }
-        }
+
+         */
       }
 
       return@network json.parse(serializer, response)
@@ -98,30 +113,50 @@ open class GetNetworkDataSource<T>(
   override suspend fun getAll(query: Query): List<T> {
     return network {
       val response = when (query) {
+
+        is GenericOAuthNetworkQuery -> {
+          httpClient.get<String> {
+            oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        is GenericNetworkQuery -> {
+          httpClient.get {
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        else -> {
+          httpClient.get<String>(_url)
+        }
+
+        /*
+
         is OAuthClientQuery -> {
           when (query) {
             is OAuthPasswordPaginationOffsetLimitQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 paginationOffsetLimitParams(query.offset, query.limit)
                 headers(globalHeaders)
               }
             }
             is DefaultOAuthClientQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
 
             is OAuthPasswordIdQuery<*> -> {
-              httpClient.get<String>("${url}/${query.identifier}") {
+              httpClient.get<String>("${_url}/${query.identifier}") {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is OAuthPasswordKeyQuery -> {
-              httpClient.get<String>(url) {
+              httpClient.get<String>(_url) {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
@@ -129,17 +164,20 @@ open class GetNetworkDataSource<T>(
             else -> notSupportedQuery()
           }
         }
-        else -> {
-          httpClient.get<String>(url)
-        }
+         */
       }
       return@network json.parse(serializer.list, response)
     }
   }
+
+  private fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery) {
+    url(generateUrl(url = _url, path = query.path, params = query.params))
+    headers(globalHeaders)
+  }
 }
 
 open class PutNetworkDataSource<T>(
-    private val url: String,
+    private val _url: String,
     private val httpClient: HttpClient,
     private val serializer: KSerializer<T>,
     private val json: Json,
@@ -148,73 +186,109 @@ open class PutNetworkDataSource<T>(
   override suspend fun put(query: Query, value: T?): T {
     return network {
       val response = when (query) {
-        is OAuthClientQuery -> {
-          when (query) {
-            is OAuthPasswordObjectQuery<*> -> {
-              query.value?.let {
-                httpClient.post<String>(url) {
-                  oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
-                  contentType(ContentType.Application.Json)
-                  headers(globalHeaders)
-                  body = it
-                }
-              } ?: throw IllegalArgumentException("ObjectQuery value is null")
-            }
-            is OAuthPasswordIntegerIdQuery -> {
-              value?.let {
-                httpClient.put<String>("${url}/${query.id}") {
-                  oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
-                  contentType(ContentType.Application.Json)
-                  headers(globalHeaders)
-                  body = value
-                }
-              } ?: throw IllegalArgumentException("value != null")
-            }
-            is OAuthPasswordIdQuery<*> -> {
-              value?.let {
-                httpClient.put<String>("${url}/${query.identifier}") {
-                  oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
-                  contentType(ContentType.Application.Json)
-                  headers(globalHeaders)
-                  body = value
-                }
-              } ?: throw IllegalArgumentException("value != null")
-            }
-            else -> notSupportedQuery()
+        is GenericOAuthIdNetworkQuery -> {
+          httpClient.put<String> {
+            oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+            createHttpRequestFromGenericNetworkQuery(query, value)
           }
         }
-        is ObjectQuery<*> -> {
-          query.value?.let {
-            httpClient.post<String>(url) {
-              contentType(ContentType.Application.Json)
-              headers(globalHeaders)
-              body = it
-            }
-          } ?: throw IllegalArgumentException("ObjectQuery value is null")
+
+        is GenericIdNetworkQuery -> {
+          httpClient.put {
+            createHttpRequestFromGenericNetworkQuery(query, value)
+          }
         }
-        is IntegerIdQuery -> {
-          value?.let {
-            httpClient.put<String>("${url}/${query.id}") {
-              contentType(ContentType.Application.Json)
-              headers(globalHeaders)
-              body = value
-            }
-          } ?: throw IllegalArgumentException("value != null")
+
+        is GenericOAuthObjectNetworkQuery<*> -> {
+          httpClient.post<String> {
+            oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+            createHttpRequestFromGenericNetworkQuery(query, value)
+          }
         }
-        is IdQuery<*> -> {
-          value?.let {
-            httpClient.put<String>("${url}/${query.identifier}") {
-              contentType(ContentType.Application.Json)
-              headers(globalHeaders)
-              body = value
-            }
-          } ?: throw IllegalArgumentException("value != null")
+
+        is GenericObjectNetworkQuery<*> -> {
+          httpClient.post<String> {
+            createHttpRequestFromGenericNetworkQuery(query, value)
+          }
         }
         else -> notSupportedQuery()
       }
+      /*
+
+      is OAuthClientQuery -> {
+        when (query) {
+          is OAuthPasswordObjectQuery<*> -> {
+            query.value?.let {
+              httpClient.post<String>(_url) {
+                oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                contentType(ContentType.Application.Json)
+                headers(globalHeaders)
+                body = it
+              }
+            } ?: throw IllegalArgumentException("ObjectQuery value is null")
+          }
+          is OAuthPasswordIntegerIdQuery -> {
+            value?.let {
+              httpClient.put<String>("${_url}/${query.id}") {
+                oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                contentType(ContentType.Application.Json)
+                headers(globalHeaders)
+                body = value
+              }
+            } ?: throw IllegalArgumentException("value != null")
+          }
+          is OAuthPasswordIdQuery<*> -> {
+            value?.let {
+              httpClient.put<String>("${_url}/${query.identifier}") {
+                oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+                contentType(ContentType.Application.Json)
+                headers(globalHeaders)
+                body = value
+              }
+            } ?: throw IllegalArgumentException("value != null")
+          }
+          else -> notSupportedQuery()
+        }
+      }
+      is ObjectQuery<*> -> {
+        query.value?.let {
+          httpClient.post<String>(_url) {
+            contentType(ContentType.Application.Json)
+            headers(globalHeaders)
+            body = it
+          }
+        } ?: throw IllegalArgumentException("ObjectQuery value is null")
+      }
+      is IntegerIdQuery -> {
+        value?.let {
+          httpClient.put<String>("${_url}/${query.id}") {
+            contentType(ContentType.Application.Json)
+            headers(globalHeaders)
+            body = value
+          }
+        } ?: throw IllegalArgumentException("value != null")
+      }
+      is IdQuery<*> -> {
+        value?.let {
+          httpClient.put<String>("${_url}/${query.identifier}") {
+            contentType(ContentType.Application.Json)
+            headers(globalHeaders)
+            body = value
+          }
+        } ?: throw IllegalArgumentException("value != null")
+      }
+
+       */
 
       return@network json.parse(serializer, response)
     }
+  }
+
+  private fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery, value: T?) {
+    url(generateUrl(url = _url, path = query.path, params = query.params))
+    contentType(ContentType.Application.Json)
+    headers(globalHeaders)
+    body = value ?: throw IllegalArgumentException("Value cannot be null")
   }
 
   override suspend fun putAll(query: Query, value: List<T>?): List<T> = throw NotImplementedError()
@@ -222,7 +296,7 @@ open class PutNetworkDataSource<T>(
 }
 
 class DeleteNetworkDataSource(
-    private val url: String,
+    private val _url: String,
     private val httpClient: HttpClient,
     private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : DeleteDataSource {
@@ -230,22 +304,43 @@ class DeleteNetworkDataSource(
   override suspend fun delete(query: Query) {
     return network {
       when (query) {
+
+        is GenericOAuthNetworkQuery -> {
+          httpClient.delete {
+            oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        is GenericNetworkQuery -> {
+          httpClient.delete {
+            createHttpRequestFromGenericNetworkQuery(query)
+          }
+        }
+
+        else -> {
+          httpClient.delete<Unit>(_url) {
+            headers(globalHeaders)
+          }
+        }
+
+        /*
         is OAuthClientQuery -> {
           when (query) {
             is OAuthPasswordIntegerIdQuery -> {
-              httpClient.delete<Unit>("${url}/${query.id}") {
+              httpClient.delete<Unit>("${_url}/${query.id}") {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is OAuthApplicationIntegerIdQuery -> {
-              httpClient.delete<Unit>("${url}/${query.id}") {
+              httpClient.delete<Unit>("${_url}/${query.id}") {
                 oauthApplicationCredentialHeader(query.getApplicationTokenInteractor)
                 headers(globalHeaders)
               }
             }
             is OAuthPasswordIdQuery<*> -> {
-              httpClient.delete<Unit>("${url}/${query.identifier}") {
+              httpClient.delete<Unit>("${_url}/${query.identifier}") {
                 oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
                 headers(globalHeaders)
               }
@@ -253,22 +348,23 @@ class DeleteNetworkDataSource(
           }
         }
         is IntegerIdQuery -> {
-          httpClient.delete<Unit>("${url}/${query.id}") {
+          httpClient.delete<Unit>("${_url}/${query.id}") {
             headers(globalHeaders)
           }
         }
         is IdQuery<*> -> {
-          httpClient.delete<Unit>("${url}/${query.identifier}") {
+          httpClient.delete<Unit>("${_url}/${query.identifier}") {
             headers(globalHeaders)
           }
         }
-        else -> {
-          httpClient.delete<Unit>(url) {
-            headers(globalHeaders)
-          }
-        }
+         */
       }
     }
+  }
+
+  private fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery) {
+    url(generateUrl(url = _url, path = query.path, params = query.params))
+    headers(globalHeaders)
   }
 
   override suspend fun deleteAll(query: Query) = throw NotImplementedError()

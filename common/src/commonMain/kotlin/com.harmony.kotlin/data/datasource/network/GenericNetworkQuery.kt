@@ -31,3 +31,49 @@ GetPasswordTokenInteractor) : PaginationOffsetLimitQuery(identifier ?: "$offset-
 class OAuthPasswordObjectQuery<T>(value: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : ObjectQuery<T>(value),
     OAuthClientQuery
 
+abstract class GenericNetworkQuery(
+    val path: String,
+    val params: List<Pair<String, String>>?,
+    val headers: List<Pair<String, String>>?,
+    cacheKey: String? = null) : KeyQuery(cacheKey ?: path)
+
+abstract class GenericOAuthNetworkQuery(
+    val getPasswordTokenInteractor: GetPasswordTokenInteractor,
+    path: String,
+    params: List<Pair<String, String>>? = emptyList(),
+    headers: List<Pair<String, String>>? = emptyList(),
+    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+
+// PUT Create JavaDoc
+abstract class GenericIdNetworkQuery(
+    val id: Int,
+    path: String,
+    params: List<Pair<String, String>>? = emptyList(),
+    headers: List<Pair<String, String>>? = emptyList(),
+    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+
+abstract class GenericOAuthIdNetworkQuery(
+    val id: Int,
+    getPasswordTokenInteractor: GetPasswordTokenInteractor,
+    path: String,
+    params: List<Pair<String, String>>? = emptyList(),
+    headers: List<Pair<String, String>>? = emptyList(),
+    cacheKey: String? = null) : GenericOAuthNetworkQuery(getPasswordTokenInteractor, path, params, headers, cacheKey)
+
+// POST Create JavaDoc
+abstract class GenericObjectNetworkQuery<T>(
+    val value: T,
+    path: String,
+    params: List<Pair<String, String>>? = emptyList(),
+    headers: List<Pair<String, String>>? = emptyList(),
+    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+
+abstract class GenericOAuthObjectNetworkQuery<T>(
+    val value: T,
+    getPasswordTokenInteractor: GetPasswordTokenInteractor,
+    path: String,
+    params: List<Pair<String, String>>? = emptyList(),
+    headers: List<Pair<String, String>>? = emptyList(),
+    cacheKey: String? = null) : GenericOAuthNetworkQuery(getPasswordTokenInteractor, path, params, headers, cacheKey)
+
+
