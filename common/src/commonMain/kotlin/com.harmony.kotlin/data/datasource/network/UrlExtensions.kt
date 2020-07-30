@@ -1,17 +1,18 @@
 package com.harmony.kotlin.data.datasource.network
 
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.URLBuilder
 
-fun HttpRequestBuilder.generateUrl(url: String, path: String, params: List<Pair<String, String>>?): String {
+fun generateUrl(url: String, path: String, params: List<Pair<String, String>> = emptyList()): String {
 
   val urlBuilder = URLBuilder("$url/$path")
-  params?.also { params ->
+
+  if (params.isNotEmpty()) {
     urlBuilder.parameters.also {
       it.appendAll(generateParams(params).build())
     }
   }
+
   return urlBuilder.buildString()
 
 }
