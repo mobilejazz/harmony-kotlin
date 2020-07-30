@@ -45,7 +45,24 @@ open class GenericNetworkQuery(
     val path: String,
     val params: List<Pair<String, String>> = emptyList(),
     val headers: List<Pair<String, String>> = emptyList(),
-    key: String? = null) : KeyQuery(key ?: path)
+    key: String? = null) : KeyQuery(
+    key ?: generateNetworkQueryKey(path, params))
+
+/**
+ * Generates a key following the same pattern as a GET url.
+ *
+ * E.g: path?key1=value1&key2=value2
+ */
+private fun generateNetworkQueryKey(path: String, params: List<Pair<String, String>>): String {
+  return path +
+      if (params.isEmpty()) {
+        ""
+      } else {
+        "?" + params.joinToString(separator = "&") {
+          it.first + "=" + it.second
+        }
+      }
+}
 
 /**
  * Creates a PUT Http Method. Modifies the ID with the value that receive the put method.
