@@ -42,11 +42,10 @@ interface GenericOAuthQuery {
  * In case you want to customize the cache key, provide a key string.
  */
 open class GenericNetworkQuery(
-    val path: String,
-    val params: List<Pair<String, String>> = emptyList(),
-    val headers: List<Pair<String, String>> = emptyList(),
-    key: String? = null) : KeyQuery(
-    key ?: generateNetworkQueryKey(path, params))
+    open val path: String,
+    open val params: List<Pair<String, String>> = emptyList(),
+    open val headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null) : KeyQuery(key ?: generateNetworkQueryKey(path, params))
 
 /**
  * Generates a key following the same pattern as a GET url.
