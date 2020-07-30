@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.datasource.network
 
 import com.harmony.kotlin.data.query.*
 import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
-import com.harmony.kotlin.library.oauth.domain.interactor.GetDefaultPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 
 interface OAuthClientQuery
@@ -31,49 +30,47 @@ GetPasswordTokenInteractor) : PaginationOffsetLimitQuery(identifier ?: "$offset-
 class OAuthPasswordObjectQuery<T>(value: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : ObjectQuery<T>(value),
     OAuthClientQuery
 
-abstract class GenericNetworkQuery(
-    val path: String,
-    val params: List<Pair<String, String>>?,
-    val headers: List<Pair<String, String>>?,
-    cacheKey: String? = null) : KeyQuery(cacheKey ?: path)
 
-abstract class GenericOAuthNetworkQuery(
-    val getPasswordTokenInteractor: GetPasswordTokenInteractor,
-    path: String,
-    params: List<Pair<String, String>>? = emptyList(),
-    headers: List<Pair<String, String>>? = emptyList(),
-    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+interface GenericOAuthQuery {
+  val getPasswordTokenInteractor: GetPasswordTokenInteractor
+}
+
+open class GenericNetworkQuery(
+    val path: String,
+    val params: List<Pair<String, String>>? = emptyList(),
+    val headers: List<Pair<String, String>>? = emptyList(),
+    key: String? = null) : KeyQuery(key ?: path)
 
 // PUT Create JavaDoc
-abstract class GenericIdNetworkQuery(
-    val id: Int,
+open class GenericIdNetworkQuery<T>(
+    val id: T,
     path: String,
     params: List<Pair<String, String>>? = emptyList(),
     headers: List<Pair<String, String>>? = emptyList(),
-    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
 
-abstract class GenericOAuthIdNetworkQuery(
-    val id: Int,
-    getPasswordTokenInteractor: GetPasswordTokenInteractor,
+class GenericOAuthIdNetworkQuery<T>(
+    id: T,
     path: String,
     params: List<Pair<String, String>>? = emptyList(),
     headers: List<Pair<String, String>>? = emptyList(),
-    cacheKey: String? = null) : GenericOAuthNetworkQuery(getPasswordTokenInteractor, path, params, headers, cacheKey)
+    key: String? = null,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericIdNetworkQuery<T>(id, path, params, headers, key), GenericOAuthQuery
 
 // POST Create JavaDoc
-abstract class GenericObjectNetworkQuery<T>(
+open class GenericObjectNetworkQuery<T>(
     val value: T,
     path: String,
     params: List<Pair<String, String>>? = emptyList(),
     headers: List<Pair<String, String>>? = emptyList(),
-    cacheKey: String? = null) : GenericNetworkQuery(path, params, headers, cacheKey)
+    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
 
-abstract class GenericOAuthObjectNetworkQuery<T>(
-    val value: T,
-    getPasswordTokenInteractor: GetPasswordTokenInteractor,
+class GenericOAuthObjectNetworkQuery<T>(
+    value: T,
     path: String,
     params: List<Pair<String, String>>? = emptyList(),
     headers: List<Pair<String, String>>? = emptyList(),
-    cacheKey: String? = null) : GenericOAuthNetworkQuery(getPasswordTokenInteractor, path, params, headers, cacheKey)
+    key: String? = null,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericObjectNetworkQuery<T>(value, path, params, headers, key), GenericOAuthQuery
 
 
