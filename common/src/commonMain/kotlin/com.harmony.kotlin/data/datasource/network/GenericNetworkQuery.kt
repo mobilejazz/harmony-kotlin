@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.datasource.network
 
 import com.harmony.kotlin.data.query.*
 import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
-import com.harmony.kotlin.library.oauth.domain.interactor.GetDefaultPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 
 interface OAuthClientQuery
@@ -30,4 +29,74 @@ GetPasswordTokenInteractor) : PaginationOffsetLimitQuery(identifier ?: "$offset-
 // OAuth password object query
 class OAuthPasswordObjectQuery<T>(value: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : ObjectQuery<T>(value),
     OAuthClientQuery
+
+/**
+ * Implement the interface and override getPasswordTokenInteractor when you need oAuth authorization.
+ */
+interface GenericOAuthQuery {
+  val getPasswordTokenInteractor: GetPasswordTokenInteractor
+}
+
+/**
+ * Base class.
+ * In case you want to customize the cache key, provide a key string.
+ */
+open class GenericNetworkQuery(
+    open val path: String,
+    open val params: List<Pair<String, String>> = emptyList(),
+    open val headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null) : KeyQuery(key ?: generateNetworkQueryKey(path, params))
+
+/**
+ * Generates a key following the same pattern as a GET url.
+ *
+ * E.g: path?key1=value1&key2=value2
+ */
+private fun generateNetworkQueryKey(path: String, params: List<Pair<String, String>>): String {
+  return path +
+      if (params.isEmpty()) {
+        ""
+      } else {
+        "?" + params.joinToString(separator = "&") {
+          it.first + "=" + it.second
+        }
+      }
+}
+
+/**
+ * Creates a PUT Http Method. Modifies the ID with the value that receive the put method.
+ */
+open class GenericIdNetworkQuery<T>(
+    val id: T,
+    path: String,
+    params: List<Pair<String, String>> = emptyList(),
+    headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
+
+class GenericOAuthIdNetworkQuery<T>(
+    id: T,
+    path: String,
+    params: List<Pair<String, String>> = emptyList(),
+    headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericIdNetworkQuery<T>(id, path, params, headers, key), GenericOAuthQuery
+
+/**
+ * Creates a POST Http Method. Creates a new entry with the value in the query object.
+ */
+open class GenericObjectNetworkQuery<T>(
+    val value: T,
+    path: String,
+    params: List<Pair<String, String>> = emptyList(),
+    headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
+
+class GenericOAuthObjectNetworkQuery<T>(
+    value: T,
+    path: String,
+    params: List<Pair<String, String>> = emptyList(),
+    headers: List<Pair<String, String>> = emptyList(),
+    key: String? = null,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericObjectNetworkQuery<T>(value, path, params, headers, key), GenericOAuthQuery
+
 
