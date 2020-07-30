@@ -2,7 +2,7 @@ package com.mobilejazz.harmony.kotlin.core.repository.operation
 
 // Operations
 
-sealed class Operation
+open class Operation
 
 object DefaultOperation : Operation()
 
