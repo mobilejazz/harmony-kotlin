@@ -27,6 +27,11 @@ clears it otherwise.
   workº1
   
 # CHANGELOG Coroutines
+
+
+## 0.9.9-coroutines (26/11/2019)
+- Added retry operation Repository
+- Operation now is open
   
 ## 0.9.7-coroutines (26/11/2019)
 - Fixed dependency problems
