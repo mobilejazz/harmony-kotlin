@@ -38,14 +38,28 @@ interface GenericOAuthQuery {
 }
 
 /**
- * Base class.
- * In case you want to customize the cache key, provide a key string.
+ * Base Query to be used by the Generic Network DataSources.
+ *
+ * @param path Relative path to the endpoint
+ * @param params Query parameters
+ * @param suspendHeaders This is a suspend function that will be executed to create headers asynchronously
+ * @param key Custom cache key, if not provided the cache key will be formed using path and params
  */
 open class GenericNetworkQuery(
-    open val path: String,
+    val path: String,
     open val params: List<Pair<String, String>> = emptyList(),
     open val headers: List<Pair<String, String>> = emptyList(),
-    key: String? = null) : KeyQuery(key ?: generateNetworkQueryKey(path, params))
+    open val suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
+    key: String? = null) : KeyQuery(key ?: generateNetworkQueryKey(path, params)) {
+
+  /**
+   * Merge headers attribute and the results of suspendHeaders function and return it
+   */
+  suspend fun mergeHeaders() =
+      headers.toMutableList().apply {
+        addAll(suspendHeaders())
+      }
+}
 
 /**
  * Generates a key following the same pattern as a GET url.
@@ -71,15 +85,18 @@ open class GenericIdNetworkQuery<T>(
     path: String,
     params: List<Pair<String, String>> = emptyList(),
     headers: List<Pair<String, String>> = emptyList(),
-    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
+    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() }, key: String? = null
+) : GenericNetworkQuery(path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
 
 class GenericOAuthIdNetworkQuery<T>(
     id: T,
     path: String,
     params: List<Pair<String, String>> = emptyList(),
     headers: List<Pair<String, String>> = emptyList(),
+    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
     key: String? = null,
-    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericIdNetworkQuery<T>(id, path, params, headers, key), GenericOAuthQuery
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericIdNetworkQuery<T>(id = id, path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key), GenericOAuthQuery
 
 /**
  * Creates a POST Http Method. Creates a new entry with the value in the query object.
@@ -89,14 +106,17 @@ open class GenericObjectNetworkQuery<T>(
     path: String,
     params: List<Pair<String, String>> = emptyList(),
     headers: List<Pair<String, String>> = emptyList(),
-    key: String? = null) : GenericNetworkQuery(path, params, headers, key)
+    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
+    key: String? = null) : GenericNetworkQuery(path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
 
 class GenericOAuthObjectNetworkQuery<T>(
     value: T,
     path: String,
     params: List<Pair<String, String>> = emptyList(),
     headers: List<Pair<String, String>> = emptyList(),
+    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
     key: String? = null,
-    override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericObjectNetworkQuery<T>(value, path, params, headers, key), GenericOAuthQuery
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericObjectNetworkQuery<T>(value = value, path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key), GenericOAuthQuery
 
 

@@ -68,7 +68,7 @@ open class GetNetworkDataSource<T>(
     url(generateUrl(url = this@GetNetworkDataSource.url, path = query.path, params = query.params))
     addOAuthHeaderIfNeeded(query)
     headers(globalHeaders)
-    headers(query.headers)
+    headers(query.mergeHeaders())
   }
 }
 
@@ -151,7 +151,7 @@ class DeleteNetworkDataSource(
     url(generateUrl(url = this@DeleteNetworkDataSource.url, path = query.path, params = query.params))
     addOAuthHeaderIfNeeded(query)
     headers(globalHeaders)
-    headers(query.headers)
+    headers(query.mergeHeaders())
   }
 
   override suspend fun deleteAll(query: Query) = throw NotImplementedError()
