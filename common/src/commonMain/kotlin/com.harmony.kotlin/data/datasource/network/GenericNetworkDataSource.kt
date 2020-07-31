@@ -97,7 +97,7 @@ open class PutNetworkDataSource<T>(
 
         is GenericObjectNetworkQuery<*> -> {
           httpClient.post<String> {
-            createHttpRequestFromGenericNetworkQuery(query, query.value as T?)
+            createHttpRequestFromGenericNetworkQuery(query, query.value)
           }
         }
         else -> notSupportedQuery()
@@ -106,13 +106,16 @@ open class PutNetworkDataSource<T>(
     }
   }
 
-  private suspend fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery, value: T?) {
-    url(generateUrl(url = this@PutNetworkDataSource.url, path = query.path, params = query.params))
-    contentType(ContentType.Application.Json)
-    addOAuthHeaderIfNeeded(query)
-    headers(globalHeaders)
-    headers(query.headers)
-    body = value ?: throw IllegalArgumentException("Value cannot be null")
+  private suspend fun <V> HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery, value: V?) {
+    value?.let {
+      url(generateUrl(url = this@PutNetworkDataSource.url, path = query.path, params = query.params))
+      contentType(ContentType.Application.Json)
+      addOAuthHeaderIfNeeded(query)
+      headers(globalHeaders)
+      headers(query.mergeHeaders())
+      body = it as Any
+    } ?: throw IllegalArgumentException("Value cannot be null")
+
   }
 
   override suspend fun putAll(query: Query, value: List<T>?): List<T> = throw NotImplementedError()
