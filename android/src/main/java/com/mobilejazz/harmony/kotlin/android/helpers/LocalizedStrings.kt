@@ -14,7 +14,7 @@ class LocalizedStrings
 
   override fun get(key: Int): String = ctx.getString(key)
 
-  override fun get(key: Int, vararg formatArgs: Any) = ctx.getString(key, formatArgs)
+  override fun get(key: Int, vararg formatArgs: Any) = ctx.getString(key, *formatArgs)
 
   override fun getPlural(key: Int, amount: Int): String = ctx.resources.getQuantityString(key, amount)
 
