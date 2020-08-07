@@ -12,6 +12,7 @@ import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.flatMap
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.map
 import com.mobilejazz.harmony.kotlin.core.threading.extensions.recoverWith
+import java.io.InvalidClassException
 import javax.inject.Inject
 
 class CacheRepository<V> @Inject constructor(
@@ -49,6 +50,7 @@ class CacheRepository<V> @Inject constructor(
         when (it) {
           is ObjectNotValidException -> get(query, MainSyncOperation)
           is DataNotFoundException -> get(query, MainSyncOperation)
+          is InvalidClassException -> get(query, MainSyncOperation)
           else -> throw it
         }
       }.recoverWith {
@@ -86,6 +88,7 @@ class CacheRepository<V> @Inject constructor(
         when (it) {
           is ObjectNotValidException -> getAll(query, MainSyncOperation)
           is DataNotFoundException -> getAll(query, MainSyncOperation)
+          is InvalidClassException -> getAll(query, MainSyncOperation)
           else -> throw it
         }
       }.recoverWith {
