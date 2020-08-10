@@ -59,6 +59,7 @@ android {
       manifest.srcFile 'src/androidMain/AndroidManifest.xml'
       java.srcDirs = ['src/androidMain/kotlin']
       resources.srcDirs = ['src/androidMain/kotlin']
+      res.srcDirs = ['src/androidMain/res']
     }
     test {
       java.srcDirs = ['src/androidTest/kotlin']
