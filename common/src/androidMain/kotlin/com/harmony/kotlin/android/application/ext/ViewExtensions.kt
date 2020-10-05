@@ -62,8 +62,8 @@ fun EditText.cleanTextListener() {
   }
 }
 
-
 //this make a bounce when you click the view
+@Deprecated("Don't use this as the bounce effect might not fit our design. Use standard setOnClickListener")
 fun View.onClick(click: (View) -> Unit) {
   this.setOnClickListener(BounceOnClickListenerDecorator(click))
 }
