@@ -5,6 +5,7 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.datasource.database.CacheDatabase
 import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.query.AllObjectsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 
@@ -69,6 +70,9 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
 
   override suspend fun delete(query: Query) {
     when (query) {
+      is AllObjectsQuery -> {
+        database.cacheQueries.deleteAll()
+      }
       is KeyQuery -> {
         database.cacheQueries.delete(query.key)
       }

@@ -16,3 +16,6 @@ insertOrUpdate:
 INSERT OR REPLACE INTO cache(key, value)
 VALUES(?, ?);
 
+deleteAll:
+DELETE FROM cache;
+
