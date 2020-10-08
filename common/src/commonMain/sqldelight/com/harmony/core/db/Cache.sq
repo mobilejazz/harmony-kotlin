@@ -9,6 +9,10 @@ SELECT *
 FROM cache
 WHERE key LIKE ?;
 
+selectAll:
+SELECT *
+FROM cache;
+
 delete:
 DELETE FROM cache WHERE key LIKE ?;
 

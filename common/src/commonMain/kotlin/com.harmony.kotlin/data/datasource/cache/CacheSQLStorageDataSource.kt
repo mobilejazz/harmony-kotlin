@@ -25,18 +25,19 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
   }
 
   override suspend fun getAll(query: Query): List<ByteArray> {
-    when (query) {
+    val response = when (query) {
+      is AllObjectsQuery -> {
+        database.cacheQueries.selectAll().executeAsList()
+      }
       is KeyQuery -> {
         val sql = "${query.key}-%"
-        val response = database.cacheQueries.value(sql).executeAsList()
-        if (response.isEmpty()) throw DataNotFoundException()
-
-        return response.map {
-          it.value
-        }
+        database.cacheQueries.value(sql).executeAsList()
       }
       else -> notSupportedQuery()
     }
+    if (response.isEmpty()) throw DataNotFoundException()
+
+    return response.map { it.value }
   }
 
   override suspend fun put(query: Query, value: ByteArray?): ByteArray {
