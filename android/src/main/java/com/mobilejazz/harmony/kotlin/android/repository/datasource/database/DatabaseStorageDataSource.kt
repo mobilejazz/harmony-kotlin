@@ -18,7 +18,6 @@ import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 class DatabaseStorageDataSource(private val db: SupportSQLiteDatabase) : GetDataSource<ByteArray>, PutDataSource<ByteArray>, DeleteDataSource {
   override fun get(query: Query): Future<ByteArray> =
       Future {
-        FrameworkSQLiteOpenHelperFactory()
         when (query) {
           is KeyQuery -> {
             val cursor = db.query(
