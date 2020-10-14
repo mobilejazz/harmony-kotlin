@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.mobilejazz.harmony.kotlin.core.ext.getStackTraceAsString
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
+abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector {
 
   @Inject
-  lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+  lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
   open fun injectDependencies() {
     try {
@@ -37,6 +36,5 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
   @LayoutRes
   abstract fun getContentViewResId(): Int
 
-  override fun supportFragmentInjector(): AndroidInjector<Fragment>? = fragmentInjector
-
+  override fun androidInjector(): AndroidInjector<Any> = fragmentInjector
 }
