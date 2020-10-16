@@ -4,6 +4,7 @@ import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
@@ -60,7 +61,7 @@ open class GetNetworkDataSource<T>(
           httpClient.get<String>(url)
         }
       }
-      return@network json.parse(serializer.list, response)
+      return@network json.parse(serializer.list, response).let { if (it.isEmpty()) throw DataNotFoundException() else it }
     }
   }
 
