@@ -22,7 +22,7 @@ object MainSyncOperation : Operation()
 object CacheOperation : Operation()
 
 /**
- * Data stream will use the cache data source and sync with the main data source
+ * Data stream will use the cache data source and if fails it will sync with the main data source
  * @param fallback function that receives a Throwable and return a boolean flag indicating if we should fallback to cache without validating the object
  */
 class CacheSyncOperation(val fallback: (throwable: Throwable) -> Boolean = { false }) : Operation()
