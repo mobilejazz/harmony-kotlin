@@ -4,6 +4,7 @@ import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.error.MappingException
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.operation.*
 import com.harmony.kotlin.data.query.Query
@@ -48,6 +49,7 @@ class CacheRepository<V>(
           try {
             when (cacheException) {
               is ObjectNotValidException,
+              is MappingException,
               is DataNotFoundException -> get(query, MainSyncOperation)
               else -> throw cacheException
             }
@@ -91,6 +93,7 @@ class CacheRepository<V>(
           try {
             when (cacheException) {
               is ObjectNotValidException,
+              is MappingException,
               is DataNotFoundException -> getAll(query, MainSyncOperation)
               else -> throw cacheException
             }

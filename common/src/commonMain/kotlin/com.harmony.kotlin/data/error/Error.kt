@@ -1,8 +1,10 @@
 package com.harmony.kotlin.data.error
 
 // Errors
-
-open class RepositoryException(message: String? = null, cause: Throwable? = null) : Exception(message)
+/**
+ * Generic exception for errors on the data layer
+ */
+open class RepositoryException(message: String? = null, cause: Throwable? = null) : Exception(message, cause)
 
 open class DataNotFoundException(message: String? = "Data not found", cause: Throwable? = null) : RepositoryException(message, cause)
 
@@ -12,4 +14,19 @@ class PutObjectFailException(message: String? = "Fail updating or inserting obje
 
 class ObjectNotValidException(message: String? = "Object not valid", cause: Throwable? = null) : RepositoryException(message, cause)
 
-class QueryNotSupportedException(message: String? = "Query not supported", cause: Throwable? = null): RepositoryException(message, cause)
+class QueryNotSupportedException(message: String? = "Query not supported", cause: Throwable? = null) : RepositoryException(message, cause)
+
+/**
+ * Exception for errors on the mappers
+ */
+open class MappingException(message: String? = "Exception thrown during mapping", cause: Throwable? = null) : RepositoryException(message, cause)
+
+/**
+ * Exception for serialization errors on the mappers
+ */
+class MappingSerializationException(message: String? = "Exception thrown during serialization", cause: Throwable? = null) : MappingException(message, cause)
+
+/**
+ * Exception for network errors
+ */
+open class NetworkErrorException(val statusCode: Int, message: String?, throwable: Throwable? = null) : RepositoryException(message, throwable)
