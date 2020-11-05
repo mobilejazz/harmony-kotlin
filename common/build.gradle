@@ -43,9 +43,6 @@ version LIBRARY_VERSION_NAME
 
 // configuration of the Android preset
 android {
-  kapt {
-    correctErrorTypes true
-  }
 
   defaultConfig {
     minSdkVersion 16
