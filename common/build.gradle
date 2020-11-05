@@ -144,6 +144,8 @@ kotlin {
     androidMain {
       dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        api("io.ktor:ktor-client-android:$ktor_version")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
 
         //arch components
         api "android.arch.lifecycle:runtime:1.1.1"
@@ -189,7 +191,7 @@ kotlin {
 
         // sqldelight
         api "com.squareup.sqldelight:native-driver:$sql_delight_version"
-
+        api("io.ktor:ktor-client-ios:$ktor_version")
       }
     }
 
