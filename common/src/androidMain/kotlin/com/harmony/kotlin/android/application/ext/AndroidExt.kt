@@ -95,8 +95,8 @@ fun AppCompatActivity.replaceFragment(
 }
 
 // Keyboards
-
-fun AppCompatActivity.hideKeyboard() = hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
+// Current focus is a save cast
+fun AppCompatActivity.hideKeyboard() = hideKeyboard(if (currentFocus == null) View(this) else currentFocus!!)
 
 // ---------
 // Fragments
