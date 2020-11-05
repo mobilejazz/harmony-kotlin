@@ -4,18 +4,13 @@ import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.ktor.KtorNetworkException
-import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.*
-import io.ktor.client.HttpClient
-import io.ktor.client.features.ClientRequestException
+import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.http.*
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
 
 open class GetNetworkDataSource<T>(
     private val url: String,
@@ -91,7 +86,7 @@ open class GetNetworkDataSource<T>(
         }
       }
 
-      return@network json.parse(serializer, response)
+      return@network json.decodeFromString(serializer, response)
     }
   }
 
@@ -133,7 +128,8 @@ open class GetNetworkDataSource<T>(
           httpClient.get<String>(url)
         }
       }
-      return@network json.parse(serializer.list, response)
+
+      return@network json.decodeFromString<List<T>>(response)
     }
   }
 }
@@ -213,7 +209,7 @@ open class PutNetworkDataSource<T>(
         else -> notSupportedQuery()
       }
 
-      return@network json.parse(serializer, response)
+      return@network json.decodeFromString(serializer, response)
     }
   }
 
