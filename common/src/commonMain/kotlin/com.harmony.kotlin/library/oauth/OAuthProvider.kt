@@ -91,7 +91,10 @@ class OAuthDefaultModule(
   private val httpClient: HttpClient by lazy {
     HttpClient {
       install(JsonFeature) {
-        serializer = KotlinxSerializer(Json.Default)
+        serializer = KotlinxSerializer(Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
       }
       install(Logging) {
         logger = KtorHarmonyLogger(moduleLogger)
