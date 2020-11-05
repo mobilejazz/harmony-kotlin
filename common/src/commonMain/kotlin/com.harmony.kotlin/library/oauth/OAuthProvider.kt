@@ -27,7 +27,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.json.Json
 
@@ -63,10 +63,11 @@ class OAuthDefaultModule(
 
   override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineScope, deleteTokenInteractor)
 
+  @ExperimentalSerializationApi
   private val oauthRepository: RepositoryMapper<OAuthTokenEntity, OAuthToken> by lazy {
     val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode)
 
-    val cbor = Cbor()
+    val cbor = Cbor
     val dataSourceMapper = DataSourceMapper(oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
         CBORByteArrayToObject(cbor, OAuthTokenEntity.serializer()), CBORObjectToByteArray(cbor, OAuthTokenEntity.serializer()))
 
@@ -87,11 +88,10 @@ class OAuthDefaultModule(
     DeleteInteractor(coroutineScope, oauthRepository)
   }
 
-  @UnstableDefault
   private val httpClient: HttpClient by lazy {
     HttpClient {
       install(JsonFeature) {
-        serializer = KotlinxSerializer(Json.nonstrict)
+        serializer = KotlinxSerializer(Json.Default)
       }
       install(Logging) {
         logger = KtorHarmonyLogger(moduleLogger)

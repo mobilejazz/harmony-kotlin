@@ -16,7 +16,6 @@ buildscript {
 plugins {
   id("com.android.library")
   id 'org.jetbrains.kotlin.multiplatform'
-  id 'kotlin-kapt'
   id 'kotlin-android-extensions'
   id 'kotlinx-serialization'
 
@@ -47,11 +46,6 @@ android {
   defaultConfig {
     minSdkVersion 16
     compileSdkVersion 28
-//
-//    jackOptions {
-//      enabled true
-//    }
-
   }
 
   packagingOptions {
@@ -121,9 +115,6 @@ kotlin {
 
     commonTest {
       dependencies {
-
-        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
-
         implementation kotlin('test-common')
         implementation kotlin('test-annotations-common')
       }
@@ -208,7 +199,7 @@ kotlin {
 }
 
 dependencies {
-  kapt "android.arch.lifecycle:compiler:0.1.1"
+  implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
 }
 
 sqldelight {
