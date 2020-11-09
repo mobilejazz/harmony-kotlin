@@ -92,10 +92,14 @@ kotlin {
       dependencies {
 
         // coroutines
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version") {
+          version {
+            strictly "$coroutines_version"
+          }
+        }
 
         // serialization library
-        api "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
+        api "org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version"
         api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
 
         // SQL Delight

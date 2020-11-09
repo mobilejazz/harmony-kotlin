@@ -9,7 +9,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 open class GetNetworkDataSource<T>(
@@ -129,7 +129,8 @@ open class GetNetworkDataSource<T>(
         }
       }
 
-      return@network json.decodeFromString<List<T>>(response)
+      val a =  ListSerializer(serializer)
+      return@network json.decodeFromString(a, response)
     }
   }
 }
