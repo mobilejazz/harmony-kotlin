@@ -192,9 +192,6 @@ kotlin {
 
     iosMain {
       dependencies {
-        api "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
-        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
-
         // sqldelight
         api "com.squareup.sqldelight:native-driver:$sql_delight_version"
         api("io.ktor:ktor-client-ios:$ktor_version")
