@@ -16,7 +16,6 @@ buildscript {
 plugins {
   id("com.android.library")
   id 'org.jetbrains.kotlin.multiplatform'
-  id 'kotlin-kapt'
   id 'kotlin-android-extensions'
   id 'kotlinx-serialization'
 
@@ -44,6 +43,7 @@ version LIBRARY_VERSION_NAME
 
 // configuration of the Android preset
 android {
+
   defaultConfig {
     minSdkVersion 16
     compileSdkVersion 28
@@ -64,6 +64,11 @@ android {
     test {
       java.srcDirs = ['src/androidTest/kotlin']
     }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
   }
 }
 
@@ -86,15 +91,17 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation kotlin('stdlib-common')
 
         // coroutines
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version") {
+          version {
+            strictly "$coroutines_version"
+          }
+        }
 
         // serialization library
-        api "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
-        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor-common:$serialization_version"
+        api "org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version"
+        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
 
         // SQL Delight
         api "com.squareup.sqldelight:runtime:$sql_delight_version"
@@ -108,15 +115,12 @@ kotlin {
         // date library
         implementation "com.soywiz.korlibs.klock:klock:$klock_version" // Common
 
-        api "co.touchlab:stately-common:1.0.2"
+        api "co.touchlab:stately-common:$stately"
       }
     }
 
     commonTest {
       dependencies {
-
-        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
-
         implementation kotlin('test-common')
         implementation kotlin('test-annotations-common')
       }
@@ -124,23 +128,14 @@ kotlin {
 
     jvmMain {
       dependencies {
-        implementation kotlin('stdlib-jdk8')
-
         implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
 
         api "com.google.code.gson:gson:$gson_version"
-
-        api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
-        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
 
         api "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
 
         // ktor
         api "io.ktor:ktor-client-okhttp:$ktor_version"
-        api "io.ktor:ktor-client-core-jvm:$ktor_version"
-        api "io.ktor:ktor-client-json-jvm:$ktor_version"
-        api "io.ktor:ktor-client-logging-jvm:$ktor_version"
-        api "io.ktor:ktor-client-serialization-jvm:$ktor_version"
       }
     }
 
@@ -154,9 +149,8 @@ kotlin {
     androidMain {
       dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-        // coroutines
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+        api("io.ktor:ktor-client-android:$ktor_version")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
 
         //arch components
         api "android.arch.lifecycle:runtime:1.1.1"
@@ -184,17 +178,6 @@ kotlin {
         // SQL Delight
         api "com.squareup.sqldelight:android-driver:$sql_delight_version"
 
-        // serialization
-        api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
-        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
-
-        // ktor android
-        api "io.ktor:ktor-client-android:$ktor_version"
-        api "io.ktor:ktor-client-core-jvm:$ktor_version"
-        api "io.ktor:ktor-client-json-jvm:$ktor_version"
-        api "io.ktor:ktor-client-logging-jvm:$ktor_version"
-        api "io.ktor:ktor-client-serialization-jvm:$ktor_version"
-
         // bugfender
         api "com.bugfender.sdk:android:3.+"
       }
@@ -204,32 +187,18 @@ kotlin {
       dependencies {
         implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-
         api "io.ktor:ktor-client-mock-jvm:$ktor_version"
       }
     }
 
     iosMain {
       dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib")
-
-        // coroutines
-        api "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutines_version"
+        api "org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version"
+        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version"
 
         // sqldelight
         api "com.squareup.sqldelight:native-driver:$sql_delight_version"
-
-        // ktor ios runtine
-        api "io.ktor:ktor-client-ios:$ktor_version"
-        api "io.ktor:ktor-client-json-native:$ktor_version"
-        api "io.ktor:ktor-client-serialization-native:$ktor_version"
-        api "io.ktor:ktor-client-logging-native:$ktor_version"
-
-        // serialization
-        api "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version"
-        api "org.jetbrains.kotlinx:kotlinx-serialization-cbor-native:$serialization_version"
+        api("io.ktor:ktor-client-ios:$ktor_version")
       }
     }
 
@@ -240,7 +209,7 @@ kotlin {
 }
 
 dependencies {
-  kapt "android.arch.lifecycle:compiler:0.1.1"
+  implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
 }
 
 sqldelight {

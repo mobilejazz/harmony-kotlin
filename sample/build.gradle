@@ -34,6 +34,12 @@ android {
   packagingOptions {
     exclude "META-INF/*"
   }
+
+  compileOptions {
+    sourceCompatibility 1.8
+    targetCompatibility 1.8
+  }
+
 }
 
 configurations.all {
@@ -66,12 +72,9 @@ dependencies {
 
   implementation "com.google.code.gson:gson:$gson_version"
 
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-
   testImplementation 'junit:junit:4.12'
 
-//  implementation project(':common')
+  implementation project(':common')
 //  implementation 'com.mobilejazz:harmony-kotlin-androidRelease:0.1'
-  implementation 'com.mobilejazz:harmony-kotlin-jvm:0.1'
+//  implementation 'com.mobilejazz:harmony-kotlin-jvm:0.1'
 }

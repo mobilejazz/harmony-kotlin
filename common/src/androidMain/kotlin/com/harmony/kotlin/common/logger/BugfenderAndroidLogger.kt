@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 
 open class BugfenderLogger(context: Context,
                            applicationKey: String,
-                           private val isDebug: Boolean) : Logger {
+                           isDebug: Boolean) : Logger {
   init {
     Bugfender.init(context, applicationKey, isDebug)
   }
@@ -19,42 +19,39 @@ open class BugfenderLogger(context: Context,
 
   override fun log(level: Logger.Level, tag: String?, message: String) {
     val t = tag ?: createClassTag()
-    if (isDebug) {
-      when (level) {
-        Logger.Level.VERBOSE -> Bugfender.d(t, message)
-        Logger.Level.DEBUG -> Bugfender.d(t, message)
-        Logger.Level.INFO -> Bugfender.i(t, message)
-        Logger.Level.WARNING -> Bugfender.w(t, message)
-        Logger.Level.ERROR -> Bugfender.e(t, message)
-      }
+
+    when (level) {
+      Logger.Level.VERBOSE -> Bugfender.d(t, message)
+      Logger.Level.DEBUG -> Bugfender.d(t, message)
+      Logger.Level.INFO -> Bugfender.i(t, message)
+      Logger.Level.WARNING -> Bugfender.w(t, message)
+      Logger.Level.ERROR -> Bugfender.e(t, message)
     }
   }
 
   override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
     val t = tag ?: createClassTag()
 
-    if (isDebug) {
-      when (level) {
-        Logger.Level.VERBOSE -> {
-          Bugfender.d(t, throwable.message)
-          Bugfender.d(t, message)
-        }
-        Logger.Level.DEBUG -> {
-          Bugfender.d(t, throwable.message)
-          Bugfender.d(t, message)
-        }
-        Logger.Level.INFO -> {
-          Bugfender.i(t, throwable.message)
-          Bugfender.i(t, message)
-        }
-        Logger.Level.WARNING -> {
-          Bugfender.w(t, throwable.message)
-          Bugfender.w(t, message)
-        }
-        Logger.Level.ERROR -> {
-          Bugfender.e(t, throwable.message)
-          Bugfender.e(t, message)
-        }
+    when (level) {
+      Logger.Level.VERBOSE -> {
+        Bugfender.d(t, throwable.message)
+        Bugfender.d(t, message)
+      }
+      Logger.Level.DEBUG -> {
+        Bugfender.d(t, throwable.message)
+        Bugfender.d(t, message)
+      }
+      Logger.Level.INFO -> {
+        Bugfender.i(t, throwable.message)
+        Bugfender.i(t, message)
+      }
+      Logger.Level.WARNING -> {
+        Bugfender.w(t, throwable.message)
+        Bugfender.w(t, message)
+      }
+      Logger.Level.ERROR -> {
+        Bugfender.e(t, throwable.message)
+        Bugfender.e(t, message)
       }
     }
   }

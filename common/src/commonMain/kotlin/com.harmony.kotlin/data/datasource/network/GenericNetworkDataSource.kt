@@ -7,10 +7,9 @@ import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.http.*
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 open class GetNetworkDataSource<T>(
@@ -38,7 +37,7 @@ open class GetNetworkDataSource<T>(
         }
       }
 
-      return@network json.parse(serializer, response)
+      return@network json.decodeFromString(serializer, response)
     }
   }
 
@@ -60,7 +59,9 @@ open class GetNetworkDataSource<T>(
           httpClient.get<String>(url)
         }
       }
-      return@network json.parse(serializer.list, response)
+
+      val a =  ListSerializer(serializer)
+      return@network json.decodeFromString(a, response)
     }
   }
 
@@ -102,7 +103,8 @@ open class PutNetworkDataSource<T>(
         }
         else -> notSupportedQuery()
       }
-      return@network json.parse(serializer, response)
+
+      return@network json.decodeFromString(serializer, response)
     }
   }
 

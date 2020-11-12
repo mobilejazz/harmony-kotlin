@@ -1,6 +1,6 @@
 ext {
   //Android
-  android_build_tools_version = "28.0.3"
+  android_build_tools_version = "29.0.2"
   android_min_sdk_version = 16
   android_target_sdk_version = 28
   android_compile_sdk_version = 28
@@ -10,13 +10,13 @@ ext {
   dagger_version = '2.16'
   gson_version = '2.8.6'
 
-  sql_delight_version = '1.2.2'
-  serialization_version = '0.14.0'
-  ktor_version = '1.3.2'
-  serialization_version = '0.20.0'
-  coroutines_version = '1.3.5-native-mt'
-  sql_delight_version = '1.3.0'
-  klock_version = "1.10.0"
+
   kotlinx_io_version = "0.1.16"
+  ktor_version = '1.4.1'
+  serialization_version = '1.0.1'
+  coroutines_version = '1.4.1'
+  sql_delight_version = '1.4.4'
+  klock_version = "2.0.0-rc2"
+  stately = "1.1.0"
 }
 
