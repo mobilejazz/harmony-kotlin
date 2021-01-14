@@ -5,6 +5,7 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
+import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.operation.*
 import com.harmony.kotlin.data.query.Query
@@ -63,6 +64,7 @@ class CacheRepository<V>(
           }
         }
       }
+      else -> throw OperationNotAllowedException()
     }
   }
 
@@ -106,7 +108,7 @@ class CacheRepository<V>(
             }
           }
         }
-      }
+      } else -> throw OperationNotAllowedException()
     }
   }
 
@@ -116,6 +118,7 @@ class CacheRepository<V>(
     is CacheOperation -> putCache.put(query, value)
     is MainSyncOperation -> putMain.put(query, value).let { putCache.put(query, it) }
     is CacheSyncOperation -> putCache.put(query, value).let { putMain.put(query, it) }
+    else -> throw OperationNotAllowedException()
   }
 
   override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = when (operation) {
@@ -124,6 +127,7 @@ class CacheRepository<V>(
     is CacheOperation -> putCache.putAll(query, value)
     is MainSyncOperation -> putMain.putAll(query, value).let { putCache.putAll(query, it) }
     is CacheSyncOperation -> putCache.putAll(query, value).let { putMain.putAll(query, it) }
+    else -> throw OperationNotAllowedException()
   }
 
   override suspend fun delete(query: Query, operation: Operation): Unit = when (operation) {
@@ -132,6 +136,7 @@ class CacheRepository<V>(
     is CacheOperation -> deleteCache.delete(query)
     is MainSyncOperation -> deleteMain.delete(query).let { deleteCache.delete(query) }
     is CacheSyncOperation -> deleteCache.delete(query).let { deleteMain.delete(query) }
+    else -> throw OperationNotAllowedException()
   }
 
   override suspend fun deleteAll(query: Query, operation: Operation): Unit = when (operation) {
@@ -140,6 +145,7 @@ class CacheRepository<V>(
     is CacheOperation -> deleteCache.deleteAll(query)
     is MainSyncOperation -> deleteMain.deleteAll(query).let { deleteCache.deleteAll(query) }
     is CacheSyncOperation -> deleteCache.deleteAll(query).let { deleteMain.deleteAll(query) }
+    else -> throw OperationNotAllowedException()
   }
 
   /**
