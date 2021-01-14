@@ -55,7 +55,7 @@ class OAuthDefaultModule(
 ) : OAuthComponent {
 
   override fun authenticatePasswordCredentialInteractor(): AuthenticatePasswordCredentialInteractor =
-      AuthenticatePasswordCredentialInteractor(coroutineContext, putTokenInteractor)
+      AuthenticatePasswordCredentialInteractor(putTokenInteractor, coroutineContext)
 
   override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetDefaultPasswordTokenInteractor(coroutineContext, getTokenInteractor)
 
