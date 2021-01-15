@@ -6,6 +6,11 @@ import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenIntera
 
 interface OAuthClientQuery: GenericOAuthQuery
 
+/**
+ * The following queries are adaptations of the bellow ones.
+ * These were created in Ridelink and then migrated to be compliance with the GenericNetworkDataSource
+ * Should they exist or should the concrete apps adapt to the new ones? This is a yet unanswered question
+ */
 class DefaultOAuthClientQuery(override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericNetworkQuery(""), OAuthClientQuery
 
 // OAuth key query base
