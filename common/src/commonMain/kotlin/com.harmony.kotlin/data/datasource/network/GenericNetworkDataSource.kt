@@ -4,7 +4,9 @@ import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
+import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.data.query.VoidQuery
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -29,12 +31,12 @@ open class GetNetworkDataSource<T>(
             createHttpRequestFromGenericNetworkQuery(query)
           }
         }
-
-        else -> {
+        is VoidQuery -> {
           httpClient.get<String>(url) {
             headers(globalHeaders)
           }
         }
+        else -> notSupportedQuery()
       }
 
       return@network json.decodeFromString(serializer, response)
@@ -47,17 +49,12 @@ open class GetNetworkDataSource<T>(
 
         is GenericNetworkQuery -> {
           httpClient.get {
-            if (query is GenericOAuthQuery) {
-              oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
-
-            }
             createHttpRequestFromGenericNetworkQuery(query)
           }
         }
 
-        else -> {
-          httpClient.get<String>(url)
-        }
+        is VoidQuery -> httpClient.get<String>(url)
+        else -> notSupportedQuery()
       }
 
       val a =  ListSerializer(serializer)
@@ -140,11 +137,12 @@ class DeleteNetworkDataSource(
           }
         }
 
-        else -> {
+        is VoidQuery  -> {
           httpClient.delete<Unit>(url) {
             headers(globalHeaders)
           }
         }
+        else -> notSupportedQuery()
       }
     }
   }

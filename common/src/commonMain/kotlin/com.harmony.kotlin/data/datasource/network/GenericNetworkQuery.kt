@@ -1,33 +1,51 @@
 package com.harmony.kotlin.data.datasource.network
 
-import com.harmony.kotlin.data.query.*
-import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
+import com.harmony.kotlin.data.query.KeyQuery
+import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 
-interface OAuthClientQuery
+interface OAuthClientQuery: GenericOAuthQuery
 
-class DefaultOAuthClientQuery(val getPasswordTokenInteractor: GetPasswordTokenInteractor) : Query(), OAuthClientQuery
+class DefaultOAuthClientQuery(override val getPasswordTokenInteractor: GetPasswordTokenInteractor) : GenericNetworkQuery(""), OAuthClientQuery
 
 // OAuth key query base
-class OAuthPasswordKeyQuery(key: String, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : KeyQuery(key), OAuthClientQuery
+class OAuthPasswordKeyQuery(
+    key: String,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericNetworkQuery("", key = key), OAuthClientQuery
 
 // OAuth integer id query
-class OAuthPasswordIntegerIdQuery(id: Int, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IntegerIdQuery(id),
+class OAuthPasswordIntegerIdQuery(
+    val id: Int,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericNetworkQuery(path = id.toString(), key = id.toString()),
     OAuthClientQuery
 
 // OAuth integer id query
-open class OAuthPasswordIdQuery<T>(id: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : IdQuery<T>(id),
-    OAuthClientQuery
-
-class OAuthApplicationIntegerIdQuery(id: Int, val getApplicationTokenInteractor: GetApplicationTokenInteractor) : IntegerIdQuery(id),
+open class OAuthPasswordIdQuery<T>(
+    id: T,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericOAuthIdNetworkQuery<T>(id, key = id.toString(), getPasswordTokenInteractor = getPasswordTokenInteractor, path = id.toString()),
     OAuthClientQuery
 
 // OAuth password pagination query
-open class OAuthPasswordPaginationOffsetLimitQuery(identifier: String? = null, offset: Int, limit: Int, val getPasswordTokenInteractor:
-GetPasswordTokenInteractor) : PaginationOffsetLimitQuery(identifier ?: "$offset-$limit", offset, limit), OAuthClientQuery
+open class OAuthPasswordPaginationOffsetLimitQuery(
+    identifier: String? = null,
+    val offset: Int,
+    val limit: Int,
+    override val getPasswordTokenInteractor:
+    GetPasswordTokenInteractor
+) : GenericNetworkQuery(
+    path = "",
+    listOf(Pair("offset", offset.toString()), Pair("limit", limit.toString())),
+    key = "$identifier-$offset-$limit"
+), OAuthClientQuery
 
 // OAuth password object query
-class OAuthPasswordObjectQuery<T>(value: T, val getPasswordTokenInteractor: GetPasswordTokenInteractor) : ObjectQuery<T>(value),
+class OAuthPasswordObjectQuery<T>(
+    value: T,
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
+) : GenericOAuthObjectNetworkQuery<T>(value, "", getPasswordTokenInteractor = getPasswordTokenInteractor),
     OAuthClientQuery
 
 /**
@@ -88,7 +106,7 @@ open class GenericIdNetworkQuery<T>(
     suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() }, key: String? = null
 ) : GenericNetworkQuery(path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
 
-class GenericOAuthIdNetworkQuery<T>(
+open class GenericOAuthIdNetworkQuery<T>(
     id: T,
     path: String,
     params: List<Pair<String, String>> = emptyList(),
@@ -109,7 +127,7 @@ open class GenericObjectNetworkQuery<T>(
     suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
     key: String? = null) : GenericNetworkQuery(path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
 
-class GenericOAuthObjectNetworkQuery<T>(
+open class GenericOAuthObjectNetworkQuery<T>(
     value: T,
     path: String,
     params: List<Pair<String, String>> = emptyList(),
