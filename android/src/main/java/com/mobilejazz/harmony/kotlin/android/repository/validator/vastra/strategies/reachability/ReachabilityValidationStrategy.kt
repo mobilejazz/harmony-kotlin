@@ -13,7 +13,7 @@ class ReachabilityValidationStrategy(val context: Context) : ValidationStrategy 
   override fun <T : ValidationStrategyDataSource> isValid(t: T): ValidationStrategyResult {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val isConnected = connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo.isConnected
+    val isConnected = connectivityManager.activeNetworkInfo?.isConnected == true
 
     return if (isConnected) ValidationStrategyResult.UNKNOWN else ValidationStrategyResult.VALID
   }

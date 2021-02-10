@@ -1,9 +1,9 @@
 ext {
   //Android
-  android_build_tools_version = "28.0.3"
+  android_build_tools_version = "30.0.3"
   android_min_sdk_version = 16
-  android_target_sdk_version = 28
-  android_compile_sdk_version = 28
+  android_target_sdk_version = 30
+  android_compile_sdk_version = 30
 
   //General libraries
   guava_version = '25.1-android'

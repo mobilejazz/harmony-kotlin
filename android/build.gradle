@@ -63,8 +63,8 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
   // Android Support
-  api "androidx.appcompat:appcompat:1.1.0"
-  api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
+  api "androidx.appcompat:appcompat:1.2.0"
+  api "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 
   // Injection
   api 'javax.inject:javax.inject:1'
@@ -74,17 +74,17 @@ dependencies {
   api "com.google.dagger:dagger-android-support:$dagger_version"
 
   // Database
-  implementation "androidx.sqlite:sqlite:2.0.1"
-  implementation  "androidx.sqlite:sqlite-framework:2.0.1"
+  implementation "androidx.sqlite:sqlite:2.1.0"
+  implementation  "androidx.sqlite:sqlite-framework:2.1.0"
 
   //arch components
   api "android.arch.lifecycle:runtime:1.1.1"
   api "android.arch.lifecycle:extensions:1.1.1"
   kapt "android.arch.lifecycle:compiler:1.1.1"
 
-  testImplementation 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.13.1'
 
-  androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-  androidTestImplementation 'androidx.test:runner:1.2.0'
-  androidTestImplementation 'androidx.test:rules:1.2.0'
+  androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+  androidTestImplementation 'androidx.test:runner:1.3.0'
+  androidTestImplementation 'androidx.test:rules:1.3.0'
 }
