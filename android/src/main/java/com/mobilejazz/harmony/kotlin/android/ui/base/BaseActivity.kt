@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.ViewBinding
 import com.mobilejazz.harmony.kotlin.core.ext.getStackTraceAsString
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -26,15 +27,30 @@ abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector {
     }
   }
 
-
   override fun onCreate(savedInstanceState: Bundle?) {
     injectDependencies()
     super.onCreate(savedInstanceState)
-    setContentView(getContentViewResId())
+
+    getContentViewBinding()?.also { binding ->
+      setContentView(binding.root)
+    } ?: getContentViewResId()?.also {
+      setContentView(it)
+    }
   }
 
   @LayoutRes
-  abstract fun getContentViewResId(): Int
+  @Deprecated("Use getContentViewBinding() method instead", replaceWith = ReplaceWith("getContentViewBinding()"))
+  open fun getContentViewResId(): Int? {
+    return null
+  }
+
+  /**
+   * Use this method to provide a ViewBinding to be used by the Activity
+   */
+  open fun getContentViewBinding(): ViewBinding? {
+    return null
+  }
 
   override fun androidInjector(): AndroidInjector<Any> = fragmentInjector
+
 }
