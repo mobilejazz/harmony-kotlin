@@ -84,7 +84,7 @@ open class PutNetworkDataSource<T>(
         is GenericIdNetworkQuery<*> -> {
           // We need to check if it's Int or String to simplify how we generate the url. In case it isn't we should create a representation of the type as a 
           // String.
-          if (query.id !is Int || query.id !is String) {
+          if (query.id !is Int && query.id !is String) {
             throw IllegalArgumentException("We only accept Int or String for now")
           }
 
