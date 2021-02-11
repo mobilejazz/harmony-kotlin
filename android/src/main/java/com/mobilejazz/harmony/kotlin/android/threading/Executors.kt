@@ -37,7 +37,7 @@ object AppUiExecutor : Executor {
 
   override fun <T : Any?> invokeAll(tasks: MutableCollection<out Callable<T>>?, timeout: Long, unit: TimeUnit?): MutableList<Future<T>> = TODO("not implemented")
 
-  override fun execute(runnable: Runnable?) {
+  override fun execute(runnable: Runnable) {
     handler.post(runnable)
   }
 }
