@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.mobilejazz.harmony.kotlin.core.ext.getStackTraceAsString
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -43,10 +44,24 @@ abstract class BaseFragment : Fragment(), HasAndroidInjector {
       container: ViewGroup?,
       savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(getContentViewResId(), container, false)
+    return getContentViewBinding(inflater, container)?.root ?: getContentViewResId()?.let { resId ->
+      inflater.inflate(resId, container, false)
+    }
   }
 
+
+
   @LayoutRes
-  abstract fun getContentViewResId(): Int
+  @Deprecated("Use getContentViewBinding() method instead", replaceWith = ReplaceWith("getContentViewBinding()"))
+  open fun getContentViewResId(): Int? {
+    return null
+  }
+
+  /**
+   * Use this method to provide a ViewBinding to be used by the Fragment
+   */
+  open fun getContentViewBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding? {
+    return null
+  }
 
 }
