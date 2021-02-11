@@ -1,5 +1,7 @@
 package com.mobilejazz.harmony.kotlin.core.repository.operation
 
+import com.mobilejazz.harmony.kotlin.core.repository.error.ObjectNotValidException
+
 // Operations
 
 sealed class Operation
@@ -18,8 +20,9 @@ object MainSyncOperation : Operation()
 
 /**
  * Data stream will only use the cache data source
+ * @param fallback function that receives a Throwable and return a boolean flag indicating if we should fallback to cache without validating the object
  */
-object CacheOperation : Operation()
+class CacheOperation(val fallback: (throwable: Throwable) -> Boolean = { false }) : Operation()
 
 /**
  * Data stream will use the cache data source and sync with the main data source
