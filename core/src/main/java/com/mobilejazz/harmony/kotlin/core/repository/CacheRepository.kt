@@ -37,6 +37,12 @@ class CacheRepository<V> @Inject constructor(
       } else {
         it
       }
+    }.recoverWith {
+      if (operation.fallback(it)) {
+        getCache.get(query)
+      } else {
+        throw it
+      }
     }
     is MainSyncOperation -> getMain.get(query).flatMap { putCache.put(query, it) }
     is CacheSyncOperation ->
@@ -75,6 +81,12 @@ class CacheRepository<V> @Inject constructor(
       } else {
         it
       }
+    }.recoverWith {
+      if (operation.fallback(it)) {
+        getCache.getAll(query)
+      } else {
+        throw it
+      }
     }
     is MainSyncOperation -> getMain.getAll(query).flatMap { putCache.putAll(query, it) }
     is CacheSyncOperation -> {
@@ -103,8 +115,7 @@ class CacheRepository<V> @Inject constructor(
 
   override fun put(
       query: Query,
-      value: V?
-      ,
+      value: V?,
       operation: Operation
   )
       : Future<V> = when (operation) {
@@ -117,9 +128,7 @@ class CacheRepository<V> @Inject constructor(
 
   override fun putAll(
       query: Query,
-      value: List<V>
-      ?
-      ,
+      value: List<V>?,
       operation: Operation
   )
       : Future<List<V>> = when (operation) {
