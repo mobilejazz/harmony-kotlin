@@ -1,6 +1,7 @@
 package com.mobilejazz.sample.di.ui
 
 import com.mobilejazz.harmony.kotlin.android.di.ActivityScope
+import com.mobilejazz.harmony.kotlin.core.domain.interactor.DefaultGetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.repository.GetRepository
 import com.mobilejazz.harmony.kotlin.core.threading.Executor
@@ -14,6 +15,6 @@ class HomeModule {
   @Provides
   @ActivityScope
   fun provideGetAllStories(executor: Executor, getRepository: GetRepository<ItemIds>): GetInteractor<ItemIds> {
-    return GetInteractor(executor, getRepository)
+    return DefaultGetInteractor(executor, getRepository)
   }
 }
