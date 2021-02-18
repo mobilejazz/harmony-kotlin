@@ -1,15 +1,12 @@
 package com.harmony.kotlin.data.datasource.network
 
-import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.OperationNotAllowedException
+import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.query.Query
-import com.harmony.kotlin.data.query.VoidQuery
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.http.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -23,50 +20,31 @@ open class GetNetworkDataSource<T>(
 ) : GetDataSource<T> {
 
   override suspend fun get(query: Query): T {
-    return network {
-      val response = when (query) {
-
-        is GenericNetworkQuery -> {
-          httpClient.get<String> {
-            createHttpRequestFromGenericNetworkQuery(query)
-          }
-        }
-        is VoidQuery -> {
-          httpClient.get<String>(url) {
-            headers(globalHeaders)
-          }
-        }
-        else -> notSupportedQuery()
-      }
-
-      return@network json.decodeFromString(serializer, response)
+    val response: String = validateQuery(query).let { networkQuery ->
+      httpClient.request(networkQuery.executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders))
     }
+
+    return json.decodeFromString(serializer, response)
   }
 
   override suspend fun getAll(query: Query): List<T> {
-    return network {
-      val response = when (query) {
-
-        is GenericNetworkQuery -> {
-          httpClient.get {
-            createHttpRequestFromGenericNetworkQuery(query)
-          }
-        }
-
-        is VoidQuery -> httpClient.get<String>(url)
-        else -> notSupportedQuery()
-      }
-
-      val a =  ListSerializer(serializer)
-      return@network json.decodeFromString(a, response)
+    val response: String = validateQuery(query).let { networkQuery ->
+      httpClient.request(networkQuery.executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders))
     }
+
+    return json.decodeFromString(ListSerializer(serializer), response)
   }
 
-  private suspend fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery) {
-    url(generateUrl(url = this@GetNetworkDataSource.url, path = query.path, params = query.params))
-    addOAuthHeaderIfNeeded(query)
-    headers(globalHeaders)
-    headers(query.mergeHeaders())
+  private fun validateQuery(query: Query): NetworkQuery {
+    if (query !is NetworkQuery) {
+      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+    }
+
+    if (query.method !is NetworkQuery.Method.Get) {
+      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of GET")
+    }
+
+    return query
   }
 }
 
@@ -77,44 +55,36 @@ open class PutNetworkDataSource<T>(
     private val json: Json,
     private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : PutDataSource<T> {
+
   override suspend fun put(query: Query, value: T?): T {
-    return network {
-      val response = when (query) {
-
-        is GenericIdNetworkQuery<*> -> {
-          // We need to check if it's Int or String to simplify how we generate the url. In case it isn't we should create a representation of the type as a 
-          // String.
-          if (query.id !is Int && query.id !is String) {
-            throw IllegalArgumentException("We only accept Int or String for now")
-          }
-
-          httpClient.put {
-            createHttpRequestFromGenericNetworkQuery(query, value)
-          }
-        }
-
-        is GenericObjectNetworkQuery<*> -> {
-          httpClient.post<String> {
-            createHttpRequestFromGenericNetworkQuery(query, query.value)
-          }
-        }
-        else -> notSupportedQuery()
+    val response: String = validateQuery(query).let { networkQuery ->
+      val contentType = networkQuery.method.contentType
+      // Checking that the arguments are consistent (if both contentType and value are providing the caller must be notified about the issue)
+      if (contentType != null && value != null) {
+        throw IllegalArgumentException("Conflicting arguments to be used as request body:\n" +
+            "query.method.contentType=${contentType}\n" +
+            "value=${value}\n" +
+            "You must only provide one of them")
       }
-
-      return@network json.decodeFromString(serializer, response)
+      // Updating query if value is passed as separated argument from the query
+      if (contentType == null && value != null) {
+        networkQuery.method.contentType = NetworkQuery.ContentType.Json(entity = value)
+      }
+      httpClient.request(networkQuery.executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders))
     }
+    return json.decodeFromString(serializer, response)
   }
 
-  private suspend fun <V> HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery, value: V?) {
-    value?.let {
-      url(generateUrl(url = this@PutNetworkDataSource.url, path = query.path, params = query.params))
-      contentType(ContentType.Application.Json)
-      addOAuthHeaderIfNeeded(query)
-      headers(globalHeaders)
-      headers(query.mergeHeaders())
-      body = it as Any
-    } ?: throw IllegalArgumentException("Value cannot be null")
+  private fun validateQuery(query: Query): NetworkQuery {
+    if (query !is NetworkQuery) {
+      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+    }
 
+    if (query.method !is NetworkQuery.Method.Post && query.method !is NetworkQuery.Method.Put) {
+      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of POST or PUT")
+    }
+
+    return query
   }
 
   override suspend fun putAll(query: Query, value: List<T>?): List<T> = throw NotImplementedError()
@@ -128,37 +98,22 @@ class DeleteNetworkDataSource(
 ) : DeleteDataSource {
 
   override suspend fun delete(query: Query) {
-    return network {
-      when (query) {
-
-        is GenericNetworkQuery -> {
-          httpClient.delete {
-            createHttpRequestFromGenericNetworkQuery(query)
-          }
-        }
-
-        is VoidQuery  -> {
-          httpClient.delete<Unit>(url) {
-            headers(globalHeaders)
-          }
-        }
-        else -> notSupportedQuery()
-      }
+    return validateQuery(query).let { networkQuery ->
+      networkQuery.executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
     }
   }
 
-  private suspend fun HttpRequestBuilder.createHttpRequestFromGenericNetworkQuery(query: GenericNetworkQuery) {
-    url(generateUrl(url = this@DeleteNetworkDataSource.url, path = query.path, params = query.params))
-    addOAuthHeaderIfNeeded(query)
-    headers(globalHeaders)
-    headers(query.mergeHeaders())
+  private fun validateQuery(query: Query): NetworkQuery {
+    if (query !is NetworkQuery) {
+      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+    }
+
+    if (query.method !is NetworkQuery.Method.Delete) {
+      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of DELETE")
+    }
+
+    return query
   }
 
   override suspend fun deleteAll(query: Query) = throw NotImplementedError()
-}
-
-private suspend fun HttpRequestBuilder.addOAuthHeaderIfNeeded(query: Query) {
-  if (query is GenericOAuthQuery) {
-    oauthPasswordHeader(getPasswordTokenInteractor = query.getPasswordTokenInteractor)
-  }
 }
