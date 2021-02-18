@@ -30,6 +30,7 @@ class DefaultGetInteractor<M> @Inject constructor(private val executor: Executor
   }
 }
 
+
 interface GetAllInteractor<M> {
   operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<List<M>>
 }
@@ -44,10 +45,10 @@ class DefaultGetAllInteractor<M> @Inject constructor(private val executor: Execu
   }
 }
 
+
 interface PutInteractor<M> {
   operator fun invoke(m: M?, query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<M>
 }
-
 
 class DefaultPutInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) : PutInteractor<M> {
 
@@ -57,15 +58,21 @@ class DefaultPutInteractor<M> @Inject constructor(private val executor: Executor
       putRepository.put(query, m, operation).get()
     })
   }
-
 }
 
-class PutAllInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) {
 
-  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor = this.executor): Future<List<M>> =
-      executor.submit(Callable {
-        putRepository.putAll(query, m, operation).get()
-      })
+interface PutAllInteractor<M> {
+  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<List<M>>
+}
+
+class DefaultPutAllInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) : PutAllInteractor<M> {
+
+  override operator fun invoke(m: List<M>?, query: Query, operation: Operation, executor: Executor?): Future<List<M>> {
+    val executor = executor ?: this.executor
+    return executor.submit(Callable {
+      putRepository.putAll(query, m, operation).get()
+    })
+  }
 }
 
 class DeleteInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
@@ -97,8 +104,9 @@ fun <K, V> PutInteractor<V>.execute(id: K, value: V?, operation: Operation = Def
     (id),
     operation, executor)
 
-fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation, executor: Executor = DirectExecutor) = this.invoke(values, IdsQuery
-(ids), operation, executor)
+fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation, executor: Executor = DirectExecutor) = this
+    .invoke(values, IdsQuery
+    (ids), operation, executor)
 
 fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOperation, executor: Executor = DirectExecutor) = this.invoke(IdQuery(id), operation,
     executor)
@@ -113,7 +121,7 @@ fun <V> GetRepository<V>.toGetAllInteractor(executor: Executor = AppExecutor) = 
 
 fun <V> PutRepository<V>.toPutInteractor(executor: Executor = AppExecutor) = DefaultPutInteractor(executor, this)
 
-fun <V> PutRepository<V>.toPutAllInteractor(executor: Executor = AppExecutor) = PutAllInteractor(executor, this)
+fun <V> PutRepository<V>.toPutAllInteractor(executor: Executor = AppExecutor) = DefaultPutAllInteractor(executor, this)
 
 fun DeleteRepository.toDeleteInteractor(executor: Executor = AppExecutor) = DeleteInteractor(executor, this)
 
