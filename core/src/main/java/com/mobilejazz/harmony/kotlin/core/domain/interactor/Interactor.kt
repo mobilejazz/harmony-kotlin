@@ -16,12 +16,18 @@ import com.mobilejazz.harmony.kotlin.core.threading.extensions.Future
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-class GetInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
+interface GetInteractor<M> {
+  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<M>
+}
 
-  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor = this.executor): Future<M> =
-      executor.submit(Callable {
-        getRepository.get(query, operation).get()
-      })
+class DefaultGetInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) : GetInteractor<M> {
+
+  override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<M> {
+    val executor = executor ?: this.executor
+    return executor.submit(Callable {
+      getRepository.get(query, operation).get()
+    })
+  }
 }
 
 class GetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
@@ -65,8 +71,9 @@ class DeleteAllInteractor @Inject constructor(private val executor: Executor, pr
 }
 
 
-fun <K, V> GetInteractor<V>.execute(id: K, operation: Operation = DefaultOperation, executor: Executor = DirectExecutor): Future<V> = this.invoke(IdQuery(id)
-    , operation, executor)
+fun <K, V> GetInteractor<V>.execute(id: K, operation: Operation = DefaultOperation, executor: Executor = DirectExecutor): Future<V> = this.invoke(IdQuery(id),
+    operation,
+    executor)
 
 fun <K, V> GetAllInteractor<V>.execute(ids: List<K>, operation: Operation = DefaultOperation, executor: Executor = DirectExecutor): Future<List<V>> = this
     .invoke(IdsQuery(ids), operation, executor)
@@ -86,7 +93,7 @@ fun <K> DeleteAllInteractor.execute(ids: List<K>, operation: Operation = Default
     operation, executor)
 
 
-fun <V> GetRepository<V>.toGetInteractor(executor: Executor = AppExecutor) = GetInteractor(executor, this)
+fun <V> GetRepository<V>.toGetInteractor(executor: Executor = AppExecutor) = DefaultGetInteractor(executor, this)
 
 fun <V> GetRepository<V>.toGetAllInteractor(executor: Executor = AppExecutor) = GetAllInteractor(executor, this)
 
