@@ -30,12 +30,18 @@ class DefaultGetInteractor<M> @Inject constructor(private val executor: Executor
   }
 }
 
-class GetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) {
+interface GetAllInteractor<M> {
+  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<List<M>>
+}
 
-  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor = this.executor): Future<List<M>> =
-      executor.submit(Callable {
-        getRepository.getAll(query, operation).get()
-      })
+class DefaultGetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) : GetAllInteractor<M> {
+
+  override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<List<M>> {
+    val executor = executor ?: this.executor
+    return executor.submit(Callable {
+      getRepository.getAll(query, operation).get()
+    })
+  }
 }
 
 class PutInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) {
@@ -95,7 +101,7 @@ fun <K> DeleteAllInteractor.execute(ids: List<K>, operation: Operation = Default
 
 fun <V> GetRepository<V>.toGetInteractor(executor: Executor = AppExecutor) = DefaultGetInteractor(executor, this)
 
-fun <V> GetRepository<V>.toGetAllInteractor(executor: Executor = AppExecutor) = GetAllInteractor(executor, this)
+fun <V> GetRepository<V>.toGetAllInteractor(executor: Executor = AppExecutor) = DefaultGetAllInteractor(executor, this)
 
 fun <V> PutRepository<V>.toPutInteractor(executor: Executor = AppExecutor) = PutInteractor(executor, this)
 
