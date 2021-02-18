@@ -90,12 +90,19 @@ class DefaultDeleteInteractor @Inject constructor(private val executor: Executor
   }
 }
 
-class DeleteAllInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) {
 
-  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor = this.executor): Future<Unit> =
-      executor.submit(Callable {
-        deleteRepository.deleteAll(query, operation).get()
-      })
+interface DeleteAllInteractor {
+  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation, executor: Executor? = null): Future<Unit>
+}
+
+class DefaultDeleteAllInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) : DeleteAllInteractor {
+
+  override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<Unit> {
+    val executor = executor ?: this.executor
+    return executor.submit(Callable {
+      deleteRepository.deleteAll(query, operation).get()
+    })
+  }
 }
 
 
@@ -132,4 +139,4 @@ fun <V> PutRepository<V>.toPutAllInteractor(executor: Executor = AppExecutor) = 
 
 fun DeleteRepository.toDeleteInteractor(executor: Executor = AppExecutor) = DefaultDeleteInteractor(executor, this)
 
-fun DeleteRepository.toDeleteAllInteractor(executor: Executor = AppExecutor) = DeleteAllInteractor(executor, this)
+fun DeleteRepository.toDeleteAllInteractor(executor: Executor = AppExecutor) = DefaultDeleteAllInteractor(executor, this)
