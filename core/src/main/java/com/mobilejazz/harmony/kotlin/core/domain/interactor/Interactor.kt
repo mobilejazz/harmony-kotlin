@@ -23,8 +23,8 @@ interface GetInteractor<M> {
 class DefaultGetInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) : GetInteractor<M> {
 
   override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<M> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       getRepository.get(query, operation).get()
     })
   }
@@ -38,8 +38,8 @@ interface GetAllInteractor<M> {
 class DefaultGetAllInteractor<M> @Inject constructor(private val executor: Executor, private val getRepository: GetRepository<M>) : GetAllInteractor<M> {
 
   override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<List<M>> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       getRepository.getAll(query, operation).get()
     })
   }
@@ -53,8 +53,8 @@ interface PutInteractor<M> {
 class DefaultPutInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) : PutInteractor<M> {
 
   override operator fun invoke(m: M?, query: Query, operation: Operation, executor: Executor?): Future<M> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       putRepository.put(query, m, operation).get()
     })
   }
@@ -68,8 +68,8 @@ interface PutAllInteractor<M> {
 class DefaultPutAllInteractor<M> @Inject constructor(private val executor: Executor, private val putRepository: PutRepository<M>) : PutAllInteractor<M> {
 
   override operator fun invoke(m: List<M>?, query: Query, operation: Operation, executor: Executor?): Future<List<M>> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       putRepository.putAll(query, m, operation).get()
     })
   }
@@ -83,8 +83,8 @@ interface DeleteInteractor {
 class DefaultDeleteInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) : DeleteInteractor {
 
   override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<Unit> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       deleteRepository.delete(query, operation).get()
     })
   }
@@ -98,8 +98,8 @@ interface DeleteAllInteractor {
 class DefaultDeleteAllInteractor @Inject constructor(private val executor: Executor, private val deleteRepository: DeleteRepository) : DeleteAllInteractor {
 
   override operator fun invoke(query: Query, operation: Operation, executor: Executor?): Future<Unit> {
-    val executor = executor ?: this.executor
-    return executor.submit(Callable {
+    val exec = executor ?: this.executor
+    return exec.submit(Callable {
       deleteRepository.deleteAll(query, operation).get()
     })
   }
