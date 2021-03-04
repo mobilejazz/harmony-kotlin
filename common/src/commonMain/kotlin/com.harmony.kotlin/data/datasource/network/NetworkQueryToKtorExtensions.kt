@@ -21,7 +21,6 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
 
     // body
     query.method.contentType?.let { contentType ->
-      contentType(contentType.mapToKtorContentType())
       body = when (contentType) {
         is NetworkQuery.ContentType.FormUrlEncoded -> {
           FormDataContent(
@@ -45,14 +44,14 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
  */
 private fun NetworkQuery.generateKtorUrl(baseUrl: String): Url {
 
-  val urlBuilder = URLBuilder(baseUrl)
+  val sanitizedBaseUrl = baseUrl.removeSuffix("/")
+  val sanitizedPaths = this.path.split("/").filter { it.isNotEmpty() }.joinToString(separator = "/", prefix = "/")
 
-  if (path.isNotEmpty()) {
-    urlBuilder.path(path)
-  }
-  if (urlParams.isNotEmpty()) {
+  val urlBuilder = URLBuilder(sanitizedBaseUrl + sanitizedPaths)
+
+  if (this.urlParams.isNotEmpty()) {
     urlBuilder.parameters.also {
-      it.appendAll(generateKtorUrlParams(urlParams))
+      it.appendAll(generateKtorUrlParams(this.urlParams))
     }
   }
 

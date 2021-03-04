@@ -41,11 +41,19 @@ open class NetworkQuery(
       return value()
     }
 
+    /**
+     * GET Method
+     */
     object Get : Method(null) {
       override fun value() = "GET"
     }
 
-    class Post private constructor(contentType: ContentType? = null) : Method(contentType) {
+    /**
+     * POST Method
+     * @param contentType - Content type to define the body of the request.
+     * If not defined the value provided on the data source put method will be used as application/json
+     */
+    class Post constructor(contentType: ContentType? = null) : Method(contentType) {
       override fun value() = "POST"
 
       companion object {
@@ -54,7 +62,12 @@ open class NetworkQuery(
       }
     }
 
-    class Put private constructor(contentType: ContentType? = null) : Method(contentType) {
+    /**
+     * PUT Method
+     *  @param contentType - Content type to define the body of the request.
+     * If not defined the value provided on the data source put method will be used as application/json
+     */
+    class Put constructor(contentType: ContentType? = null) : Method(contentType) {
       override fun value() = "PUT"
 
       companion object {
@@ -63,6 +76,9 @@ open class NetworkQuery(
       }
     }
 
+    /**
+     * DELETE Method
+     */
     object Delete : Method(null) {
       override fun value() = "DELETE"
     }
@@ -118,47 +134,5 @@ private fun generateNetworkQueryKey(method: NetworkQuery.Method, path: String, p
         }
       }
 }
-
-///**
-// * Creates a PUT Http Method. Modifies the ID with the value that receive the put method.
-// */
-//open class IdNetworkQuery<T>(
-//    val id: T,
-//    path: String,
-//    params: List<Pair<String, String>> = emptyList(),
-//    headers: List<Pair<String, String>> = emptyList(),
-//    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() }, key: String? = null
-//) : NetworkQuery(path = path, urlParams = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
-//
-//open class OAuthIdNetworkQuery<T>(
-//    id: T,
-//    path: String,
-//    params: List<Pair<String, String>> = emptyList(),
-//    headers: List<Pair<String, String>> = emptyList(),
-//    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
-//    key: String? = null,
-//    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
-//) : IdNetworkQuery<T>(id = id, path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key), GenericOAuthQuery
-//
-///**
-// * Creates a POST Http Method. Creates a new entry with the value in the query object.
-// */
-//open class ObjectNetworkQuery<T>(
-//    val value: T,
-//    path: String,
-//    params: List<Pair<String, String>> = emptyList(),
-//    headers: List<Pair<String, String>> = emptyList(),
-//    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
-//    key: String? = null) : NetworkQuery(path = path, urlParams = params, headers = headers, suspendHeaders = suspendHeaders, key = key)
-//
-//open class OAuthObjectNetworkQuery<T>(
-//    value: T,
-//    path: String,
-//    params: List<Pair<String, String>> = emptyList(),
-//    headers: List<Pair<String, String>> = emptyList(),
-//    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
-//    key: String? = null,
-//    override val getPasswordTokenInteractor: GetPasswordTokenInteractor
-//) : ObjectNetworkQuery<T>(value = value, path = path, params = params, headers = headers, suspendHeaders = suspendHeaders, key = key), GenericOAuthQuery
 
 
