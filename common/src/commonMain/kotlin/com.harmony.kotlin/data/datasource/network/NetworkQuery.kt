@@ -11,6 +11,31 @@ interface GenericOAuthQuery {
 }
 
 /**
+ * Base Query with oAuth support to be used by the Generic Network DataSources .
+ *
+ * @param path Relative path to the endpoint
+ * @param urlParams Query parameters
+ * @param suspendHeaders This is a suspend function that will be executed to create headers asynchronously
+ * @param key Custom cache key, if not provided the cache key will be formed using path and params
+ */
+open class OAuthNetworkQuery(
+    override val getPasswordTokenInteractor: GetPasswordTokenInteractor,
+    method: Method,
+    path: String,
+    urlParams: List<Pair<String, String>> = emptyList(),
+    headers: List<Pair<String, String>> = emptyList(),
+    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
+    key: String? = null,
+) : NetworkQuery(
+    method = method,
+    path = path,
+    urlParams = urlParams,
+    headers = headers,
+    suspendHeaders = suspendHeaders,
+    key = key
+), GenericOAuthQuery
+
+/**
  * Base Query to be used by the Generic Network DataSources.
  *
  * @param path Relative path to the endpoint
