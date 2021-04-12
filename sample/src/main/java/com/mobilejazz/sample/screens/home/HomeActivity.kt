@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mobilejazz.harmony.kotlin.android.threading.extension.onCompleteUi
+import com.mobilejazz.harmony.kotlin.core.domain.interactor.DefaultGetInteractor
 import com.mobilejazz.harmony.kotlin.core.domain.interactor.GetInteractor
 import com.mobilejazz.harmony.kotlin.core.logger.Logger
 import com.mobilejazz.harmony.kotlin.core.repository.operation.CacheSyncOperation
@@ -33,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
   @Inject
   lateinit var getItemsByIdInteractor: GetItemsByIdInteractor
   @Inject
-  lateinit var getAskStoriesInteractor: GetInteractor<ItemIds>
+  lateinit var defaultGetAskStoriesInteractor: GetInteractor<ItemIds>
 
   @field:[Inject Named("ConsoleLogger")]
   lateinit var consoleLogger: Logger
@@ -66,7 +67,7 @@ class HomeActivity : AppCompatActivity() {
   private fun reloadData(pullToRefresh: Boolean) {
     activity_home_swipe_refresh_srl.isRefreshing = true
 
-    getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation(fallback = { false }))
+    defaultGetAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation(fallback = { false }))
         .onCompleteUi(
             onSuccess = {
               getItemsByIdInteractor(it.ids).onCompleteUi(

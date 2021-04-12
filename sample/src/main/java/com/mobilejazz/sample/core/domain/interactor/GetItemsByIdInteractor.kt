@@ -11,12 +11,12 @@ import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class GetItemsByIdInteractor @Inject constructor(private val executor: Executor,
-                                                 private val getItemInteractor: GetInteractor<Item>) {
+                                                 private val defaultGetItemInteractor: GetInteractor<Item>) {
 
   operator fun invoke(ids: List<Int>, executor: Executor = this.executor): Future<List<Item>> {
     return executor.submit(Callable {
       return@Callable ids.map {
-        getItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation(), executor = DirectExecutor).get()
+        defaultGetItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation(), executor = DirectExecutor).get()
       }
     })
   }

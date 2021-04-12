@@ -47,7 +47,7 @@ class ItemDetailActivity : AppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
-    val item = intent.extras.get(ITEM_KEY) as Item
+    val item = intent.extras?.get(ITEM_KEY) as Item
 
     activity_detail_item_title_tv.text = item.title
 
