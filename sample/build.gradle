@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android-extensions'  // TODO To be removed when the sample is properly updated
 
 apply plugin: 'kotlin-kapt'
 
