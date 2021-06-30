@@ -8,6 +8,13 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlinx-serialization'
 
+// TODO To be removed when the sample is properly updated
+ext {
+  guava_version = '25.1-android'
+  dagger_version = '2.16'
+  gson_version = '2.8.6'
+}
+
 android {
   def config = rootProject.ext
 
@@ -48,6 +55,7 @@ configurations.all {
   }
 }
 
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -78,3 +86,4 @@ dependencies {
 //  implementation 'com.mobilejazz:harmony-kotlin-androidRelease:0.1'
 //  implementation 'com.mobilejazz:harmony-kotlin-jvm:0.1'
 }
+

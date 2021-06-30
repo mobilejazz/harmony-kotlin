@@ -1,22 +1,17 @@
 ext {
   //Android
-  android_build_tools_version = "29.0.2"
-  android_min_sdk_version = 16
-  android_target_sdk_version = 28
-  android_compile_sdk_version = 28
-
-  //General libraries
-  guava_version = '25.1-android'
-  dagger_version = '2.16'
-  gson_version = '2.8.6'
+  android_build_tools_version = "30.0.3"
+  android_min_sdk_version = 21
+  android_target_sdk_version = 30
+  android_compile_sdk_version = 30
 
 
   kotlinx_io_version = "0.1.16"
-  ktor_version = '1.4.1'
-  serialization_version = '1.0.1'
-  coroutines_version = '1.4.1'
-  sql_delight_version = '1.4.4'
-  klock_version = "2.0.0-rc2"
-  stately = "1.1.0"
+  ktor_version = '1.6.1'
+  serialization_version = '1.2.1'
+  coroutines_version = '1.5.0'
+  sql_delight_version = '1.5.0'
+  klock_version = "2.0.0"
+  stately = "1.1.4"
 }
 
