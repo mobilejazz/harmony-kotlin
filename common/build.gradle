@@ -112,7 +112,7 @@ kotlin {
         api "io.ktor:ktor-client-serialization:$ktor_version"
 
         // date library
-        implementation "com.soywiz.korlibs.klock:klock:$klock_version" // Common
+        api "com.soywiz.korlibs.klock:klock:$klock_version" // Common
 
         api "co.touchlab:stately-common:$stately"
       }
