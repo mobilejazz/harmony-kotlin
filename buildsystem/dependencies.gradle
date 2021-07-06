@@ -9,7 +9,7 @@ ext {
   kotlinx_io_version = "0.1.16"
   ktor_version = '1.6.1'
   serialization_version = '1.2.1'
-  coroutines_version = '1.5.0'
+  coroutines_version = '1.5.0-native-mt'
   sql_delight_version = '1.5.0'
   klock_version = "2.2.0"
   stately = "1.1.4"
