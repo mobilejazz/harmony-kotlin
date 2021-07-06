@@ -1,11 +1,10 @@
-package com.mobilejazz.harmony.kotlin.core.repository.validator
+package com.harmony.kotlin.data.datasource.validator
 
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
 import com.harmony.kotlin.data.validator.vastra.strategy.ThreadValidationStrategy
-import org.junit.Assert
-import org.junit.Test
-
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ThreadValidationStrategyTest {
   @Test
@@ -14,7 +13,7 @@ class ThreadValidationStrategyTest {
 
     val strategy = ThreadValidationStrategy(Thread.currentThread())
 
-    Assert.assertEquals(strategy.isValid(anyObject), ValidationStrategyResult.VALID)
+    assertEquals(strategy.isValid(anyObject), ValidationStrategyResult.VALID)
   }
 
   @Test
@@ -23,6 +22,6 @@ class ThreadValidationStrategyTest {
 
     val strategy = ThreadValidationStrategy(Thread())
 
-    Assert.assertEquals(strategy.isValid(anyObject), ValidationStrategyResult.UNKNOWN)
+    assertEquals(strategy.isValid(anyObject), ValidationStrategyResult.UNKNOWN)
   }
 }

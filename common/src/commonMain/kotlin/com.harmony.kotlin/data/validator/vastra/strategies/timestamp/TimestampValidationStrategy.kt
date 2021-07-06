@@ -1,34 +1,30 @@
 package com.harmony.kotlin.data.validator.vastra.strategies.timestamp
 
+import com.harmony.kotlin.common.date.Millis
+import com.harmony.kotlin.common.date.Seconds
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategy
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
-import com.soywiz.klock.DateTime
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
+import kotlinx.datetime.Clock
 
-interface TimestampValidationEntity: ValidationStrategyDataSource {
-  val lastUpdatedAt: Long
-
-  @ExperimentalTime
-  val expireIn: Long
-    get() = 10.seconds.toLong(DurationUnit.SECONDS)
+interface TimestampValidationEntity : ValidationStrategyDataSource {
+  val lastUpdatedAt: Millis
+  val expireIn: Seconds
 }
 
 class TimestampValidationStrategy : ValidationStrategy {
 
-  @ExperimentalTime
   override fun <T : ValidationStrategyDataSource> isValid(t: T): ValidationStrategyResult {
     when (t) {
       is TimestampValidationEntity -> {
-        val now = DateTime.now().unixMillisLong
-        val lastUpdate = DateTime(t.lastUpdatedAt).unixMillisLong
+        val now = Clock.System.now().toEpochMilliseconds()
+
+        val lastUpdate = t.lastUpdatedAt
 
         val diff = now - lastUpdate
         val difSeconds = diff / 1000
 
-        val isValid =  difSeconds < t.expireIn
+        val isValid = difSeconds < t.expireIn
 
         return if (isValid)
           ValidationStrategyResult.VALID

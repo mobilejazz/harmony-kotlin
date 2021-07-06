@@ -1,12 +1,12 @@
-package com.mobilejazz.harmony.kotlin.core.repository.validator
+package com.harmony.kotlin.data.datasource.validator
 
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategy
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
-import org.junit.Assert
-import org.junit.Test
-
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ValidationServiceTest {
 
@@ -26,7 +26,7 @@ class ValidationServiceTest {
 
     val validationServiceManager = ValidationServiceManager(listOf(alwaysValidStrategy, alwaysInvalidStrategy))
 
-    Assert.assertTrue(validationServiceManager.isValid(anyObject))
+    assertTrue(validationServiceManager.isValid(anyObject))
   }
 
   @Test
@@ -45,7 +45,7 @@ class ValidationServiceTest {
 
     val validationServiceManager = ValidationServiceManager(listOf(alwaysInvalidStrategy, alwaysValidStrategy))
 
-    Assert.assertFalse(validationServiceManager.isValid(anyObject))
+    assertFalse(validationServiceManager.isValid(anyObject))
   }
 
 }

@@ -112,7 +112,7 @@ kotlin {
         api "io.ktor:ktor-client-serialization:$ktor_version"
 
         // date library
-        api "com.soywiz.korlibs.klock:klock:$klock_version" // Common
+        api "org.jetbrains.kotlinx:kotlinx-datetime:$kotlinx_datetime_version"
 
         api "co.touchlab:stately-common:$stately"
       }
@@ -128,6 +128,7 @@ kotlin {
     jvmMain {
       dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+        implementation 'com.google.code.gson:gson:2.8.7'
 
         api "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
 
@@ -145,6 +146,8 @@ kotlin {
 
     androidMain {
       dependencies {
+        dependsOn jvmMain
+
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
         api("io.ktor:ktor-client-android:$ktor_version")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
