@@ -146,8 +146,6 @@ kotlin {
 
     androidMain {
       dependencies {
-        dependsOn jvmMain
-
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
         api("io.ktor:ktor-client-android:$ktor_version")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
