@@ -170,7 +170,7 @@ kotlin {
       dependencies {
         implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
-        api "io.ktor:ktor-client-mock-jvm:$ktor_version"
+        implementation "io.ktor:ktor-client-mock-jvm:$ktor_version"
       }
     }
 
