@@ -23,6 +23,25 @@ plugins {
 }
 
 apply plugin: "com.squareup.sqldelight"
+apply plugin: "io.gitlab.arturbosch.detekt"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+ktlint {
+  version = "0.42.1"
+  android = false
+  filter {
+    exclude("**/generated/**")
+    include("**/kotlin/**")
+  }
+}
+
+detekt {
+  toolVersion = "1.18.0"
+  source = files("src/main/kotlin")
+}
+
+check.dependsOn ktlintCheck
+check.dependsOn "detekt"
 
 // bintray constants
 def GROUP_ID = "com.mobilejazz"// Your orginization in reverse domain notation. For example:  def GROUP_ID="com.fudge"
