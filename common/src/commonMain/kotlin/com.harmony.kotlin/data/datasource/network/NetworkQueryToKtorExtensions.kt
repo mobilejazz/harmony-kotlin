@@ -19,20 +19,22 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
     headers(globalHeaders)
     headers(query.mergeHeaders())
 
-    // body
+    // content-type & body
     query.method.contentType?.let { contentType ->
-      body = when (contentType) {
+      when (contentType) {
         is NetworkQuery.ContentType.FormUrlEncoded -> {
-          FormDataContent(
-              Parameters.build {
-                contentType.params.forEach {
-                  append(it.first, it.second)
-                }
+          contentType(ContentType.Application.FormUrlEncoded)
+          body = FormDataContent(
+            Parameters.build {
+              contentType.params.forEach {
+                append(it.first, it.second)
               }
+            }
           )
         }
         is NetworkQuery.ContentType.Json<*> -> {
-          contentType.entity!!
+          contentType(ContentType.Application.Json)
+          body = contentType.entity!!
         }
       }
     }
