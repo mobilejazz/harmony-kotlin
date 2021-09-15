@@ -44,3 +44,22 @@ inline fun <R> tryOrNull(logger: Logger? = null, tag: String = "TryOrNull", mess
     null
   }
 }
+
+/**
+ * Try this block and return the provided defaultValue if there is any Exception.
+ *
+ * Optionally a logger and some parameters can be passed to log the Exception
+ */
+inline fun <R> tryOrDefault(logger: Logger? = null,
+                            tag: String = "TryOrDefault",
+                            message: String = "Exception logged",
+                            level: Logger.Level = Logger.Level.WARNING,
+                            defaultValue: R,
+                            block: () -> R): R {
+  return try {
+    block()
+  } catch (e: Exception) {
+    logger?.log(level, e, tag, message)
+    defaultValue
+  }
+}
