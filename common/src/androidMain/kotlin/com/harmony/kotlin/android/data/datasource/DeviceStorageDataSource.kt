@@ -5,6 +5,7 @@ import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.data.query.AllObjectsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 
@@ -61,23 +62,23 @@ class DeviceStorageDataSource<T>(
 
   override suspend fun delete(query: Query) =
       when (query) {
-        is KeyQuery -> {
-          sharedPreferences.edit()
-              .remove(addPrefixTo(query.key))
-              .apply()
+      is AllObjectsQuery -> {
+        with(sharedPreferences.edit()) {
+          if (prefix.isNotEmpty()) {
+            sharedPreferences.all.keys.filter { it.contains(prefix) }.forEach { remove(it) }
+          } else {
+            clear()
+          }
+          apply()
         }
-        else -> notSupportedQuery()
       }
-
-  override suspend fun deleteAll(query: Query) =
-      with(sharedPreferences.edit()) {
-        if (prefix.isNotEmpty()) {
-          sharedPreferences.all.keys.filter { it.contains(prefix) }.forEach { remove(it) }
-        } else {
-          clear()
-        }
-        apply()
+      is KeyQuery -> {
+        sharedPreferences.edit()
+          .remove(addPrefixTo(query.key))
+          .apply()
       }
+      else -> notSupportedQuery()
+    }
 
   private fun addPrefixTo(key: String) = if (prefix.isEmpty()) key else "$prefix.$key"
 

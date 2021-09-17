@@ -14,8 +14,6 @@ class VoidRepository<V> : GetRepository<V>, PutRepository<V>, DeleteRepository {
   override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = notSupportedOperation()
 
   override suspend fun delete(query: Query, operation: Operation) = notSupportedOperation()
-
-  override suspend fun deleteAll(query: Query, operation: Operation) = notSupportedOperation()
 }
 
 class VoidGetRepository<V> : GetRepository<V> {
@@ -33,6 +31,4 @@ class VoidPutRepository<V> : PutRepository<V> {
 
 class VoidDeleteRepository : DeleteRepository {
   override suspend fun delete(query: Query, operation: Operation) = notSupportedOperation()
-
-  override suspend fun deleteAll(query: Query, operation: Operation) = notSupportedOperation()
 }

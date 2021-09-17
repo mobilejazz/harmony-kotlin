@@ -44,5 +44,4 @@ class SerializationDataSourceMapper<SerializedIn, Out>(
 
   override suspend fun delete(query: Query) = deleteDataSource.delete(query)
 
-  override suspend fun deleteAll(query: Query) = deleteDataSource.deleteAll(query)
 }

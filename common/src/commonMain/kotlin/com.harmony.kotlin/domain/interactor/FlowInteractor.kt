@@ -38,11 +38,6 @@ class FlowDeleteInteractor(private val scope: CoroutineScope, private val delete
   operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) = deleteRepository.delete(query, operation)
 }
 
-class FlowDeleteAllInteractor(private val scope: CoroutineScope, private val deleteRepository: FlowDeleteRepository) {
-
-  operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) = deleteRepository.deleteAll(query, operation)
-}
-
 
 //region Creation
 fun <V> FlowGetRepository<V>.toFlowGetInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowGetInteractor(scope, this)
@@ -54,6 +49,4 @@ fun <V> FlowPutRepository<V>.toFlowPutInteractor(scope: CoroutineScope = Corouti
 fun <V> FlowPutRepository<V>.toFlowPutAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowPutAllInteractor(scope, this)
 
 fun FlowDeleteRepository.toFlowDeleteInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowDeleteInteractor(scope, this)
-
-fun FlowDeleteRepository.toFlowDeleteAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowDeleteAllInteractor(scope, this)
 //endregion

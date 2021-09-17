@@ -28,7 +28,6 @@ interface FlowPutRepository<V> : FlowRepository {
 
 interface FlowDeleteRepository : FlowRepository {
   fun delete(query: Query, operation: Operation = DefaultOperation): Flow<Unit>
-  fun deleteAll(query: Query, operation: Operation = DefaultOperation): Flow<Unit>
 }
 
 // Extensions
@@ -45,7 +44,7 @@ fun <K, V> FlowPutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyLis
 
 fun <K> FlowDeleteRepository.delete(id: K, operation: Operation = DefaultOperation) = delete(IdQuery(id), operation)
 
-fun <K> FlowDeleteRepository.deleteAll(ids: List<K>, operation: Operation = DefaultOperation) = deleteAll(IdsQuery(ids), operation)
+fun <K> FlowDeleteRepository.delete(ids: List<K>, operation: Operation = DefaultOperation) = delete(IdsQuery(ids), operation)
 
 fun <K, V> FlowGetRepository<K>.withMapping(mapper: Mapper<K, V>): FlowGetRepository<V> = FlowGetRepositoryMapper(this, mapper)
 

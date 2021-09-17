@@ -153,6 +153,4 @@ class DeleteNetworkDataSource(
 
     return query
   }
-
-  override suspend fun deleteAll(query: Query) = throw NotImplementedError()
 }

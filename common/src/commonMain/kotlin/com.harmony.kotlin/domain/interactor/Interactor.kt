@@ -52,15 +52,6 @@ class DeleteInteractor(private val coroutineContext: CoroutineContext, private v
       }
 }
 
-class DeleteAllInteractor(private val coroutineContext: CoroutineContext, private val deleteRepository: DeleteRepository) {
-
-  suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) =
-      withContext(coroutineContext) {
-        deleteRepository.deleteAll(query, operation)
-      }
-}
-
-
 suspend fun <K, V> GetInteractor<V>.execute(id: K, operation: Operation = DefaultOperation): V = this.invoke(IdQuery(id), operation)
 
 suspend fun <K, V> GetAllInteractor<V>.execute(ids: List<K>, operation: Operation = DefaultOperation): List<V> = this.invoke(IdsQuery(ids), operation)
@@ -70,8 +61,6 @@ suspend fun <K, V> PutInteractor<V>.execute(id: K, value: V?, operation: Operati
 suspend fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = this.invoke(values, IdsQuery(ids), operation)
 
 suspend fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOperation) = this.invoke(IdQuery(id), operation)
-
-suspend fun <K> DeleteAllInteractor.execute(ids: List<K>, operation: Operation = DefaultOperation) = this.invoke(IdsQuery(ids), operation)
 
 
 fun <V> GetRepository<V>.toGetInteractor(coroutineContext: CoroutineContext) = GetInteractor(coroutineContext, this)
@@ -83,5 +72,3 @@ fun <V> PutRepository<V>.toPutInteractor(coroutineContext: CoroutineContext) = P
 fun <V> PutRepository<V>.toPutAllInteractor(coroutineContext: CoroutineContext) = PutAllInteractor(coroutineContext, this)
 
 fun DeleteRepository.toDeleteInteractor(coroutineContext: CoroutineContext) = DeleteInteractor(coroutineContext, this)
-
-fun DeleteRepository.toDeleteAllInteractor(coroutineContext: CoroutineContext) = DeleteAllInteractor(coroutineContext, this)

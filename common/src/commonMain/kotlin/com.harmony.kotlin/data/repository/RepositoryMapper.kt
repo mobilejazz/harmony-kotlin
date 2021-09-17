@@ -39,9 +39,6 @@ class RepositoryMapper<In, Out>(
   }
 
   override suspend fun delete(query: Query, operation: Operation) = deleteRepository.delete(query, operation)
-
-  override suspend fun deleteAll(query: Query, operation: Operation) = deleteRepository.deleteAll(query, operation)
-
 }
 
 class GetRepositoryMapper<In, Out>(

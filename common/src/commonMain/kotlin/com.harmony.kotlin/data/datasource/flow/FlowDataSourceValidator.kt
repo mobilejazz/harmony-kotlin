@@ -25,5 +25,4 @@ class FlowDataSourceValidator<T>(private val getDataSource: FlowGetDataSource<T>
 
   override fun delete(query: Query): Flow<Unit> = deleteDataSource.delete(query)
 
-  override fun deleteAll(query: Query): Flow<Unit> = deleteDataSource.deleteAll(query)
 }

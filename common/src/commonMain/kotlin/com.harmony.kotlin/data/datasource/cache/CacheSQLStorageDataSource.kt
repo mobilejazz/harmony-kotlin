@@ -81,6 +81,4 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     }
   }
 
-  override suspend fun deleteAll(query: Query) = throw NotImplementedError("deleteAll not supported. Use delete instead")
-
 }
