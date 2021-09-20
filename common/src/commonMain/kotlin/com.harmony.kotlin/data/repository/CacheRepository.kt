@@ -12,13 +12,13 @@ import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
 
 class CacheRepository<V>(
-    private val getCache: GetDataSource<V>,
-    private val putCache: PutDataSource<V>,
-    private val deleteCache: DeleteDataSource,
-    private val getMain: GetDataSource<V>,
-    private val putMain: PutDataSource<V>,
-    private val deleteMain: DeleteDataSource,
-    private val validator: Validator<V> = DefaultValidator()
+  private val getCache: GetDataSource<V>,
+  private val putCache: PutDataSource<V>,
+  private val deleteCache: DeleteDataSource,
+  private val getMain: GetDataSource<V>,
+  private val putMain: PutDataSource<V>,
+  private val deleteMain: DeleteDataSource,
+  private val validator: Validator<V> = DefaultValidator()
 ) : GetRepository<V>, PutRepository<V>, DeleteRepository {
 
   override suspend fun get(query: Query, operation: Operation): V {
@@ -26,10 +26,18 @@ class CacheRepository<V>(
       is DefaultOperation -> get(query, CacheSyncOperation())
       is MainOperation -> getMain.get(query)
       is CacheOperation -> getCache.get(query).let {
-        if (!validator.isValid(it)) {
-          throw ObjectNotValidException()
-        } else {
-          it
+        try {
+          if (!validator.isValid(it)) {
+            throw ObjectNotValidException()
+          } else {
+            it
+          }
+        } catch (cacheException: Exception) {
+          if (operation.fallback(cacheException)) {
+            getCache.get(query)
+          } else {
+            throw cacheException
+          }
         }
       }
       is MainSyncOperation -> getMain.get(query).let {
@@ -73,10 +81,18 @@ class CacheRepository<V>(
       is DefaultOperation -> getAll(query, CacheSyncOperation())
       is MainOperation -> getMain.getAll(query)
       is CacheOperation -> getCache.getAll(query).map {
-        if (!validator.isValid(it)) {
-          throw ObjectNotValidException()
-        } else {
-          it
+        try {
+          if (!validator.isValid(it)) {
+            throw ObjectNotValidException()
+          } else {
+            it
+          }
+        } catch (cacheException: Exception) {
+          if (operation.fallback(cacheException)) {
+            getCache.get(query)
+          } else {
+            throw cacheException
+          }
         }
       }
       is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
@@ -108,7 +124,8 @@ class CacheRepository<V>(
             }
           }
         }
-      } else -> throw OperationNotAllowedException()
+      }
+      else -> throw OperationNotAllowedException()
     }
   }
 
