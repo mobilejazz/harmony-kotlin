@@ -27,7 +27,6 @@ interface PutRepository<V> : Repository {
 
 interface DeleteRepository : Repository {
   suspend fun delete(query: Query, operation: Operation = DefaultOperation)
-  suspend fun deleteAll(query: Query, operation: Operation = DefaultOperation)
 }
 
 // Extensions
@@ -42,8 +41,6 @@ suspend fun <K, V> PutRepository<V>.putAll(ids: List<K>, values: List<V>? = empt
     operation)
 
 suspend fun <K> DeleteRepository.delete(id: K, operation: Operation = DefaultOperation) = delete(IdQuery(id), operation)
-
-suspend fun <K> DeleteRepository.deleteAll(ids: List<K>, operation: Operation = DefaultOperation) = deleteAll(IdsQuery(ids), operation)
 
 fun <K, V> GetRepository<K>.withMapping(mapper: Mapper<K, V>): GetRepository<V> = GetRepositoryMapper(this, mapper)
 

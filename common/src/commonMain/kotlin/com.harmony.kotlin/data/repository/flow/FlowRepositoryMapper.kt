@@ -42,9 +42,6 @@ class FlowRepositoryMapper<In, Out>(
   }
 
   override fun delete(query: Query, operation: Operation) = deleteRepository.delete(query, operation)
-
-  override fun deleteAll(query: Query, operation: Operation) = deleteRepository.deleteAll(query, operation)
-
 }
 
 class FlowGetRepositoryMapper<In, Out>(

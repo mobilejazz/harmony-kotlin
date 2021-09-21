@@ -35,8 +35,6 @@ class FlowDataSourceMapper<In, Out>(
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> = putDataSourceMapper.putAll(query, value)
 
   override fun delete(query: Query): Flow<Unit> = deleteDataSource.delete(query)
-
-  override fun deleteAll(query: Query): Flow<Unit> = deleteDataSource.deleteAll(query)
 }
 
 class FlowGetDataSourceMapper<In, Out>(

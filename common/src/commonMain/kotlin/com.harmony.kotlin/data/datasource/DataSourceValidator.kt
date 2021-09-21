@@ -23,6 +23,5 @@ class DataSourceValidator<T>(private val getDataSource: GetDataSource<T>,
 
   override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
 
-  override suspend fun deleteAll(query: Query): Unit = deleteDataSource.deleteAll(query)
 }
 

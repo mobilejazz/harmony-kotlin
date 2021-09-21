@@ -22,8 +22,6 @@ class SingleFlowDataSourceRepository<T>(
   override fun putAll(query: Query, value: List<T>?, operation: Operation): Flow<List<T>> = putDataSource.putAll(query, value)
 
   override fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
-
-  override fun deleteAll(query: Query, operation: Operation) = deleteDataSource.deleteAll(query)
 }
 
 class SingleFlowGetDataSourceRepository<T>(private val getDataSource: FlowGetDataSource<T>) : FlowGetRepository<T> {
@@ -43,6 +41,4 @@ class SingleFlowPutDataSourceRepository<T>(private val putDataSource: FlowPutDat
 class SingleFlowDeleteDataSourceRepository(private val deleteDataSource: FlowDeleteDataSource) : FlowDeleteRepository {
 
   override fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
-
-  override fun deleteAll(query: Query, operation: Operation) = deleteDataSource.deleteAll(query)
 }

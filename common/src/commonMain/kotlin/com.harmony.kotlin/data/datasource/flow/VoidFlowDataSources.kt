@@ -14,7 +14,6 @@ class VoidDataSource<V> : FlowGetDataSource<V>, FlowPutDataSource<V>, FlowDelete
 
   override fun delete(query: Query) = throw UnsupportedOperationException()
 
-  override fun deleteAll(query: Query) = throw UnsupportedOperationException()
 }
 
 class VoidFlowGetDataSource<V> : FlowGetDataSource<V> {
@@ -31,6 +30,4 @@ class VoidFlowPutDataSource<V> : FlowPutDataSource<V> {
 
 class VoidFlowDeleteDataSource : FlowDeleteDataSource {
   override fun delete(query: Query) = throw UnsupportedOperationException()
-
-  override fun deleteAll(query: Query) = throw UnsupportedOperationException()
 }

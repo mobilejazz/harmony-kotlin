@@ -33,8 +33,6 @@ class DataSourceMapper<In, Out>(
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putDataSourceMapper.putAll(query, value)
 
   override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
-
-  override suspend fun deleteAll(query: Query): Unit = deleteDataSource.deleteAll(query)
 }
 
 class GetDataSourceMapper<In, Out>(

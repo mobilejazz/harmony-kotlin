@@ -33,8 +33,6 @@ interface FlowPutDataSource<V> : FlowDataSource {
 
 interface FlowDeleteDataSource : FlowDataSource {
   fun delete(query: Query): Flow<Unit>
-
-  fun deleteAll(query: Query): Flow<Unit>
 }
 
 // Extensions
@@ -58,11 +56,11 @@ fun <K> FlowDeleteDataSource.delete(id: K): Flow<Unit> = delete(IdQuery(id))
 
 fun <K> DeleteDataSource.delete(id: K): Flow<Unit> = flow { emit(delete(IdQuery(id))) }
 
-fun <K> FlowDeleteDataSource.deleteAll(ids: List<K>): Flow<Unit> = deleteAll(IdsQuery(ids))
+fun <K> FlowDeleteDataSource.delete(ids: List<K>): Flow<Unit> = delete(IdsQuery(ids))
 
-fun <K> DeleteDataSource.deleteAll(ids: List<K>): Flow<Unit> = flow { emit(deleteAll(IdsQuery(ids))) }
+fun <K> DeleteDataSource.delete(ids: List<K>): Flow<Unit> = flow { emit(delete(IdsQuery(ids))) }
 
-fun <K> FlowDeleteDataSource.deleteAll(vararg ids: K): Flow<Unit> = deleteAll(IdsQuery(listOf(ids)))
+fun <K> FlowDeleteDataSource.deleteAll(vararg ids: K): Flow<Unit> = delete(IdsQuery(listOf(ids)))
 
 
 //region Creation

@@ -25,6 +25,4 @@ class FlowDataSourceVastraValidator<T : ValidationStrategyDataSource>(private va
 
     override fun delete(query: Query) = deleteDataSource.delete(query)
 
-    override fun deleteAll(query: Query) = deleteDataSource.deleteAll(query)
-
 }

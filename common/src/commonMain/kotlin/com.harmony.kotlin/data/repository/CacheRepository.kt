@@ -156,15 +156,6 @@ class CacheRepository<V>(
     else -> throw OperationNotAllowedException()
   }
 
-  override suspend fun deleteAll(query: Query, operation: Operation): Unit = when (operation) {
-    is DefaultOperation -> deleteAll(query, MainSyncOperation)
-    is MainOperation -> deleteMain.deleteAll(query)
-    is CacheOperation -> deleteCache.deleteAll(query)
-    is MainSyncOperation -> deleteMain.deleteAll(query).let { deleteCache.deleteAll(query) }
-    is CacheSyncOperation -> deleteCache.deleteAll(query).let { deleteMain.deleteAll(query) }
-    else -> throw OperationNotAllowedException()
-  }
-
   /**
    *  Default implementation returns always true (all objects are valid)
    */

@@ -21,8 +21,6 @@ class SingleDataSourceRepository<T>(
   override suspend fun putAll(query: Query, value: List<T>?, operation: Operation): List<T> = putDataSource.putAll(query, value)
 
   override suspend fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
-
-  override suspend fun deleteAll(query: Query, operation: Operation) = deleteDataSource.deleteAll(query)
 }
 
 class SingleGetDataSourceRepository<T>(private val getDataSource: GetDataSource<T>) : GetRepository<T> {
@@ -42,6 +40,4 @@ class SinglePutDataSourceRepository<T>(private val putDataSource: PutDataSource<
 class SingleDeleteDataSourceRepository(private val deleteDataSource: DeleteDataSource) : DeleteRepository {
 
   override suspend fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
-
-  override suspend fun deleteAll(query: Query, operation: Operation) = deleteDataSource.deleteAll(query)
 }

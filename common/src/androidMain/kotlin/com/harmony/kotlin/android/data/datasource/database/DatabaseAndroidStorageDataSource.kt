@@ -69,11 +69,4 @@ class DatabaseAndroidStorageDataSource(private val db: SupportSQLiteDatabase) : 
     }
   }
 
-  override suspend fun deleteAll(query: Query) {
-    // TODO Options for deleteAll:
-    // - Not supported (current implementation)
-    // - Ignore query and clear database
-    // - Use a new KeysQuery(List<String>) and delete all entries with the indicated query
-    throw UnsupportedOperationException("deleteAll not supported. Use delete instead")
-  }
 }

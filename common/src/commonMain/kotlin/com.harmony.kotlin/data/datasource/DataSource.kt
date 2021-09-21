@@ -27,8 +27,6 @@ interface PutDataSource<V> : DataSource {
 
 interface DeleteDataSource : DataSource {
   suspend fun delete(query: Query)
-
-  suspend fun deleteAll(query: Query)
 }
 
 // Extensions
@@ -42,7 +40,7 @@ suspend fun <K, V> PutDataSource<V>.putAll(ids: List<K>, values: List<V>?) = put
 
 suspend fun <K> DeleteDataSource.delete(id: K) = delete(IdQuery(id))
 
-suspend fun <K> DeleteDataSource.deleteAll(ids: List<K>) = deleteAll(IdsQuery(ids))
+suspend fun <K> DeleteDataSource.delete(ids: List<K>) = delete(IdsQuery(ids))
 
 // Extensions to create
 fun <V> GetDataSource<V>.toGetRepository() = SingleGetDataSourceRepository(this)

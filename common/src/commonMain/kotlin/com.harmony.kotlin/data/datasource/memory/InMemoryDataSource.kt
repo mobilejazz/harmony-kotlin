@@ -5,6 +5,7 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.query.AllObjectsQuery
+import com.harmony.kotlin.data.query.IdsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 
@@ -23,7 +24,6 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
         else -> notSupportedQuery()
       }
 
-
   override suspend fun getAll(query: Query): List<V> =
       when (query) {
         is KeyQuery -> {
@@ -36,6 +36,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       when (query) {
         is KeyQuery -> {
           value?.let {
+            arrays.remove(query.key)
             objects.put(query.key, value).run { value }
           } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
         }
@@ -46,6 +47,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       when (query) {
         is KeyQuery -> {
           value?.let {
+            objects.remove(query.key)
             arrays.put(query.key, value).run { value }
           } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
 
@@ -59,19 +61,20 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
         objects.clear()
         arrays.clear()
       }
+      is IdsQuery<*> -> {
+        query.identifiers.forEach {
+          if (it is String) {
+            objects.remove(it)
+            arrays.remove(it)
+          } else notSupportedQuery()
+        }
+      }
       is KeyQuery -> {
         objects.remove(query.key)
-      }
-      else -> notSupportedQuery()
-    }
-  }
-
-  override suspend fun deleteAll(query: Query) {
-    when (query) {
-      is KeyQuery -> {
         arrays.remove(query.key)
       }
       else -> notSupportedQuery()
     }
   }
+
 }

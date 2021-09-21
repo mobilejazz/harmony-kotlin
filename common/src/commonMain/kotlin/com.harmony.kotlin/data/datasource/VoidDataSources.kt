@@ -13,8 +13,6 @@ class VoidDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
   override suspend fun putAll(query: Query, value: List<V>?): List<V> = throw UnsupportedOperationException()
 
   override suspend fun delete(query: Query) = throw UnsupportedOperationException()
-
-  override suspend fun deleteAll(query: Query) = throw UnsupportedOperationException()
 }
 
 class VoidGetDataSource<V> : GetDataSource<V> {
@@ -31,6 +29,4 @@ class VoidPutDataSource<V> : PutDataSource<V> {
 
 class VoidDeleteDataSource : DeleteDataSource {
   override suspend fun delete(query: Query) = throw UnsupportedOperationException()
-
-  override suspend fun deleteAll(query: Query) = throw UnsupportedOperationException()
 }
