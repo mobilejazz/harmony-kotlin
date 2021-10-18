@@ -26,4 +26,3 @@ object CacheOperation : Operation()
  * @param fallback function that receives a Throwable and return a boolean flag indicating if we should fallback to cache without validating the object
  */
 class CacheSyncOperation(val fallback: (throwable: Throwable) -> Boolean = { false }) : Operation()
-

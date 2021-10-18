@@ -23,13 +23,11 @@ import kotlinx.coroutines.flow.flow
 class HomeModule {
 
   @Provides
-  @ActivityScope
   fun provideGetAllStories(scope: CoroutineScope, getRepository: GetRepository<ItemIds>): GetInteractor<ItemIds> {
     return GetInteractor(scope, getRepository)
   }
 
   @Provides
-  @ActivityScope
   fun provideFlowGetAllStories(scope: CoroutineScope, hackerNewsItemService: HackerNewsItemService): FlowGetInteractor<ItemIds> {
 
     val imperativeDatasource = ItemIdsNetworkDataSource(hackerNewsItemService)

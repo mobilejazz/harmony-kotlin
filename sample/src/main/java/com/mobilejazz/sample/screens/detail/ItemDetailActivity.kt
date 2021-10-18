@@ -38,9 +38,12 @@ class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
   lateinit var localizedStrings: LocalizedStrings
 
   private val adapter by lazy {
-    ItemsAdapter(listener = {
-      // Nothing to do
-    }, displayAllContent = true)
+    ItemsAdapter(
+      listener = {
+        // Nothing to do
+      },
+      displayAllContent = true
+    )
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +55,9 @@ class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
 
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
     val item = intent.extras.get(ITEM_KEY) as Item
 
     activity_detail_item_title_tv.text = item.title
-
 
     activity_detail_items_rv.layoutManager = LinearLayoutManager(this)
     activity_detail_items_rv.adapter = adapter
@@ -83,7 +84,6 @@ class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
       else -> super.onOptionsItemSelected(item)
     }
   }
-
 
   private fun loadComments(ids: List<Int>) {
     launch {

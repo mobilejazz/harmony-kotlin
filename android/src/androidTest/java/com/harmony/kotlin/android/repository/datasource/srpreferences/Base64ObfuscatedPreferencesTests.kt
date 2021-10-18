@@ -108,16 +108,16 @@ class Base64ObfuscatedPreferencesTests : InstrumentationTest() {
     val expectedString = "Any String"
     val expectedSet = setOf("Any string 1", "Any string 2")
     preferences.edit()
-        .putBoolean("boolean.key", expectedBoolean)
-        .putFloat("float.key", expectedFloat)
-        .putString("string.key", expectedString)
-        .putStringSet("set.key", expectedSet).commit()
+      .putBoolean("boolean.key", expectedBoolean)
+      .putFloat("float.key", expectedFloat)
+      .putString("string.key", expectedString)
+      .putStringSet("set.key", expectedSet).commit()
 
     val expectedMap = mapOf(
-        Pair("boolean.key", expectedBoolean.toString()),
-        Pair("float.key", expectedFloat.toString()),
-        Pair("string.key", expectedString),
-        Pair("set.key", expectedSet)
+      Pair("boolean.key", expectedBoolean.toString()),
+      Pair("float.key", expectedFloat.toString()),
+      Pair("string.key", expectedString),
+      Pair("set.key", expectedSet)
     )
 
     // When
@@ -171,13 +171,13 @@ class Base64ObfuscatedPreferencesTests : InstrumentationTest() {
   fun shouldReturnOnlyPreviouslyObfuscatedValues_WhenGettingAll_GivenSomeKeysAndValuesStoredAsClearText() {
     // Given
     clearTextPreferences.edit()
-        .putBoolean("boolean.key", false)
-        .putFloat("float.key", 42.66F)
-        .putString("string.key", "Any String")
-        .putStringSet("set.key", setOf("Any string 1", "Any string 2")).commit()
+      .putBoolean("boolean.key", false)
+      .putFloat("float.key", 42.66F)
+      .putString("string.key", "Any String")
+      .putStringSet("set.key", setOf("Any string 1", "Any string 2")).commit()
 
     preferences.edit()
-        .putLong("long.key", 300L).commit()
+      .putLong("long.key", 300L).commit()
 
     // When
     val actual = preferences.all

@@ -17,7 +17,7 @@ class GetItemsByIdInteractor @Inject constructor(private val scope: CoroutineSco
     return withContext(scope.coroutineContext) {
       val startTime = System.currentTimeMillis()
 
-      val deferred = ids.map { async { getItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation) } }
+      val deferred = ids.map { async { getItemInteractor(IntegerIdQuery(it), operation = CacheSyncOperation()) } }
       val values = deferred.awaitAll()
 
       val endTime = System.currentTimeMillis()

@@ -7,5 +7,3 @@ import io.ktor.http.HttpStatusCode
 open class KtorNetworkException(val status: HttpStatusCode, val httpResponse: HttpResponse) : NetworkErrorException(status.value, null, null)
 
 class UnauthorizedKtorNetworkException(httpResponse: HttpResponse, isResolved: Boolean) : KtorNetworkException(HttpStatusCode.Unauthorized, httpResponse)
-
-

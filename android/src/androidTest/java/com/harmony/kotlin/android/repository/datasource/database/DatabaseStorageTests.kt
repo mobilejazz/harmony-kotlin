@@ -26,6 +26,8 @@ class DatabaseStorageTests : InstrumentationTest() {
 
   private lateinit var databaseStorageDataSource: com.harmony.kotlin.android.data.datasource.database.DatabaseStorageDataSource
 
+
+
   private val modelToByteArrayMapper: Mapper<TestObject, ByteArray> = ModelToByteArrayMapper()
   private val modelListToByteArrayMapper: Mapper<List<TestObject>, ByteArray> = ListModelToByteArrayMapper()
   private val byteArrayToModelMapper: Mapper<ByteArray, TestObject> = ByteArrayToModelMapper()
@@ -34,10 +36,10 @@ class DatabaseStorageTests : InstrumentationTest() {
   @Before
   fun setUp() {
     val database = FrameworkSQLiteOpenHelperFactory().create(
-        SupportSQLiteOpenHelper.Configuration.builder(appContext)
-            .callback(ByteArrayStorageCallback(1))
-            .name("test.db")
-            .build()
+      SupportSQLiteOpenHelper.Configuration.builder(appContext)
+        .callback(ByteArrayStorageCallback(1))
+        .name("test.db")
+        .build()
     ).writableDatabase
 
     databaseStorageDataSource = com.harmony.kotlin.android.data.datasource.database.DatabaseStorageDataSource(database)

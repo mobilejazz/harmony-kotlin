@@ -28,5 +28,4 @@ object Dates {
     if (second > -1) calendar.set(Calendar.SECOND, second)
     return calendar.time
   }
-
 }

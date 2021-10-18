@@ -1,11 +1,11 @@
 package com.mobilejazz.sample.di.general
 
+import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
+import com.harmony.kotlin.data.datasource.flow.toFlowGetRepository
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.domain.interactor.FlowGetInteractor
 import com.harmony.kotlin.domain.interactor.GetInteractor
-import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
-import com.harmony.kotlin.data.datasource.flow.toFlowGetRepository
 import com.harmony.kotlin.domain.interactor.toFlowGetInteractor
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item
@@ -25,7 +25,6 @@ class InteractorsModule {
   @Singleton
   fun provideAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Default)
 
-
   // Global Interactors
   @Provides
   @Singleton
@@ -36,7 +35,7 @@ class InteractorsModule {
   @Provides
   @Singleton
   fun providerGetItemInteractor(scope: CoroutineScope, repository: GetRepository<Item>): GetInteractor<Item> {
-    return GetInteractor(scope, repository)
+    return GetInteractor(scope.coroutineContext, repository)
   }
 
   @Provides
@@ -51,16 +50,12 @@ class InteractorsModule {
       }
 
       override fun getAll(query: Query): Flow<List<Int>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        notSupportedQuery()
       }
-
     }
 
     return datasource.toFlowGetRepository().toFlowGetInteractor()
-
   }
-
-
 }
 
 @Subcomponent
@@ -72,5 +67,4 @@ interface InteractorsComponent {
   interface Builder {
     fun build(): InteractorsComponent
   }
-
 }

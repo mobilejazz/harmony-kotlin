@@ -38,8 +38,10 @@ suspend fun <K, V> GetRepository<V>.getAll(ids: List<K>, operation: Operation = 
 
 suspend fun <K, V> PutRepository<V>.put(id: K, value: V?, operation: Operation = DefaultOperation): V = put(IdQuery(id), value, operation)
 
-suspend fun <K, V> PutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = putAll(IdsQuery(ids), values,
-    operation)
+suspend fun <K, V> PutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = putAll(
+  IdsQuery(ids), values,
+  operation
+)
 
 suspend fun <K> DeleteRepository.delete(id: K, operation: Operation = DefaultOperation) = delete(IdQuery(id), operation)
 

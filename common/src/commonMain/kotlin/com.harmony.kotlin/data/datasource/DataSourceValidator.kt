@@ -4,10 +4,12 @@ import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
 
-class DataSourceValidator<T>(private val getDataSource: GetDataSource<T>,
-                             private val putDataSource: PutDataSource<T>,
-                             private val deleteDataSource: DeleteDataSource,
-                             private val validator: Validator<T>) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+class DataSourceValidator<T>(
+  private val getDataSource: GetDataSource<T>,
+  private val putDataSource: PutDataSource<T>,
+  private val deleteDataSource: DeleteDataSource,
+  private val validator: Validator<T>
+) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
   override suspend fun get(query: Query): T = getDataSource.get(query).let {
     if (!validator.isValid(it)) throw ObjectNotValidException() else it
@@ -25,4 +27,3 @@ class DataSourceValidator<T>(private val getDataSource: GetDataSource<T>,
 
   override suspend fun deleteAll(query: Query): Unit = deleteDataSource.deleteAll(query)
 }
-

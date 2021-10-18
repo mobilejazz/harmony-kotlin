@@ -5,7 +5,6 @@ import com.harmony.kotlin.domain.interactor.DeleteInteractor
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-
 class DeletePasswordTokenInteractor(private val coroutineContext: CoroutineContext, private val deleteToken: DeleteInteractor) {
   suspend operator fun invoke(id: String) {
     withContext(coroutineContext) {
@@ -13,7 +12,3 @@ class DeletePasswordTokenInteractor(private val coroutineContext: CoroutineConte
     }
   }
 }
-
-
-
-

@@ -1,16 +1,16 @@
 package com.harmony.kotlin.data.repository.flow
 
-import com.harmony.kotlin.data.operation.Operation
-import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.datasource.flow.FlowDeleteDataSource
 import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
 import com.harmony.kotlin.data.datasource.flow.FlowPutDataSource
+import com.harmony.kotlin.data.operation.Operation
+import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 
 class SingleFlowDataSourceRepository<T>(
-    private val getDataSource: FlowGetDataSource<T>,
-    private val putDataSource: FlowPutDataSource<T>,
-    private val deleteDataSource: FlowDeleteDataSource
+  private val getDataSource: FlowGetDataSource<T>,
+  private val putDataSource: FlowPutDataSource<T>,
+  private val deleteDataSource: FlowDeleteDataSource
 ) : FlowGetRepository<T>, FlowPutRepository<T>, FlowDeleteRepository {
 
   override fun get(query: Query, operation: Operation): Flow<T> = getDataSource.get(query)
@@ -38,7 +38,6 @@ class SingleFlowPutDataSourceRepository<T>(private val putDataSource: FlowPutDat
 
   override fun putAll(query: Query, value: List<T>?, operation: Operation): Flow<List<T>> = putDataSource.putAll(query, value)
 }
-
 
 class SingleFlowDeleteDataSourceRepository(private val deleteDataSource: FlowDeleteDataSource) : FlowDeleteRepository {
 

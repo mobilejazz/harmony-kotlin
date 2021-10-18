@@ -14,8 +14,6 @@ class ItemNetworkDataProvider @Inject constructor(private val hackerNewsItemServ
   override suspend fun get(query: Query): ItemEntity = when (query) {
     is IntegerIdQuery -> {
       val item = hackerNewsItemService.newItem(query.identifier)
-      item.lastUpdate = Date()
-      item.expiryTime = TimeUnit.MINUTES.toMillis(5)
 
       item
     }

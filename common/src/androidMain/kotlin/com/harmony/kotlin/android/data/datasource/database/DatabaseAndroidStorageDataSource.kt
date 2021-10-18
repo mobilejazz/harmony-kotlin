@@ -17,12 +17,12 @@ class DatabaseAndroidStorageDataSource(private val db: SupportSQLiteDatabase) : 
     return when (query) {
       is KeyQuery -> {
         val cursor = db.query(
-            SupportSQLiteQueryBuilder.builder(BlobTable.TABLE_NAME)
-                .selection("${BlobTable.COLUMN_KEY} == ?", arrayOf(query.key))
-                .create()
+          SupportSQLiteQueryBuilder.builder(BlobTable.TABLE_NAME)
+            .selection("${BlobTable.COLUMN_KEY} == ?", arrayOf(query.key))
+            .create()
         )
         if (cursor.moveToFirst()) {
-          val value = cursor.getBlob(cursor.getColumnIndex(BlobTable.COLUMN_VALUE))
+          val value = cursor.getBlob(cursor.getColumnIndexOrThrow(BlobTable.COLUMN_VALUE))
           cursor.close()
 
           return value
@@ -42,27 +42,28 @@ class DatabaseAndroidStorageDataSource(private val db: SupportSQLiteDatabase) : 
       when (query) {
         is KeyQuery ->
           db.insert(
-              BlobTable.TABLE_NAME,
-              SQLiteDatabase.CONFLICT_REPLACE,
-              ContentValues().also {
-                it.put(BlobTable.COLUMN_KEY, query.key)
-                it.put(BlobTable.COLUMN_VALUE, value)
-              }
+            BlobTable.TABLE_NAME,
+            SQLiteDatabase.CONFLICT_REPLACE,
+            ContentValues().also {
+              it.put(BlobTable.COLUMN_KEY, query.key)
+              it.put(BlobTable.COLUMN_VALUE, value)
+            }
           )
         else -> notSupportedQuery()
       }
     } ?: throw IllegalArgumentException("value must not be null")
   }
 
-  override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> = throw UnsupportedOperationException("putAll not supported. Use put instead")
+  override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> =
+    throw UnsupportedOperationException("putAll not supported. Use put instead")
 
   override suspend fun delete(query: Query) {
     when (query) {
       is KeyQuery -> {
         db.delete(
-            BlobTable.TABLE_NAME,
-            "${BlobTable.COLUMN_KEY} == ?",
-            arrayOf(query.key)
+          BlobTable.TABLE_NAME,
+          "${BlobTable.COLUMN_KEY} == ?",
+          arrayOf(query.key)
         )
       }
       else -> notSupportedQuery()

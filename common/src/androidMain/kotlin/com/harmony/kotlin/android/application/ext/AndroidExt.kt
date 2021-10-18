@@ -42,8 +42,8 @@ fun AppCompatActivity.getCompatDrawable(@DrawableRes id: Int) = ContextCompat.ge
 // --------
 
 inline fun AppCompatActivity.setupActionBar(
-    toolbar: Toolbar,
-    action: ActionBar.() -> Unit
+  toolbar: Toolbar,
+  action: ActionBar.() -> Unit
 ) {
   setSupportActionBar(toolbar)
   supportActionBar?.run(action)
@@ -55,41 +55,41 @@ inline fun AppCompatActivity.setupActionBar(@IdRes toolbarId: Int, action: Actio
 }
 
 fun AppCompatActivity.addFragment(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String?
+  fragment: Fragment,
+  frameId: Int,
+  tag: String?
 ) {
   supportFragmentManager.inTransaction { add(frameId, fragment, tag) }
 }
 
 fun AppCompatActivity.addFragmentNow(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String?
+  fragment: Fragment,
+  frameId: Int,
+  tag: String?
 ) {
   supportFragmentManager.inTransactionNow { add(frameId, fragment, tag) }
 }
 
 fun AppCompatActivity.addFragmentAllowingStateLoss(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String?
+  fragment: Fragment,
+  frameId: Int,
+  tag: String?
 ) {
   supportFragmentManager.inTransactionAllowingStateLoss { add(frameId, fragment, tag) }
 }
 
 fun AppCompatActivity.addFragmentNowAllowingStateLoss(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String?
+  fragment: Fragment,
+  frameId: Int,
+  tag: String?
 ) {
   supportFragmentManager.inTransactionNowAllowingStateLoss { add(frameId, fragment, tag) }
 }
 
 fun AppCompatActivity.replaceFragment(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String?
+  fragment: Fragment,
+  frameId: Int,
+  tag: String?
 ) {
   supportFragmentManager.inTransaction { replace(frameId, fragment, tag) }
 }
@@ -103,11 +103,11 @@ fun AppCompatActivity.hideKeyboard() = hideKeyboard(if (currentFocus == null) Vi
 // ---------
 
 fun Fragment.addFragment(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String? = null,
-    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-    after: (FragmentTransaction.() -> FragmentTransaction)? = null
+  fragment: Fragment,
+  frameId: Int,
+  tag: String? = null,
+  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+  after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransaction {
     before?.let { before(this) }
@@ -116,11 +116,11 @@ fun Fragment.addFragment(
 }
 
 fun Fragment.addFragmentNow(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String? = null,
-    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-    after: (FragmentTransaction.() -> FragmentTransaction)? = null
+  fragment: Fragment,
+  frameId: Int,
+  tag: String? = null,
+  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+  after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransactionNow {
     before?.let { before(this) }
@@ -129,11 +129,11 @@ fun Fragment.addFragmentNow(
 }
 
 fun Fragment.addFragmentAllowingStateLoss(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String? = null,
-    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-    after: (FragmentTransaction.() -> FragmentTransaction)? = null
+  fragment: Fragment,
+  frameId: Int,
+  tag: String? = null,
+  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+  after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransactionAllowingStateLoss {
     before?.let { before(this) }
@@ -142,11 +142,11 @@ fun Fragment.addFragmentAllowingStateLoss(
 }
 
 fun Fragment.addFragmentNowAllowingStateLoss(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String? = null,
-    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-    after: (FragmentTransaction.() -> FragmentTransaction)? = null
+  fragment: Fragment,
+  frameId: Int,
+  tag: String? = null,
+  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+  after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransactionNowAllowingStateLoss {
     before?.let { before(this) }
@@ -155,11 +155,11 @@ fun Fragment.addFragmentNowAllowingStateLoss(
 }
 
 fun Fragment.replaceFragment(
-    fragment: Fragment,
-    frameId: Int,
-    tag: String? = null,
-    before: (FragmentTransaction.() -> FragmentTransaction)? = null,
-    after: (FragmentTransaction.() -> FragmentTransaction)? = null
+  fragment: Fragment,
+  frameId: Int,
+  tag: String? = null,
+  before: (FragmentTransaction.() -> FragmentTransaction)? = null,
+  after: (FragmentTransaction.() -> FragmentTransaction)? = null
 ) {
   activity?.supportFragmentManager?.inTransaction {
     before?.let { before(this) }
@@ -170,8 +170,8 @@ fun Fragment.replaceFragment(
 // Toolbars
 
 inline fun Fragment.setupActionBar(
-    toolbar: Toolbar,
-    action: ActionBar.() -> Unit
+  toolbar: Toolbar,
+  action: ActionBar.() -> Unit
 ) {
   if (activity is AppCompatActivity) {
     (activity as AppCompatActivity).setSupportActionBar(toolbar)
@@ -248,8 +248,8 @@ fun Float.digits(numOfDigits: Int): String {
 // Dialogs
 // ----------------
 fun Fragment.showInfo(message: String) {
-  AlertDialog.Builder(this.activity!!)
-      .setMessage(message)
-      .create()
-      .show()
+  AlertDialog.Builder(this.requireActivity())
+    .setMessage(message)
+    .create()
+    .show()
 }

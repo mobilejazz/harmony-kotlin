@@ -39,9 +39,11 @@ fun <K, V> FlowGetRepository<V>.getAll(ids: List<K>, operation: Operation = Defa
 
 fun <K, V> FlowPutRepository<V>.put(id: K, value: V?, operation: Operation = DefaultOperation) = put(IdQuery(id), value, operation)
 
-fun <K, V> FlowPutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = putAll(IdsQuery(ids),
-    values,
-    operation)
+fun <K, V> FlowPutRepository<V>.putAll(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = putAll(
+  IdsQuery(ids),
+  values,
+  operation
+)
 
 fun <K> FlowDeleteRepository.delete(id: K, operation: Operation = DefaultOperation) = delete(IdQuery(id), operation)
 
@@ -49,5 +51,7 @@ fun <K> FlowDeleteRepository.deleteAll(ids: List<K>, operation: Operation = Defa
 
 fun <K, V> FlowGetRepository<K>.withMapping(mapper: Mapper<K, V>): FlowGetRepository<V> = FlowGetRepositoryMapper(this, mapper)
 
-fun <K, V> FlowPutRepository<K>.withMapping(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): FlowPutRepository<V> = FlowPutRepositoryMapper(this, toMapper,
-    fromMapper)
+fun <K, V> FlowPutRepository<K>.withMapping(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): FlowPutRepository<V> = FlowPutRepositoryMapper(
+  this, toMapper,
+  fromMapper
+)

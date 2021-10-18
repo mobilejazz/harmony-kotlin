@@ -37,8 +37,6 @@ fun Date?.differenceInMonths(other: Date?): Int {
   } else {
     0
   }
-
-
 }
 
 fun Date.timeIntervalSinceNow(): Long {
@@ -101,7 +99,7 @@ fun String.toDate(format: String = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'"): Date? {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.isBefore(other: Date?): Boolean {
   return if (null == this || null == other) {
     false
@@ -114,7 +112,7 @@ infix fun Date?.isBefore(other: Date?): Boolean {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.isAfter(other: Date?): Boolean {
   return if (null == this || null == other) {
     false
@@ -127,7 +125,7 @@ infix fun Date?.isAfter(other: Date?): Boolean {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.same(other: Date?): Boolean {
   return if (null == this || null == other) {
     false

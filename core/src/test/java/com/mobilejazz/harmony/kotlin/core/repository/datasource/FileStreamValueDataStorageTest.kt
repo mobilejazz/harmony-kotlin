@@ -10,7 +10,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.Serializable
 
-
 data class Foo(val id: Int, val name: String) : Serializable
 
 class FileStreamValueDataStorageTest {
@@ -53,9 +52,9 @@ class FileStreamValueDataStorageTest {
       val expectedFoos = ds.getAll(VoidQuery)
 
       assertThat(expectedFoos)
-          .isNotEmpty
-          .hasSize(4)
-          .containsAll(foos)
+        .isNotEmpty
+        .hasSize(4)
+        .containsAll(foos)
     }
   }
 
@@ -72,11 +71,11 @@ class FileStreamValueDataStorageTest {
       val expectedFoos = ds.getAll(VoidQuery)
 
       assertThat(expectedFoos)
-          .isNotNull
-          .isNotEmpty
-          .hasSize(2)
-          .contains(fooJoan, Index.atIndex(0))
-          .contains(fooJose, Index.atIndex(1))
+        .isNotNull
+        .isNotEmpty
+        .hasSize(2)
+        .contains(fooJoan, Index.atIndex(0))
+        .contains(fooJose, Index.atIndex(1))
     }
   }
 
@@ -91,8 +90,8 @@ class FileStreamValueDataStorageTest {
       val expectedFoos = ds.getAll(VoidQuery)
 
       assertThat(expectedFoos)
-          .isNotNull
-          .isEmpty()
+        .isNotNull
+        .isEmpty()
     }
   }
 

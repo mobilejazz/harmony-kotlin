@@ -36,6 +36,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
 
   @Inject
   lateinit var getItemsByIdInteractor: GetItemsByIdInteractor
+
   @Inject
   lateinit var getAskStoriesInteractor: GetInteractor<ItemIds>
 
@@ -67,25 +68,23 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     return@withContext 10
   }
 
-  private fun Button.clicks(): Flow<Unit> = flow { setOnClickListener { launch { emit(Unit) }} }
+  private fun Button.clicks(): Flow<Unit> = flow { setOnClickListener { launch { emit(Unit) } } }
 
 
   private fun reloadData(pullToRefresh: Boolean) {
-
-
-    val refresh: Button? = null
-
     launch {
       activity_home_swipe_refresh_srl.isRefreshing = true
 
       flowOf(getAskStoriesInteractor(KeyQuery("ask-stories"), if (pullToRefresh) MainSyncOperation else CacheSyncOperation))
-          .flatMapMerge { flowOf(getItemsByIdInteractor(it.ids)) }
-          .catch { Log.e("Error", it.localizedMessage)
-            Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show() }
-          .collect {
-            adapter.reloadData(it)
-            activity_home_swipe_refresh_srl.isRefreshing = false
-          }
+        .flatMapMerge { flowOf(getItemsByIdInteractor(it.ids)) }
+        .catch {
+          Log.e("Error", it.localizedMessage)
+          Snackbar.make(activity_home_items_rv, "Error : " + it.localizedMessage, Snackbar.LENGTH_LONG).show()
+        }
+        .collect {
+          adapter.reloadData(it)
+          activity_home_swipe_refresh_srl.isRefreshing = false
+        }
       // CouroutineScope
       // MainThread
       /*activity_home_swipe_refresh_srl.isRefreshing = true

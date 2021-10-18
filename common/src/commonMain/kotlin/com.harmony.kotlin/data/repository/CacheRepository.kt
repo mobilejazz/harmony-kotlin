@@ -5,20 +5,20 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.*
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
 
 class CacheRepository<V>(
-    private val getCache: GetDataSource<V>,
-    private val putCache: PutDataSource<V>,
-    private val deleteCache: DeleteDataSource,
-    private val getMain: GetDataSource<V>,
-    private val putMain: PutDataSource<V>,
-    private val deleteMain: DeleteDataSource,
-    private val validator: Validator<V> = DefaultValidator()
+  private val getCache: GetDataSource<V>,
+  private val putCache: PutDataSource<V>,
+  private val deleteCache: DeleteDataSource,
+  private val getMain: GetDataSource<V>,
+  private val putMain: PutDataSource<V>,
+  private val deleteMain: DeleteDataSource,
+  private val validator: Validator<V> = DefaultValidator()
 ) : GetRepository<V>, PutRepository<V>, DeleteRepository {
 
   override suspend fun get(query: Query, operation: Operation): V {
@@ -108,7 +108,8 @@ class CacheRepository<V>(
             }
           }
         }
-      } else -> throw OperationNotAllowedException()
+      }
+      else -> throw OperationNotAllowedException()
     }
   }
 

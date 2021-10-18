@@ -23,4 +23,3 @@ internal data class OAuthTokenEntity(
     return diffSeconds < (expiresIn - 120 /* 2 minutes */)
   }
 }
-

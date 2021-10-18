@@ -24,11 +24,11 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
       body = when (contentType) {
         is NetworkQuery.ContentType.FormUrlEncoded -> {
           FormDataContent(
-              Parameters.build {
-                contentType.params.forEach {
-                  append(it.first, it.second)
-                }
+            Parameters.build {
+              contentType.params.forEach {
+                append(it.first, it.second)
               }
+            }
           )
         }
         is NetworkQuery.ContentType.Json<*> -> {

@@ -11,9 +11,10 @@ import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
 
 internal class OAuthTokenRepository(
-    private val putNetworkDataSource: PutDataSource<OAuthTokenEntity>,
-    private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
-    private val putStorageDataSource: PutDataSource<OAuthTokenEntity>) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
+  private val putNetworkDataSource: PutDataSource<OAuthTokenEntity>,
+  private val getStorageDataSource: GetDataSource<OAuthTokenEntity>,
+  private val putStorageDataSource: PutDataSource<OAuthTokenEntity>
+) : GetRepository<OAuthTokenEntity>, PutRepository<OAuthTokenEntity> {
 
   override suspend fun get(query: Query, operation: Operation): OAuthTokenEntity {
     when (query) {
@@ -40,5 +41,4 @@ internal class OAuthTokenRepository(
   }
 
   override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?, operation: Operation): List<OAuthTokenEntity> = notSupportedOperation()
-
 }

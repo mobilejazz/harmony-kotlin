@@ -1,9 +1,9 @@
 package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.data.mapper.Mapper
+import com.harmony.kotlin.data.mapper.map
 import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
-import com.harmony.kotlin.data.mapper.map
 
 /**
  * This repository uses mappers to map objects and redirects them to the contained repository, acting as a simple "translator".
@@ -15,11 +15,11 @@ import com.harmony.kotlin.data.mapper.map
  * @param toInMapper Mapper to map domain objects to data objects
  */
 class RepositoryMapper<In, Out>(
-        private val getRepository: GetRepository<In>,
-        private val putRepository: PutRepository<In>,
-        private val deleteRepository: DeleteRepository,
-        private val toOutMapper: Mapper<In, Out>,
-        private val toInMapper: Mapper<Out, In>
+  private val getRepository: GetRepository<In>,
+  private val putRepository: PutRepository<In>,
+  private val deleteRepository: DeleteRepository,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
 ) : GetRepository<Out>, PutRepository<Out>, DeleteRepository {
 
   override suspend fun get(query: Query, operation: Operation): Out = getRepository.get(query, operation).let { toOutMapper.map(it) }
@@ -41,12 +41,11 @@ class RepositoryMapper<In, Out>(
   override suspend fun delete(query: Query, operation: Operation) = deleteRepository.delete(query, operation)
 
   override suspend fun deleteAll(query: Query, operation: Operation) = deleteRepository.deleteAll(query, operation)
-
 }
 
 class GetRepositoryMapper<In, Out>(
-    private val getRepository: GetRepository<In>,
-    private val toOutMapper: Mapper<In, Out>
+  private val getRepository: GetRepository<In>,
+  private val toOutMapper: Mapper<In, Out>
 ) : GetRepository<Out> {
 
   override suspend fun get(query: Query, operation: Operation): Out = getRepository.get(query, operation).let { toOutMapper.map(it) }
@@ -55,9 +54,10 @@ class GetRepositoryMapper<In, Out>(
 }
 
 class PutRepositoryMapper<In, Out>(
-    private val putRepository: PutRepository<In>,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>) : PutRepository<Out> {
+  private val putRepository: PutRepository<In>,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
+) : PutRepository<Out> {
 
   override suspend fun put(query: Query, value: Out?, operation: Operation): Out {
     val mapped = value?.let { toInMapper.map(it) }

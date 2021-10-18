@@ -1,6 +1,5 @@
 package com.harmony.kotlin.application.helper
 
-
 interface Localized<T> {
 
   fun get(key: T): String

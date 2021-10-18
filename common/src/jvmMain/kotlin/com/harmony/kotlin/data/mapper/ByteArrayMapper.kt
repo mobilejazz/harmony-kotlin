@@ -25,7 +25,6 @@ class ModelToByteArrayMapper<in T : Serializable> : Mapper<T, ByteArray> {
   }
 }
 
-
 /**
  * Map a byte array to a list class object
  */

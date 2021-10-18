@@ -5,9 +5,15 @@ import com.harmony.kotlin.common.logger.Logger
 /**
  * Try this block and re-throw any Exception while logging it.
  */
-inline fun <R> tryOrThrow(logger: Logger, tag: String, message: String = "Exception logged", level: Logger.Level = Logger.Level
-    .WARNING, block: () -> R):
-    R {
+inline fun <R> tryOrThrow(
+  logger: Logger,
+  tag: String,
+  message: String = "Exception logged",
+  level: Logger.Level = Logger.Level
+    .WARNING,
+  block: () -> R
+):
+  R {
   return try {
     block()
   } catch (e: Exception) {

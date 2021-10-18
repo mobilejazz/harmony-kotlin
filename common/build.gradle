@@ -23,25 +23,16 @@ plugins {
 }
 
 apply plugin: "com.squareup.sqldelight"
-apply plugin: "io.gitlab.arturbosch.detekt"
-apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 ktlint {
-  version = "0.42.1"
-  android = false
+  //Filters are not working properly
+  verbose = true
+  outputToConsole = true
   filter {
-    exclude("**/generated/**")
-    include("**/kotlin/**")
+    //Hotfix https://github.com/JLLeitschuh/ktlint-gradle/issues/266#issuecomment-529527697
+    exclude { element -> element.file.path.contains("sqldelight/") }
   }
 }
-
-detekt {
-  toolVersion = "1.18.0"
-  source = files("src/main/kotlin")
-}
-
-check.dependsOn ktlintCheck
-check.dependsOn "detekt"
 
 // bintray constants
 def GROUP_ID = "com.mobilejazz"// Your orginization in reverse domain notation. For example:  def GROUP_ID="com.fudge"
@@ -60,7 +51,6 @@ version LIBRARY_VERSION_NAME
 
 // configuration of the Android preset
 android {
-
   defaultConfig {
     minSdkVersion 16
     compileSdkVersion 30
@@ -86,6 +76,10 @@ android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  preBuild {
+    it.dependsOn ktlintCheck
   }
 }
 

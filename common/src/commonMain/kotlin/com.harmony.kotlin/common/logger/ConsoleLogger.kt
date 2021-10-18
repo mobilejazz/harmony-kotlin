@@ -1,6 +1,5 @@
 package com.harmony.kotlin.common.logger
 
-
 class ConsoleLogger : Logger {
 
   override fun log(level: Logger.Level, tag: String?, message: String) {
@@ -12,7 +11,6 @@ class ConsoleLogger : Logger {
   override fun log(level: Logger.Level, throwable: Throwable, tag: String?, message: String) {
     throwable.message?.let { println(it) }
     log(level, tag, message)
-
   }
 
   override fun log(key: String, value: Any?) {
@@ -48,4 +46,3 @@ class ConsoleLogger : Logger {
   override val deviceIdentifier: String
     get() = ""
 }
-

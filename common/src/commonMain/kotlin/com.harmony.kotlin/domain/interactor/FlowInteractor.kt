@@ -24,13 +24,14 @@ class FlowGetAllInteractor<M>(private val scope: CoroutineScope, private val get
 class FlowPutInteractor<M>(private val scope: CoroutineScope, private val putRepository: FlowPutRepository<M>) {
 
   operator fun invoke(m: M?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<M> = putRepository.put(query, m, operation)
-
 }
 
 class FlowPutAllInteractor<M>(private val scope: CoroutineScope, private val putRepository: FlowPutRepository<M>) {
 
-  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<List<M>> = putRepository.putAll(query, m,
-      operation)
+  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<List<M>> = putRepository.putAll(
+    query, m,
+    operation
+  )
 }
 
 class FlowDeleteInteractor(private val scope: CoroutineScope, private val deleteRepository: FlowDeleteRepository) {
@@ -43,8 +44,7 @@ class FlowDeleteAllInteractor(private val scope: CoroutineScope, private val del
   operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) = deleteRepository.deleteAll(query, operation)
 }
 
-
-//region Creation
+// region Creation
 fun <V> FlowGetRepository<V>.toFlowGetInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowGetInteractor(scope, this)
 
 fun <V> FlowGetRepository<V>.toFlowGetAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowGetAllInteractor(scope, this)
@@ -56,4 +56,4 @@ fun <V> FlowPutRepository<V>.toFlowPutAllInteractor(scope: CoroutineScope = Coro
 fun FlowDeleteRepository.toFlowDeleteInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowDeleteInteractor(scope, this)
 
 fun FlowDeleteRepository.toFlowDeleteAllInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowDeleteAllInteractor(scope, this)
-//endregion
+// endregion

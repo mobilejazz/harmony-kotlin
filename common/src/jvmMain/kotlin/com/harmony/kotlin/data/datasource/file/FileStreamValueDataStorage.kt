@@ -37,22 +37,22 @@ class FileStreamValueDataStorage<T>(private val file: File) : GetDataSource<T>, 
   } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
 
   override suspend fun putAll(query: Query, value: List<T>?): List<T> =
-      value?.let {
-        val allCurrentValues = getAll(query)
-        val fos = file.outputStream()
-        val oos = ObjectOutputStream(fos)
+    value?.let {
+      val allCurrentValues = getAll(query)
+      val fos = file.outputStream()
+      val oos = ObjectOutputStream(fos)
 
-        val allValues = value.toMutableList()
-        allValues.addAll(allCurrentValues)
+      val allValues = value.toMutableList()
+      allValues.addAll(allCurrentValues)
 
-        for (obj in allValues) {
-          oos.writeObject(obj)
-        }
-        oos.flush()
-        oos.close()
-        fos.close()
-        return value
-      } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
+      for (obj in allValues) {
+        oos.writeObject(obj)
+      }
+      oos.flush()
+      oos.close()
+      fos.close()
+      return value
+    } ?: throw IllegalArgumentException("FileStreamValueDataStorage: value must be not null")
 
   override suspend fun delete(query: Query) = TODO("not implemented")
 

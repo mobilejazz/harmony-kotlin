@@ -20,7 +20,6 @@ interface Logger {
   /** Logs a key-value pair.  */
   fun log(key: String, value: Any?)
 
-
   /** DEFAULT IMPLEMENTATIONS  */
 
   /** Log a verbose message with optional format args.  */

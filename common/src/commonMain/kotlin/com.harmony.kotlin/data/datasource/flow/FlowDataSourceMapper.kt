@@ -16,11 +16,11 @@ import kotlinx.coroutines.flow.map
  * @param toInMapper Mapper to map repository objects to data source objects
  */
 class FlowDataSourceMapper<In, Out>(
-    getDataSource: FlowGetDataSource<In>,
-    putDataSource: FlowPutDataSource<In>,
-    private val deleteDataSource: FlowDeleteDataSource,
-    toOutMapper: Mapper<In, Out>,
-    toInMapper: Mapper<Out, In>
+  getDataSource: FlowGetDataSource<In>,
+  putDataSource: FlowPutDataSource<In>,
+  private val deleteDataSource: FlowDeleteDataSource,
+  toOutMapper: Mapper<In, Out>,
+  toInMapper: Mapper<Out, In>
 ) : FlowGetDataSource<Out>, FlowPutDataSource<Out>, FlowDeleteDataSource {
 
   private val getDataSourceMapper = FlowGetDataSourceMapper(getDataSource, toOutMapper)
@@ -40,29 +40,30 @@ class FlowDataSourceMapper<In, Out>(
 }
 
 class FlowGetDataSourceMapper<In, Out>(
-    private val getDataSource: FlowGetDataSource<In>,
-    private val toOutMapper: Mapper<In, Out>) : FlowGetDataSource<Out> {
+  private val getDataSource: FlowGetDataSource<In>,
+  private val toOutMapper: Mapper<In, Out>
+) : FlowGetDataSource<Out> {
 
   override fun get(query: Query): Flow<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
 
   override fun getAll(query: Query): Flow<List<Out>> = getDataSource.getAll(query).map { toOutMapper.map(it) }
-
 }
 
 class FlowPutDataSourceMapper<In, Out>(
-    private val putDataSource: FlowPutDataSource<In>,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>) : FlowPutDataSource<Out> {
+  private val putDataSource: FlowPutDataSource<In>,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
+) : FlowPutDataSource<Out> {
 
   override fun put(query: Query, value: Out?): Flow<Out> {
     val mapped = value?.let { toInMapper.map(it) }
     return putDataSource.put(query, mapped)
-        .map { toOutMapper.map(it) }
+      .map { toOutMapper.map(it) }
   }
 
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> {
     val mapped = value?.map { toInMapper.map(it) }
     return putDataSource.putAll(query, mapped)
-        .map { toOutMapper.map(it) }
+      .map { toOutMapper.map(it) }
   }
 }
