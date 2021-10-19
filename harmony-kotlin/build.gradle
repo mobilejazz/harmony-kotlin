@@ -43,8 +43,8 @@ version LIBRARY_VERSION_NAME
 android {
 
   defaultConfig {
-    minSdkVersion 16
-    compileSdkVersion 30
+    minSdkVersion android_min_sdk_version
+    compileSdkVersion android_compile_sdk_version
   }
 
   sourceSets {
