@@ -34,7 +34,7 @@ def BINTRAY_ORGANIZATION = "Mobile Jazz"
 def ISSUE_URL = "https://github.com/mobilejazz/harmony-kotlin/issues"
 def SITE_URL = "https://harmony.mobilejazz.com/"
 def VCS_URL = "https://github.com/mobilejazz/harmony-kotlin.git"
-def LIBRARY_VERSION_NAME = 2000.1
+def LIBRARY_VERSION_NAME = 2.0
 
 group GROUP_ID
 version LIBRARY_VERSION_NAME
@@ -46,11 +46,6 @@ android {
     minSdkVersion 16
     compileSdkVersion 30
   }
-
-  packagingOptions {
-    exclude "META-INF/*"
-  }
-
 
   sourceSets {
     main {
