@@ -17,24 +17,24 @@ plugins {
   id 'org.jetbrains.kotlin.multiplatform'
   id 'kotlinx-serialization'
 
-  // bintray plugins
+  // Maven publish
   id "base"
   id "maven-publish"
 }
 
 apply plugin: "com.squareup.sqldelight"
 
-// bintray constants
-def GROUP_ID = "com.mobilejazz"// Your orginization in reverse domain notation. For example:  def GROUP_ID="com.fudge"
-def ARTIFACT_ID = "harmony-kotlin" // The name you gave your package in bintray. In our example it would be:  def ARTIFACT_ID="kotlin-awesome-printer"
+// Maven publish
+def GROUP_ID = "com.mobilejazz"
+def ARTIFACT_ID = "harmony-kotlin"
 
-def BINTRAY_REPOSITORY = "harmony-kotlin" // What you named your repository in bintray. In our example it would be "myrepository"
-def BINTRAY_ORGANIZATION = "Mobile Jazz" //  Your public facing Bintray name.
+def BINTRAY_REPOSITORY = "harmony-kotlin"
+def BINTRAY_ORGANIZATION = "Mobile Jazz"
 
-def ISSUE_URL = "https://github.com/mobilejazz/harmony-kotlin/issues" // A link to an issue tracker for the library, in our example: "https://github.com/natanfudge/KotlinAwesomePrinter/issues"
-def SITE_URL = "https://harmony.mobilejazz.com/" // A link to the library's site. In our example: "https://github.com/natanfudge/KotlinAwesomePrinter"
-def VCS_URL = "https://github.com/mobilejazz/harmony-kotlin.git" // A link to the version control system (where the code is stored). In our example: "https://github.com/natanfudge/KotlinAwesomePrinter.git"
-def LIBRARY_VERSION_NAME = 0.1 // The current version of your library. You will need to update this value whenever you uplod a new release. For example: 1.0
+def ISSUE_URL = "https://github.com/mobilejazz/harmony-kotlin/issues"
+def SITE_URL = "https://harmony.mobilejazz.com/"
+def VCS_URL = "https://github.com/mobilejazz/harmony-kotlin.git"
+def LIBRARY_VERSION_NAME = 2000.1
 
 group GROUP_ID
 version LIBRARY_VERSION_NAME
@@ -73,7 +73,7 @@ android {
 kotlin {
 
   android {
-    publishLibraryVariants("release", "debug")
+    publishLibraryVariants("release")
   }
 
   final def iosTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") ? presets.iosArm64 : presets.iosX64
@@ -224,14 +224,14 @@ task copyFramework {
 
 // Bintray publishing configuration
 
-afterEvaluate {
-  project.publishing.publications.all {
-    // rename artifacts
-    groupId = GROUP_ID
-    if (it.name.contains('metadata')) {
-      artifactId = "$ARTIFACT_ID"
-    } else {
-      artifactId = "$ARTIFACT_ID-$name"
-    }
-  }
-}
+//afterEvaluate {
+//  project.publishing.publications.all {
+//    // rename artifacts
+//    groupId = GROUP_ID
+//    if (it.name.contains('metadata')) {
+//      artifactId = "$ARTIFACT_ID"
+//    } else {
+//      artifactId = "$ARTIFACT_ID-$name"
+//    }
+//  }
+//}
