@@ -214,17 +214,3 @@ task copyFramework {
     }
   }
 }
-
-// Bintray publishing configuration
-
-//afterEvaluate {
-//  project.publishing.publications.all {
-//    // rename artifacts
-//    groupId = GROUP_ID
-//    if (it.name.contains('metadata')) {
-//      artifactId = "$ARTIFACT_ID"
-//    } else {
-//      artifactId = "$ARTIFACT_ID-$name"
-//    }
-//  }
-//}
