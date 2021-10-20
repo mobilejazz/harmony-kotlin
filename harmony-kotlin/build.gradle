@@ -16,28 +16,12 @@ plugins {
   id("com.android.library")
   id 'org.jetbrains.kotlin.multiplatform'
   id 'kotlinx-serialization'
-
-  // Maven publish
-  id "base"
-  id "maven-publish"
 }
 
 apply plugin: "com.squareup.sqldelight"
 
 // Maven publish
-def GROUP_ID = "com.mobilejazz"
-def ARTIFACT_ID = "harmony-kotlin"
-
-def BINTRAY_REPOSITORY = "harmony-kotlin"
-def BINTRAY_ORGANIZATION = "Mobile Jazz"
-
-def ISSUE_URL = "https://github.com/mobilejazz/harmony-kotlin/issues"
-def SITE_URL = "https://harmony.mobilejazz.com/"
-def VCS_URL = "https://github.com/mobilejazz/harmony-kotlin.git"
-def LIBRARY_VERSION_NAME = 2.0
-
-group GROUP_ID
-version LIBRARY_VERSION_NAME
+apply from: 'gradle-mvn-push.gradle'
 
 // configuration of the Android preset
 android {
@@ -155,7 +139,7 @@ kotlin {
         api "com.squareup.sqldelight:android-driver:$sql_delight_version"
 
         // bugfender
-        api "com.bugfender.sdk:android:3.+"
+        api "com.bugfender.sdk:android:3.0.9"
       }
     }
 
@@ -213,4 +197,9 @@ task copyFramework {
       include 'Shared.framework.dSYM'
     }
   }
+}
+
+// TODO include real documentation
+task javadocJar(type: Jar) {
+  archiveClassifier.set("javadoc")
 }
