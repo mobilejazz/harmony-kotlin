@@ -1,1 +1,1 @@
-include ':sample', ':common'
+include ':sample', ':harmony-kotlin'

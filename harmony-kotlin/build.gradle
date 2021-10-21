@@ -16,41 +16,20 @@ plugins {
   id("com.android.library")
   id 'org.jetbrains.kotlin.multiplatform'
   id 'kotlinx-serialization'
-
-  // bintray plugins
-  id "base"
-  id "maven-publish"
 }
 
 apply plugin: "com.squareup.sqldelight"
 
-// bintray constants
-def GROUP_ID = "com.mobilejazz"// Your orginization in reverse domain notation. For example:  def GROUP_ID="com.fudge"
-def ARTIFACT_ID = "harmony-kotlin" // The name you gave your package in bintray. In our example it would be:  def ARTIFACT_ID="kotlin-awesome-printer"
-
-def BINTRAY_REPOSITORY = "harmony-kotlin" // What you named your repository in bintray. In our example it would be "myrepository"
-def BINTRAY_ORGANIZATION = "Mobile Jazz" //  Your public facing Bintray name.
-
-def ISSUE_URL = "https://github.com/mobilejazz/harmony-kotlin/issues" // A link to an issue tracker for the library, in our example: "https://github.com/natanfudge/KotlinAwesomePrinter/issues"
-def SITE_URL = "https://harmony.mobilejazz.com/" // A link to the library's site. In our example: "https://github.com/natanfudge/KotlinAwesomePrinter"
-def VCS_URL = "https://github.com/mobilejazz/harmony-kotlin.git" // A link to the version control system (where the code is stored). In our example: "https://github.com/natanfudge/KotlinAwesomePrinter.git"
-def LIBRARY_VERSION_NAME = 0.1 // The current version of your library. You will need to update this value whenever you uplod a new release. For example: 1.0
-
-group GROUP_ID
-version LIBRARY_VERSION_NAME
+// Maven publish
+apply from: 'gradle-mvn-push.gradle'
 
 // configuration of the Android preset
 android {
 
   defaultConfig {
-    minSdkVersion 16
-    compileSdkVersion 30
+    minSdkVersion android_min_sdk_version
+    compileSdkVersion android_compile_sdk_version
   }
-
-  packagingOptions {
-    exclude "META-INF/*"
-  }
-
 
   sourceSets {
     main {
@@ -73,7 +52,7 @@ android {
 kotlin {
 
   android {
-    publishLibraryVariants("release", "debug")
+    publishLibraryVariants("release")
   }
 
   final def iosTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") ? presets.iosArm64 : presets.iosX64
@@ -126,7 +105,6 @@ kotlin {
 
     jvmMain {
       dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
         implementation 'com.google.code.gson:gson:2.8.7'
 
         api "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
@@ -145,7 +123,6 @@ kotlin {
 
     androidMain {
       dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
         api("io.ktor:ktor-client-android:$ktor_version")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
 
@@ -155,14 +132,14 @@ kotlin {
         implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
         // Android Support
-        api "androidx.appcompat:appcompat:1.3.0"
+        api "androidx.appcompat:appcompat:1.3.1"
         implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
 
         // SQL Delight
         api "com.squareup.sqldelight:android-driver:$sql_delight_version"
 
         // bugfender
-        api "com.bugfender.sdk:android:3.+"
+        api "com.bugfender.sdk:android:3.0.9"
       }
     }
 
@@ -222,16 +199,7 @@ task copyFramework {
   }
 }
 
-// Bintray publishing configuration
-
-afterEvaluate {
-  project.publishing.publications.all {
-    // rename artifacts
-    groupId = GROUP_ID
-    if (it.name.contains('metadata')) {
-      artifactId = "$ARTIFACT_ID"
-    } else {
-      artifactId = "$ARTIFACT_ID-$name"
-    }
-  }
+// TODO include real documentation
+task javadocJar(type: Jar) {
+  archiveClassifier.set("javadoc")
 }
