@@ -30,7 +30,7 @@ dependencies {
 Or if you need to use it on a particular platform you can use the following artifacts
 ```groovy
   implementation 'com.mobilejazz:harmony-kotlin-ios:2.0'
-implementation 'com.mobilejazz:harmony-kotlin-android:2.0'
+  implementation 'com.mobilejazz:harmony-kotlin-android:2.0'
   implementation 'com.mobilejazz:harmony-kotlin-jvm:2.0'
 ```
 
