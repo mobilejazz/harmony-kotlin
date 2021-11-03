@@ -1,4 +1,4 @@
-⚠️ Branch containing DEPRECATED version 0.9.x (with coroutines). It has been superseeded by Harmony Kotlin 2.x (on the master branch)
+⚠️ **DEPRECATED** version 0.9.x (with coroutines). It has been superseeded by Harmony Kotlin 2.x (on the master branch)
 
 # Harmony
 
