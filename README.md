@@ -1,3 +1,6 @@
+⚠️ Branch containing **DEPRECATED** version 1.x. It has been superseeded by Harmony Kotlin 2.x (on the master branch)
+
+
 <p align="center">
   <a href="https://harmony.mobilejazz.com">
     <img src="https://raw.githubusercontent.com/mobilejazz/metadata/master/images/icons/harmony.svg" alt="MJ Harmony logo" width="80" height="80">
