@@ -17,6 +17,24 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+ext {
+    VERSION_NAME='2.0'
+    GROUP='com.mobilejazz'
+
+    POM_NAME='Harmony Kotlin'
+    POM_DESCRIPTION='Harmony is a framework developed by Mobile Jazz that specifies best practices, software architectural patterns and other software ' +
+        'development related guidelines.'
+    POM_URL='https://harmony.mobilejazz.com/'
+    POM_SCM_URL='https://github.com/mobilejazz/harmony-kotlin.git'
+    POM_SCM_CONNECTION='scm:git@github.com:mobilejazz/harmony-kotlin.git'
+    POM_SCM_DEV_CONNECTION='scm:git@github.com:mobilejazz/harmony-kotlin.git'
+    POM_LICENCE_NAME='Apache License'
+    POM_LICENCE_URL='https://github.com/mobilejazz/harmony-kotlin/blob/master/LICENSE.txt'
+    POM_LICENCE_DIST='repo'
+    POM_DEVELOPER_ID='mobilejazz'
+    POM_DEVELOPER_NAME='Mobile Jazz'
+}
+
 version = VERSION_NAME
 group = GROUP
 
