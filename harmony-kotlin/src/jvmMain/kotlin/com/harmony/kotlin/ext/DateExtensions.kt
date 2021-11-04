@@ -1,8 +1,21 @@
 package com.harmony.kotlin.ext
 
 import java.text.SimpleDateFormat
-import java.util.*
-import java.util.Calendar.*
+import java.util.Calendar
+import java.util.Calendar.DATE
+import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.DAY_OF_YEAR
+import java.util.Calendar.HOUR
+import java.util.Calendar.HOUR_OF_DAY
+import java.util.Calendar.MINUTE
+import java.util.Calendar.MONTH
+import java.util.Calendar.SECOND
+import java.util.Calendar.WEEK_OF_MONTH
+import java.util.Calendar.WEEK_OF_YEAR
+import java.util.Calendar.YEAR
+import java.util.Calendar.getInstance
+import java.util.Date
+import java.util.Locale
 
 internal val calendar: Calendar by lazy {
   getInstance()
@@ -37,8 +50,6 @@ fun Date?.differenceInMonths(other: Date?): Int {
   } else {
     0
   }
-
-
 }
 
 fun Date.timeIntervalSinceNow(): Long {
@@ -91,7 +102,7 @@ val Date.week: Int
 val Date.currentYear: Int
   get() = calendar.apply { time = this@currentYear }.get(YEAR)
 
-fun Date.formatedDateText(format: String = "EEE, MMM d, yyyy") = SimpleDateFormat(format, Locale.UK).format(this)
+fun Date.formattedDateText(format: String = "EEE, MMM d, yyyy") = SimpleDateFormat(format, Locale.UK).format(this)
 
 fun String.toDate(format: String = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'"): Date? {
   return try {
@@ -101,7 +112,7 @@ fun String.toDate(format: String = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'"): Date? {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.isBefore(other: Date?): Boolean {
   return if (null == this || null == other) {
     false
@@ -114,7 +125,7 @@ infix fun Date?.isBefore(other: Date?): Boolean {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.isAfter(other: Date?): Boolean {
   return if (null == this || null == other) {
     false
@@ -127,7 +138,7 @@ infix fun Date?.isAfter(other: Date?): Boolean {
   }
 }
 
-//in terms of day and year
+// in terms of day and year
 infix fun Date?.same(other: Date?): Boolean {
   return if (null == this || null == other) {
     false

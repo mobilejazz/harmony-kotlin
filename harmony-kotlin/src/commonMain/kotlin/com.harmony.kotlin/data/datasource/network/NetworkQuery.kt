@@ -19,21 +19,22 @@ interface GenericOAuthQuery {
  * @param key Custom cache key, if not provided the cache key will be formed using path and params
  */
 open class OAuthNetworkQuery(
-    override val getPasswordTokenInteractor: GetPasswordTokenInteractor,
-    method: Method,
-    path: String,
-    urlParams: List<Pair<String, String>> = emptyList(),
-    headers: List<Pair<String, String>> = emptyList(),
-    suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
-    key: String? = null,
+  override val getPasswordTokenInteractor: GetPasswordTokenInteractor,
+  method: Method,
+  path: String,
+  urlParams: List<Pair<String, String>> = emptyList(),
+  headers: List<Pair<String, String>> = emptyList(),
+  suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
+  key: String? = null,
 ) : NetworkQuery(
-    method = method,
-    path = path,
-    urlParams = urlParams,
-    headers = headers,
-    suspendHeaders = suspendHeaders,
-    key = key
-), GenericOAuthQuery
+  method = method,
+  path = path,
+  urlParams = urlParams,
+  headers = headers,
+  suspendHeaders = suspendHeaders,
+  key = key
+),
+  GenericOAuthQuery
 
 /**
  * Base Query to be used by the Generic Network DataSources.
@@ -44,13 +45,13 @@ open class OAuthNetworkQuery(
  * @param key Custom cache key, if not provided the cache key will be formed using path and params
  */
 open class NetworkQuery(
-    var method: Method,
-    val path: String,
-    val urlParams: List<Pair<String, String>> = emptyList(),
-    val headers: List<Pair<String, String>> = emptyList(),
-    val suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
-    key: String? = null) : KeyQuery(key ?: generateNetworkQueryKey(method, path, urlParams)) {
-
+  var method: Method,
+  val path: String,
+  val urlParams: List<Pair<String, String>> = emptyList(),
+  val headers: List<Pair<String, String>> = emptyList(),
+  val suspendHeaders: suspend () -> List<Pair<String, String>> = { emptyList() },
+  key: String? = null
+) : KeyQuery(key ?: generateNetworkQueryKey(method, path, urlParams)) {
 
   /**
    * Http method (GET, POST, PUT, DELETE)
@@ -131,7 +132,6 @@ open class NetworkQuery(
       override fun toString(): String {
         return "application/json : $entity"
       }
-
     }
   }
 
@@ -139,9 +139,9 @@ open class NetworkQuery(
    * Merge headers attribute and the results of suspendHeaders function and return it
    */
   suspend fun mergeHeaders() =
-      headers.toMutableList().apply {
-        addAll(suspendHeaders())
-      }
+    headers.toMutableList().apply {
+      addAll(suspendHeaders())
+    }
 }
 
 /**
@@ -151,13 +151,11 @@ open class NetworkQuery(
  */
 private fun generateNetworkQueryKey(method: NetworkQuery.Method, path: String, params: List<Pair<String, String>>): String {
   return "$method/$path" +
-      if (params.isEmpty()) {
-        ""
-      } else {
-        "?" + params.joinToString(separator = "&") {
-          it.first + "=" + it.second
-        }
+    if (params.isEmpty()) {
+      ""
+    } else {
+      "?" + params.joinToString(separator = "&") {
+        it.first + "=" + it.second
       }
+    }
 }
-
-

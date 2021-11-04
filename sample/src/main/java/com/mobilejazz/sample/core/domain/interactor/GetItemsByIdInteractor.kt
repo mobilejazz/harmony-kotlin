@@ -2,8 +2,8 @@ package com.mobilejazz.sample.core.domain.interactor
 
 import android.util.Log
 import com.harmony.kotlin.data.operation.CacheSyncOperation
-import com.harmony.kotlin.domain.interactor.GetInteractor
 import com.harmony.kotlin.data.query.IntegerIdQuery
+import com.harmony.kotlin.domain.interactor.GetInteractor
 import com.mobilejazz.sample.core.domain.model.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async

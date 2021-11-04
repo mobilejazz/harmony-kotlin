@@ -7,7 +7,11 @@ import com.harmony.kotlin.data.datasource.cache.CacheSQLStorageDataSource
 import com.harmony.kotlin.data.datasource.database.CacheDatabase
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 
-data class OAuthStorageConfiguration(val getDataSource: GetDataSource<ByteArray>, val putDataSource: PutDataSource<ByteArray>, val deleteDataSource: DeleteDataSource)
+data class OAuthStorageConfiguration(
+  val getDataSource: GetDataSource<ByteArray>,
+  val putDataSource: PutDataSource<ByteArray>,
+  val deleteDataSource: DeleteDataSource
+)
 
 fun oauthStorageConfigurationInMemory(): OAuthStorageConfiguration {
   val inMemoryDataSource = InMemoryDataSource<ByteArray>()
@@ -18,4 +22,3 @@ fun oauthStorageConfigurationWithCacheSQL(cacheDatabase: CacheDatabase): OAuthSt
   val storageDataSource = CacheSQLStorageDataSource(cacheDatabase)
   return OAuthStorageConfiguration(storageDataSource, storageDataSource, storageDataSource)
 }
-

@@ -13,7 +13,6 @@ class VoidDataSource<V> : FlowGetDataSource<V>, FlowPutDataSource<V>, FlowDelete
   override fun putAll(query: Query, value: List<V>?): Flow<List<V>> = throw UnsupportedOperationException()
 
   override fun delete(query: Query) = throw UnsupportedOperationException()
-
 }
 
 class VoidFlowGetDataSource<V> : FlowGetDataSource<V> {

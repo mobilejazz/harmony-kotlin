@@ -1,7 +1,11 @@
 package com.harmony.kotlin.data.mapper
 
 import com.harmony.kotlin.data.error.MappingSerializationException
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
  * Map a byte array to a class object
@@ -24,7 +28,6 @@ class ModelToByteArrayMapper<in T : Serializable> : Mapper<T, ByteArray> {
     throw MappingSerializationException(cause = e)
   }
 }
-
 
 /**
  * Map a byte array to a list class object

@@ -49,7 +49,6 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
         }
         else -> notSupportedQuery()
       }
-
     } ?: throw IllegalArgumentException("value != null")
   }
 
@@ -80,5 +79,4 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
       else -> notSupportedQuery()
     }
   }
-
 }

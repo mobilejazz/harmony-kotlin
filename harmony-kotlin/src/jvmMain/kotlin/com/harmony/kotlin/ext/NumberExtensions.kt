@@ -1,6 +1,6 @@
 package com.harmony.kotlin.ext
 
-import java.util.*
+import java.util.Calendar
 
 val Int.year: Duration
   get() = Duration(unit = Calendar.YEAR, value = this)

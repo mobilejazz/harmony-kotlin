@@ -12,7 +12,6 @@ import com.harmony.kotlin.data.repository.flow.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
 interface FlowDataSource {
 
   fun notSupportedQuery(): Nothing = throw QueryNotSupportedException("Query not supported")
@@ -61,7 +60,6 @@ fun <K> FlowDeleteDataSource.delete(ids: List<K>): Flow<Unit> = delete(IdsQuery(
 fun <K> DeleteDataSource.delete(ids: List<K>): Flow<Unit> = flow { emit(delete(IdsQuery(ids))) }
 
 fun <K> FlowDeleteDataSource.deleteAll(vararg ids: K): Flow<Unit> = delete(IdsQuery(listOf(ids)))
-
 
 //region Creation
 

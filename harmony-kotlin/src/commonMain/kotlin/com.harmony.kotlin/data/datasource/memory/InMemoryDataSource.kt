@@ -15,45 +15,44 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
   private val arrays: MutableMap<String, List<V>> = mutableMapOf()
 
   override suspend fun get(query: Query): V =
-      when (query) {
-        is KeyQuery -> {
-          objects[query.key].run {
-            this ?: throw DataNotFoundException()
-          }
+    when (query) {
+      is KeyQuery -> {
+        objects[query.key].run {
+          this ?: throw DataNotFoundException()
         }
-        else -> notSupportedQuery()
       }
+      else -> notSupportedQuery()
+    }
 
   override suspend fun getAll(query: Query): List<V> =
-      when (query) {
-        is KeyQuery -> {
-          arrays[query.key].run { this ?: throw DataNotFoundException() }
-        }
-        else -> notSupportedQuery()
+    when (query) {
+      is KeyQuery -> {
+        arrays[query.key].run { this ?: throw DataNotFoundException() }
       }
+      else -> notSupportedQuery()
+    }
 
   override suspend fun put(query: Query, value: V?): V =
-      when (query) {
-        is KeyQuery -> {
-          value?.let {
-            arrays.remove(query.key)
-            objects.put(query.key, value).run { value }
-          } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
-        }
-        else -> notSupportedQuery()
+    when (query) {
+      is KeyQuery -> {
+        value?.let {
+          arrays.remove(query.key)
+          objects.put(query.key, value).run { value }
+        } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
+      else -> notSupportedQuery()
+    }
 
   override suspend fun putAll(query: Query, value: List<V>?): List<V> =
-      when (query) {
-        is KeyQuery -> {
-          value?.let {
-            objects.remove(query.key)
-            arrays.put(query.key, value).run { value }
-          } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
-
-        }
-        else -> notSupportedQuery()
+    when (query) {
+      is KeyQuery -> {
+        value?.let {
+          objects.remove(query.key)
+          arrays.put(query.key, value).run { value }
+        } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
       }
+      else -> notSupportedQuery()
+    }
 
   override suspend fun delete(query: Query) {
     when (query) {
@@ -76,5 +75,4 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       else -> notSupportedQuery()
     }
   }
-
 }

@@ -13,9 +13,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 internal class OAuthNetworkDataSource(
-    private val httpClient: HttpClient,
-    private val apiPath: String,
-    private val basicAuthorizationCode: String
+  private val httpClient: HttpClient,
+  private val apiPath: String,
+  private val basicAuthorizationCode: String
 ) : PutDataSource<OAuthTokenEntity> {
 
   override suspend fun put(query: Query, value: OAuthTokenEntity?): OAuthTokenEntity {
@@ -24,13 +24,13 @@ internal class OAuthNetworkDataSource(
         is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
         is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
         is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
-            query.clientId,
-            query.clientSecret
+          query.clientId,
+          query.clientSecret
         )
         else -> notSupportedQuery()
       }
 
-      val url = "${apiPath}/auth/token"
+      val url = "$apiPath/auth/token"
       httpClient.post<OAuthTokenEntity>(url) {
         header("Authorization", "Basic $basicAuthorizationCode")
         contentType(ContentType.Application.Json)
@@ -40,5 +40,5 @@ internal class OAuthNetworkDataSource(
   }
 
   override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?): List<OAuthTokenEntity> =
-      throw NotImplementedError()
+    throw NotImplementedError()
 }

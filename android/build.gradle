@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.mobilejazz.harmony-kotlin'
+group = 'com.github.mobilejazz.harmony-kotlin'
 version = 'local'
 
 android {
@@ -27,8 +27,8 @@ android {
 
   sourceSets {
     main.res.srcDirs = [
-        'src/main/res',
-        'src/main/res-load-content-layout'
+      'src/main/res',
+      'src/main/res-load-content-layout'
     ]
   }
 
@@ -71,7 +71,7 @@ dependencies {
 
   // Database
   implementation "androidx.sqlite:sqlite:2.0.1"
-  implementation  "androidx.sqlite:sqlite-framework:2.0.1"
+  implementation "androidx.sqlite:sqlite-framework:2.0.1"
 
   //arch components
   api "android.arch.lifecycle:runtime:1.1.1"

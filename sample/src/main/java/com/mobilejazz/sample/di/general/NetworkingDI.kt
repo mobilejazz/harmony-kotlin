@@ -15,8 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module(
-    subcomponents = [(NetworkingComponent::class)],
-    includes = [(NetworkConverterModule::class), (NetworkRetrofitApiServices::class)]
+  subcomponents = [(NetworkingComponent::class)],
+  includes = [(NetworkConverterModule::class), (NetworkRetrofitApiServices::class)]
 )
 class NetworkingModule {
 
@@ -24,10 +24,10 @@ class NetworkingModule {
   @Singleton
   fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
     return Retrofit.Builder()
-        .baseUrl("https://hacker-news.firebaseio.com/v0/")
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(okHttpClient)
-        .build()
+      .baseUrl("https://hacker-news.firebaseio.com/v0/")
+      .addConverterFactory(GsonConverterFactory.create(gson))
+      .client(okHttpClient)
+      .build()
   }
 
   @Provides
@@ -53,9 +53,9 @@ class NetworkConverterModule {
   @Provides
   @Singleton
   fun provideGson(): Gson = GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-      .setPrettyPrinting()
-      .create()
+    .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+    .setPrettyPrinting()
+    .create()
 }
 
 @Module
@@ -65,7 +65,6 @@ class NetworkRetrofitApiServices {
   @Singleton
   fun provideHackerNewsItemService(retrofit: Retrofit): HackerNewsItemService = retrofit.create(HackerNewsItemService::class.java)
 }
-
 
 @Subcomponent
 interface NetworkingComponent {

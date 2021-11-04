@@ -5,9 +5,15 @@ import com.harmony.kotlin.common.logger.Logger
 /**
  * Try this block and re-throw any Exception while logging it.
  */
-inline fun <R> tryOrThrow(logger: Logger, tag: String, message: String = "Exception logged", level: Logger.Level = Logger.Level
-    .WARNING, block: () -> R):
-    R {
+inline fun <R> tryOrThrow(
+  logger: Logger,
+  tag: String,
+  message: String = "Exception logged",
+  level: Logger.Level = Logger.Level
+    .WARNING,
+  block: () -> R
+):
+  R {
   return try {
     block()
   } catch (e: Exception) {
@@ -21,7 +27,13 @@ inline fun <R> tryOrThrow(logger: Logger, tag: String, message: String = "Except
  *
  * Optionally a logger and some parameters can be passed to log the Exception
  */
-inline fun <R> tryOrCatch(logger: Logger? = null, tag: String = "TryOrCatch", message: String = "Exception logged", level: Logger.Level = Logger.Level.WARNING, block: () -> R) {
+inline fun <R> tryOrCatch(
+  logger: Logger? = null,
+  tag: String = "TryOrCatch",
+  message: String = "Exception logged",
+  level: Logger.Level = Logger.Level.WARNING,
+  block: () -> R
+) {
   return try {
     block()
     Unit
@@ -36,7 +48,13 @@ inline fun <R> tryOrCatch(logger: Logger? = null, tag: String = "TryOrCatch", me
  *
  * Optionally a logger and some parameters can be passed to log the Exception
  */
-inline fun <R> tryOrNull(logger: Logger? = null, tag: String = "TryOrNull", message: String = "Exception logged", level: Logger.Level = Logger.Level.WARNING, block: () -> R): R? {
+inline fun <R> tryOrNull(
+  logger: Logger? = null,
+  tag: String = "TryOrNull",
+  message: String = "Exception logged",
+  level: Logger.Level = Logger.Level.WARNING,
+  block: () -> R
+): R? {
   return try {
     block()
   } catch (e: Exception) {
@@ -50,12 +68,14 @@ inline fun <R> tryOrNull(logger: Logger? = null, tag: String = "TryOrNull", mess
  *
  * Optionally a logger and some parameters can be passed to log the Exception
  */
-inline fun <R> tryOrDefault(logger: Logger? = null,
-                            tag: String = "TryOrDefault",
-                            message: String = "Exception logged",
-                            level: Logger.Level = Logger.Level.WARNING,
-                            defaultValue: R,
-                            block: () -> R): R {
+inline fun <R> tryOrDefault(
+  logger: Logger? = null,
+  tag: String = "TryOrDefault",
+  message: String = "Exception logged",
+  level: Logger.Level = Logger.Level.WARNING,
+  defaultValue: R,
+  block: () -> R
+): R {
   return try {
     block()
   } catch (e: Exception) {

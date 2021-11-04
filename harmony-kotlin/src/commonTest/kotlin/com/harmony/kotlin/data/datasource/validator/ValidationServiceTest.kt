@@ -47,5 +47,4 @@ class ValidationServiceTest {
 
     assertFalse(validationServiceManager.isValid(anyObject))
   }
-
 }

@@ -3,6 +3,8 @@ package com.mobilejazz.sample.di.general
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.harmony.kotlin.android.data.datasource.DeviceStorageDataSource
+import com.harmony.kotlin.android.data.datasource.DeviceStorageObjectAssemblerDataSource
 import com.harmony.kotlin.data.datasource.*
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.mapper.ListModelToStringMapper
@@ -11,8 +13,6 @@ import com.harmony.kotlin.data.mapper.StringToListModelMapper
 import com.harmony.kotlin.data.mapper.StringToModelMapper
 import com.harmony.kotlin.data.mapper.VoidMapper
 import com.harmony.kotlin.data.repository.*
-import com.harmony.kotlin.android.data.datasource.DeviceStorageDataSource
-import com.harmony.kotlin.android.data.datasource.DeviceStorageObjectAssemblerDataSource
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
 import com.harmony.kotlin.data.validator.vastra.strategy.TimestampValidationStrategy
 import com.mobilejazz.sample.core.data.mapper.ItemEntityToItemMapper
@@ -26,7 +26,6 @@ import javax.inject.Singleton
 
 @Module
 class ItemDI {
-
 
   // Datasources
   // --> Network
@@ -97,9 +96,11 @@ class ItemDI {
 
   @Provides
   @Singleton
-  fun provideRepositoryMapper(getRepository: GetRepository<ItemEntity>,
-                              putRepository: PutRepository<ItemEntity>,
-                              @Named("delete-item-entity-repository-main") deleteRepository: DeleteRepository): RepositoryMapper<ItemEntity, Item> {
+  fun provideRepositoryMapper(
+    getRepository: GetRepository<ItemEntity>,
+    putRepository: PutRepository<ItemEntity>,
+    @Named("delete-item-entity-repository-main") deleteRepository: DeleteRepository
+  ): RepositoryMapper<ItemEntity, Item> {
     return RepositoryMapper(getRepository, putRepository, deleteRepository, ItemEntityToItemMapper(), VoidMapper())
   }
 
@@ -117,5 +118,4 @@ class ItemDI {
   @Singleton
   @Named("delete-item-repository-main")
   fun provideDeleteRepository(repositoryMapper: RepositoryMapper<ItemEntity, Item>): DeleteRepository = repositoryMapper
-
 }

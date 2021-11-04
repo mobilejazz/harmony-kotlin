@@ -7,12 +7,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
-import java.lang.ref.WeakReference
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-
-
 
 class BundleParam<out Param>(val name: String, private val default: Param? = null) : ReadOnlyProperty<Activity, Param> {
 
@@ -38,7 +35,6 @@ class BundleParam<out Param>(val name: String, private val default: Param? = nul
 
     res
   }
-
 }
 
 class Argument<Param>(val name: String, private val default: Param) : ReadOnlyProperty<Fragment, Param> {
@@ -62,15 +58,16 @@ class Argument<Param>(val name: String, private val default: Param) : ReadOnlyPr
 
     res as Param
   }
-
 }
 
-class PrefParam<Param>(private val context: Context,
-                       private val name: String? = null,
-                       private val preferenceRef: String? = null,
-                       private val prefMode: Int = Context.MODE_PRIVATE,
-                       private val default: Param,
-                       private val notifyOnChange: ((Param) -> Unit)? = null) : ReadWriteProperty<Any, Param> {
+class PrefParam<Param>(
+  private val context: Context,
+  private val name: String? = null,
+  private val preferenceRef: String? = null,
+  private val prefMode: Int = Context.MODE_PRIVATE,
+  private val default: Param,
+  private val notifyOnChange: ((Param) -> Unit)? = null
+) : ReadWriteProperty<Any, Param> {
 
   private val sharedPreferences: SharedPreferences by lazy {
     preferenceRef?.let { context.getSharedPreferences(preferenceRef, prefMode) } ?: PreferenceManager.getDefaultSharedPreferences(context)
@@ -109,7 +106,6 @@ class PrefParam<Param>(private val context: Context,
       else -> throw java.lang.IllegalArgumentException("This type can be saved into Preferences")
     }.apply()
   }
-
 }
 
 class ParcelablePrefParam()
