@@ -166,6 +166,10 @@ kotlin {
 
     }
   }
+
+  preBuild {
+    it.dependsOn ktlintFormat
+  }
 }
 
 dependencies {
