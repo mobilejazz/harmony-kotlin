@@ -1,4 +1,3 @@
-// ktlint-disable filename
 package com.harmony.kotlin.common.logger
 
 import android.content.Context
