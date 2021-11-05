@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.harmony.kotlin.common.logger
 
 import android.content.Context
@@ -5,7 +6,7 @@ import android.os.Build
 import com.bugfender.sdk.Bugfender
 import java.util.regex.Pattern
 
-open class BugfenderAndroidLogger(
+open class BugfenderLogger(
   context: Context,
   applicationKey: String,
   isDebug: Boolean
