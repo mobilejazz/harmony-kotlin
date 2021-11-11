@@ -7,7 +7,12 @@ import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.error.OperationNotAllowedException
-import com.harmony.kotlin.data.operation.*
+import com.harmony.kotlin.data.operation.CacheOperation
+import com.harmony.kotlin.data.operation.CacheSyncOperation
+import com.harmony.kotlin.data.operation.DefaultOperation
+import com.harmony.kotlin.data.operation.MainOperation
+import com.harmony.kotlin.data.operation.MainSyncOperation
+import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
 

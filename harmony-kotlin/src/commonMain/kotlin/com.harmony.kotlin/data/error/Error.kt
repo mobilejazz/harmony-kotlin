@@ -16,7 +16,9 @@ class ObjectNotValidException(message: String? = "Object not valid", cause: Thro
 
 class QueryNotSupportedException(message: String? = "Query not supported", cause: Throwable? = null) : RepositoryException(message, cause)
 
-class OperationNotAllowedException(message: String? = "This operation is not allowed on this repository", cause: Throwable? = null) : RepositoryException(message, cause)
+class OperationNotAllowedException(message: String? = "This operation is not allowed on this repository", cause: Throwable? = null) :
+  RepositoryException(message, cause)
+
 /**
  * Exception for errors on the mappers
  */
@@ -25,7 +27,8 @@ open class MappingException(message: String? = "Exception thrown during mapping"
 /**
  * Exception for serialization errors on the mappers
  */
-class MappingSerializationException(message: String? = "Exception thrown during serialization", cause: Throwable? = null) : MappingException(message, cause)
+class MappingSerializationException(message: String? = "Exception thrown during serialization", cause: Throwable? = null) :
+  MappingException(message, cause)
 
 /**
  * Exception for network errors

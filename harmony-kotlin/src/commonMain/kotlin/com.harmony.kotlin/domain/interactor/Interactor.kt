@@ -58,7 +58,8 @@ suspend fun <K, V> GetAllInteractor<V>.execute(ids: List<K>, operation: Operatio
 
 suspend fun <K, V> PutInteractor<V>.execute(id: K, value: V?, operation: Operation = DefaultOperation): V = this.invoke(value, IdQuery(id), operation)
 
-suspend fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) = this.invoke(values, IdsQuery(ids), operation)
+suspend fun <K, V> PutAllInteractor<V>.execute(ids: List<K>, values: List<V>? = emptyList(), operation: Operation = DefaultOperation) =
+  this.invoke(values, IdsQuery(ids), operation)
 
 suspend fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOperation) = this.invoke(IdQuery(id), operation)
 

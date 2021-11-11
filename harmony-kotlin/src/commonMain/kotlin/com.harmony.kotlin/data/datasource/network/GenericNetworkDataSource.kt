@@ -5,7 +5,7 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.query.Query
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer

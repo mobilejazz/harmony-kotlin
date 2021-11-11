@@ -18,7 +18,11 @@ import com.harmony.kotlin.library.oauth.data.OAuthTokenRepository
 import com.harmony.kotlin.library.oauth.data.datasource.network.OAuthNetworkDataSource
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.mapper.OAuthTokenEntityToOAuthTokenMapper
-import com.harmony.kotlin.library.oauth.domain.interactor.*
+import com.harmony.kotlin.library.oauth.domain.interactor.AuthenticatePasswordCredentialInteractor
+import com.harmony.kotlin.library.oauth.domain.interactor.DeletePasswordTokenInteractor
+import com.harmony.kotlin.library.oauth.domain.interactor.GetApplicationTokenInteractor
+import com.harmony.kotlin.library.oauth.domain.interactor.GetDefaultPasswordTokenInteractor
+import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.model.OAuthStorageConfiguration
 import com.harmony.kotlin.library.oauth.domain.model.OAuthToken
 import com.harmony.kotlin.library.oauth.domain.model.oauthStorageConfigurationInMemory

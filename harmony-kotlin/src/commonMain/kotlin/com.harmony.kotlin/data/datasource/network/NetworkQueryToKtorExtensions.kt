@@ -1,9 +1,16 @@
 package com.harmony.kotlin.data.datasource.network
 
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.request
+import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
+import io.ktor.http.Parameters
+import io.ktor.http.ParametersBuilder
+import io.ktor.http.URLBuilder
+import io.ktor.http.Url
+import io.ktor.http.contentType
 
 internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: String, globalHeaders: List<Pair<String, String>>): String {
   val query = this

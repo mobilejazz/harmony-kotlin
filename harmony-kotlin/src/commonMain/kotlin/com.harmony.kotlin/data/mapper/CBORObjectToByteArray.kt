@@ -3,7 +3,7 @@ package com.harmony.kotlin.data.mapper
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.cbor.*
+import kotlinx.serialization.cbor.Cbor
 
 @ExperimentalSerializationApi
 class CBORObjectToByteArray<T>(private val cbor: Cbor, private val serializer: KSerializer<T>) : Mapper<T, ByteArray> {

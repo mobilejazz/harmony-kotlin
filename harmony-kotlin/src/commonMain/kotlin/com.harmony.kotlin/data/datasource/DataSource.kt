@@ -5,7 +5,12 @@ import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.IdQuery
 import com.harmony.kotlin.data.query.IdsQuery
 import com.harmony.kotlin.data.query.Query
-import com.harmony.kotlin.data.repository.*
+import com.harmony.kotlin.data.repository.GetRepository
+import com.harmony.kotlin.data.repository.PutRepository
+import com.harmony.kotlin.data.repository.SingleDeleteDataSourceRepository
+import com.harmony.kotlin.data.repository.SingleGetDataSourceRepository
+import com.harmony.kotlin.data.repository.SinglePutDataSourceRepository
+import com.harmony.kotlin.data.repository.withMapping
 
 interface DataSource {
 
@@ -49,6 +54,7 @@ fun <K, V> GetDataSource<K>.toGetRepository(mapper: Mapper<K, V>): GetRepository
 
 fun <V> PutDataSource<V>.toPutRepository() = SinglePutDataSourceRepository(this)
 
-fun <K, V> PutDataSource<K>.toPutRepository(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): PutRepository<V> = toPutRepository().withMapping(toMapper, fromMapper)
+fun <K, V> PutDataSource<K>.toPutRepository(toMapper: Mapper<K, V>, fromMapper: Mapper<V, K>): PutRepository<V> =
+  toPutRepository().withMapping(toMapper, fromMapper)
 
 fun DeleteDataSource.toDeleteRepository() = SingleDeleteDataSourceRepository(this)
