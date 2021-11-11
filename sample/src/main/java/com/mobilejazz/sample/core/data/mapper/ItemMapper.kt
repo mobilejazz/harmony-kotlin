@@ -9,7 +9,6 @@ import com.mobilejazz.sample.core.domain.model.ItemIds
 class ItemEntityToItemMapper : Mapper<ItemEntity, Item> {
 
   override fun map(from: ItemEntity): Item = Item(from.id, from.by ?: "by: unknown", from.title, from.text, from.kids)
-
 }
 
 class ItemIdsEntityToItemIdsMapper : Mapper<ItemIdsEntity, ItemIds> {

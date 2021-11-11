@@ -27,7 +27,7 @@ import androidx.annotation.RequiresApi
  * @throws IndexOutOfBoundsException if index is less than 0 or greater than or equal to the count.
  */
 operator fun ViewGroup.get(index: Int) =
-    getChildAt(index) ?: throw IndexOutOfBoundsException("Index: $index, Size: $childCount")
+  getChildAt(index) ?: throw IndexOutOfBoundsException("Index: $index, Size: $childCount")
 
 /** Returns `true` if [view] is found in this view group. */
 inline operator fun ViewGroup.contains(view: View) = indexOfChild(view) != -1
@@ -92,10 +92,10 @@ inline fun ViewGroup.MarginLayoutParams.setMargins(@Px size: Int) {
  * @see ViewGroup.MarginLayoutParams.setMargins
  */
 inline fun ViewGroup.MarginLayoutParams.updateMargins(
-    @Px left: Int = leftMargin,
-    @Px top: Int = topMargin,
-    @Px right: Int = rightMargin,
-    @Px bottom: Int = bottomMargin
+  @Px left: Int = leftMargin,
+  @Px top: Int = topMargin,
+  @Px right: Int = rightMargin,
+  @Px bottom: Int = bottomMargin
 ) {
   setMargins(left, top, right, bottom)
 }
@@ -108,10 +108,10 @@ inline fun ViewGroup.MarginLayoutParams.updateMargins(
  */
 @RequiresApi(17)
 inline fun ViewGroup.MarginLayoutParams.updateMarginsRelative(
-    @Px start: Int = marginStart,
-    @Px top: Int = topMargin,
-    @Px end: Int = marginEnd,
-    @Px bottom: Int = bottomMargin
+  @Px start: Int = marginStart,
+  @Px top: Int = topMargin,
+  @Px end: Int = marginEnd,
+  @Px bottom: Int = bottomMargin
 ) {
   marginStart = start
   topMargin = top

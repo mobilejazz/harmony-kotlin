@@ -10,6 +10,4 @@ class LocalizedStrings(context: Context) : Localized<Int> {
   override fun get(key: Int): String = ctx.getString(key)
 
   override fun getPlural(key: Int, amount: Int): String = ctx.resources.getQuantityString(key, amount)
-
-
 }

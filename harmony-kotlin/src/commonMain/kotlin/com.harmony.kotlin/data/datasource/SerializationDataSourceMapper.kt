@@ -17,13 +17,13 @@ import com.harmony.kotlin.data.query.Query
  * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
 class SerializationDataSourceMapper<SerializedIn, Out>(
-    private val getDataSource: GetDataSource<SerializedIn>,
-    private val putDataSource: PutDataSource<SerializedIn>,
-    private val deleteDataSource: DeleteDataSource,
-    private val toOutMapper: Mapper<SerializedIn, Out>,
-    private val toOutListMapper: Mapper<SerializedIn, List<Out>>,
-    private val toInMapper: Mapper<Out, SerializedIn>,
-    private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
+  private val getDataSource: GetDataSource<SerializedIn>,
+  private val putDataSource: PutDataSource<SerializedIn>,
+  private val deleteDataSource: DeleteDataSource,
+  private val toOutMapper: Mapper<SerializedIn, Out>,
+  private val toOutListMapper: Mapper<SerializedIn, List<Out>>,
+  private val toInMapper: Mapper<Out, SerializedIn>,
+  private val toInMapperFromList: Mapper<List<Out>, SerializedIn>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
   override suspend fun get(query: Query): Out = getDataSource.get(query).let { toOutMapper.map(it) }
@@ -33,15 +33,14 @@ class SerializationDataSourceMapper<SerializedIn, Out>(
   override suspend fun put(query: Query, value: Out?): Out {
     val mapped = value?.let { toInMapper.map(value) }
     return putDataSource.put(query, mapped)
-        .let { toOutMapper.map(it) }
+      .let { toOutMapper.map(it) }
   }
 
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> {
     val mapped = value?.let { toInMapperFromList.map(value) }
     return putDataSource.put(query, mapped)
-        .let { toOutListMapper.map(it) }
+      .let { toOutListMapper.map(it) }
   }
 
   override suspend fun delete(query: Query) = deleteDataSource.delete(query)
-
 }

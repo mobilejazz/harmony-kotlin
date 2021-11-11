@@ -3,7 +3,6 @@ package com.mobilejazz.sample.specs
 import com.harmony.kotlin.common.WeakReference
 import com.harmony.kotlin.common.logger.Logger
 
-
 // Presenter is always defined as an interface
 interface CoffeeMachinePresenter {
 
@@ -60,7 +59,6 @@ interface CoffeeMachinePresenter {
 
     // Provide default implementations so the UI is not forced to implement a method that is not strictly necessary
     fun onDisplayWeatherOutside(degrees: Float) {}
-
   }
 
   /* endregion */
@@ -68,10 +66,10 @@ interface CoffeeMachinePresenter {
 
 /* region implementation */
 class CoffeeMachineDefaultPresenter(
-    // IMPORTANT: First parameter always the view as a WeakReference
-    private val view: WeakReference<CoffeeMachinePresenter.View>,
-    private val getWatterLevelInteractor: GetWatterLevelInteractor,
-    private val logger: Logger
+  // IMPORTANT: First parameter always the view as a WeakReference
+  private val view: WeakReference<CoffeeMachinePresenter.View>,
+  private val getWatterLevelInteractor: GetWatterLevelInteractor,
+  private val logger: Logger
 ) : CoffeeMachinePresenter {
 
   // Avoid local vars. Use the interactor instead
@@ -110,7 +108,6 @@ class CoffeeMachineDefaultPresenter(
     }
   }
 
-
   override fun onViewLoaded() {
   }
 
@@ -119,17 +116,12 @@ class CoffeeMachineDefaultPresenter(
 
   override fun onViewDealloc() {
   }
-
 }
 
 /* endregion */
-
 
 class GetWatterLevelInteractor() {
   operator fun invoke(): Int {
     return 23
   }
 }
-
-
-

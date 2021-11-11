@@ -1,6 +1,5 @@
 package com.harmony.kotlin.data.datasource.validator.vastra.strategies.timestamp
 
-
 import com.harmony.kotlin.common.date.Millis
 import com.harmony.kotlin.common.date.Seconds
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
@@ -13,7 +12,6 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-
 
 @ExperimentalTime
 class TimestampValidationStrategyTest {
@@ -28,7 +26,6 @@ class TimestampValidationStrategyTest {
 
     val isValid = validationServiceManager.isValid(foo)
     assertTrue(actual = isValid)
-
   }
 
   @Test

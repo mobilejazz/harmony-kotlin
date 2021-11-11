@@ -15,4 +15,3 @@ abstract class BasePresenter<V : MVPView> : Presenter<V> {
     this.view = null
   }
 }
-

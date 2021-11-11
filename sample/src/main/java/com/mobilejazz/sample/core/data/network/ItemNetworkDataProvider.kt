@@ -5,7 +5,7 @@ import com.harmony.kotlin.data.query.IntegerIdQuery
 import com.harmony.kotlin.data.query.IntegerIdsQuery
 import com.harmony.kotlin.data.query.Query
 import com.mobilejazz.sample.core.data.model.ItemEntity
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -22,7 +22,6 @@ class ItemNetworkDataProvider @Inject constructor(private val hackerNewsItemServ
     else -> throw IllegalArgumentException("Query not mapped correctly!")
   }
 
-
   override suspend fun getAll(query: Query): List<ItemEntity> = when (query) {
     is IntegerIdsQuery -> {
       query.identifiers.map {
@@ -31,5 +30,4 @@ class ItemNetworkDataProvider @Inject constructor(private val hackerNewsItemServ
     }
     else -> throw IllegalArgumentException("Query not mapped correctly!")
   }
-
 }

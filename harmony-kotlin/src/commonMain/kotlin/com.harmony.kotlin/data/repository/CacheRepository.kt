@@ -5,8 +5,8 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.*
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator

@@ -52,11 +52,9 @@ class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
 
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
     val item = intent.extras.get(ITEM_KEY) as Item
 
     activity_detail_item_title_tv.text = item.title
-
 
     activity_detail_items_rv.layoutManager = LinearLayoutManager(this)
     activity_detail_items_rv.adapter = adapter
@@ -83,7 +81,6 @@ class ItemDetailActivity : AppCompatActivity(), CoroutineScope {
       else -> super.onOptionsItemSelected(item)
     }
   }
-
 
   private fun loadComments(ids: List<Int>) {
     launch {

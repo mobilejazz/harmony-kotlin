@@ -1,6 +1,7 @@
 package com.harmony.kotlin.ext
 
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 object Dates {
 
@@ -28,5 +29,4 @@ object Dates {
     if (second > -1) calendar.set(Calendar.SECOND, second)
     return calendar.time
   }
-
 }

@@ -12,6 +12,5 @@ class ItemIdsNetworkDataSource @Inject constructor(private val hackerNewsItemSer
     return ItemIdsEntity(askStoriesIds)
   }
 
-
   override suspend fun getAll(query: Query): List<ItemIdsEntity> = throw UnsupportedOperationException("Unsupported operation")
 }

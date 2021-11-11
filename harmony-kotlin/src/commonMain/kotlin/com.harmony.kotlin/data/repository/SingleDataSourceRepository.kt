@@ -7,9 +7,9 @@ import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
 
 class SingleDataSourceRepository<T>(
-        private val getDataSource: GetDataSource<T>,
-        private val putDataSource: PutDataSource<T>,
-        private val deleteDataSource: DeleteDataSource
+  private val getDataSource: GetDataSource<T>,
+  private val putDataSource: PutDataSource<T>,
+  private val deleteDataSource: DeleteDataSource
 ) : GetRepository<T>, PutRepository<T>, DeleteRepository {
 
   override suspend fun get(query: Query, operation: Operation): T = getDataSource.get(query)
@@ -35,7 +35,6 @@ class SinglePutDataSourceRepository<T>(private val putDataSource: PutDataSource<
 
   override suspend fun putAll(query: Query, value: List<T>?, operation: Operation): List<T> = putDataSource.putAll(query, value)
 }
-
 
 class SingleDeleteDataSourceRepository(private val deleteDataSource: DeleteDataSource) : DeleteRepository {
 

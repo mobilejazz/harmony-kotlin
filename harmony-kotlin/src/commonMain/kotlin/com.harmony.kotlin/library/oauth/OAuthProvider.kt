@@ -44,23 +44,25 @@ interface OAuthComponent {
 }
 
 class OAuthDefaultModule(
-    private val apiPath: String,
-    private val coroutineContext: CoroutineContext,
-    private val clientId: String,
-    private val clientSecret: String,
-    private val resolution: UnauthorizedResolution = DefaultUnauthorizedResolution,
-    private val basicAuthorizationCode: String, // todo: temporal until we find a way to hash the clientId and clientSecret in base 64
-    private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(),
-    private val moduleLogger: com.harmony.kotlin.common.logger.Logger
+  private val apiPath: String,
+  private val coroutineContext: CoroutineContext,
+  private val clientId: String,
+  private val clientSecret: String,
+  private val resolution: UnauthorizedResolution = DefaultUnauthorizedResolution,
+  private val basicAuthorizationCode: String, // todo: temporal until we find a way to hash the clientId and clientSecret in base 64
+  private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(),
+  private val moduleLogger: com.harmony.kotlin.common.logger.Logger
 ) : OAuthComponent {
 
   override fun authenticatePasswordCredentialInteractor(): AuthenticatePasswordCredentialInteractor =
-      AuthenticatePasswordCredentialInteractor(putTokenInteractor, coroutineContext)
+    AuthenticatePasswordCredentialInteractor(putTokenInteractor, coroutineContext)
 
   override fun getPasswordTokenInteractor(): GetPasswordTokenInteractor = GetDefaultPasswordTokenInteractor(coroutineContext, getTokenInteractor)
 
-  override fun getApplicationTokenInteractor(): GetApplicationTokenInteractor = GetApplicationTokenInteractor(coroutineContext, clientId, clientSecret,
-      putTokenInteractor)
+  override fun getApplicationTokenInteractor(): GetApplicationTokenInteractor = GetApplicationTokenInteractor(
+    coroutineContext, clientId, clientSecret,
+    putTokenInteractor
+  )
 
   override fun deletePasswordTokenInteractor(): DeletePasswordTokenInteractor = DeletePasswordTokenInteractor(coroutineContext, deleteTokenInteractor)
 
@@ -69,8 +71,10 @@ class OAuthDefaultModule(
     val networkDataSource = OAuthNetworkDataSource(httpClient, apiPath, basicAuthorizationCode)
 
     val cbor = Cbor
-    val dataSourceMapper = DataSourceMapper(oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
-        CBORByteArrayToObject(cbor, OAuthTokenEntity.serializer()), CBORObjectToByteArray(cbor, OAuthTokenEntity.serializer()))
+    val dataSourceMapper = DataSourceMapper(
+      oauthStorageConfiguration.getDataSource, oauthStorageConfiguration.putDataSource, oauthStorageConfiguration.deleteDataSource,
+      CBORByteArrayToObject(cbor, OAuthTokenEntity.serializer()), CBORObjectToByteArray(cbor, OAuthTokenEntity.serializer())
+    )
 
     val repository = OAuthTokenRepository(networkDataSource, dataSourceMapper, dataSourceMapper)
 
@@ -92,10 +96,12 @@ class OAuthDefaultModule(
   private val httpClient: HttpClient by lazy {
     HttpClient {
       install(JsonFeature) {
-        serializer = KotlinxSerializer(Json {
+        serializer = KotlinxSerializer(
+          Json {
             isLenient = true
             ignoreUnknownKeys = true
-        })
+          }
+        )
       }
       if (Platform.IS_JVM) {
         install(Logging) {

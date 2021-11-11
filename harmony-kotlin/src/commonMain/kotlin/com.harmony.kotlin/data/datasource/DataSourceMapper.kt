@@ -14,11 +14,11 @@ import com.harmony.kotlin.data.query.Query
  * @param toInMapper Mapper to map repository objects to data source objects
  */
 class DataSourceMapper<In, Out>(
-        getDataSource: GetDataSource<In>,
-        putDataSource: PutDataSource<In>,
-        private val deleteDataSource: DeleteDataSource,
-        toOutMapper: Mapper<In, Out>,
-        toInMapper: Mapper<Out, In>
+  getDataSource: GetDataSource<In>,
+  putDataSource: PutDataSource<In>,
+  private val deleteDataSource: DeleteDataSource,
+  toOutMapper: Mapper<In, Out>,
+  toInMapper: Mapper<Out, In>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
   private val getDataSourceMapper = GetDataSourceMapper(getDataSource, toOutMapper)
@@ -36,8 +36,9 @@ class DataSourceMapper<In, Out>(
 }
 
 class GetDataSourceMapper<In, Out>(
-        private val getDataSource: GetDataSource<In>,
-        private val toOutMapper: Mapper<In, Out>) : GetDataSource<Out> {
+  private val getDataSource: GetDataSource<In>,
+  private val toOutMapper: Mapper<In, Out>
+) : GetDataSource<Out> {
 
   override suspend fun get(query: Query): Out = getDataSource.get(query).let { toOutMapper.map(it) }
 
@@ -45,19 +46,20 @@ class GetDataSourceMapper<In, Out>(
 }
 
 class PutDataSourceMapper<In, Out>(
-        private val putDataSource: PutDataSource<In>,
-        private val toOutMapper: Mapper<In, Out>,
-        private val toInMapper: Mapper<Out, In>) : PutDataSource<Out> {
+  private val putDataSource: PutDataSource<In>,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
+) : PutDataSource<Out> {
 
   override suspend fun put(query: Query, value: Out?): Out {
     val mapped = value?.let { toInMapper.map(it) }
     return putDataSource.put(query, mapped)
-        .let { toOutMapper.map(it) }
+      .let { toOutMapper.map(it) }
   }
 
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> {
     val mapped = value?.let { toInMapper.map(it) }
     return putDataSource.putAll(query, mapped)
-        .map { toOutMapper.map(it) }
+      .map { toOutMapper.map(it) }
   }
 }

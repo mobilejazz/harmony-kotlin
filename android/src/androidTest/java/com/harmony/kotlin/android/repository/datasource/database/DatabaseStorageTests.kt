@@ -34,10 +34,10 @@ class DatabaseStorageTests : InstrumentationTest() {
   @Before
   fun setUp() {
     val database = FrameworkSQLiteOpenHelperFactory().create(
-        SupportSQLiteOpenHelper.Configuration.builder(appContext)
-            .callback(ByteArrayStorageCallback(1))
-            .name("test.db")
-            .build()
+      SupportSQLiteOpenHelper.Configuration.builder(appContext)
+        .callback(ByteArrayStorageCallback(1))
+        .name("test.db")
+        .build()
     ).writableDatabase
 
     databaseStorageDataSource = com.harmony.kotlin.android.data.datasource.database.DatabaseStorageDataSource(database)

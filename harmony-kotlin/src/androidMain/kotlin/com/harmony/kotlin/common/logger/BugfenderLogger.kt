@@ -5,9 +5,11 @@ import android.os.Build
 import com.bugfender.sdk.Bugfender
 import java.util.regex.Pattern
 
-open class BugfenderLogger(context: Context,
-                           applicationKey: String,
-                           isDebug: Boolean) : Logger {
+open class BugfenderLogger(
+  context: Context,
+  applicationKey: String,
+  isDebug: Boolean
+) : Logger {
   init {
     Bugfender.init(context, applicationKey, isDebug)
   }
@@ -91,11 +93,11 @@ open class BugfenderLogger(context: Context,
 
   private fun createClassTag(): String? {
     val ignoreClass = listOf(
-        AndroidLogger::class.java.name,
-        Logger::class.java.name
+      AndroidLogger::class.java.name,
+      Logger::class.java.name
     )
     val stackTraceElement: StackTraceElement = Throwable().stackTrace
-        .first { it.className !in ignoreClass && !it.className.contains("DefaultImpls") }
+      .first { it.className !in ignoreClass && !it.className.contains("DefaultImpls") }
     var tag = stackTraceElement.className.substringAfterLast('.')
     val m = ANONYMOUS_CLASS.matcher(tag)
     if (m.find()) {

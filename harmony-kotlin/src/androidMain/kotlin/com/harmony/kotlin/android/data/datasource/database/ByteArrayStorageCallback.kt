@@ -5,12 +5,14 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 
 class ByteArrayStorageCallback(version: Int) : SupportSQLiteOpenHelper.Callback(version) {
   override fun onCreate(db: SupportSQLiteDatabase) {
-    db.execSQL("""
+    db.execSQL(
+      """
       | CREATE TABLE ${BlobTable.TABLE_NAME} (
       |   ${BlobTable.COLUMN_KEY} TEXT NOT NULL PRIMARY KEY,
       |   ${BlobTable.COLUMN_VALUE} BLOB NOT NULL
       | );
-    """.trimMargin())
+    """.trimMargin()
+    )
   }
 
   override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {

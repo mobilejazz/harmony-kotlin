@@ -24,20 +24,20 @@ class FlowGetAllInteractor<M>(private val scope: CoroutineScope, private val get
 class FlowPutInteractor<M>(private val scope: CoroutineScope, private val putRepository: FlowPutRepository<M>) {
 
   operator fun invoke(m: M?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<M> = putRepository.put(query, m, operation)
-
 }
 
 class FlowPutAllInteractor<M>(private val scope: CoroutineScope, private val putRepository: FlowPutRepository<M>) {
 
-  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<List<M>> = putRepository.putAll(query, m,
-      operation)
+  operator fun invoke(m: List<M>?, query: Query = VoidQuery, operation: Operation = DefaultOperation): Flow<List<M>> = putRepository.putAll(
+    query, m,
+    operation
+  )
 }
 
 class FlowDeleteInteractor(private val scope: CoroutineScope, private val deleteRepository: FlowDeleteRepository) {
 
   operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation) = deleteRepository.delete(query, operation)
 }
-
 
 //region Creation
 fun <V> FlowGetRepository<V>.toFlowGetInteractor(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) = FlowGetInteractor(scope, this)

@@ -11,7 +11,6 @@ import java.io.IOException
 /*these extensions are super usefull to deal with devices (like Samsung)
 that rotate images because yes*/
 
-
 fun Bitmap.encodeBase64(): String {
   ByteArrayOutputStream().use {
     this.compress(Bitmap.CompressFormat.JPEG, 10, it)

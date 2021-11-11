@@ -11,7 +11,6 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 
-
 fun Uri.getPath(context: Context): String? {
 
   // DocumentProvider
@@ -32,7 +31,8 @@ fun Uri.getPath(context: Context): String? {
 
         val id = DocumentsContract.getDocumentId(this)
         val contentUri = ContentUris.withAppendedId(
-            Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)!!)
+          Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)!!
+        )
 
         return contentUri.getDataColumn(context)
       } else if (this.isMediaDocument()) {
@@ -53,24 +53,23 @@ fun Uri.getPath(context: Context): String? {
         val selectionArgs = arrayOf(split[1])
 
         return contentUri?.getDataColumn(context, selection, selectionArgs)
-      }// MediaProvider
+      } // MediaProvider
       // DownloadsProvider
     }
   } else if ("content".equals(this.scheme, ignoreCase = true)) {
     return this.getDataColumn(context, null, null)
   } else if ("file".equals(this.scheme, ignoreCase = true)) {
     return this.path
-  }// File
+  } // File
   // MediaStore (and general)
 
   return null
 }
 
-
 fun Uri.toBase64(context: Context): String {
   return BitmapFactory.decodeStream(context.contentResolver.openInputStream(this))
-      .modifyOrientation(this.getPath(context) ?: "")
-      .encodeBase64()
+    .modifyOrientation(this.getPath(context) ?: "")
+    .encodeBase64()
 }
 
 /**
@@ -88,8 +87,11 @@ fun Uri.toBase64(context: Context): String {
  * @return The value of the _data column, which is typically a file path.
  */
 @SuppressLint("Recycle")
-fun Uri.getDataColumn(context: Context, selection: String? = null,
-                      selectionArgs: Array<String>? = null): String? {
+fun Uri.getDataColumn(
+  context: Context,
+  selection: String? = null,
+  selectionArgs: Array<String>? = null
+): String? {
 
   val cursor: Cursor?
   val column = "_data"

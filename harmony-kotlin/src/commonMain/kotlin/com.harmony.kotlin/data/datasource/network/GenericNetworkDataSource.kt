@@ -12,11 +12,11 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
 open class GetNetworkDataSource<T>(
-    private val url: String,
-    private val httpClient: HttpClient,
-    private val serializer: KSerializer<T>,
-    private val json: Json,
-    private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val url: String,
+  private val httpClient: HttpClient,
+  private val serializer: KSerializer<T>,
+  private val json: Json,
+  private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : GetDataSource<T> {
 
   /**
@@ -38,7 +38,7 @@ open class GetNetworkDataSource<T>(
   }
 
   private suspend fun executeGetRequest(query: Query): String =
-      validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
   private fun validateQuery(query: Query): NetworkQuery {
     if (query !is NetworkQuery) {
@@ -54,11 +54,11 @@ open class GetNetworkDataSource<T>(
 }
 
 open class PutNetworkDataSource<T>(
-    private val url: String,
-    private val httpClient: HttpClient,
-    private val serializer: KSerializer<T>,
-    private val json: Json,
-    private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val url: String,
+  private val httpClient: HttpClient,
+  private val serializer: KSerializer<T>,
+  private val json: Json,
+  private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : PutDataSource<T> {
 
   /**
@@ -67,8 +67,8 @@ open class PutNetworkDataSource<T>(
    */
   override suspend fun put(query: Query, value: T?): T {
     val response: String = validateQuery(query)
-        .sanitizeContentType(value)
-        .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+      .sanitizeContentType(value)
+      .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
     return if (serializer.descriptor != Unit.serializer().descriptor) {
       json.decodeFromString(serializer, response)
@@ -83,8 +83,8 @@ open class PutNetworkDataSource<T>(
    */
   override suspend fun putAll(query: Query, value: List<T>?): List<T> {
     val response: String = validateQuery(query)
-        .sanitizeContentType(value)
-        .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+      .sanitizeContentType(value)
+      .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
     return if (serializer.descriptor != Unit.serializer().descriptor) {
       json.decodeFromString(ListSerializer(serializer), response)
@@ -102,10 +102,12 @@ open class PutNetworkDataSource<T>(
     val contentType = this.method.contentType
     // Checking that the arguments are consistent (if both contentType and value are provided the caller must be notified about the issue)
     if (contentType != null && value != null) {
-      throw IllegalArgumentException("Conflicting arguments to be used as request body:\n" +
+      throw IllegalArgumentException(
+        "Conflicting arguments to be used as request body:\n" +
           "query.method.contentType=${contentType}\n" +
           "value=${value}\n" +
-          "You must only provide one of them")
+          "You must only provide one of them"
+      )
     }
     // Updating query if value is passed as separated argument from the query
     if (contentType == null && value != null) {
@@ -126,13 +128,12 @@ open class PutNetworkDataSource<T>(
 
     return query
   }
-
 }
 
 class DeleteNetworkDataSource(
-    private val url: String,
-    private val httpClient: HttpClient,
-    private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val url: String,
+  private val httpClient: HttpClient,
+  private val globalHeaders: List<Pair<String, String>> = emptyList()
 ) : DeleteDataSource {
 
   /**

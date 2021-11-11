@@ -39,7 +39,6 @@ class ItemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
       listener(item)
     }
   }
-
 }
 
 class ItemsAdapter(private val listener: (Item) -> Unit, val displayAllContent: Boolean) : RecyclerView.Adapter<ItemsViewHolder>() {
@@ -58,5 +57,4 @@ class ItemsAdapter(private val listener: (Item) -> Unit, val displayAllContent: 
     items = data
     notifyDataSetChanged()
   }
-
 }

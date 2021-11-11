@@ -1,11 +1,11 @@
 package com.mobilejazz.sample.di.general
 
+import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
+import com.harmony.kotlin.data.datasource.flow.toFlowGetRepository
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.domain.interactor.FlowGetInteractor
 import com.harmony.kotlin.domain.interactor.GetInteractor
-import com.harmony.kotlin.data.datasource.flow.FlowGetDataSource
-import com.harmony.kotlin.data.datasource.flow.toFlowGetRepository
 import com.harmony.kotlin.domain.interactor.toFlowGetInteractor
 import com.mobilejazz.sample.core.domain.interactor.GetItemsByIdInteractor
 import com.mobilejazz.sample.core.domain.model.Item
@@ -24,7 +24,6 @@ class InteractorsModule {
   @Provides
   @Singleton
   fun provideAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Default)
-
 
   // Global Interactors
   @Provides
@@ -51,16 +50,12 @@ class InteractorsModule {
       }
 
       override fun getAll(query: Query): Flow<List<Int>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
       }
-
     }
 
     return datasource.toFlowGetRepository().toFlowGetInteractor()
-
   }
-
-
 }
 
 @Subcomponent
@@ -72,5 +67,4 @@ interface InteractorsComponent {
   interface Builder {
     fun build(): InteractorsComponent
   }
-
 }

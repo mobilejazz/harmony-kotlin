@@ -7,7 +7,6 @@ import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-
 /**
  * This repository uses mappers to map objects and redirects them to the contained repository, acting as a simple "translator".
  *
@@ -18,11 +17,11 @@ import kotlinx.coroutines.flow.map
  * @param toInMapper Mapper to map domain objects to data objects
  */
 class FlowRepositoryMapper<In, Out>(
-    private val getRepository: FlowGetRepository<In>,
-    private val putRepository: FlowPutRepository<In>,
-    private val deleteRepository: FlowDeleteRepository,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>
+  private val getRepository: FlowGetRepository<In>,
+  private val putRepository: FlowPutRepository<In>,
+  private val deleteRepository: FlowDeleteRepository,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
 ) : FlowGetRepository<Out>, FlowPutRepository<Out>, FlowDeleteRepository {
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
@@ -45,8 +44,8 @@ class FlowRepositoryMapper<In, Out>(
 }
 
 class FlowGetRepositoryMapper<In, Out>(
-    private val getRepository: FlowGetRepository<In>,
-    private val toOutMapper: Mapper<In, Out>
+  private val getRepository: FlowGetRepository<In>,
+  private val toOutMapper: Mapper<In, Out>
 ) : FlowGetRepository<Out> {
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { it.let { toOutMapper.map(it) } }
@@ -55,9 +54,10 @@ class FlowGetRepositoryMapper<In, Out>(
 }
 
 class FlowPutRepositoryMapper<In, Out>(
-    private val putRepository: FlowPutRepository<In>,
-    private val toOutMapper: Mapper<In, Out>,
-    private val toInMapper: Mapper<Out, In>) : FlowPutRepository<Out> {
+  private val putRepository: FlowPutRepository<In>,
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
+) : FlowPutRepository<Out> {
 
   override fun put(query: Query, value: Out?, operation: Operation): Flow<Out> {
     val mapped = value?.let { toInMapper.map(it) }

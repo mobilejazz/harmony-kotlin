@@ -35,8 +35,8 @@ open class KeyQuery(val key: String /* key associated to the query */) : Query()
 // Extensions
 inline fun <reified T> IdQuery<*>.asTyped(): IdQuery<T>? = (this.identifier as? T)?.let { IdQuery(it) }
 
-//inline fun <reified T> KeyQuery<*>.asTyped(): KeyQuery<T>? = (this.key as? T)?.let { KeyQuery(it) }
+// inline fun <reified T> KeyQuery<*>.asTyped(): KeyQuery<T>? = (this.key as? T)?.let { KeyQuery(it) }
 
-//fun <T> KeyQuery<*>.isTyped(type: Class<T>): Boolean {
+// fun <T> KeyQuery<*>.isTyped(type: Class<T>): Boolean {
 //  return type.isAssignableFrom(this.key!!::class.java.componentType)
-//}
+// }

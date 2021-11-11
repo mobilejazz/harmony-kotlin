@@ -7,7 +7,7 @@ actual interface CacheSQLConfiguration {
   actual fun provideCacheDatabase(databaseName: String): CacheDatabase
 }
 
-class CacheSQLNativeDefaultConfiguration: CacheSQLConfiguration {
+class CacheSQLNativeDefaultConfiguration : CacheSQLConfiguration {
   override fun provideCacheDatabase(databaseName: String): CacheDatabase {
     return CacheDatabase(NativeSqliteDriver(CacheDatabase.Schema, "$databaseName.db"))
   }

@@ -51,7 +51,6 @@ interface ValidationService {
   fun <T : ValidationStrategyDataSource> isValid(values: List<T>): Boolean
 }
 
-
 class ValidationServiceManager(private val strategies: List<ValidationStrategy>) : ValidationService {
 
   override fun <T : ValidationStrategyDataSource> isValid(values: List<T>): Boolean {

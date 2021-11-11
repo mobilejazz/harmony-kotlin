@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.data.query.Query
 
-
 class VoidDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
   override suspend fun get(query: Query): V = throw UnsupportedOperationException()
 

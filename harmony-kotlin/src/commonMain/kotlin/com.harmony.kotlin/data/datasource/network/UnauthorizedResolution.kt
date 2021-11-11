@@ -13,4 +13,4 @@ interface UnauthorizedResolution {
   fun resolve(): Boolean = false
 }
 
-object DefaultUnauthorizedResolution: UnauthorizedResolution
+object DefaultUnauthorizedResolution : UnauthorizedResolution

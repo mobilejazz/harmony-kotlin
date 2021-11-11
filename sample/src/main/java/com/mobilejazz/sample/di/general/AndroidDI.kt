@@ -29,5 +29,4 @@ interface AndroidComponent {
   interface Builder {
     fun build(): AndroidComponent
   }
-
 }

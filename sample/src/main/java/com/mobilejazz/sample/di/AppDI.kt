@@ -12,13 +12,16 @@ import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
-@Module(includes = [
-  (AndroidSupportInjectionModule::class),
-  NetworkingModule::class,
-  AndroidModule::class,
-  ItemDI::class,
-  InteractorsModule::class,
-  ItemIdsDI::class])
+@Module(
+  includes = [
+    (AndroidSupportInjectionModule::class),
+    NetworkingModule::class,
+    AndroidModule::class,
+    ItemDI::class,
+    InteractorsModule::class,
+    ItemIdsDI::class
+  ]
+)
 internal abstract class AppModule {
 
   @Binds
@@ -28,7 +31,6 @@ internal abstract class AppModule {
   @Binds
   @Singleton
   internal abstract fun context(app: App): Context
-
 }
 
 @Singleton
