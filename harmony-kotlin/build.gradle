@@ -92,6 +92,9 @@ kotlin {
         // date library
         api "org.jetbrains.kotlinx:kotlinx-datetime:$kotlinx_datetime_version"
 
+        // UUID library
+        implementation "com.benasher44:uuid:$uuid_lib_version"
+
         api "co.touchlab:stately-common:$stately"
       }
     }
