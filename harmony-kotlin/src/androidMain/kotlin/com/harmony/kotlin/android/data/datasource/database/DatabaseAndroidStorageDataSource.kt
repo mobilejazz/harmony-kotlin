@@ -1,6 +1,6 @@
 package com.harmony.kotlin.android.data.datasource.database
 
-import android.content.*
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
