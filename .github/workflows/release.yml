@@ -11,8 +11,12 @@ jobs:
   deploy:
     runs-on: macos-latest
     steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "11"
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -36,8 +40,8 @@ jobs:
       - name: Publish Library
         run: ./gradlew publish --no-daemon --stacktrace
         env:
-          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_USERNAME: ${{ secrets.HARMONY_NEXUS_USERNAME }}
-          ORG_GRADLE_PROJECT_SONATYPE_NEXUS_PASSWORD: ${{ secrets.HARMONY_NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_HARMONY_NEXUS_USERNAME: ${{ secrets.HARMONY_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_HARMONY_NEXUS_PASSWORD: ${{ secrets.HARMONY_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
 env:
