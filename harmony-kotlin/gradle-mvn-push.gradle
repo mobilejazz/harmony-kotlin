@@ -87,6 +87,10 @@ def configurePom(pom) {
     }
 }
 
+def getGpgKey() {
+  return hasProperty('SIGNING_KEY') ? SIGNING_KEY : ""
+}
+
 afterEvaluate { project ->
     publishing {
         repositories {
@@ -113,9 +117,15 @@ afterEvaluate { project ->
     }
 
     signing {
-        publishing.publications.all { publication ->
-            sign publication
-        }
+//        publishing.publications.all { publication ->
+//            sign publication
+//        }
+      required { isReleaseBuild() }
+      def gpgKey = getGpgKey()
+      if(gpgKey != "") {
+        useInMemoryPgpKeys(getGpgKey(), "")
+      }
+      sign(publishing.publications)
     }
 }
 
