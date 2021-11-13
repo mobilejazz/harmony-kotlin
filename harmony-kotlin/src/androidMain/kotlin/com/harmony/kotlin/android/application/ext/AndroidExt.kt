@@ -248,7 +248,7 @@ fun Float.digits(numOfDigits: Int): String {
 // Dialogs
 // ----------------
 fun Fragment.showInfo(message: String) {
-  AlertDialog.Builder(this.activity!!)
+  AlertDialog.Builder(this.requireActivity())
     .setMessage(message)
     .create()
     .show()
