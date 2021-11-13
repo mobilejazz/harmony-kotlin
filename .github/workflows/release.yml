@@ -43,6 +43,7 @@ jobs:
           ORG_GRADLE_PROJECT_HARMONY_NEXUS_USERNAME: ${{ secrets.HARMONY_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_HARMONY_NEXUS_PASSWORD: ${{ secrets.HARMONY_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_PASSPHRASE: ${{ secrets.PASSPHRASE }}
 
 env:
   GRADLE_OPTS: -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m"

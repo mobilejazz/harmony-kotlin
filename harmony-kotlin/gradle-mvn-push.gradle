@@ -91,6 +91,10 @@ def getGpgKey() {
   return hasProperty('SIGNING_KEY') ? SIGNING_KEY : ""
 }
 
+def getGpgPassphrase() {
+  return hasProperty('PASSPHRASE') ? PASSPHRASE : ""
+}
+
 afterEvaluate { project ->
     publishing {
         repositories {
@@ -123,7 +127,7 @@ afterEvaluate { project ->
       required { isReleaseBuild() }
       def gpgKey = getGpgKey()
       if(gpgKey != "") {
-        useInMemoryPgpKeys(getGpgKey(), "")
+        useInMemoryPgpKeys(getGpgKey(), getGpgPassphrase())
       }
       sign(publishing.publications)
     }
