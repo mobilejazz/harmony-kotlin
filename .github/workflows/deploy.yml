@@ -1,6 +1,11 @@
 name: deploy
 on:
   workflow_dispatch:
+    inputs:
+      name:
+        description: 'TAG'
+        required: true
+        default: '2.0.0'
 
 jobs:
   deploy:
