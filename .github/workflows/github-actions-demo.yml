@@ -1,5 +1,5 @@
-name: Build & Linter
-on: [push]
+name: Build All Modules
+on: [ push ]
 jobs:
   build:
     runs-on: macos-latest
@@ -12,19 +12,27 @@ jobs:
           distribution: "adopt"
           java-version: "11"
 
-      - name: Build
-        run: ./gradlew build
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
 
-  # obs:
-  #  linter:
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - run: echo "single comment"
-  #      - name: Just the name of the step that you really wants to use
-  #        uses: actions/checkout@v2
-  #      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-  #      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-  #      - name: List files in the repository
-  #        run: |
-  #          ls ${{ github.workspace }}
-  #      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Cache gradle
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache konan
+        uses: actions/cache@v2
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build
+        run: ./gradlew build --no-daemon --stacktrace
+
+env:
+  GRADLE_OPTS: -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m"
