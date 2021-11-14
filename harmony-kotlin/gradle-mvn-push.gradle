@@ -18,7 +18,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 ext {
-    VERSION_NAME='2.0'
+    VERSION_NAME='2.0.1'
     GROUP='com.mobilejazz'
 
     POM_NAME='Harmony Kotlin'
