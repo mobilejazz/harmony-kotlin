@@ -103,6 +103,9 @@ kotlin {
       dependencies {
         implementation kotlin('test-common')
         implementation kotlin('test-annotations-common')
+
+//        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+//        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
       }
     }
 
@@ -114,6 +117,8 @@ kotlin {
 
         // ktor
         api "io.ktor:ktor-client-okhttp:$ktor_version"
+
+        api "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
       }
     }
 
@@ -128,6 +133,7 @@ kotlin {
       dependencies {
         api("io.ktor:ktor-client-android:$ktor_version")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version")
 
         //arch components
         api "android.arch.lifecycle:runtime:1.1.1"
