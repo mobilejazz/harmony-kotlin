@@ -1,11 +1,6 @@
 name: deploy
 on:
   workflow_dispatch:
-    inputs:
-      name:
-        description: 'TAG'
-        required: true
-        default: '2.0.0'
 
 jobs:
   deploy:
@@ -25,7 +20,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
@@ -33,7 +28,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.konan
-          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
