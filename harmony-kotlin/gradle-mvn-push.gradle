@@ -121,13 +121,11 @@ afterEvaluate { project ->
     }
 
     signing {
-//        publishing.publications.all { publication ->
-//            sign publication
-//        }
       required { isReleaseBuild() }
       def gpgKey = getGpgKey()
-      if(gpgKey != "") {
-        useInMemoryPgpKeys(getGpgKey(), getGpgPassphrase())
+      def gpgPassphrase = getGpgPassphrase()
+      if(!gpgKey.isEmpty() && !gpgPassphrase.isEmpty()) {
+        useInMemoryPgpKeys(gpgKey, gpgPassphrase)
       }
       sign(publishing.publications)
     }
