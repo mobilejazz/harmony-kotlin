@@ -18,7 +18,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 ext {
-    VERSION_NAME='2.0'
+    VERSION_NAME='2.0.1'
     GROUP='com.mobilejazz'
 
     POM_NAME='Harmony Kotlin'
@@ -87,6 +87,14 @@ def configurePom(pom) {
     }
 }
 
+def getGpgKey() {
+  return hasProperty('SIGNING_KEY') ? SIGNING_KEY : ""
+}
+
+def getGpgPassphrase() {
+  return hasProperty('PASSPHRASE') ? PASSPHRASE : ""
+}
+
 afterEvaluate { project ->
     publishing {
         repositories {
@@ -113,9 +121,13 @@ afterEvaluate { project ->
     }
 
     signing {
-        publishing.publications.all { publication ->
-            sign publication
-        }
+      required { isReleaseBuild() }
+      def gpgKey = getGpgKey()
+      def gpgPassphrase = getGpgPassphrase()
+      if(!gpgKey.isEmpty() && !gpgPassphrase.isEmpty()) {
+        useInMemoryPgpKeys(gpgKey, gpgPassphrase)
+      }
+      sign(publishing.publications)
     }
 }
 
