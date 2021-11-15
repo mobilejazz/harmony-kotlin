@@ -22,7 +22,7 @@ class DatabaseAndroidStorageDataSource(private val db: SupportSQLiteDatabase) : 
             .create()
         )
         if (cursor.moveToFirst()) {
-          val value = cursor.getBlob(cursor.getColumnIndex(BlobTable.COLUMN_VALUE))
+          val value = cursor.getBlob(cursor.getColumnIndexOrThrow(BlobTable.COLUMN_VALUE))
           cursor.close()
 
           return value
