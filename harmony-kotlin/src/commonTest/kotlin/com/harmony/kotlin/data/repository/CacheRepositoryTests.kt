@@ -6,7 +6,10 @@ import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.common.runTest
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.error.OperationNotAllowedException
-import com.harmony.kotlin.data.operation.*
+import com.harmony.kotlin.data.operation.CacheOperation
+import com.harmony.kotlin.data.operation.MainOperation
+import com.harmony.kotlin.data.operation.MainSyncOperation
+import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.anyKeyQuery
 import com.harmony.kotlin.data.query.anyVoidQuery

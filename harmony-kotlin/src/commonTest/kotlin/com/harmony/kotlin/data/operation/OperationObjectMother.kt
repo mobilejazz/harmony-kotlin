@@ -1,5 +1,5 @@
 package com.harmony.kotlin.data.operation
 
-object AnyOperation: Operation()
+object AnyOperation : Operation()
 
 fun anyOperation() = AnyOperation
