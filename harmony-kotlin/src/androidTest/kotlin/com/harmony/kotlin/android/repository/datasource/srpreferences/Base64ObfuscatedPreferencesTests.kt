@@ -19,7 +19,6 @@ class Base64ObfuscatedPreferencesTests : InstrumentationTest() {
   @Before
   fun setUp() {
     preferences.edit().clear().commit()
-
   }
 
   @Test
@@ -188,5 +187,4 @@ class Base64ObfuscatedPreferencesTests : InstrumentationTest() {
   }
 
   // endregion
-
 }
