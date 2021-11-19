@@ -41,7 +41,9 @@ subprojects {
     outputToConsole.set(true)
     // Suppress sample errors.
     filter {
-      exclude("**/sample/**")
+      exclude { entry ->
+        exclude("**/generated/**")
+      }
     }
   }
 }

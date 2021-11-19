@@ -1,0 +1,5 @@
+target 'Sample' do
+  use_frameworks!
+  platform :ios, '14.1'
+  pod 'core', :path => '../sample-core'
+end

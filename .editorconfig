@@ -1,6 +1,6 @@
 root = true
 
-[*.{kt, kts, gradle, xml}]
+[*.{kt,kts,gradle,xml}]
 indent_size = 2
 insert_final_newline = true
 max_line_length = 160

@@ -1,1 +1,1 @@
-include ':harmony-kotlin'
+include ':harmony-kotlin', ':sample-core', ':sample-android', 'sample-ios'
