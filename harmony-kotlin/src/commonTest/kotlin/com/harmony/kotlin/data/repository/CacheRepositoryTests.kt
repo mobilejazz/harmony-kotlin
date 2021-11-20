@@ -9,6 +9,7 @@ import com.harmony.kotlin.data.datasource.memory.anyInMemoryDataSource
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.CacheOperation
+import com.harmony.kotlin.data.operation.CacheSyncOperation
 import com.harmony.kotlin.data.operation.MainOperation
 import com.harmony.kotlin.data.operation.MainSyncOperation
 import com.harmony.kotlin.data.operation.anyOperation
@@ -205,6 +206,67 @@ class CacheRepositoryTests {
     val value = cacheRepository.getAll(expectedValues.query, cacheOperation)
 
     assertContentEquals(expectedValues.value, value)
+  }
+  //endregion
+
+  //region put() - tests
+
+  @Test
+  fun `should store value in main datasource when using MainOperation`() = runTest {
+    val mainDataSource = anyInMemoryDataSource<String>()
+    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource)
+    val expectedValue = anyInsertionValue()
+
+    val value = cacheRepository.put(expectedValue.query, expectedValue.value, MainOperation)
+    val mainValue = mainDataSource.get(expectedValue.query)
+
+    assertEquals(expectedValue.value, value)
+    assertEquals(expectedValue.value, mainValue)
+  }
+
+  @Test
+  fun `should store value in cache datasource when using CacheOperation`() = runTest {
+    val cacheDataSource = anyInMemoryDataSource<String>()
+    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val expectedValue = anyInsertionValue()
+
+    val value = cacheRepository.put(expectedValue.query, expectedValue.value, CacheOperation())
+    val mainValue = cacheDataSource.get(expectedValue.query)
+
+    assertEquals(expectedValue.value, value)
+    assertEquals(expectedValue.value, mainValue)
+  }
+
+  @Test
+  fun `should store the value first in main datasouce and cache datasource when using MainSyncOperation`() = runTest {
+    val cacheDataSource = anyInMemoryDataSource<String>()
+    val mainDataSource = anyInMemoryDataSource<String>()
+    val cacheRepository = givenCacheRepository(mainDataSource, cacheDataSource)
+    val expectedValue = anyInsertionValue()
+
+    val value = cacheRepository.put(expectedValue.query, expectedValue.value, MainSyncOperation)
+    val mainDataSourceValue = mainDataSource.get(expectedValue.query)
+    val cacheDataSourceValue = cacheDataSource.get(expectedValue.query)
+
+    assertEquals(expectedValue.value, value)
+    assertEquals(expectedValue.value, mainDataSourceValue)
+    assertEquals(expectedValue.value, cacheDataSourceValue)
+  }
+
+  @Test
+  fun `should store the values first in cache datasouce and main datasource when using CacheSyncOperation`() = runTest {
+    val cacheDataSource = anyInMemoryDataSource<String>()
+    val mainDataSource = anyInMemoryDataSource<String>()
+    val cacheRepository = givenCacheRepository(mainDataSource, cacheDataSource)
+    val expectedValue = anyInsertionValue()
+
+    val value = cacheRepository.put(expectedValue.query, expectedValue.value, CacheSyncOperation())
+    val cacheDataSourceValue = cacheDataSource.get(expectedValue.query)
+    val mainDataSourceValue = mainDataSource.get(expectedValue.query)
+
+    assertEquals(expectedValue.value, value)
+    assertEquals(expectedValue.value, mainDataSourceValue)
+    assertEquals(expectedValue.value, cacheDataSourceValue)
   }
   //endregion
 
