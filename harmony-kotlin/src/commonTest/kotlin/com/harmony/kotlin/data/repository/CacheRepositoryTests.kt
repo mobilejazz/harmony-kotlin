@@ -6,6 +6,7 @@ import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.common.runTest
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.datasource.memory.anyInMemoryDataSource
+import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.ObjectNotValidException
 import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.CacheOperation
@@ -15,6 +16,7 @@ import com.harmony.kotlin.data.operation.MainOperation
 import com.harmony.kotlin.data.operation.MainSyncOperation
 import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.anyKeyQuery
+import com.harmony.kotlin.data.query.anyQuery
 import com.harmony.kotlin.data.query.anyVoidQuery
 import com.harmony.kotlin.data.utilities.InsertionValue
 import com.harmony.kotlin.data.utilities.InsertionValues
@@ -365,6 +367,71 @@ class CacheRepositoryTests {
   //endregion
 
   //region delete() - tests
+
+  @Test
+  fun `should delete value from the main datasource when using MainOperation`() = runTest {
+    val expectedValue = anyInsertionValue()
+    val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheRepository = givenCacheRepository(mainDataSource)
+
+    cacheRepository.delete(expectedValue.query, MainOperation)
+
+    assertFailsWith<DataNotFoundException> {
+      mainDataSource.get(expectedValue.query)
+    }
+  }
+
+  @Test
+  fun `should delete value from the cache datasource when using CacheOperation`() = runTest {
+    val expectedValue = anyInsertionValue()
+    val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+
+    cacheRepository.delete(expectedValue.query, CacheOperation())
+
+    assertFailsWith<DataNotFoundException> {
+      cacheDataSource.get(expectedValue.query)
+    }
+  }
+
+  @Test
+  fun `should delete value from the main datasource and cache datasource when using MainSyncOperation`() = runTest {
+    val expectedValue = anyInsertionValue()
+    val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+
+    cacheRepository.delete(expectedValue.query, MainSyncOperation)
+
+    assertFailsWith<DataNotFoundException> {
+      mainDataSource.get(expectedValue.query)
+      cacheDataSource.get(expectedValue.query)
+    }
+  }
+
+  @Test
+  fun `should delete value from the cache datasource and main datasource when using CacheSyncOperation`() = runTest {
+    val expectedValue = anyInsertionValue()
+    val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+
+    cacheRepository.delete(expectedValue.query, CacheSyncOperation())
+
+    assertFailsWith<DataNotFoundException> {
+      cacheDataSource.get(expectedValue.query)
+      mainDataSource.get(expectedValue.query)
+    }
+  }
+
+  @Test
+  fun `should throw operation not allowed using delete()`() = runTest {
+    val cacheRepository = givenCacheRepository<String>()
+
+    assertFailsWith<OperationNotAllowedException> {
+      cacheRepository.delete(anyQuery(), anyOperation())
+    }
+  }
 
   //endregion
 
