@@ -60,12 +60,10 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should throw OperationNotAllowedException exception if invalid operation is provided when get() is called`() = runTest {
+  fun `should throw operation not allowed using get()`() = runTest {
+    val cacheRepository = givenCacheRepository<String>()
     assertFailsWith<OperationNotAllowedException> {
-      val cacheRepository = givenCacheRepository<String>()
-      val invalidOperation = anyOperation()
-
-      cacheRepository.get(anyVoidQuery(), invalidOperation)
+      cacheRepository.get(anyQuery(), anyOperation())
     }
   }
 
@@ -151,12 +149,11 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should throw OperationNotAllowedException exception if invalid operation is provided when getAll() is called`() = runTest {
-    assertFailsWith<OperationNotAllowedException> {
-      val cacheRepository = givenCacheRepository<String>()
-      val invalidOperation = anyOperation()
+  fun `should throw operation not allowed using getAll()`() = runTest {
+    val cacheRepository = givenCacheRepository<String>()
 
-      cacheRepository.getAll(anyVoidQuery(), invalidOperation)
+    assertFailsWith<OperationNotAllowedException> {
+      cacheRepository.getAll(anyQuery(), anyOperation())
     }
   }
 
@@ -287,6 +284,15 @@ class CacheRepositoryTests {
     assertEquals(expectedValue.value, mainDataSourceValue)
     assertEquals(expectedValue.value, cacheDataSourceValue)
   }
+
+  @Test
+  fun `should throw operation not allowed using put()`() = runTest {
+    val cacheRepository = givenCacheRepository<String>()
+
+    assertFailsWith<OperationNotAllowedException> {
+      cacheRepository.put(anyQuery(), randomString(), anyOperation())
+    }
+  }
   //endregion
 
   //region putAll() - tests
@@ -364,6 +370,15 @@ class CacheRepositoryTests {
     assertContentEquals(expectedValues.value, mainDataSourceValue)
     assertContentEquals(expectedValues.value, cacheDataSourceValue)
   }
+
+  @Test
+  fun `should throw operation not allowed using putAll()`() = runTest {
+    val cacheRepository = givenCacheRepository<String>()
+
+    assertFailsWith<OperationNotAllowedException> {
+      cacheRepository.putAll(anyQuery(), listOf(randomString()), anyOperation())
+    }
+  }
   //endregion
 
   //region delete() - tests
@@ -432,7 +447,6 @@ class CacheRepositoryTests {
       cacheRepository.delete(anyQuery(), anyOperation())
     }
   }
-
   //endregion
 
   private fun <T> givenCacheRepository(
