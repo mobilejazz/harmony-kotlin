@@ -1,5 +1,6 @@
 package com.harmony.kotlin.data.repository
 
+import com.harmony.core.db.Cache
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
@@ -30,16 +31,17 @@ class CacheRepository<V>(
     return when (operation) {
       is DefaultOperation -> get(query, CacheSyncOperation())
       is MainOperation -> getMain.get(query)
-      is CacheOperation -> getCache.get(query).let {
-        try {
-          if (!validator.isValid(it)) {
+      is CacheOperation -> {
+        val cacheValue = getCache.get(query)
+        return try {
+          if (!validator.isValid(cacheValue)) {
             throw ObjectNotValidException()
           } else {
-            it
+            cacheValue
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            getCache.get(query)
+            cacheValue
           } else {
             throw cacheException
           }
@@ -85,21 +87,24 @@ class CacheRepository<V>(
     return when (operation) {
       is DefaultOperation -> getAll(query, CacheSyncOperation())
       is MainOperation -> getMain.getAll(query)
-      is CacheOperation -> getCache.getAll(query).map {
-        try {
-          if (!validator.isValid(it)) {
+      is CacheOperation -> {
+        val cacheValues = getCache.getAll(query)
+        return try {
+          val invalids = cacheValues.map { validator.isValid(it) }.filter { isValid -> !isValid }
+          if (invalids.isNotEmpty()) {
             throw ObjectNotValidException()
           } else {
-            it
+            cacheValues
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            getCache.get(query)
+            cacheValues
           } else {
             throw cacheException
           }
         }
       }
+
       is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
       is CacheSyncOperation -> {
         // Try cache
