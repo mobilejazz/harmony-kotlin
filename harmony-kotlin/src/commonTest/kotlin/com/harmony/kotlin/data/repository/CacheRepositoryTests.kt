@@ -44,7 +44,7 @@ class CacheRepositoryTests {
     val expectedValue = randomString()
     val anyQuery = anyKeyQuery(randomString())
     val mainDataSource = anyInMemoryDataSource(listOf(InsertionValue(anyQuery, expectedValue)))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource)
 
     val value = cacheRepository.get(anyQuery, MainOperation)
 
@@ -56,7 +56,7 @@ class CacheRepositoryTests {
     val expectedValue = randomString()
     val anyQuery = anyKeyQuery(randomString())
     val cacheDataSource = anyInMemoryDataSource(listOf(InsertionValue(anyQuery, expectedValue)))
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
 
     val value = cacheRepository.get(anyQuery, CacheOperation())
 
@@ -92,7 +92,7 @@ class CacheRepositoryTests {
   fun `should response the value from the cache when CacheOperation is provided and there is values within the cache when get() is called`() = runTest {
     val expectedInsertionValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(listOf(expectedInsertionValue))
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
 
     val value = cacheRepository.get(expectedInsertionValue.query, CacheOperation())
 
@@ -105,7 +105,7 @@ class CacheRepositoryTests {
       val anyInsertionValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(listOf(anyInsertionValue))
       val validator = anyMockValidator<String>(validatorResponse = false)
-      val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+      val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
       cacheRepository.get(anyInsertionValue.query, CacheOperation())
     }
@@ -118,7 +118,7 @@ class CacheRepositoryTests {
     val cacheDataSource = anyInMemoryDataSource(listOf(expectedInsertionValue))
 
     val validator = anyMockValidator<String>(validatorResponse = false)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val cacheOperation = CacheOperation(fallback = { return@CacheOperation true })
     val value = cacheRepository.get(expectedInsertionValue.query, cacheOperation)
@@ -131,7 +131,7 @@ class CacheRepositoryTests {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val validator = anyMockValidator<String>(true)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val value = cacheRepository.get(expectedValue.query, CacheSyncOperation())
 
@@ -143,7 +143,7 @@ class CacheRepositoryTests {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource<String>()
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource)
 
     val value = cacheRepository.get(expectedValue.query, CacheSyncOperation())
     val cacheValue = cacheDataSource.get(expectedValue.query)
@@ -158,7 +158,7 @@ class CacheRepositoryTests {
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val validator = anyMockValidator<String>(false)
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource, validator)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource, validator)
 
     val value = cacheRepository.get(expectedValue.query, CacheSyncOperation())
     val cacheValue = cacheDataSource.get(expectedValue.query)
@@ -215,7 +215,7 @@ class CacheRepositoryTests {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val validator = MockValidator<String>(false)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val value = cacheRepository.get(expectedValue.query, CacheSyncOperation(fallback = { _, _ -> true }))
 
@@ -230,7 +230,7 @@ class CacheRepositoryTests {
   fun `should retrieves the value from the main datasource when MainOperation is provided when getAll() is called`() = runTest {
     val expectedValues = anyInsertionValues()
     val mainDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource)
 
     val value = cacheRepository.getAll(expectedValues.query, MainOperation)
 
@@ -242,7 +242,7 @@ class CacheRepositoryTests {
   fun `should retrieves the value from the cache datasource when CacheOperation is provided when getAll() is called`() = runTest {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheOperation())
 
@@ -277,7 +277,7 @@ class CacheRepositoryTests {
   fun `should response the value from the cache when CacheOperation is provided and there is values within the cache when getAll() is called`() = runTest {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheOperation())
 
@@ -290,7 +290,7 @@ class CacheRepositoryTests {
       val expectedValues = anyInsertionValues()
       val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
       val validator = anyMockValidator<String>(validatorResponse = false)
-      val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+      val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
       cacheRepository.getAll(expectedValues.query, CacheOperation())
     }
@@ -301,7 +301,7 @@ class CacheRepositoryTests {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
     val validator = anyMockValidator<String>(validatorResponse = false)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val cacheOperation = CacheOperation(fallback = { return@CacheOperation true })
     val value = cacheRepository.getAll(expectedValues.query, cacheOperation)
@@ -309,13 +309,12 @@ class CacheRepositoryTests {
     assertContentEquals(expectedValues.value, value)
   }
 
-
   @Test
   fun `should return cache value when it's valid using CacheSyncOperation in getAll()`() = runTest {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
     val validator = anyMockValidator<String>(true)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation())
 
@@ -327,7 +326,7 @@ class CacheRepositoryTests {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource<String>()
     val mainDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation())
     val cacheValue = cacheDataSource.getAll(expectedValues.query)
@@ -342,7 +341,7 @@ class CacheRepositoryTests {
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
     val mainDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
     val validator = anyMockValidator<String>(false)
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource, validator)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource, validator)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation())
     val cacheValue = cacheDataSource.getAll(expectedValues.query)
@@ -399,7 +398,7 @@ class CacheRepositoryTests {
     val expectedValues = anyInsertionValues()
     val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
     val validator = MockValidator<String>(false)
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource, validator = validator)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
     val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation(fallback = { _, _ -> true }))
 
@@ -413,7 +412,7 @@ class CacheRepositoryTests {
   @Test
   fun `should store value in main datasource when using MainOperation`() = runTest {
     val mainDataSource = anyInMemoryDataSource<String>()
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource)
     val expectedValue = anyInsertionValue()
 
     val value = cacheRepository.put(expectedValue.query, expectedValue.value, MainOperation)
@@ -426,7 +425,7 @@ class CacheRepositoryTests {
   @Test
   fun `should store value in cache datasource when using CacheOperation`() = runTest {
     val cacheDataSource = anyInMemoryDataSource<String>()
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
     val expectedValue = anyInsertionValue()
 
     val value = cacheRepository.put(expectedValue.query, expectedValue.value, CacheOperation())
@@ -499,7 +498,7 @@ class CacheRepositoryTests {
   @Test
   fun `should store values in main datasource when using MainOperation`() = runTest {
     val mainDataSource = anyInMemoryDataSource<String>()
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource)
     val expectedValues = anyInsertionValues()
 
     val value = cacheRepository.putAll(expectedValues.query, expectedValues.value, MainOperation)
@@ -512,7 +511,7 @@ class CacheRepositoryTests {
   @Test
   fun `should store values in cache datasource when using CacheOperation`() = runTest {
     val cacheDataSource = anyInMemoryDataSource<String>()
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
     val expectedValues = anyInsertionValues()
 
     val value = cacheRepository.putAll(expectedValues.query, expectedValues.value, CacheOperation())
@@ -599,7 +598,7 @@ class CacheRepositoryTests {
   fun `should delete value from the cache datasource when using CacheOperation`() = runTest {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val cacheRepository = givenCacheRepository(cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(cache = cacheDataSource)
 
     cacheRepository.delete(expectedValue.query, CacheOperation())
 
@@ -613,7 +612,7 @@ class CacheRepositoryTests {
     val expectedValue = anyInsertionValue()
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource)
 
     cacheRepository.delete(expectedValue.query, MainSyncOperation)
 
@@ -628,7 +627,7 @@ class CacheRepositoryTests {
     val expectedValue = anyInsertionValue()
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val cacheRepository = givenCacheRepository(mainDataSource = mainDataSource, cacheDataSource = cacheDataSource)
+    val cacheRepository = givenCacheRepository(main = mainDataSource, cache = cacheDataSource)
 
     cacheRepository.delete(expectedValue.query, CacheSyncOperation())
 
@@ -649,13 +648,13 @@ class CacheRepositoryTests {
   //endregion
 
   private fun <T> givenCacheRepository(
-    mainDataSource: InMemoryDataSource<T> = anyInMemoryDataSource(),
-    cacheDataSource: InMemoryDataSource<T> = anyInMemoryDataSource(),
+    main: InMemoryDataSource<T> = anyInMemoryDataSource(),
+    cache: InMemoryDataSource<T> = anyInMemoryDataSource(),
     validator: Validator<T> = anyMockValidator()
   ): CacheRepository<T> {
     return CacheRepository(
-      cacheDataSource, cacheDataSource, cacheDataSource,
-      mainDataSource, mainDataSource, mainDataSource,
+      cache, cache, cache,
+      main, main, main,
       validator
     )
   }
