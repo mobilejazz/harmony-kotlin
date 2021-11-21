@@ -50,7 +50,6 @@ class CacheRepository<V>(
         putCache.put(query, it)
       }
       is CacheSyncOperation -> {
-        // Try cache
         try {
           return getCache.get(query).let {
             if (!validator.isValid(it)) {
@@ -60,7 +59,6 @@ class CacheRepository<V>(
             }
           }
         } catch (cacheException: Exception) {
-          // If cache fails, try main data source
           try {
             when (cacheException) {
               is ObjectNotValidException,
@@ -105,7 +103,6 @@ class CacheRepository<V>(
 
       is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
       is CacheSyncOperation -> {
-        // Try cache
         try {
           return getCache.getAll(query).map {
             if (!validator.isValid(it)) {
@@ -115,7 +112,6 @@ class CacheRepository<V>(
             }
           }
         } catch (cacheException: Exception) {
-          // If cache fails, try main data source
           try {
             when (cacheException) {
               is ObjectNotValidException,
