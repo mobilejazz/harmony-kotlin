@@ -21,7 +21,6 @@ import com.harmony.kotlin.data.operation.MainSyncOperation
 import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.anyKeyQuery
 import com.harmony.kotlin.data.query.anyQuery
-import com.harmony.kotlin.data.query.anyVoidQuery
 import com.harmony.kotlin.data.utilities.InsertionValue
 import com.harmony.kotlin.data.utilities.InsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
