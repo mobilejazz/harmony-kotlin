@@ -69,8 +69,7 @@ class CacheRepository<V>(
               else -> throw cacheException
             }
           } catch (mainException: Exception) {
-            // If main data source fails but operation.fallback == true then try again cache without checking validity
-            if (operation.fallback(mainException) && cacheException is ObjectNotValidException) {
+            if (operation.fallback(mainException, cacheException)) {
               getCache.get(query)
             } else {
               throw mainException
@@ -125,8 +124,7 @@ class CacheRepository<V>(
               else -> throw cacheException
             }
           } catch (mainException: Exception) {
-            // If main data source fails but operation.fallback == true then try again cache without checking validity
-            if (operation.fallback(mainException) && cacheException is ObjectNotValidException) {
+            if (operation.fallback(mainException, cacheException)) {
               getCache.getAll(query)
             } else {
               throw mainException
