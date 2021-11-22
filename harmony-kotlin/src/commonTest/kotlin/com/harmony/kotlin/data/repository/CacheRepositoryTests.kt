@@ -40,7 +40,7 @@ class CacheRepositoryTests {
   //region get() - tests
 
   @Test
-  fun `should retrieves the value from the main datasource when MainOperation is provided when get() is called`() = runTest {
+  fun `should retrieve the value from the main datasource when calling get() with MainOperation`() = runTest {
     val expectedValue = randomString()
     val anyQuery = anyKeyQuery(randomString())
     val mainDataSource = anyInMemoryDataSource(listOf(InsertionValue(anyQuery, expectedValue)))
@@ -52,7 +52,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should retrieves the value from the cache datasource when CacheOperation is provided when get() is called`() = runTest {
+  fun `should retrieve the value from the cache datasource when calling get() with CacheOperation`() = runTest {
     val expectedValue = randomString()
     val anyQuery = anyKeyQuery(randomString())
     val cacheDataSource = anyInMemoryDataSource(listOf(InsertionValue(anyQuery, expectedValue)))
@@ -64,7 +64,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should throw operation not allowed using get()`() = runTest {
+  fun `should throw operation not allowed when calling get() given an unsupported Operation`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
     assertFailsWith<OperationNotAllowedException> {
       cacheRepository.get(anyQuery(), anyOperation())
@@ -72,7 +72,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should store the response from the main datasource into the cache datasource when MainSyncOperation is provided when get() is called`() = runTest {
+  fun `should store the response from the main datasource into the cache datasource when calling get() with MainSyncOperation`() = runTest {
     val expectedValue = randomString()
     val anyQuery = anyKeyQuery(randomString())
     val insertionValues = listOf(InsertionValue(anyQuery, expectedValue))
@@ -89,7 +89,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should response the value from the cache when CacheOperation is provided and there is values within the cache when get() is called`() = runTest {
+  fun `should response the value from the cache when calling get() with CacheOperation and there is values within the cache`() = runTest {
     val expectedInsertionValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(listOf(expectedInsertionValue))
     val cacheRepository = givenCacheRepository(cache = cacheDataSource)
@@ -100,7 +100,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should throw ObjectNotValidException when the object is not valid from the cache when get() is called`() = runTest {
+  fun `should throw ObjectNotValidException when calling get() with CacheOperation given that the object is not valid`() = runTest {
     assertFailsWith<ObjectNotValidException> {
       val anyInsertionValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(listOf(anyInsertionValue))
@@ -112,22 +112,23 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should response the value from the cache when is invalid and CacheOperation fallback is set to true when get() called`() = runTest {
-    val expectedInsertionValue = anyInsertionValue()
+  fun `should response the value from the cache when calling get() with CacheOperation given that the object is not valid and CacheOperation.fallback returns true`() =
+    runTest {
+      val expectedInsertionValue = anyInsertionValue()
 
-    val cacheDataSource = anyInMemoryDataSource(listOf(expectedInsertionValue))
+      val cacheDataSource = anyInMemoryDataSource(listOf(expectedInsertionValue))
 
-    val validator = anyMockValidator<String>(validatorResponse = false)
-    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
+      val validator = anyMockValidator<String>(validatorResponse = false)
+      val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
-    val cacheOperation = CacheOperation(fallback = { return@CacheOperation true })
-    val value = cacheRepository.get(expectedInsertionValue.query, cacheOperation)
+      val cacheOperation = CacheOperation(fallback = { return@CacheOperation true })
+      val value = cacheRepository.get(expectedInsertionValue.query, cacheOperation)
 
-    assertEquals(expectedInsertionValue.value, value)
-  }
+      assertEquals(expectedInsertionValue.value, value)
+    }
 
   @Test
-  fun `should return cache value when it's valid using CacheSyncOperation in get()`() = runTest {
+  fun `should return cache value when calling get() with CacheSyncOperation given that cache value exists and is valid`() = runTest {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val validator = anyMockValidator<String>(true)
@@ -139,7 +140,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should request to main datasource when not found in the cache and store it when CacheSyncOperation in get()`() = runTest {
+  fun `should request to main datasource and store it into cache when calling get() with CacheSyncOperation given that cache value doesn't exist`() = runTest {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource<String>()
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
@@ -153,7 +154,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should request to main datasource and store it into cache when cache value not valid using CacheSyncOperation in get()`() = runTest {
+  fun `should request to main datasource and store it into cache when calling get() with CacheSyncOperation given that cache value not valid`() = runTest {
     val expectedValue = anyInsertionValue()
     val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
     val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
@@ -168,59 +169,63 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should request to main datasource and store it into cache when cache throw MappingException using CacheSyncOperation in get()`() = runTest {
-    val expectedValue = anyInsertionValue()
-    val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    var counter = 0
-    val mockMapper = ClosureMapper<String, String> {
-      if (counter == 0) {
-        counter++
-        throw MappingException()
-      } else {
-        it
+  fun `should request to main datasource and store it into cache when calling get() with CacheSyncOperation given that cache throw MappingException`() =
+    runTest {
+      val expectedValue = anyInsertionValue()
+      val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+      var counter = 0
+      val mockMapper = ClosureMapper<String, String> {
+        if (counter == 0) {
+          counter++
+          throw MappingException()
+        } else {
+          it
+        }
+      }
+      val cacheDataSourceMapper = DataSourceMapper(cacheDataSource, cacheDataSource, cacheDataSource, mockMapper, mockMapper)
+      val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+      val cacheRepository = CacheRepository(
+        cacheDataSourceMapper, cacheDataSourceMapper, cacheDataSourceMapper,
+        mainDataSource, mainDataSource, mainDataSource,
+        anyMockValidator()
+      )
+
+      val value = cacheRepository.get(expectedValue.query, CacheSyncOperation())
+      val cacheValue = cacheDataSource.get(expectedValue.query)
+
+      assertEquals(expectedValue.value, value)
+      assertEquals(expectedValue.value, cacheValue)
+    }
+
+  @Test
+  fun `should throw exception when calling get() with CacheSyncOperation given that cache throws the exception and CacheSyncOperation.fallback returns false`() =
+    runTest {
+      val mainDataSource = anyVoidDataSource<String>()
+      val cacheDataSource = anyVoidDataSource<String>()
+      val cacheRepository = CacheRepository(
+        cacheDataSource, cacheDataSource, cacheDataSource,
+        mainDataSource, mainDataSource, mainDataSource,
+        MockValidator(true)
+      )
+
+      assertFailsWith<UnsupportedOperationException> {
+        cacheRepository.get(anyQuery(), CacheSyncOperation())
       }
     }
-    val cacheDataSourceMapper = DataSourceMapper(cacheDataSource, cacheDataSource, cacheDataSource, mockMapper, mockMapper)
-    val mainDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val cacheRepository = CacheRepository(
-      cacheDataSourceMapper, cacheDataSourceMapper, cacheDataSourceMapper,
-      mainDataSource, mainDataSource, mainDataSource,
-      anyMockValidator()
-    )
-
-    val value = cacheRepository.get(expectedValue.query, CacheSyncOperation())
-    val cacheValue = cacheDataSource.get(expectedValue.query)
-
-    assertEquals(expectedValue.value, value)
-    assertEquals(expectedValue.value, cacheValue)
-  }
 
   @Test
-  fun `should throw exception when not handled by the cache and fallback is false using CacheSyncOperation in get()`() = runTest {
-    val mainDataSource = anyVoidDataSource<String>()
-    val cacheDataSource = anyVoidDataSource<String>()
-    val cacheRepository = CacheRepository(
-      cacheDataSource, cacheDataSource, cacheDataSource,
-      mainDataSource, mainDataSource, mainDataSource,
-      MockValidator(true)
-    )
+  fun
+    `should get cached value when calling get() with CacheSyncOperation given that cached value isn't valid and CacheSyncOperation.fallback returns true`() =
+    runTest {
+      val expectedValue = anyInsertionValue()
+      val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
+      val validator = MockValidator<String>(false)
+      val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
 
-    assertFailsWith<UnsupportedOperationException> {
-      cacheRepository.get(anyQuery(), CacheSyncOperation())
+      val value = cacheRepository.get(expectedValue.query, CacheSyncOperation(fallback = { _, _ -> true }))
+
+      assertEquals(expectedValue.value, value)
     }
-  }
-
-  @Test
-  fun `should return cache value when fallback is true using CacheSyncOperation in get()`() = runTest {
-    val expectedValue = anyInsertionValue()
-    val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
-    val validator = MockValidator<String>(false)
-    val cacheRepository = givenCacheRepository(cache = cacheDataSource, validator = validator)
-
-    val value = cacheRepository.get(expectedValue.query, CacheSyncOperation(fallback = { _, _ -> true }))
-
-    assertEquals(expectedValue.value, value)
-  }
 
   //endregion
 
