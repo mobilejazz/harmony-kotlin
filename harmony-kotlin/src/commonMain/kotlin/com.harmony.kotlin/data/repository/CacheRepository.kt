@@ -31,8 +31,8 @@ class CacheRepository<V>(
       is DefaultOperation -> get(query, CacheSyncOperation())
       is MainOperation -> getMain.get(query)
       is CacheOperation -> {
-        val cacheValue = getCache.get(query)
         return try {
+          val cacheValue = getCache.get(query)
           if (!validator.isValid(cacheValue)) {
             throw ObjectNotValidException()
           } else {
@@ -40,7 +40,7 @@ class CacheRepository<V>(
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            cacheValue
+            getCache.get(query)
           } else {
             throw cacheException
           }
@@ -50,7 +50,6 @@ class CacheRepository<V>(
         putCache.put(query, it)
       }
       is CacheSyncOperation -> {
-        // Try cache
         try {
           return getCache.get(query).let {
             if (!validator.isValid(it)) {
@@ -60,7 +59,6 @@ class CacheRepository<V>(
             }
           }
         } catch (cacheException: Exception) {
-          // If cache fails, try main data source
           try {
             when (cacheException) {
               is ObjectNotValidException,
@@ -69,8 +67,7 @@ class CacheRepository<V>(
               else -> throw cacheException
             }
           } catch (mainException: Exception) {
-            // If main data source fails but operation.fallback == true then try again cache without checking validity
-            if (operation.fallback(mainException) && cacheException is ObjectNotValidException) {
+            if (operation.fallback(mainException, cacheException)) {
               getCache.get(query)
             } else {
               throw mainException
@@ -87,8 +84,8 @@ class CacheRepository<V>(
       is DefaultOperation -> getAll(query, CacheSyncOperation())
       is MainOperation -> getMain.getAll(query)
       is CacheOperation -> {
-        val cacheValues = getCache.getAll(query)
         return try {
+          val cacheValues = getCache.getAll(query)
           val invalids = cacheValues.map { validator.isValid(it) }.filter { isValid -> !isValid }
           if (invalids.isNotEmpty()) {
             throw ObjectNotValidException()
@@ -97,7 +94,7 @@ class CacheRepository<V>(
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            cacheValues
+            getCache.getAll(query)
           } else {
             throw cacheException
           }
@@ -106,7 +103,6 @@ class CacheRepository<V>(
 
       is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
       is CacheSyncOperation -> {
-        // Try cache
         try {
           return getCache.getAll(query).map {
             if (!validator.isValid(it)) {
@@ -116,7 +112,6 @@ class CacheRepository<V>(
             }
           }
         } catch (cacheException: Exception) {
-          // If cache fails, try main data source
           try {
             when (cacheException) {
               is ObjectNotValidException,
@@ -125,8 +120,7 @@ class CacheRepository<V>(
               else -> throw cacheException
             }
           } catch (mainException: Exception) {
-            // If main data source fails but operation.fallback == true then try again cache without checking validity
-            if (operation.fallback(mainException) && cacheException is ObjectNotValidException) {
+            if (operation.fallback(mainException, cacheException)) {
               getCache.getAll(query)
             } else {
               throw mainException
