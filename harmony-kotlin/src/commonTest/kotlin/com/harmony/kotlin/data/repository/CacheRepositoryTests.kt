@@ -112,7 +112,7 @@ class CacheRepositoryTests {
   }
 
   @Test
-  fun `should response the value from the cache when calling get() with CacheOperation given that the object is not valid and CacheOperation.fallback returns true`() =
+  fun `should get cached value when calling get() with CacheOperation given that the object is not valid and fallback returns true`() =
     runTest {
       val expectedInsertionValue = anyInsertionValue()
 
@@ -198,7 +198,7 @@ class CacheRepositoryTests {
     }
 
   @Test
-  fun `should throw exception when calling get() with CacheSyncOperation given that cache throws the exception and CacheSyncOperation.fallback returns false`() =
+  fun `should throw exception when calling get() with CacheSyncOperation given that cache throws a exception and fallback returns false`() =
     runTest {
       val mainDataSource = anyVoidDataSource<String>()
       val cacheDataSource = anyVoidDataSource<String>()
@@ -215,7 +215,7 @@ class CacheRepositoryTests {
 
   @Test
   fun
-    `should get cached value when calling get() with CacheSyncOperation given that cached value isn't valid and CacheSyncOperation.fallback returns true`() =
+  `should get cached value when calling get() with CacheSyncOperation given that cached value isn't valid and fallback returns true`() =
     runTest {
       val expectedValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
