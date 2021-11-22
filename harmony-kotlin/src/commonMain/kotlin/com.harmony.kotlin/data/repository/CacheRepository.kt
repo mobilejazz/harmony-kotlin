@@ -31,8 +31,8 @@ class CacheRepository<V>(
       is DefaultOperation -> get(query, CacheSyncOperation())
       is MainOperation -> getMain.get(query)
       is CacheOperation -> {
-        val cacheValue = getCache.get(query)
         return try {
+          val cacheValue = getCache.get(query)
           if (!validator.isValid(cacheValue)) {
             throw ObjectNotValidException()
           } else {
@@ -40,7 +40,7 @@ class CacheRepository<V>(
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            cacheValue
+            getCache.get(query)
           } else {
             throw cacheException
           }
@@ -84,8 +84,8 @@ class CacheRepository<V>(
       is DefaultOperation -> getAll(query, CacheSyncOperation())
       is MainOperation -> getMain.getAll(query)
       is CacheOperation -> {
-        val cacheValues = getCache.getAll(query)
         return try {
+          val cacheValues = getCache.getAll(query)
           val invalids = cacheValues.map { validator.isValid(it) }.filter { isValid -> !isValid }
           if (invalids.isNotEmpty()) {
             throw ObjectNotValidException()
@@ -94,7 +94,7 @@ class CacheRepository<V>(
           }
         } catch (cacheException: Exception) {
           if (operation.fallback(cacheException)) {
-            cacheValues
+            getCache.getAll(query)
           } else {
             throw cacheException
           }
