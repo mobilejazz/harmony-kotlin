@@ -84,8 +84,7 @@ class CacheSQLStorageDataSourceTests {
 
     val value = cacheSQLStorageDataSource.getAll(expectedValues.query)
 
-    // todo: add asserts to check that both arrays are equals
-    assertTrue { expectedValues.value.size == value.size }
+    assertByteArrayListContentEquals(expectedValues.value, value)
   }
 
   @Test
@@ -150,7 +149,54 @@ class CacheSQLStorageDataSourceTests {
     assertContentEquals(valueToUpdate, valueFromPut)
     assertContentEquals(valueToUpdate, valueFromGet)
   }
+  //endregion
 
+  //region - putAll()
+
+  @Test
+  fun `should throw illegal argument exception when values is null`() = runTest {
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
+
+    assertFailsWith<IllegalArgumentException> {
+      cacheSQLStorageDataSource.putAll(anyKeyQuery(), null)
+    }
+  }
+
+  @Test
+  fun `should throw query not supported when query is invalid using putAll()`() = runTest {
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
+
+    assertFailsWith<QueryNotSupportedException> {
+      cacheSQLStorageDataSource.putAll(anyQuery(), listOf(randomByteArray()))
+    }
+  }
+
+  @Test
+  fun `should insert values when not exist`() = runTest {
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
+    val expectedValues = anyByteArrayInsertionValues()
+
+    val valuesFromPutAll = cacheSQLStorageDataSource.putAll(expectedValues.query, expectedValues.value)
+    val valuesFromGetAll = cacheSQLStorageDataSource.getAll(expectedValues.query)
+
+    assertByteArrayListContentEquals(expectedValues.value, valuesFromPutAll)
+    assertByteArrayListContentEquals(expectedValues.value, valuesFromGetAll)
+  }
+
+  @Test
+  fun `should update values when exist`() = runTest {
+    val insertedValues = anyByteArrayInsertionValues()
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(
+      putAllValues = listOf(insertedValues)
+    )
+
+    val valuesToUpdate = listOf(randomByteArray())
+    val valueFromPut = cacheSQLStorageDataSource.putAll(insertedValues.query, valuesToUpdate)
+    val valueFromGet = cacheSQLStorageDataSource.getAll(insertedValues.query)
+
+    assertByteArrayListContentEquals(valuesToUpdate, valueFromPut)
+    assertByteArrayListContentEquals(valuesToUpdate, valueFromGet)
+  }
   //endregion
 
   private fun givenCacheSQLStorageDataSource(
@@ -171,5 +217,11 @@ class CacheSQLStorageDataSourceTests {
     }
 
     return cacheSQLStorageDataSource
+  }
+
+  private fun assertByteArrayListContentEquals(expectedByteArrayList: List<ByteArray>, byteArrayList: List<ByteArray>, message: String? = null) {
+    expectedByteArrayList.forEachIndexed { idx, byteArray ->
+      assertContentEquals(byteArray, byteArrayList[idx], message)
+    }
   }
 }

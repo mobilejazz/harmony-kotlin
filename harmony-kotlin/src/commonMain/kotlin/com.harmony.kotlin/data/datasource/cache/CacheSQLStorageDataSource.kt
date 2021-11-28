@@ -53,7 +53,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
   }
 
   override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> {
-    return when (query) {
+    when (query) {
       is KeyQuery -> {
         value?.let {
           database.transaction {
@@ -62,7 +62,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
             }
           }
           return it
-        } ?: emptyList<ByteArray>()
+        } ?: throw IllegalArgumentException("values != null")
       }
       else -> notSupportedQuery()
     }
