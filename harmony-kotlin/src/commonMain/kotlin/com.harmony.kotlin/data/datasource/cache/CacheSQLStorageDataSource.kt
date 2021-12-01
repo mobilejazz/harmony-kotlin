@@ -30,8 +30,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
         database.cacheQueries.selectAll().executeAsList()
       }
       is KeyQuery -> {
-        val sql = "${query.key}-%"
-        database.cacheQueries.value(sql).executeAsList()
+        database.cacheQueries.value(listSQLQuery(query)).executeAsList()
       }
       else -> notSupportedQuery()
     }
@@ -57,6 +56,8 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
       is KeyQuery -> {
         value?.let {
           database.transaction {
+            // delete the current content, because we can't update it as we store it by indexes instead of the whole context
+            database.cacheQueries.delete(listSQLQuery(query))
             it.forEachIndexed { idx, raw ->
               database.cacheQueries.insertOrUpdate("${query.key}-$idx", raw)
             }
@@ -74,9 +75,12 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
         database.cacheQueries.deleteAll()
       }
       is KeyQuery -> {
+        database.cacheQueries.delete(listSQLQuery(query))
         database.cacheQueries.delete(query.key)
       }
       else -> notSupportedQuery()
     }
   }
+
+  private fun listSQLQuery(query: KeyQuery) = "${query.key}-%"
 }
