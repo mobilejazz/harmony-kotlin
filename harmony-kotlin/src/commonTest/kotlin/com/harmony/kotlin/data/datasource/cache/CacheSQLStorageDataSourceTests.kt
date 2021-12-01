@@ -13,6 +13,7 @@ import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValue
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
 import com.harmony.kotlin.data.utilities.randomByteArray
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -88,6 +89,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
+  @Ignore
   fun `should return all the values from the database when AllObjectsQuery is provided`() = runTest {
     val expectedValuesOne = anyByteArrayInsertionValues()
     val expectedValuesTwo = anyByteArrayInsertionValues()
