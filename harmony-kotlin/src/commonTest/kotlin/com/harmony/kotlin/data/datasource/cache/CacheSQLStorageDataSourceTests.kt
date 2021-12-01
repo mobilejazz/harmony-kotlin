@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.datasource.cache
 
-import com.harmony.kotlin.common.runTest
+import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.data.datasource.database.CacheDatabase
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.QueryNotSupportedException
@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 expect fun cacheDatabaseTests(): CacheDatabase
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-class CacheSQLStorageDataSourceTests {
+class CacheSQLStorageDataSourceTests : BaseTest() {
 
   //region - get()
   @Test
@@ -199,21 +199,82 @@ class CacheSQLStorageDataSourceTests {
   }
   //endregion
 
-  private fun givenCacheSQLStorageDataSource(
+  //region - delete
+
+  @Test
+  fun `should throw query not supported when query is invalid using delete()`() = runTest {
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
+
+    assertFailsWith<QueryNotSupportedException> {
+      cacheSQLStorageDataSource.delete(anyQuery())
+    }
+  }
+
+  @Test
+  fun `should delete all content of the database`() = runTest {
+    val elementOne = anyByteArrayInsertionValues()
+    val elementTwo = anyByteArrayInsertionValues()
+    val elementThree = anyByteArrayInsertionValue()
+    val elementFour = anyByteArrayInsertionValue()
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(
+      putAllValues = listOf(elementOne, elementTwo),
+      putValues = listOf(elementThree, elementFour)
+    )
+
+    cacheSQLStorageDataSource.delete(AllObjectsQuery())
+
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.getAll(elementOne.query)
+    }
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.getAll(elementTwo.query)
+    }
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.get(elementThree.query)
+    }
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.get(elementFour.query)
+    }
+  }
+
+  @Test
+  fun `should delete value`() = runTest {
+    val insertedValue = anyByteArrayInsertionValue()
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(putValues = listOf(insertedValue))
+
+    cacheSQLStorageDataSource.delete(insertedValue.query)
+
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.get(insertedValue.query)
+    }
+  }
+
+  @Test
+  fun `should delete values`() = runTest {
+    val insertedValues = anyByteArrayInsertionValues()
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(putAllValues = listOf(insertedValues))
+
+    cacheSQLStorageDataSource.delete(insertedValues.query)
+
+    assertFailsWith<DataNotFoundException> {
+      cacheSQLStorageDataSource.getAll(insertedValues.query)
+    }
+  }
+  //endregion
+
+  private suspend fun givenCacheSQLStorageDataSource(
     database: CacheDatabase = cacheDatabaseTests(),
     putValues: List<InsertionValue<ByteArray>> = emptyList(),
     putAllValues: List<InsertionValues<ByteArray>> = emptyList()
   ): CacheSQLStorageDataSource {
     val cacheSQLStorageDataSource = CacheSQLStorageDataSource(database)
 
-    runTest {
-      putValues.forEach {
-        cacheSQLStorageDataSource.put(it.query, it.value)
-      }
+    putValues.forEach {
+      cacheSQLStorageDataSource.put(it.query, it.value)
+    }
 
-      putAllValues.forEach {
-        cacheSQLStorageDataSource.putAll(it.query, it.value)
-      }
+    putAllValues.forEach {
+      cacheSQLStorageDataSource.putAll(it.query, it.value)
     }
 
     return cacheSQLStorageDataSource
