@@ -36,23 +36,23 @@ open class BugfenderLogger(
 
     when (level) {
       Logger.Level.VERBOSE -> {
-        Bugfender.d(t, throwable.message)
+        Bugfender.d(t, throwable.stackTraceToString())
         Bugfender.d(t, message)
       }
       Logger.Level.DEBUG -> {
-        Bugfender.d(t, throwable.message)
+        Bugfender.d(t, throwable.stackTraceToString())
         Bugfender.d(t, message)
       }
       Logger.Level.INFO -> {
-        Bugfender.i(t, throwable.message)
+        Bugfender.i(t, throwable.stackTraceToString())
         Bugfender.i(t, message)
       }
       Logger.Level.WARNING -> {
-        Bugfender.w(t, throwable.message)
+        Bugfender.w(t, throwable.stackTraceToString())
         Bugfender.w(t, message)
       }
       Logger.Level.ERROR -> {
-        Bugfender.e(t, throwable.message)
+        Bugfender.e(t, throwable.stackTraceToString())
         Bugfender.e(t, message)
       }
     }
