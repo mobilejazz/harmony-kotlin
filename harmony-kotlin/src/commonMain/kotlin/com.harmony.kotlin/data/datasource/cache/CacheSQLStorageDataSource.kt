@@ -59,7 +59,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
             // delete the current content, because we can't update it as we store it by indexes instead of the whole context
             database.cacheQueries.delete(listSQLQuery(query))
             it.forEachIndexed { idx, raw ->
-              database.cacheQueries.insertOrUpdate("${query.key}-$idx", raw)
+              database.cacheQueries.insertOrUpdate(listSQLKey(query, idx), raw)
             }
           }
           return it
@@ -82,5 +82,6 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     }
   }
 
-  private fun listSQLQuery(query: KeyQuery) = "${query.key}-%"
+  private fun listSQLQuery(query: KeyQuery) = "harmony-generated-${query.key}-%"
+  private fun listSQLKey(query: KeyQuery, idx: Int) = "harmony-generated-${query.key}-$idx"
 }

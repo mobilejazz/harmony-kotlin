@@ -5,6 +5,7 @@ import com.harmony.kotlin.data.datasource.database.CacheDatabase
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.query.AllObjectsQuery
+import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.anyKeyQuery
 import com.harmony.kotlin.data.query.anyQuery
 import com.harmony.kotlin.data.utilities.InsertionValue
@@ -12,7 +13,9 @@ import com.harmony.kotlin.data.utilities.InsertionValues
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValue
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
+import com.harmony.kotlin.data.utilities.anyInsertionValues
 import com.harmony.kotlin.data.utilities.randomByteArray
+import com.harmony.kotlin.data.utilities.randomByteArrayList
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -129,7 +132,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   @Test
   fun `should insert value when not exist`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
-    val expectedValue = anyInsertionValue(randomByteArray())
+    val expectedValue = anyInsertionValue(value = randomByteArray())
 
     val valueFromPut = cacheSQLStorageDataSource.put(expectedValue.query, expectedValue.value)
     val valueFromGet = cacheSQLStorageDataSource.get(expectedValue.query)
@@ -151,6 +154,22 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
 
     assertContentEquals(valueToUpdate, valueFromPut)
     assertContentEquals(valueToUpdate, valueFromGet)
+  }
+
+  @Test
+  fun `putAll() should not replace - delete values from other similar keys`() = runTest {
+    val expectedKey = "book-likes"
+    val insertedValue = anyInsertionValue(expectedKey, randomByteArray())
+    val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(
+      putValues = listOf(insertedValue)
+    )
+
+    val insertedValuePut = anyInsertionValues("book", randomByteArrayList())
+    cacheSQLStorageDataSource.putAll(insertedValuePut.query, insertedValuePut.value)
+
+    val result = cacheSQLStorageDataSource.get(KeyQuery(expectedKey))
+
+    assertContentEquals(insertedValue.value, result)
   }
   //endregion
 
