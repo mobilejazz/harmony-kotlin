@@ -13,11 +13,10 @@ import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValue
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
 import com.harmony.kotlin.data.utilities.randomByteArray
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 expect fun cacheDatabaseTests(): CacheDatabase
 
@@ -89,18 +88,29 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  @Ignore
   fun `should return all the values from the database when AllObjectsQuery is provided`() = runTest {
     val expectedValuesOne = anyByteArrayInsertionValues()
     val expectedValuesTwo = anyByteArrayInsertionValues()
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(
       putAllValues = listOf(expectedValuesOne, expectedValuesTwo)
     )
+    val expectedContent = expectedValuesOne.value + expectedValuesTwo.value
 
-    val values = cacheSQLStorageDataSource.getAll(AllObjectsQuery())
+    val resultValues = cacheSQLStorageDataSource.getAll(AllObjectsQuery())
 
-    // todo: add asserts to check that both arrays are equals
-    assertTrue { (expectedValuesOne.value.size + expectedValuesTwo.value.size) == values.size }
+    val booleans = mutableListOf<Boolean>()
+    for (expectedByteArray in expectedContent) {
+      for (resultByteArray in resultValues) {
+        val isEqual = resultByteArray.contentEquals(expectedByteArray)
+        booleans.add(isEqual)
+        if (isEqual) {
+          break
+        }
+      }
+    }
+
+    val expectedTrueCounter = booleans.filter { it }
+    assertEquals(expectedTrueCounter.size, expectedContent.size)
   }
 
   //endregion
