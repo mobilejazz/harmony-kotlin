@@ -5,7 +5,7 @@ import com.harmony.kotlin.data.datasource.cache.CacheSQLConfiguration
 import com.mobilejazz.kmmsample.core.common.dispatcher
 import com.mobilejazz.kmmsample.core.feature.hackerposts.HackerNewsPostsComponent
 import com.mobilejazz.kmmsample.core.feature.hackerposts.HackerNewsPostsDefaultModule
-import com.mobilejazz.kmmsample.core.screen.DefaultPresenterModule
+import com.mobilejazz.kmmsample.core.screen.PresenterDefaultModule
 import com.mobilejazz.kmmsample.core.screen.PresenterComponent
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,11 +26,11 @@ class ApplicationDefaultModule(
   }
 
   private val networkComponent by lazy {
-    DefaultNetworkComponent()
+    NetworkDefaultModule(coreLogger)
   }
 
   override val presenterComponent: PresenterComponent by lazy {
-    DefaultPresenterModule(hackerNewsPostsComponent)
+    PresenterDefaultModule(coreLogger, hackerNewsPostsComponent)
   }
 
   private val hackerNewsPostsComponent: HackerNewsPostsComponent by lazy {

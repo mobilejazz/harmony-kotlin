@@ -1,7 +1,6 @@
 package com.mobilejazz.kmmsample.core.feature.hackerposts
 
 import com.harmony.kotlin.data.datasource.DataSourceMapper
-import com.harmony.kotlin.data.datasource.DataSourceVastraValidator
 import com.harmony.kotlin.data.datasource.VoidDeleteDataSource
 import com.harmony.kotlin.data.datasource.VoidPutDataSource
 import com.harmony.kotlin.data.datasource.cache.CacheSQLConfiguration
@@ -14,6 +13,7 @@ import com.harmony.kotlin.data.repository.CacheRepository
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.withMapping
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
+import com.harmony.kotlin.data.validator.vastra.strategies.VastraValidator
 import com.harmony.kotlin.data.validator.vastra.strategies.timestamp.TimestampValidationStrategy
 import com.harmony.kotlin.domain.interactor.toGetInteractor
 import com.mobilejazz.kmmsample.core.NetworkConfiguration
@@ -76,23 +76,18 @@ class HackerNewsPostsDefaultModule(
       CBORObjectToByteArray(cbor, HackerNewsPostEntity.serializer())
     )
 
-    val validatorDataSource = DataSourceVastraValidator(
-      cacheHackerNewsPostDataSource,
-      cacheHackerNewsPostDataSource,
-      VoidDeleteDataSource(),
-      ValidationServiceManager(listOf(TimestampValidationStrategy()))
-    )
-
     val repository = CacheRepository(
-      validatorDataSource,
-      validatorDataSource,
-      validatorDataSource,
+      cacheHackerNewsPostDataSource,
+      cacheHackerNewsPostDataSource,
+      cacheHackerNewsPostDataSource,
       hackerPostsNetworkDataSource,
       VoidPutDataSource(),
-      VoidDeleteDataSource()
+      VoidDeleteDataSource(),
+      VastraValidator(
+        ValidationServiceManager(listOf(TimestampValidationStrategy()))
+      )
     )
 
-    repository
-      .withMapping(HackerNewsPostEntityToHackerNewsPostMapper())
+    repository.withMapping(HackerNewsPostEntityToHackerNewsPostMapper())
   }
 }

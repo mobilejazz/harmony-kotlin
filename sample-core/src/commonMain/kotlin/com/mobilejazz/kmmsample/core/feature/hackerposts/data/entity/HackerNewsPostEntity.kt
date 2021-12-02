@@ -16,8 +16,9 @@ internal data class HackerNewsPostEntity(
   val time: Long,
   val title: String? = null,
   val type: String? = null,
-  val url: String? = null
-) : TimestampValidationEntity {
+  val url: String? = null,
+  override val lastUpdatedAt: Millis = Clock.System.now().toEpochMilliseconds(),
+  ) : TimestampValidationEntity {
   override val expireIn: Seconds = 60L
-  override val lastUpdatedAt: Millis = Clock.System.now().toEpochMilliseconds()
+
 }
