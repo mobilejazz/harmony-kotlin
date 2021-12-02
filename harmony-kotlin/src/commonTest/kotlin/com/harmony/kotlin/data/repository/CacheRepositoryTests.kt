@@ -2,8 +2,8 @@
 
 package com.harmony.kotlin.data.repository
 
+import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.common.runTest
 import com.harmony.kotlin.data.datasource.DataSourceMapper
 import com.harmony.kotlin.data.datasource.anyVoidDataSource
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @ExperimentalCoroutinesApi
-class CacheRepositoryTests {
+class CacheRepositoryTests : BaseTest() {
 
   //region get() - tests
 
@@ -652,14 +652,16 @@ class CacheRepositoryTests {
   }
   //endregion
 
-  private fun <T> givenCacheRepository(
-    main: InMemoryDataSource<T> = anyInMemoryDataSource(),
-    cache: InMemoryDataSource<T> = anyInMemoryDataSource(),
+  private suspend fun <T> givenCacheRepository(
+    main: InMemoryDataSource<T>? = null,
+    cache: InMemoryDataSource<T>? = null,
     validator: Validator<T> = anyMockValidator()
   ): CacheRepository<T> {
+    val mainDataSource = main ?: InMemoryDataSource()
+    val cacheDataSource = cache ?: InMemoryDataSource()
     return CacheRepository(
-      cache, cache, cache,
-      main, main, main,
+      cacheDataSource, cacheDataSource, cacheDataSource,
+      mainDataSource, mainDataSource, mainDataSource,
       validator
     )
   }
