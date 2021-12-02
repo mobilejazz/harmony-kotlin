@@ -4,7 +4,7 @@ package com.harmony.kotlin.data.mapper
 
 import com.harmony.kotlin.common.getSome
 import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.data.error.MappingSerializationException
+import com.harmony.kotlin.data.error.MappingException
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -72,6 +72,6 @@ class JsonMapperTest {
     }
 
     assertNotNull(expectedException)
-    assertTrue(expectedException is MappingSerializationException)
+    assertTrue(expectedException is MappingException)
   }
 }

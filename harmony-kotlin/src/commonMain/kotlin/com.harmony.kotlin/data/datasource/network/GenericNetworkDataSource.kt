@@ -4,6 +4,7 @@ import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.QueryNotSupportedException
+import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
 import kotlinx.serialization.KSerializer
@@ -16,25 +17,34 @@ open class GetNetworkDataSource<T>(
   private val httpClient: HttpClient,
   private val serializer: KSerializer<T>,
   private val json: Json,
-  private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val globalHeaders: List<Pair<String, String>> = emptyList(),
+  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
 ) : GetDataSource<T> {
 
   /**
    * GET request returning an object
    */
   override suspend fun get(query: Query): T {
-    val response: String = executeGetRequest(query)
-
+    val response: String = try {
+      executeGetRequest(query)
+    } catch (e: Exception) {
+      throw exceptionMapper.map(e)
+    }
     return json.decodeFromString(serializer, response)
+
   }
 
   /**
    * GET request returning a list of objects
    */
   override suspend fun getAll(query: Query): List<T> {
-    val response: String = executeGetRequest(query)
-
+    val response: String = try {
+      executeGetRequest(query)
+    } catch (e: Exception) {
+      throw exceptionMapper.map(e)
+    }
     return json.decodeFromString(ListSerializer(serializer), response)
+
   }
 
   private suspend fun executeGetRequest(query: Query): String =
@@ -58,7 +68,8 @@ open class PutNetworkDataSource<T>(
   private val httpClient: HttpClient,
   private val serializer: KSerializer<T>,
   private val json: Json,
-  private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val globalHeaders: List<Pair<String, String>> = emptyList(),
+  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
 ) : PutDataSource<T> {
 
   /**
@@ -66,9 +77,13 @@ open class PutNetworkDataSource<T>(
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
   override suspend fun put(query: Query, value: T?): T {
-    val response: String = validateQuery(query)
-      .sanitizeContentType(value)
-      .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    val response: String = try {
+      validateQuery(query)
+        .sanitizeContentType(value)
+        .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    } catch (e: Exception) {
+      throw exceptionMapper.map(e)
+    }
 
     return if (serializer.descriptor != Unit.serializer().descriptor) {
       json.decodeFromString(serializer, response)
@@ -82,9 +97,13 @@ open class PutNetworkDataSource<T>(
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
   override suspend fun putAll(query: Query, value: List<T>?): List<T> {
-    val response: String = validateQuery(query)
-      .sanitizeContentType(value)
-      .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    val response: String = try {
+      validateQuery(query)
+        .sanitizeContentType(value)
+        .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    } catch (e: Exception) {
+      throw exceptionMapper.map(e)
+    }
 
     return if (serializer.descriptor != Unit.serializer().descriptor) {
       json.decodeFromString(ListSerializer(serializer), response)
@@ -133,19 +152,24 @@ open class PutNetworkDataSource<T>(
 class DeleteNetworkDataSource(
   private val url: String,
   private val httpClient: HttpClient,
-  private val globalHeaders: List<Pair<String, String>> = emptyList()
+  private val globalHeaders: List<Pair<String, String>> = emptyList(),
+  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
 ) : DeleteDataSource {
 
   /**
    * DELETE request
    */
   override suspend fun delete(query: Query) {
-    validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    try {
+      validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
+    } catch (e: Exception) {
+      throw exceptionMapper.map(e)
+    }
   }
 
   private fun validateQuery(query: Query): NetworkQuery {
     if (query !is NetworkQuery) {
-      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+      throw QueryNotSupportedException("DeleteNetworkDataSource only supports NetworkQuery")
     }
 
     if (query.method !is NetworkQuery.Method.Delete) {

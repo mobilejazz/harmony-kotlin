@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.datasource
 
-import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
 
@@ -12,11 +12,11 @@ class DataSourceValidator<T>(
 ) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
 
   override suspend fun get(query: Query): T = getDataSource.get(query).let {
-    if (!validator.isValid(it)) throw ObjectNotValidException() else it
+    if (!validator.isValid(it)) throw DataNotValidException() else it
   }
 
   override suspend fun getAll(query: Query): List<T> = getDataSource.getAll(query).let {
-    if (!validator.isValid(it)) throw ObjectNotValidException() else it
+    if (!validator.isValid(it)) throw DataNotValidException() else it
   }
 
   override suspend fun put(query: Query, value: T?): T = putDataSource.put(query, value)
