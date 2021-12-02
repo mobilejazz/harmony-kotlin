@@ -15,8 +15,8 @@ import com.harmony.kotlin.data.utilities.anyInsertionValue
 import com.harmony.kotlin.data.utilities.randomByteArray
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 expect fun cacheDatabaseTests(): CacheDatabase
 
@@ -98,19 +98,10 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
 
     val resultValues = cacheSQLStorageDataSource.getAll(AllObjectsQuery())
 
-    val booleans = mutableListOf<Boolean>()
     for (expectedByteArray in expectedContent) {
-      for (resultByteArray in resultValues) {
-        val isEqual = resultByteArray.contentEquals(expectedByteArray)
-        booleans.add(isEqual)
-        if (isEqual) {
-          break
-        }
-      }
+      val contained = resultValues.any { it.contentEquals(expectedByteArray) }
+      assertTrue { contained }
     }
-
-    val expectedTrueCounter = booleans.filter { it }
-    assertEquals(expectedTrueCounter.size, expectedContent.size)
   }
 
   //endregion
