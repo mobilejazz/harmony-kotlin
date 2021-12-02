@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_load_hacker_posts">Error loading hacker posts</string>
+</resources>

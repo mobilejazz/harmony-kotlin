@@ -1,8 +1,0 @@
-<resources>
-  <string name="app_name">workshop2018</string>
-  <string name="loading">LOADING COMMENTS</string>
-  <plurals name="comments">
-    <item quantity="one">COMMENT</item>
-    <item quantity="other">COMMENTS</item>
-  </plurals>
-</resources>
