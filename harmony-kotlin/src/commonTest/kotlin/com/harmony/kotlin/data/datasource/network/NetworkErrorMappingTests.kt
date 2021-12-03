@@ -6,6 +6,7 @@ import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.data.datasource.network.error.HttpException
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.UnauthorizedException
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -15,10 +16,14 @@ class NetworkErrorMappingTests : BaseTest() {
 
   private val apiMock: ApiMock = ApiMock()
 
+  // Workaround: Using runBlocking instead of runBlockingTest (used by our runTest) because of this issue:
+  // - https://github.com/Kotlin/kotlinx.coroutines/issues/1222
+
+
   @Test
   fun `should throw UnauthorizedException when backend returns 401`() {
     assertFailsWith<UnauthorizedException> {
-      runTest {
+      runBlocking {
         apiMock.executeRequest(UnauthorizedRequest)
       }
     }
@@ -27,7 +32,7 @@ class NetworkErrorMappingTests : BaseTest() {
   @Test
   fun `should throw DataNotFound when backend returns 404`() {
     assertFailsWith<DataNotFoundException> {
-      runTest {
+      runBlocking {
         apiMock.executeRequest(NotFoundRequest)
       }
     }
@@ -36,7 +41,7 @@ class NetworkErrorMappingTests : BaseTest() {
   @Test
   fun `should throw HttpException when backend returns any 40X (minus 401 & 404) & 50X`() {
     try {
-      runTest {
+      runBlocking {
         apiMock.executeRequest(BadRequest)
       }
     } catch (e: HttpException) {
