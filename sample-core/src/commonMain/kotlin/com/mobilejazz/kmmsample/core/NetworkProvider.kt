@@ -2,6 +2,7 @@ package com.mobilejazz.kmmsample.core
 
 import com.harmony.kotlin.common.logger.KtorHarmonyLogger
 import com.harmony.kotlin.common.logger.Logger
+import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMapping
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -44,7 +45,7 @@ class NetworkDefaultModule(private val coreLogger: Logger) : NetworkComponent {
         level = LogLevel.HEADERS
       }
 
-      expectSuccess = false
+      configureExceptionErrorMapping()
     }
   }
 }

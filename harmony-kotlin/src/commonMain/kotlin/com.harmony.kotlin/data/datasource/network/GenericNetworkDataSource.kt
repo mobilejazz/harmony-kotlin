@@ -4,6 +4,7 @@ import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.QueryNotSupportedException
+import com.harmony.kotlin.data.mapper.IdentityMapper
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.Query
 import io.ktor.client.HttpClient
@@ -12,23 +13,21 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
-open class GetNetworkDataSource<T>(
+class GetNetworkDataSource<T>(
   private val url: String,
   private val httpClient: HttpClient,
   private val serializer: KSerializer<T>,
   private val json: Json,
   private val globalHeaders: List<Pair<String, String>> = emptyList(),
-  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
+  private val exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
 ) : GetDataSource<T> {
 
   /**
    * GET request returning an object
    */
   override suspend fun get(query: Query): T {
-    val response: String = try {
+    val response: String = tryOrThrow(exceptionMapper) {
       executeGetRequest(query)
-    } catch (e: Exception) {
-      throw exceptionMapper.map(e)
     }
     return json.decodeFromString(serializer, response)
 
@@ -38,11 +37,10 @@ open class GetNetworkDataSource<T>(
    * GET request returning a list of objects
    */
   override suspend fun getAll(query: Query): List<T> {
-    val response: String = try {
+    val response: String = tryOrThrow(exceptionMapper) {
       executeGetRequest(query)
-    } catch (e: Exception) {
-      throw exceptionMapper.map(e)
     }
+
     return json.decodeFromString(ListSerializer(serializer), response)
 
   }
@@ -63,13 +61,14 @@ open class GetNetworkDataSource<T>(
   }
 }
 
-open class PutNetworkDataSource<T>(
+class PutNetworkDataSource<T>(
   private val url: String,
   private val httpClient: HttpClient,
   private val serializer: KSerializer<T>,
   private val json: Json,
   private val globalHeaders: List<Pair<String, String>> = emptyList(),
-  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
+  private val exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
+
 ) : PutDataSource<T> {
 
   /**
@@ -77,12 +76,10 @@ open class PutNetworkDataSource<T>(
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
   override suspend fun put(query: Query, value: T?): T {
-    val response: String = try {
+    val response: String = tryOrThrow(exceptionMapper) {
       validateQuery(query)
         .sanitizeContentType(value)
         .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
-    } catch (e: Exception) {
-      throw exceptionMapper.map(e)
     }
 
     return if (serializer.descriptor != Unit.serializer().descriptor) {
@@ -97,14 +94,11 @@ open class PutNetworkDataSource<T>(
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
   override suspend fun putAll(query: Query, value: List<T>?): List<T> {
-    val response: String = try {
+    val response: String = tryOrThrow(exceptionMapper) {
       validateQuery(query)
         .sanitizeContentType(value)
         .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
-    } catch (e: Exception) {
-      throw exceptionMapper.map(e)
     }
-
     return if (serializer.descriptor != Unit.serializer().descriptor) {
       json.decodeFromString(ListSerializer(serializer), response)
     } else { // If Unit.serializer() is used is because we want to ignore the response and just return an empty list of Unit
@@ -153,17 +147,15 @@ class DeleteNetworkDataSource(
   private val url: String,
   private val httpClient: HttpClient,
   private val globalHeaders: List<Pair<String, String>> = emptyList(),
-  private val exceptionMapper: Mapper<Exception, Exception> = GenericNetworkExceptionMapper()
+  private val exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
 ) : DeleteDataSource {
 
   /**
    * DELETE request
    */
   override suspend fun delete(query: Query) {
-    try {
+    tryOrThrow(exceptionMapper) {
       validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
-    } catch (e: Exception) {
-      throw exceptionMapper.map(e)
     }
   }
 
@@ -177,5 +169,13 @@ class DeleteNetworkDataSource(
     }
 
     return query
+  }
+}
+
+private suspend fun <T> tryOrThrow(exceptionMapper: Mapper<Exception, Exception>, block: suspend () -> T): T {
+  return try {
+    block()
+  } catch (e: Exception) {
+    throw exceptionMapper.map(e)
   }
 }
