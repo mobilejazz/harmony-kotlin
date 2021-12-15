@@ -1,7 +1,6 @@
 package com.mobilejazz.kmmsample.application.ui.screen.hackerpost
 
 import android.os.Bundle
-import android.widget.Toast
 import com.mobilejazz.kmmsample.application.HarmonySampleApp
 import com.mobilejazz.kmmsample.application.R
 import com.mobilejazz.kmmsample.application.databinding.ActivityHackerPostsBinding

@@ -1,5 +1,5 @@
 import SwiftUI
-import core
+import SampleCore
 
 struct ContentView: View {
 	let greet = "Hello"

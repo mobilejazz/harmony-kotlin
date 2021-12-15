@@ -44,7 +44,8 @@ class HackerPostsDefaultPresenter(
     launch {
       runCatching {
         getHackerNewsPostsInteractor()
-      }.onComplete(logger, tag,
+      }.onComplete(
+        logger, tag,
         onSuccess = {
           view.get()?.onDisplayHackerPostList(it)
         },

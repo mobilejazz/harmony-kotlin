@@ -6,7 +6,6 @@ import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.error.HarmonyException
 
-
 /**
  * This extension method is intended to manage complete/failure flow while automatically logging exceptions
  */
@@ -39,5 +38,3 @@ inline fun <T> Result<T>.onComplete(
     }
   }
 }
-
-

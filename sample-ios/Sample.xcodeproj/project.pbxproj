@@ -305,7 +305,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 301B1CCEE74E96535EB7523F /* Pods-Sample.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Sample/Info.plist;
@@ -324,7 +323,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 857A58B21366B63768BDE3F9 /* Pods-Sample.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Sample/Info.plist;

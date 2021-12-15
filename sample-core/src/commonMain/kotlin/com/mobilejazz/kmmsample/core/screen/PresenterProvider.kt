@@ -12,7 +12,8 @@ interface PresenterComponent {
 
 class PresenterDefaultModule(
   private val logger: Logger,
-  private val hackerNewsPostsComponent: HackerNewsPostsComponent) : PresenterComponent {
+  private val hackerNewsPostsComponent: HackerNewsPostsComponent
+) : PresenterComponent {
   override fun getHackerPostsPresenter(view: HackerPostsPresenter.View): HackerPostsPresenter {
     return HackerPostsDefaultPresenter(
       WeakReference(view),

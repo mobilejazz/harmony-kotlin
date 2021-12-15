@@ -16,8 +16,8 @@
     "ios": "14.1"
   },
   "pod_target_xcconfig": {
-    "KOTLIN_PROJECT_PATH": ":sample-core",
-    "PRODUCT_MODULE_NAME": "sample_core"
+    "KOTLIN_PROJECT_PATH": ":core",
+    "PRODUCT_MODULE_NAME": "core"
   },
   "script_phases": [
     {

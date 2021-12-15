@@ -39,5 +39,4 @@ class QueryNotSupportedException(message: String? = "Query not supported", cause
 class OperationNotAllowedException(message: String? = "This operation is not allowed on this repository", cause: Throwable? = null) :
   DataException(message, cause)
 
-
 // endregion
