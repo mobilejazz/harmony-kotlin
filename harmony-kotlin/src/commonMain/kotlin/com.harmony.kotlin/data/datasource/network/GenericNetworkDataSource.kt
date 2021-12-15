@@ -30,7 +30,6 @@ class GetNetworkDataSource<T>(
       executeGetRequest(query)
     }
     return json.decodeFromString(serializer, response)
-
   }
 
   /**
@@ -42,7 +41,6 @@ class GetNetworkDataSource<T>(
     }
 
     return json.decodeFromString(ListSerializer(serializer), response)
-
   }
 
   private suspend fun executeGetRequest(query: Query): String =

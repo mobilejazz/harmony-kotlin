@@ -18,8 +18,6 @@ class NetworkErrorMappingTests : BaseTest() {
 
   // Workaround: Using runBlocking instead of runBlockingTest (used by our runTest) because of this issue:
   // - https://github.com/Kotlin/kotlinx.coroutines/issues/1222
-
-
   @Test
   fun `should throw UnauthorizedException when backend returns 401`() {
     assertFailsWith<UnauthorizedException> {

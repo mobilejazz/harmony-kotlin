@@ -33,7 +33,6 @@ class ApiMock {
   suspend fun executeRequest(request: MockRequest) {
     request.executeRequest(client)
   }
-
 }
 
 private class ApiMockEngine {
@@ -105,4 +104,3 @@ object InvalidJsonResponseRequest : MockRequest {
   override val responseBody: String = "{ \"fo_o\": \"bar\" }"
   override val statusCode: HttpStatusCode = HttpStatusCode.OK
 }
-

@@ -7,7 +7,7 @@ Pod::Spec.new do |spec|
     spec.license                  = ''
     spec.summary                  = 'Some description for the Shared Module'
 
-    spec.vendored_frameworks      = "build/cocoapods/framework/core.framework"
+    spec.vendored_frameworks      = "build/cocoapods/framework/SampleCore.framework"
     spec.libraries                = "c++"
     spec.module_name              = "#{spec.name}_umbrella"
 
@@ -35,10 +35,7 @@ Pod::Spec.new do |spec|
                 "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \
                     -Pkotlin.native.cocoapods.archs="$ARCHS" \
-                    -Pkotlin.native.cocoapods.configuration=$CONFIGURATION \
-                    -Pkotlin.native.cocoapods.cflags="$OTHER_CFLAGS" \
-                    -Pkotlin.native.cocoapods.paths.headers="$HEADER_SEARCH_PATHS" \
-                    -Pkotlin.native.cocoapods.paths.frameworks="$FRAMEWORK_SEARCH_PATHS"
+                    -Pkotlin.native.cocoapods.configuration=$CONFIGURATION
             SCRIPT
         }
     ]

@@ -5,8 +5,8 @@ import com.harmony.kotlin.data.datasource.cache.CacheSQLConfiguration
 import com.mobilejazz.kmmsample.core.common.dispatcher
 import com.mobilejazz.kmmsample.core.feature.hackerposts.HackerNewsPostsComponent
 import com.mobilejazz.kmmsample.core.feature.hackerposts.HackerNewsPostsDefaultModule
-import com.mobilejazz.kmmsample.core.screen.PresenterDefaultModule
 import com.mobilejazz.kmmsample.core.screen.PresenterComponent
+import com.mobilejazz.kmmsample.core.screen.PresenterDefaultModule
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.cbor.Cbor

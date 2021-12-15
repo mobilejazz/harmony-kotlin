@@ -25,7 +25,7 @@ kotlin {
     homepage = "Link to the Shared Module homepage"
     ios.deploymentTarget = "14.1"
     framework {
-      baseName = "core"
+      baseName = "SampleCore"
     }
     podfile = project.file("../sample-ios/Podfile")
   }

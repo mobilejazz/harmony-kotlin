@@ -1,5 +1,5 @@
 target 'Sample' do
   use_frameworks!
   platform :ios, '14.1'
-  pod 'core', :path => '../sample-core'
+  pod 'sample_core', :path => '../sample-core'
 end
