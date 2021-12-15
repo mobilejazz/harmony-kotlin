@@ -1,6 +1,8 @@
 package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.WeakReference
+import com.harmony.kotlin.common.logger.Logger
+import com.harmony.kotlin.common.onComplete
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostsInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
 import kotlinx.coroutines.CoroutineScope
@@ -14,15 +16,19 @@ interface HackerPostsPresenter {
   fun onDetachView()
 
   interface View {
+    fun onDisplayLoading()
     fun onDisplayHackerPostList(hackerNewsPosts: HackerNewsPosts)
-    fun onFailedLoadHackerPostList(e: Exception)
+    fun onFailedWithFullScreenError(t: Throwable, retryBlock: () -> Unit)
   }
 }
 
 class HackerPostsDefaultPresenter(
   private val view: WeakReference<HackerPostsPresenter.View>,
-  private val getHackerNewsPostsInteractor: GetHackerNewsPostsInteractor
+  private val getHackerNewsPostsInteractor: GetHackerNewsPostsInteractor,
+  private val logger: Logger
 ) : HackerPostsPresenter, CoroutineScope {
+
+  private val tag = "HackerPostsDefaultPresenter"
 
   override val coroutineContext: CoroutineContext
     get() = job + Dispatchers.Main
@@ -30,12 +36,22 @@ class HackerPostsDefaultPresenter(
   private val job = Job()
 
   override fun onViewLoaded() {
+    loadPosts()
+  }
+
+  private fun loadPosts() {
+    view.get()?.onDisplayLoading()
     launch {
-      try {
-        view.get()?.onDisplayHackerPostList(getHackerNewsPostsInteractor())
-      } catch (e: Exception) {
-        view.get()?.onFailedLoadHackerPostList(e)
-      }
+      runCatching {
+        getHackerNewsPostsInteractor()
+      }.onComplete(logger, tag,
+        onSuccess = {
+          view.get()?.onDisplayHackerPostList(it)
+        },
+        onFailure = {
+          view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
+        }
+      )
     }
   }
 

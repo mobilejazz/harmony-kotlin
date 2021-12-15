@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.datasource.flow
 
-import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.vastra.ValidationService
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
@@ -14,11 +14,11 @@ class FlowDataSourceVastraValidator<T : ValidationStrategyDataSource>(
 ) : FlowGetDataSource<T>, FlowPutDataSource<T>, FlowDeleteDataSource {
 
   override fun get(query: Query) = getDataSource.get(query).map {
-    if (!validator.isValid(it)) throw ObjectNotValidException() else it
+    if (!validator.isValid(it)) throw DataNotValidException() else it
   }
 
   override fun getAll(query: Query) = getDataSource.getAll(query).map {
-    if (!validator.isValid(it)) throw ObjectNotValidException() else it
+    if (!validator.isValid(it)) throw DataNotValidException() else it
   }
 
   override fun put(query: Query, value: T?) = putDataSource.put(query, value)

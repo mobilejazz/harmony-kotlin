@@ -33,7 +33,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.mobilejazz:harmony-kotlin:2.0")
+        implementation(project(":harmony-kotlin"))
       }
     }
     val commonTest by getting {
@@ -44,11 +44,13 @@ kotlin {
     }
     val androidMain by getting {
       dependencies {
+        api(project(":harmony-kotlin"))
         implementation("io.ktor:ktor-client-okhttp:1.6.4")
       }
     }
     val androidTest by getting {
       dependencies {
+        implementation(project(":harmony-kotlin"))
         implementation(kotlin("test-junit"))
         implementation("junit:junit:4.13.2")
       }

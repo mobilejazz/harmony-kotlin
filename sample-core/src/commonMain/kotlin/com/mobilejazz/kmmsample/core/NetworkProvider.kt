@@ -1,5 +1,8 @@
 package com.mobilejazz.kmmsample.core
 
+import com.harmony.kotlin.common.logger.KtorHarmonyLogger
+import com.harmony.kotlin.common.logger.Logger
+import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMapping
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -17,7 +20,7 @@ interface NetworkComponent {
   val mainNetworkConfiguration: NetworkConfiguration
 }
 
-class DefaultNetworkComponent : NetworkComponent {
+class NetworkDefaultModule(private val coreLogger: Logger) : NetworkComponent {
 
   override val mainNetworkConfiguration: NetworkConfiguration by lazy { NetworkConfiguration(httpClient, json, hackerNewsApiUrl) }
 
@@ -38,10 +41,11 @@ class DefaultNetworkComponent : NetworkComponent {
       }
 
       install(Logging) {
+        logger = KtorHarmonyLogger(coreLogger)
         level = LogLevel.HEADERS
       }
 
-      expectSuccess = false
+      configureExceptionErrorMapping()
     }
   }
 }

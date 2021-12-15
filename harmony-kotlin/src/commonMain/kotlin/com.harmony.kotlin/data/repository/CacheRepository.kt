@@ -5,7 +5,7 @@ import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.CacheOperation
 import com.harmony.kotlin.data.operation.CacheSyncOperation
@@ -34,7 +34,7 @@ class CacheRepository<V>(
         return try {
           val cacheValue = getCache.get(query)
           if (!validator.isValid(cacheValue)) {
-            throw ObjectNotValidException()
+            throw DataNotValidException()
           } else {
             cacheValue
           }
@@ -53,7 +53,7 @@ class CacheRepository<V>(
         try {
           return getCache.get(query).let {
             if (!validator.isValid(it)) {
-              throw ObjectNotValidException()
+              throw DataNotValidException()
             } else {
               it
             }
@@ -61,7 +61,7 @@ class CacheRepository<V>(
         } catch (cacheException: Exception) {
           try {
             when (cacheException) {
-              is ObjectNotValidException,
+              is DataNotValidException,
               is MappingException,
               is DataNotFoundException -> get(query, MainSyncOperation)
               else -> throw cacheException
@@ -88,7 +88,7 @@ class CacheRepository<V>(
           val cacheValues = getCache.getAll(query)
           val invalids = cacheValues.map { validator.isValid(it) }.filter { isValid -> !isValid }
           if (invalids.isNotEmpty()) {
-            throw ObjectNotValidException()
+            throw DataNotValidException()
           } else {
             cacheValues
           }
@@ -106,7 +106,7 @@ class CacheRepository<V>(
         try {
           return getCache.getAll(query).map {
             if (!validator.isValid(it)) {
-              throw ObjectNotValidException()
+              throw DataNotValidException()
             } else {
               it
             }
@@ -114,7 +114,7 @@ class CacheRepository<V>(
         } catch (cacheException: Exception) {
           try {
             when (cacheException) {
-              is ObjectNotValidException,
+              is DataNotValidException,
               is MappingException,
               is DataNotFoundException -> getAll(query, MainSyncOperation)
               else -> throw cacheException

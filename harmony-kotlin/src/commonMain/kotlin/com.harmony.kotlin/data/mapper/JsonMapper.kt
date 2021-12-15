@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.mapper
 
-import com.harmony.kotlin.data.error.MappingSerializationException
+import com.harmony.kotlin.data.error.MappingException
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
@@ -16,7 +16,7 @@ class ModelToJsonStringMapper<in T>(
   override fun map(from: T): String = try {
     json.encodeToString(serializer, from)
   } catch (e: SerializationException) {
-    throw MappingSerializationException(cause = e)
+    throw MappingException(cause = e)
   }
 }
 
@@ -27,7 +27,7 @@ class ListModelToJsonStringMapper<in T>(
   override fun map(from: List<T>): String = try {
     json.encodeToString(ListSerializer(serializer), from)
   } catch (e: SerializationException) {
-    throw MappingSerializationException(cause = e)
+    throw MappingException(cause = e)
   }
 }
 
@@ -41,7 +41,7 @@ class JsonStringToModelMapper<out T>(
   override fun map(from: String): T = try {
     json.decodeFromString(serializer, from)
   } catch (e: SerializationException) {
-    throw MappingSerializationException(cause = e)
+    throw MappingException(cause = e)
   }
 }
 
@@ -55,6 +55,6 @@ class JsonStringToListModelMapper<out T>(
   override fun map(from: String): List<T> = try {
     json.decodeFromString(ListSerializer(serializer), from)
   } catch (e: SerializationException) {
-    throw MappingSerializationException(cause = e)
+    throw MappingException(cause = e)
   }
 }

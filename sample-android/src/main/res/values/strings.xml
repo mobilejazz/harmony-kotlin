@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="error_load_hacker_posts">Error loading hacker posts</string>
+  <string name="app_name">Harmony sample</string>
+
+  <string name="ls_generic_error_message">Ups! Something went wrong but it is not your fault.</string>
+
+  <string name="ls_generic_connectivity_error_message">Seems that there is something wrong with internet connection.</string>
+
+  <string name="ls_retry">Retry</string>
 </resources>

@@ -10,7 +10,7 @@ import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.datasource.memory.anyInMemoryDataSource
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.ObjectNotValidException
+import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.mapper.ClosureMapper
 import com.harmony.kotlin.data.operation.CacheOperation
@@ -101,7 +101,7 @@ class CacheRepositoryTests : BaseTest() {
 
   @Test
   fun `should throw ObjectNotValidException when calling get() with CacheOperation given that the object is not valid`() = runTest {
-    assertFailsWith<ObjectNotValidException> {
+    assertFailsWith<DataNotValidException> {
       val anyInsertionValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(listOf(anyInsertionValue))
       val validator = anyMockValidator<String>(validatorResponse = false)
@@ -291,7 +291,7 @@ class CacheRepositoryTests : BaseTest() {
 
   @Test
   fun `should throw ObjectNotValidException when the object is not valid from the cache when getAll() is called`() = runTest {
-    assertFailsWith<ObjectNotValidException> {
+    assertFailsWith<DataNotValidException> {
       val expectedValues = anyInsertionValues()
       val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
       val validator = anyMockValidator<String>(validatorResponse = false)
