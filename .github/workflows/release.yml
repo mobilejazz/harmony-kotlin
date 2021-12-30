@@ -13,8 +13,8 @@ jobs:
           distribution: "adopt"
           java-version: "11"
 
-#      - name: Validate Gradle Wrapper
-#        uses: gradle/wrapper-validation-action@v1
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
 
       - name: Cache gradle
         uses: actions/cache@v2
