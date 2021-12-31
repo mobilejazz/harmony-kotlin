@@ -1,5 +1,6 @@
 package com.harmony.kotlin.data.datasource.cache
 
+import com.harmony.core.db.Cache
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
@@ -18,14 +19,14 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
   override suspend fun get(query: Query): ByteArray {
     return when (query) {
       is KeyQuery -> {
-        database.cacheQueries.value(query.key).executeAsOneOrNull()?.value ?: throw DataNotFoundException()
+        database.cacheQueries.value(query.key).executeAsOneOrNull()?.value_ ?: throw DataNotFoundException()
       }
       else -> notSupportedQuery()
     }
   }
 
   override suspend fun getAll(query: Query): List<ByteArray> {
-    val response = when (query) {
+    val response: List<Cache> = when (query) {
       is AllObjectsQuery -> {
         database.cacheQueries.selectAll().executeAsList()
       }
@@ -36,7 +37,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     }
     if (response.isEmpty()) throw DataNotFoundException()
 
-    return response.map { it.value }
+    return response.map { it.value_ }
   }
 
   override suspend fun put(query: Query, value: ByteArray?): ByteArray {
