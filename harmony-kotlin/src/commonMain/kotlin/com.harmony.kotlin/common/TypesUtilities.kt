@@ -3,6 +3,7 @@ package com.harmony.kotlin.common
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlin.random.Random
+import kotlin.random.nextUInt
 
 const val ANY_ITEMS_COUNT = 10
 
@@ -47,9 +48,15 @@ fun randomValidXmlName(length: Int = ANY_ITEMS_COUNT): String {
 
 fun randomUUID(): Uuid = uuid4()
 
-fun randomInt(min: Int = -100, max: Int = 100): Int = Random.nextInt(min, max)
+fun randomInt(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE): Int = Random.nextInt(min, max)
 
-fun randomDouble() = Random.nextDouble()
+fun randomIntRange(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE): IntRange {
+  val newMin = Random.nextInt(min, max)
+  val newMax = Random.nextInt(newMin, max)
+  return IntRange(newMin, newMax)
+}
+
+fun randomDouble(min: Double = Double.MIN_VALUE, max: Double = Double.MAX_VALUE) = Random.nextDouble(min, max)
 
 fun randomCoordinate() = Random.nextDouble(-90.0, 90.0)
 
@@ -58,3 +65,14 @@ fun randomBoolean(): Boolean = Random.nextBoolean()
 fun randomLong(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) = Random.nextLong(min, max)
 
 fun randomByteArray(amount: Int? = null): ByteArray = Random.nextBytes(amount ?: randomInt(1, 1024))
+
+fun randomByte(): Byte = Random.nextBytes(1).first()
+
+fun randomUShort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MAX_VALUE) =
+  Random.nextUInt(min.toUInt(), max.toUInt()).toUShort()
+
+fun randomUInt(min: UInt = UInt.MIN_VALUE, max: UInt = UInt.MAX_VALUE) =
+  Random.nextUInt(min, max)
+
+fun randomUByte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VALUE) =
+  Random.nextUInt(min.toUInt(), max.toUInt()).toUByte()
