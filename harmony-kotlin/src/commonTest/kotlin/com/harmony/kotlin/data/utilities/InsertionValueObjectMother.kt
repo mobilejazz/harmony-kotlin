@@ -31,3 +31,8 @@ fun randomByteArrayList(): List<ByteArray> {
   val elements = randomInt(0, 10)
   return (0..elements).map { randomByteArray() }.toList()
 }
+
+fun randomIntList(): List<Int> {
+  val elements = randomInt(0, 50)
+  return (0 .. elements).map { randomInt() }.toList()
+}
