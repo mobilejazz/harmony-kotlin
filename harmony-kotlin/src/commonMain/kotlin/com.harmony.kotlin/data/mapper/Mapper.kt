@@ -8,14 +8,6 @@ interface Mapper<in From, out To> {
   fun map(from: From): To
 }
 
-/**
- * BlankMapper returns the same value
- */
-class BlankMapper<T> : Mapper<T, T> {
-
-  override fun map(from: T): T = from
-}
-
 class ClosureMapper<in From, out To>(val closure: (from: From) -> To) : Mapper<From, To> {
 
   override fun map(from: From): To = closure(from)
