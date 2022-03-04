@@ -1,10 +1,6 @@
 package com.harmony.kotlin.data.mapper
 
 import com.harmony.kotlin.common.randomInt
-import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.data.utilities.randomByteArray
-import io.ktor.utils.io.core.toByteArray
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
@@ -30,7 +26,6 @@ class CBORObjectToByteArrayMapperTests {
     val expectedValue = cbor.encodeToByteArray(value)
     assertContentEquals(expectedValue, result)
   }
-
 
   @Test
   fun `should encode successfully to ByteArray an object list`() {

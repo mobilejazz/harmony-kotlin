@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.common.BaseTest
