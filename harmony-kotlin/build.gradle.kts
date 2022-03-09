@@ -18,7 +18,12 @@ plugins {
   kotlin("plugin.serialization")
   id("com.squareup.sqldelight") version sql_delight_version
   id("com.android.library")
+  id("org.kodein.mock.mockmp") version "1.2.0"
   `gradle-mvn-push` // on buildSrc/src/main/groovy/gradle-mvn-push.gradle
+}
+
+mockmp {
+  usesHelper = true
 }
 
 kotlin {
