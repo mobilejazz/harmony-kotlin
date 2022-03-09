@@ -15,7 +15,6 @@ import com.harmony.kotlin.data.utilities.randomIntList
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -82,7 +81,6 @@ class SingleDataSourceRepositoryTests : BaseTest() {
   }
 
   @Test
-  @Ignore
   fun `should successfully execute putAll function`() = runTest {
     val expectedQuery = anyQuery()
     val expectedValues = randomIntList()
@@ -95,7 +93,7 @@ class SingleDataSourceRepositoryTests : BaseTest() {
 
     assertContentEquals(expectedValues, result)
     mocker.verifyWithSuspend {
-      putDataSource.putAll(isSame(expectedQuery), isAny())
+      putDataSource.putAll(expectedQuery, expectedValues)
     }
   }
 
