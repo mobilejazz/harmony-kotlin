@@ -11,7 +11,7 @@ import kotlin.test.assertFailsWith
 class VoidRepositoriesTests : BaseTest() {
 
   @Test
-  fun `should throw not supported operation when get() is executed`() = runTest {
+  fun `should throw not supported operation when get function is executed`() = runTest {
     val repository = VoidRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -20,7 +20,7 @@ class VoidRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when getAll() is executed`() = runTest {
+  fun `should throw not supported operation when getAll function is executed`() = runTest {
     val repository = VoidRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -29,7 +29,7 @@ class VoidRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when put() is executed`() = runTest {
+  fun `should throw not supported operation when put function is executed`() = runTest {
     val repository = VoidRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -38,7 +38,7 @@ class VoidRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when putAll() is executed`() = runTest {
+  fun `should throw not supported operation when putAll function is executed`() = runTest {
     val repository = VoidRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -47,7 +47,7 @@ class VoidRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when delete() is executed`() = runTest {
+  fun `should throw not supported operation when delete function is executed`() = runTest {
     val repository = VoidRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -59,7 +59,7 @@ class VoidRepositoriesTests : BaseTest() {
 class VoidGetRepositoriesTests : BaseTest() {
 
   @Test
-  fun `should throw not supported operation when get() is executed`() = runTest {
+  fun `should throw not supported operation when get function is executed`() = runTest {
     val repository = VoidGetRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -68,7 +68,7 @@ class VoidGetRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when getAll() is executed`() = runTest {
+  fun `should throw not supported operation when getAll function is executed`() = runTest {
     val repository = VoidGetRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -80,7 +80,7 @@ class VoidGetRepositoriesTests : BaseTest() {
 class VoidPutRepositoriesTests : BaseTest() {
 
   @Test
-  fun `should throw not supported operation when put() is executed`() = runTest {
+  fun `should throw not supported operation when put function is executed`() = runTest {
     val repository = VoidPutRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -89,7 +89,7 @@ class VoidPutRepositoriesTests : BaseTest() {
   }
 
   @Test
-  fun `should throw not supported operation when putAll() is executed`() = runTest {
+  fun `should throw not supported operation when putAll function is executed`() = runTest {
     val repository = VoidPutRepository<Int>()
 
     assertFailsWith<UnsupportedOperationException> {
@@ -101,7 +101,7 @@ class VoidPutRepositoriesTests : BaseTest() {
 class VoidDeleteRepositoriesTests : BaseTest() {
 
   @Test
-  fun `should throw not supported operation when delete() is executed`() = runTest {
+  fun `should throw not supported operation when delete function is executed`() = runTest {
     val repository = VoidDeleteRepository()
 
     assertFailsWith<UnsupportedOperationException> {

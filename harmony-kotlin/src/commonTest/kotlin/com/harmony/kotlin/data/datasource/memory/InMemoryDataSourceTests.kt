@@ -25,7 +25,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when get() is called`() = runTest {
+  fun `should throw QueryNotSupportedException if query is invalid when get function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val invalidQuery = VoidQuery
@@ -55,7 +55,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when getAll() is called`() = runTest {
+  fun `should throw QueryNotSupportedException if query is invalid when getAll function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val invalidQuery = VoidQuery
@@ -75,7 +75,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when put() is called`() = runTest {
+  fun `should throw QueryNotSupportedException if query is invalid when put function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val invalidQuery = VoidQuery
@@ -85,7 +85,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when putAll() is called`() = runTest {
+  fun `should throw QueryNotSupportedException if query is invalid when putAll function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val invalidQuery = VoidQuery
@@ -95,7 +95,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw IllegalArgumentException if the value is null when put() is called`() = runTest {
+  fun `should throw IllegalArgumentException if the value is null when put function is called`() = runTest {
     assertFailsWith<IllegalArgumentException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val query = KeyQuery(randomString())
@@ -105,7 +105,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw IllegalArgumentException if the value is null when putAll() is called`() = runTest {
+  fun `should throw IllegalArgumentException if the value is null when putAll function is called`() = runTest {
     assertFailsWith<IllegalArgumentException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val query = KeyQuery(randomString())
@@ -115,7 +115,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should store value if query is valid when put() is called`() = runTest {
+  fun `should store value if query is valid when put function is called`() = runTest {
     val inMemoryDataSource = givenInMemoryDataSource()
     val query = KeyQuery(randomString())
     val expectedValue = randomString()
@@ -127,7 +127,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should store values if query is valid when putAll() is called`() = runTest {
+  fun `should store values if query is valid when putAll function is called`() = runTest {
     val inMemoryDataSource = givenInMemoryDataSource()
     val query = KeyQuery(randomString())
     val expectedValue = listOf(randomString())
@@ -139,7 +139,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should not allow use the same key for the different put() and putAll(), removing the value from the other query`() = runTest {
+  fun `should not allow use the same key for the different put and putAll functions removing the value from the other query`() = runTest {
     assertFailsWith<DataNotFoundException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val query = KeyQuery(randomString())
@@ -153,7 +153,7 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when delete() is called`() = runTest {
+  fun `should throw QueryNotSupportedException if query is invalid when delete function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val invalidQuery = VoidQuery
