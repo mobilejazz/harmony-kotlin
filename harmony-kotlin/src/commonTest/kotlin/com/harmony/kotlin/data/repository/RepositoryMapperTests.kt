@@ -128,12 +128,65 @@ class RepositoryMapperTests : BaseTest() {
 
     mocker.verifyWithSuspend { deleteRepository.delete(expectedQuery, expectedOperation) }
   }
+}
 
-  class StringToIntMapper : Mapper<String, Int> {
-    override fun map(from: String): Int = from.toInt()
+@UsesMocks(GetRepository::class, Mapper::class)
+class GetRepositoryMapperTests : BaseTest() {
+
+  val mocker = Mocker()
+
+  @BeforeTest
+  fun beforeTests() {
+    mocker.reset()
   }
 
-  class IntToStringMapper : Mapper<Int, String> {
-    override fun map(from: Int): String = from.toString()
+  @Test
+  fun `should map get operations`() = runTest {
+    val getRepository = MockGetRepository<String>(mocker)
+    val toOutMapper = MockMapper<String, Int>(mocker)
+    val expectedQuery = anyQuery()
+    val expectedOperation = anyOperation()
+    val anyString = randomString()
+    val expectedValue = randomInt()
+
+    val repository = GetRepositoryMapper(getRepository, toOutMapper)
+    mocker.everySuspending { getRepository.get(expectedQuery, expectedOperation) } returns anyString
+    mocker.every { toOutMapper.map(anyString) } returns expectedValue
+
+    val result = repository.get(expectedQuery, expectedOperation)
+
+    assertEquals(expectedValue, result)
+    mocker.verifyWithSuspend {
+      getRepository.get(expectedQuery, expectedOperation)
+      toOutMapper.map(anyString)
+    }
   }
+
+  @Test
+  fun `should map getAll operations`() = runTest {
+    val getRepository = MockGetRepository<String>(mocker)
+    val toOutMapper = StringToIntMapper()
+    val expectedQuery = anyQuery()
+    val expectedOperation = anyOperation()
+    val expectedValues = randomIntList()
+    val anyStrings = expectedValues.map { it.toString() }
+
+    val repository = GetRepositoryMapper(getRepository, toOutMapper)
+    mocker.everySuspending { getRepository.getAll(expectedQuery, expectedOperation) } returns anyStrings
+
+    val result = repository.getAll(expectedQuery, expectedOperation)
+
+    assertContentEquals(expectedValues, result)
+    mocker.verifyWithSuspend {
+      getRepository.getAll(expectedQuery, expectedOperation)
+    }
+  }
+}
+
+private class StringToIntMapper : Mapper<String, Int> {
+  override fun map(from: String): Int = from.toInt()
+}
+
+private class IntToStringMapper : Mapper<Int, String> {
+  override fun map(from: Int): String = from.toString()
 }
