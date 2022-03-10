@@ -2,6 +2,10 @@
 
 # Change Log
 
+## [3.0.2] - 2022-05-10
+### Added
+- Added support for POST Http Request with empty body
+
 ## [3.0] - 2021-12-16
 ### Changed
 - Added support for kotlin 1.6.10 & migrated build.gradle to kotlin-dsl (#67)
