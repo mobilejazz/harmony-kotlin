@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.request
 import io.ktor.client.request.url
+import io.ktor.client.utils.EmptyContent
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
@@ -41,7 +42,7 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
         }
         is NetworkQuery.ContentType.Json<*> -> {
           contentType(ContentType.Application.Json)
-          body = contentType.entity!!
+          body = contentType.entity ?: EmptyContent
         }
       }
     }

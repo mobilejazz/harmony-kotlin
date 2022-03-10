@@ -126,9 +126,9 @@ open class NetworkQuery(
 
     /**
      *  application/json http content type
-     *  @param entity json serializable object
+     *  @param entity optional json serializable object, if null the body of the call will be empty.
      */
-    class Json<T>(val entity: T) : ContentType() {
+    class Json<T>(val entity: T?) : ContentType() {
       override fun toString(): String {
         return "application/json : $entity"
       }
