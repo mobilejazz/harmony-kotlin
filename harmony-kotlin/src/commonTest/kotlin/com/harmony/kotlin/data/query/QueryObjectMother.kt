@@ -2,7 +2,7 @@ package com.harmony.kotlin.data.query
 
 import com.harmony.kotlin.common.randomString
 
-fun anyQuery() = Query()
+fun anyQuery() = object : Query {}
 
 fun anyVoidQuery() = VoidQuery
 
