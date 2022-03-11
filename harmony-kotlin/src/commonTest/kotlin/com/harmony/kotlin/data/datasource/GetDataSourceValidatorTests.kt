@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @UsesMocks(GetDataSource::class, PutDataSource::class, DeleteDataSource::class, Validator::class)
-class DataSourceValidatorTests : BaseTest() {
+class GetDataSourceValidatorTests : BaseTest() {
 
   val mocker = Mocker()
 

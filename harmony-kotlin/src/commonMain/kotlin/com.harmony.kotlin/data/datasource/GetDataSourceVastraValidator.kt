@@ -5,12 +5,10 @@ import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.vastra.ValidationService
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
 
-class DataSourceVastraValidator<T : ValidationStrategyDataSource>(
+class GetDataSourceVastraValidator<T : ValidationStrategyDataSource>(
   private val getDataSource: GetDataSource<T>,
-  private val putDataSource: PutDataSource<T>,
-  private val deleteDataSource: DeleteDataSource,
   private val validator: ValidationService
-) : GetDataSource<T>, PutDataSource<T>, DeleteDataSource {
+) : GetDataSource<T> {
 
   override suspend fun get(query: Query): T = getDataSource.get(query).let {
     if (!validator.isValid(it)) throw DataNotValidException() else it
@@ -19,10 +17,4 @@ class DataSourceVastraValidator<T : ValidationStrategyDataSource>(
   override suspend fun getAll(query: Query): List<T> = getDataSource.getAll(query).let {
     if (!validator.isValid(it)) throw DataNotValidException() else it
   }
-
-  override suspend fun put(query: Query, value: T?): T = putDataSource.put(query, value)
-
-  override suspend fun putAll(query: Query, value: List<T>?): List<T> = putDataSource.putAll(query, value)
-
-  override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
 }
