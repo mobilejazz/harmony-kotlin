@@ -14,23 +14,20 @@ import com.harmony.kotlin.data.query.Query
  * @param toInMapper Mapper to map repository objects to data source objects
  */
 class DataSourceMapper<In, Out>(
-  getDataSource: GetDataSource<In>,
-  putDataSource: PutDataSource<In>,
+  private val getDataSource: GetDataSource<In>,
+  private val putDataSource: PutDataSource<In>,
   private val deleteDataSource: DeleteDataSource,
-  toOutMapper: Mapper<In, Out>,
-  toInMapper: Mapper<Out, In>
+  private val toOutMapper: Mapper<In, Out>,
+  private val toInMapper: Mapper<Out, In>
 ) : GetDataSource<Out>, PutDataSource<Out>, DeleteDataSource {
 
-  private val getDataSourceMapper = GetDataSourceMapper(getDataSource, toOutMapper)
-  private val putDataSourceMapper = PutDataSourceMapper(putDataSource, toOutMapper, toInMapper)
+  override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
 
-  override suspend fun get(query: Query): Out = getDataSourceMapper.get(query)
+  override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
 
-  override suspend fun getAll(query: Query): List<Out> = getDataSourceMapper.getAll(query)
+  override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
 
-  override suspend fun put(query: Query, value: Out?): Out = putDataSourceMapper.put(query, value)
-
-  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putDataSourceMapper.putAll(query, value)
+  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
 
   override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
 }
@@ -40,9 +37,9 @@ class GetDataSourceMapper<In, Out>(
   private val toOutMapper: Mapper<In, Out>
 ) : GetDataSource<Out> {
 
-  override suspend fun get(query: Query): Out = getDataSource.get(query).let { toOutMapper.map(it) }
+  override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
 
-  override suspend fun getAll(query: Query): List<Out> = getDataSource.getAll(query).let { toOutMapper.map(it) }
+  override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
 }
 
 class PutDataSourceMapper<In, Out>(
@@ -51,15 +48,43 @@ class PutDataSourceMapper<In, Out>(
   private val toInMapper: Mapper<Out, In>
 ) : PutDataSource<Out> {
 
-  override suspend fun put(query: Query, value: Out?): Out {
-    val mapped = value?.let { toInMapper.map(it) }
-    return putDataSource.put(query, mapped)
-      .let { toOutMapper.map(it) }
-  }
+  override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
 
-  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> {
-    val mapped = value?.let { toInMapper.map(it) }
-    return putDataSource.putAll(query, mapped)
-      .map { toOutMapper.map(it) }
+  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
+}
+
+private suspend fun <In, Out> get(
+  getDataSource: GetDataSource<In>,
+  toOutMapper: Mapper<In, Out>,
+  query: Query
+): Out = getDataSource.get(query).let { toOutMapper.map(it) }
+
+private suspend fun <In, Out> getAll(
+  getDataSource: GetDataSource<In>,
+  toOutMapper: Mapper<In, Out>,
+  query: Query,
+) = getDataSource.getAll(query).map { toOutMapper.map(it) }
+
+private suspend fun <In, Out> put(
+  putDataSource: PutDataSource<In>,
+  toOutMapper: Mapper<In, Out>,
+  toInMapper: Mapper<Out, In>,
+  value: Out?,
+  query: Query
+): Out {
+  val mapped = value?.let { toInMapper.map(it) }
+  return putDataSource.put(query, mapped).let {
+    toOutMapper.map(it)
   }
+}
+
+private suspend fun <In, Out> putAll(
+  putDataSource: PutDataSource<In>,
+  toOutMapper: Mapper<In, Out>,
+  toInMapper: Mapper<Out, In>,
+  value: List<Out>?,
+  query: Query
+): List<Out> {
+  val mapped = value?.let { toInMapper.map(it) }
+  return putDataSource.putAll(query, mapped).map { toOutMapper.map(it) }
 }
