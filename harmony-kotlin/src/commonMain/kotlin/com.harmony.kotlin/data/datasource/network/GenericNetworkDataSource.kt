@@ -47,15 +47,14 @@ class GetNetworkDataSource<T>(
     validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
   private fun validateQuery(query: Query): NetworkQuery {
-    if (query !is NetworkQuery) {
-      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+    val networkQuery = query.validateAndUnwrapQuery()
+
+    NetworkQuery.Method.Delete::class
+    if (networkQuery.method !is NetworkQuery.Method.Delete) {
+      throw QueryNotSupportedException("NetworkQuery method is ${networkQuery.method} instead of GET")
     }
 
-    if (query.method !is NetworkQuery.Method.Get) {
-      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of GET")
-    }
-
-    return query
+    return networkQuery
   }
 }
 
@@ -129,15 +128,14 @@ class PutNetworkDataSource<T>(
   }
 
   private fun validateQuery(query: Query): NetworkQuery {
-    if (query !is NetworkQuery) {
-      throw QueryNotSupportedException("GetNetworkDataSource only supports NetworkQuery")
+    val networkQuery = query.validateAndUnwrapQuery()
+
+    NetworkQuery.Method.Delete::class
+    if (networkQuery.method !is NetworkQuery.Method.Delete) {
+      throw QueryNotSupportedException("NetworkQuery method is ${networkQuery.method} instead of POST or PUT")
     }
 
-    if (query.method !is NetworkQuery.Method.Post && query.method !is NetworkQuery.Method.Put) {
-      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of POST or PUT")
-    }
-
-    return query
+    return networkQuery
   }
 }
 
@@ -158,15 +156,28 @@ class DeleteNetworkDataSource(
   }
 
   private fun validateQuery(query: Query): NetworkQuery {
-    if (query !is NetworkQuery) {
-      throw QueryNotSupportedException("DeleteNetworkDataSource only supports NetworkQuery")
+    val networkQuery = query.validateAndUnwrapQuery()
+
+    NetworkQuery.Method.Delete::class
+    if (networkQuery.method !is NetworkQuery.Method.Delete) {
+      throw QueryNotSupportedException("NetworkQuery method is ${networkQuery.method} instead of DELETE")
     }
 
-    if (query.method !is NetworkQuery.Method.Delete) {
-      throw QueryNotSupportedException("NetworkQuery method is ${query.method} instead of DELETE")
-    }
+    return networkQuery
+  }
+}
 
-    return query
+private fun Query.validateAndUnwrapQuery(): NetworkQuery {
+  return when (this) {
+    is ComposableNetworkQuery -> {
+      this.networkQuery
+    }
+    is NetworkQuery -> {
+      this
+    }
+    else -> {
+      throw QueryNotSupportedException("NetworkDataSource only supports NetworkQuery")
+    }
   }
 }
 
