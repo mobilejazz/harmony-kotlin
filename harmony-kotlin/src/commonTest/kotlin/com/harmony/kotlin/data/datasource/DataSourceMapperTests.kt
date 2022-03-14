@@ -2,13 +2,13 @@ package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
+import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
 import com.harmony.kotlin.data.mapper.VoidMapper
 import com.harmony.kotlin.data.mapper.anyVoidMapper
 import com.harmony.kotlin.data.query.anyQuery
-import com.harmony.kotlin.data.utilities.randomIntList
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest

@@ -1,8 +1,8 @@
 package com.harmony.kotlin.data.mapper
 
 import com.harmony.kotlin.common.randomInt
+import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.data.entity.PaginationOffsetLimit
-import com.harmony.kotlin.data.utilities.randomIntList
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

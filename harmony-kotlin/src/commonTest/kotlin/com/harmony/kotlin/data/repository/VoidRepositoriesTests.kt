@@ -2,9 +2,9 @@ package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
+import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.anyQuery
-import com.harmony.kotlin.data.utilities.randomIntList
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 

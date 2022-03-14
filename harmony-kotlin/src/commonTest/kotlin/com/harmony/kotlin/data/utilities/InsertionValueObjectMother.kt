@@ -1,9 +1,10 @@
 package com.harmony.kotlin.data.utilities
 
+import com.harmony.kotlin.common.randomByteArray
+import com.harmony.kotlin.common.randomByteArrayList
 import com.harmony.kotlin.common.randomInt
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.data.query.anyKeyQuery
-import io.ktor.utils.io.core.toByteArray
 
 fun <T> anyInsertionValue(key: String = randomString(), value: T) = InsertionValue(anyKeyQuery(key), value)
 
@@ -24,27 +25,3 @@ fun <T> anyInsertionValues(key: String = randomString(), values: List<T>): Inser
 fun anyByteArrayInsertionValues(values: List<ByteArray> = randomByteArrayList()): InsertionValues<ByteArray> {
   return anyInsertionValues(values = values)
 }
-
-fun randomByteArray() = randomString().toByteArray()
-
-fun randomByteArrayList(): List<ByteArray> {
-  val elements = randomInt(0, 10)
-  return (0..elements).map { randomByteArray() }.toList()
-}
-
-fun randomIntList(): List<Int> {
-  val elements = randomInt(0, 50)
-  return (0..elements).map { randomInt() }.toList()
-}
-
-fun randomStringList(): List<String> {
-  val elements = randomInt(0, 50)
-  return (0..elements).map { randomString() }.toList()
-}
-
-fun randomPair() = Pair(randomString(), randomString())
-
-fun randomPairList() = (0..randomInt(0, 50)).map { Pair(randomString().removeSpaces(), randomString().removeSpaces()) }.toList()
-
-private fun String.removeChars(removeChar: String) = this.replace(removeChar, "")
-private fun String.removeSpaces() = this.replace(" ", "")

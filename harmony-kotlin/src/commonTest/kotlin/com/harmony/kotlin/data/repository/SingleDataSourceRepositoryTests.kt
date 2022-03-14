@@ -2,6 +2,7 @@ package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
+import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.MockDeleteDataSource
@@ -11,7 +12,6 @@ import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.datasource.anyVoidDataSource
 import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.anyQuery
-import com.harmony.kotlin.data.utilities.randomIntList
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest

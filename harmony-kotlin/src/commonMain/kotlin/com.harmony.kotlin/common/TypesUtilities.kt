@@ -2,6 +2,7 @@ package com.harmony.kotlin.common
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import io.ktor.utils.io.core.toByteArray
 import kotlin.random.Random
 import kotlin.random.nextUInt
 
@@ -76,3 +77,24 @@ fun randomUInt(min: UInt = UInt.MIN_VALUE, max: UInt = UInt.MAX_VALUE) =
 
 fun randomUByte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VALUE) =
   Random.nextUInt(min.toUInt(), max.toUInt()).toUByte()
+
+fun randomByteArray() = randomString().toByteArray()
+
+fun randomByteArrayList(): List<ByteArray> {
+  val elements = randomInt(0, 10)
+  return (0..elements).map { randomByteArray() }.toList()
+}
+
+fun randomIntList(): List<Int> {
+  val elements = randomInt(0, 50)
+  return (0..elements).map { randomInt() }.toList()
+}
+
+fun randomStringList(): List<String> {
+  val elements = randomInt(0, 50)
+  return (0..elements).map { randomString() }.toList()
+}
+
+fun randomPair() = Pair(randomString(), randomString())
+
+fun randomPairList() = (0..randomInt(0, 50)).map { Pair(randomString().removeSpaces(), randomString().removeSpaces()) }.toList()
