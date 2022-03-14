@@ -17,7 +17,7 @@ import io.ktor.http.headersOf
 import kotlinx.serialization.json.Json
 
 class ApiMock {
-  private val client = HttpClient(ApiMockEngine().get()) {
+  public val client = HttpClient(ApiMockEngine().get()) {
     install(JsonFeature) {
       serializer = KotlinxSerializer(
         Json {
