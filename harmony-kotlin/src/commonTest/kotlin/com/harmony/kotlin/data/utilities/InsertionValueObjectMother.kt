@@ -41,3 +41,10 @@ fun randomStringList(): List<String> {
   val elements = randomInt(0, 50)
   return (0..elements).map { randomString() }.toList()
 }
+
+fun randomPair() = Pair(randomString(), randomString())
+
+fun randomPairList() = (0..randomInt(0, 50)).map { Pair(randomString().removeSpaces(), randomString().removeSpaces()) }.toList()
+
+private fun String.removeChars(removeChar: String) = this.replace(removeChar, "")
+private fun String.removeSpaces() = this.replace(" ", "")

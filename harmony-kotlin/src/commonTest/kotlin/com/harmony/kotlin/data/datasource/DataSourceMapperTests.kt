@@ -7,7 +7,6 @@ import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
 import com.harmony.kotlin.data.mapper.VoidMapper
 import com.harmony.kotlin.data.mapper.anyVoidMapper
-import com.harmony.kotlin.data.operation.anyOperation
 import com.harmony.kotlin.data.query.anyQuery
 import com.harmony.kotlin.data.utilities.randomIntList
 import org.kodein.mock.Mocker
@@ -218,7 +217,6 @@ class PutDataSourceMapperTests : BaseTest() {
     val expectedQuery = anyQuery()
     val expectedValues = randomIntList()
     val expectedValuesString = expectedValues.map { it.toString() }
-    val expectedOperation = anyOperation()
 
     val repository = PutDataSourceMapper(putRepository, toOutMapper, toInMapper)
     mocker.everySuspending { putRepository.putAll(expectedQuery, expectedValuesString) } returns expectedValuesString
