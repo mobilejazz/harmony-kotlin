@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class JsonMapperTest {
+class JsonMapperTests {
   @Serializable
   data class Dummy(val key: String)
 

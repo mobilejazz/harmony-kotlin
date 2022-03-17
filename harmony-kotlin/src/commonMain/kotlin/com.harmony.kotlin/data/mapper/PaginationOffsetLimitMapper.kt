@@ -6,7 +6,6 @@ class PaginationOffsetLimitMapper<From, To>(private val modelMapper: Mapper<From
     PaginationOffsetLimit<To>> {
 
   override fun map(from: PaginationOffsetLimit<From>): PaginationOffsetLimit<To> = PaginationOffsetLimit(
-    from.values.map { modelMapper.map(it) }, from.offset,
-    from.limit, from.size
+    from.values.map { modelMapper.map(it) }, from.offset, from.limit, from.size
   )
 }

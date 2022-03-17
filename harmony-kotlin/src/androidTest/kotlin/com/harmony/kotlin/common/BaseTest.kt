@@ -3,7 +3,6 @@ package com.harmony.kotlin.common
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
@@ -13,6 +12,6 @@ actual abstract class BaseTest {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   actual fun <T> runTest(block: suspend CoroutineScope.() -> T) {
-    runBlockingTest { block() }
+    kotlinx.coroutines.test.runTest { block() }
   }
 }
