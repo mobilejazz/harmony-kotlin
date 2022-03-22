@@ -1,6 +1,7 @@
 package com.mobilejazz.kmmsample.core.feature.hackerposts
 
 import com.harmony.kotlin.data.datasource.DataSourceMapper
+import com.harmony.kotlin.data.datasource.DataSourceQueryMapper
 import com.harmony.kotlin.data.datasource.VoidDeleteDataSource
 import com.harmony.kotlin.data.datasource.VoidPutDataSource
 import com.harmony.kotlin.data.datasource.cache.CacheSQLConfiguration
@@ -19,6 +20,7 @@ import com.harmony.kotlin.domain.interactor.toGetInteractor
 import com.mobilejazz.kmmsample.core.NetworkConfiguration
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.entity.HackerNewsPostEntity
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.HackerNewsPostEntityToHackerNewsPostMapper
+import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.HackerNewsQueryToNetworkQueryMapper
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.ListIntToHackerNewsPostsIdsMapper
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostsInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
@@ -54,7 +56,18 @@ class HackerNewsPostsDefaultModule(
       networkConfiguration.json
     )
 
-    hackerPostsIdsNetworkDataSource.toGetRepository(ListIntToHackerNewsPostsIdsMapper())
+    val hackerNewsQueryToNetworkQueryMapper = HackerNewsQueryToNetworkQueryMapper()
+
+    val hackerNewsNetworkDataSourceWithMapper = DataSourceQueryMapper(
+      hackerPostsIdsNetworkDataSource,
+      VoidPutDataSource(),
+      VoidDeleteDataSource(),
+      hackerNewsQueryToNetworkQueryMapper,
+      hackerNewsQueryToNetworkQueryMapper,
+      hackerNewsQueryToNetworkQueryMapper,
+    )
+
+    hackerNewsNetworkDataSourceWithMapper.toGetRepository(ListIntToHackerNewsPostsIdsMapper())
   }
 
   private val getHackerNewsPostsRepository: GetRepository<HackerNewsPost> by lazy {
@@ -64,6 +77,17 @@ class HackerNewsPostsDefaultModule(
       networkConfiguration.httpClient,
       HackerNewsPostEntity.serializer(),
       networkConfiguration.json
+    )
+
+    val hackerNewsQueryToNetworkQuery = HackerNewsQueryToNetworkQueryMapper()
+
+    val hackerNewsNetworkDataSourceWithMapper = DataSourceQueryMapper(
+      hackerPostsNetworkDataSource,
+      VoidPutDataSource(),
+      VoidDeleteDataSource(),
+      hackerNewsQueryToNetworkQuery,
+      hackerNewsQueryToNetworkQuery,
+      hackerNewsQueryToNetworkQuery
     )
 
     val cacheSQLStorageDataSource = CacheSQLStorageDataSource(cacheSQLConfiguration.provideCacheDatabase("hacker-news-post"))
@@ -80,7 +104,7 @@ class HackerNewsPostsDefaultModule(
       cacheHackerNewsPostDataSource,
       cacheHackerNewsPostDataSource,
       cacheHackerNewsPostDataSource,
-      hackerPostsNetworkDataSource,
+      hackerNewsNetworkDataSourceWithMapper,
       VoidPutDataSource(),
       VoidDeleteDataSource(),
       VastraValidator(

@@ -1,7 +1,7 @@
 package com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor
 
-import com.harmony.kotlin.data.datasource.network.NetworkQuery
 import com.harmony.kotlin.domain.interactor.GetInteractor
+import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.HackerNewsQuery
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPostsIds
@@ -12,17 +12,11 @@ class GetHackerNewsPostsInteractor(
 ) {
   suspend operator fun invoke(): HackerNewsPosts {
     return getHackerNewsIdsPostsInteractor(
-      NetworkQuery(
-        NetworkQuery.Method.Get,
-        "askstories.json"
-      )
+      HackerNewsQuery.GetAll
       // To speed up first load. Next iteration, pagination.
     ).listIds.take(5).map { postId ->
       getHackerNewsPostInteractor(
-        NetworkQuery(
-          NetworkQuery.Method.Get,
-          "item/$postId.json",
-        )
+        HackerNewsQuery.GetPost(postId)
       )
     }
   }
