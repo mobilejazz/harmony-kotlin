@@ -13,6 +13,7 @@ import com.harmony.kotlin.data.query.Query
  * @param putQueryMapper Mapper for put operations
  * @param deleteQueryMapper Mapper for delete operations
  */
+@Suppress("UNCHECKED_CAST")
 class DataSourceQueryMapper<V,
   GetQueryIn : Query, GetQueryOut : Query,
   PutQueryIn : Query, PutQueryOut : Query,
