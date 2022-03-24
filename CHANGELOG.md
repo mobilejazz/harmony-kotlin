@@ -2,7 +2,12 @@
 
 # Change Log
 
-## [3.0.2] - 2022-05-10
+## [3.1.0] - 2022-03-24
+### Added
+- DataSourceQueryMapper. Provide a way to map queries for custom datasource. Domain queries are recommended.
+- SqlDelight queries extensions to execute queries with DataNotFoundException. If result is empty, then throw DataNotFoundException.
+
+## [3.0.2] - 2022-03-10
 ### Added
 - Added support for POST Http Request with empty body
 
