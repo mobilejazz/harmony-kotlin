@@ -13,7 +13,6 @@ import kotlin.coroutines.CoroutineContext
 
 interface HackerPostsPresenter {
   fun onViewLoaded()
-  fun onDetachView()
 
   interface View {
     fun onDisplayLoading()
@@ -54,9 +53,5 @@ class HackerPostsDefaultPresenter(
         }
       )
     }
-  }
-
-  override fun onDetachView() {
-//    view.clear()
   }
 }

@@ -45,9 +45,4 @@ class HackerPostsActivity : AppCompatActivity(), HackerPostsPresenter.View {
   override fun onFailedWithFullScreenError(t: Throwable, retryBlock: () -> Unit) {
     binding.loadContentLayout.showError(t.toLocalizedErrorMessage(this), R.string.ls_retry, retryBlock)
   }
-
-  override fun onStop() {
-    super.onStop()
-    presenter.onDetachView()
-  }
 }
