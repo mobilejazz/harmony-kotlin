@@ -1,5 +1,6 @@
 package com.mobilejazz.kmmsample.application.ui.screen.hackerpost
 
+import android.content.Intent
 import android.os.Bundle
 import com.mobilejazz.kmmsample.application.HarmonySampleApp
 import com.mobilejazz.kmmsample.application.R
@@ -23,6 +24,8 @@ class HackerPostsActivity : BaseActivity(), HackerPostsPresenter.View {
     setContentView(binding.root)
 
     presenter.onViewLoaded()
+
+    title = "Hacker News"
   }
 
   override fun onDisplayLoading() {
@@ -31,7 +34,11 @@ class HackerPostsActivity : BaseActivity(), HackerPostsPresenter.View {
 
   override fun onDisplayHackerPostList(hackerNewsPosts: HackerNewsPosts) {
     binding.loadContentLayout.showContent(true)
-    val hackerPostsAdapter = HackerPostsAdapter(hackerNewsPosts)
+    val hackerPostsAdapter = HackerPostsAdapter(hackerNewsPosts) { hackerNewsPost ->
+      val intent = Intent(this@HackerPostsActivity, HackerPostDetailActivity::class.java)
+      intent.putExtra(HackerPostDetailActivity.HACKER_POST_ID_EXTRA, hackerNewsPost.id.toInt())
+      startActivity(intent)
+    }
     binding.hackerPostRecyclerView.adapter = hackerPostsAdapter
   }
 

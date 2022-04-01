@@ -22,6 +22,7 @@ import com.mobilejazz.kmmsample.core.feature.hackerposts.data.entity.HackerNewsP
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.HackerNewsPostEntityToHackerNewsPostMapper
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.HackerNewsQueryToNetworkQueryMapper
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.ListIntToHackerNewsPostsIdsMapper
+import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostsInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPostsIds
@@ -32,6 +33,7 @@ import kotlinx.serialization.cbor.Cbor
 
 interface HackerNewsPostsComponent {
   fun getHackerNewsPostsInteractor(): GetHackerNewsPostsInteractor
+  fun getHackerNewsPostInteractor(): GetHackerNewsPostInteractor
 }
 
 class HackerNewsPostsDefaultModule(
@@ -44,6 +46,12 @@ class HackerNewsPostsDefaultModule(
   override fun getHackerNewsPostsInteractor(): GetHackerNewsPostsInteractor {
     return GetHackerNewsPostsInteractor(
       getHackerNewsIdsPostsRepository.toGetInteractor(coroutineDispatcher),
+      getHackerNewsPostsRepository.toGetInteractor(coroutineDispatcher)
+    )
+  }
+
+  override fun getHackerNewsPostInteractor(): GetHackerNewsPostInteractor {
+    return GetHackerNewsPostInteractor(
       getHackerNewsPostsRepository.toGetInteractor(coroutineDispatcher)
     )
   }
