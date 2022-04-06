@@ -11,7 +11,8 @@ import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class HackerPostsAdapter(private val dataSet: List<HackerNewsPost>) :
+class HackerPostsAdapter(private val dataSet: List<HackerNewsPost>,
+                         private val onItemClicked: (HackerNewsPost) -> Unit) :
   RecyclerView.Adapter<HackerPostsAdapter.ViewHolder>() {
   private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.getDefault())
 
@@ -33,7 +34,9 @@ class HackerPostsAdapter(private val dataSet: List<HackerNewsPost>) :
   }
 
   override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-    viewHolder.bind(dataSet[position])
+    val hackerNewsPost = dataSet[position]
+    viewHolder.bind(hackerNewsPost)
+    viewHolder.itemView.setOnClickListener { onItemClicked(hackerNewsPost) }
   }
 
   override fun getItemCount() = dataSet.size

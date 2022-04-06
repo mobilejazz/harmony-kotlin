@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.harmony.kotlin.android.ui.widget.LoadContentLayout
+    android:id="@+id/load_content_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+          android:id="@+id/tv_time_detail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="20dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="20dp"
+          android:gravity="center"
+          android:textAppearance="@style/TextAppearance.AppCompat.Small"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="20-10-2022 19:10" />
+
+        <TextView
+          android:id="@+id/tv_title_detail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="20dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="20dp"
+          android:gravity="center"
+          android:textAppearance="@style/TextAppearance.AppCompat.Title"
+          app:layout_constraintTop_toBottomOf="@id/tv_time_detail"
+          tools:text="The title is" />
+
+        <TextView
+          android:id="@+id/tv_author_detail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="20dp"
+          android:layout_marginEnd="20dp"
+          android:gravity="center"
+          android:textAppearance="@style/TextAppearance.AppCompat.Small"
+          app:layout_constraintTop_toBottomOf="@id/tv_title_detail"
+          tools:text="The title is" />
+
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="20dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="20dp"
+          android:text="@string/ls_lorem"
+          app:layout_constraintTop_toBottomOf="@id/tv_author_detail" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+  </com.harmony.kotlin.android.ui.widget.LoadContentLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
