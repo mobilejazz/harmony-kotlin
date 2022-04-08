@@ -137,6 +137,7 @@ kotlin {
         implementation("androidx.test:rules:1.4.0")
         implementation("androidx.test.ext:junit-ktx:1.1.3")
         implementation("org.robolectric:robolectric:4.7.1")
+        implementation("androidx.lifecycle:lifecycle-runtime-testing:2.4.1")
       }
     }
     val iosX64Main by getting
