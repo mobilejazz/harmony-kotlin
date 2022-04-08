@@ -18,7 +18,12 @@ plugins {
   kotlin("plugin.serialization")
   id("com.squareup.sqldelight") version sql_delight_version
   id("com.android.library")
+  id("org.kodein.mock.mockmp") version mockmp_version
   `gradle-mvn-push` // on buildSrc/src/main/groovy/gradle-mvn-push.gradle
+}
+
+mockmp {
+  usesHelper = true
 }
 
 kotlin {
@@ -33,6 +38,14 @@ kotlin {
   }
 
   sourceSets {
+    all {
+      languageSettings.apply {
+        optIn("kotlin.RequiresOptIn")
+        optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+        optIn("kotlinx.serialization.ExperimentalSerializationApi")
+      }
+    }
+
     val commonMain by getting {
       dependencies {
         // coroutines

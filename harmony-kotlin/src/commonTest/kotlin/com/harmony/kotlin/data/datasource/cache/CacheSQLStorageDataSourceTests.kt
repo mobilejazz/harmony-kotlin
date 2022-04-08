@@ -1,6 +1,8 @@
 package com.harmony.kotlin.data.datasource.cache
 
 import com.harmony.kotlin.common.BaseTest
+import com.harmony.kotlin.common.randomByteArray
+import com.harmony.kotlin.common.randomByteArrayList
 import com.harmony.kotlin.data.datasource.database.CacheDatabase
 import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.error.QueryNotSupportedException
@@ -14,8 +16,6 @@ import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValue
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
 import com.harmony.kotlin.data.utilities.anyInsertionValues
-import com.harmony.kotlin.data.utilities.randomByteArray
-import com.harmony.kotlin.data.utilities.randomByteArrayList
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -40,7 +40,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw query not supported when query is invalid using get()`() = runTest {
+  fun `should throw query not supported when query is invalid using get function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<QueryNotSupportedException> {
@@ -49,7 +49,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw data not found exception when no values using get()`() = runTest {
+  fun `should throw data not found exception when no values using get function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<DataNotFoundException> {
@@ -61,7 +61,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   //region - getAll()
 
   @Test
-  fun `should throw data not found exception when no values using getAll()`() = runTest {
+  fun `should throw data not found exception when no values using getAll function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<DataNotFoundException> {
@@ -70,7 +70,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw query not supported when query is invalid using getAll()`() = runTest {
+  fun `should throw query not supported when query is invalid using getAll function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<QueryNotSupportedException> {
@@ -121,7 +121,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw query not supported when query is invalid using put()`() = runTest {
+  fun `should throw query not supported when query is invalid using put function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<QueryNotSupportedException> {
@@ -157,7 +157,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `putAll() should not replace - delete values from other similar keys`() = runTest {
+  fun `putAll function should not replace - delete values from other similar keys`() = runTest {
     val expectedKey = "book-likes"
     val insertedValue = anyInsertionValue(expectedKey, randomByteArray())
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource(
@@ -185,7 +185,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw query not supported when query is invalid using putAll()`() = runTest {
+  fun `should throw query not supported when query is invalid using putAll function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<QueryNotSupportedException> {
@@ -224,7 +224,7 @@ class CacheSQLStorageDataSourceTests : BaseTest() {
   //region - delete
 
   @Test
-  fun `should throw query not supported when query is invalid using delete()`() = runTest {
+  fun `should throw query not supported when query is invalid using delete function`() = runTest {
     val cacheSQLStorageDataSource = givenCacheSQLStorageDataSource()
 
     assertFailsWith<QueryNotSupportedException> {

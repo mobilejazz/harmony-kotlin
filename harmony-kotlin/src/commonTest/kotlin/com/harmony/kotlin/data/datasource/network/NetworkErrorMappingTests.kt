@@ -37,7 +37,7 @@ class NetworkErrorMappingTests : BaseTest() {
   }
 
   @Test
-  fun `should throw HttpException when backend returns any 40X (minus 401 & 404) & 50X`() {
+  fun `should throw HttpException when backend returns any 40X minus 401 - 404 50X`() {
     try {
       runBlocking {
         apiMock.executeRequest(BadRequest)

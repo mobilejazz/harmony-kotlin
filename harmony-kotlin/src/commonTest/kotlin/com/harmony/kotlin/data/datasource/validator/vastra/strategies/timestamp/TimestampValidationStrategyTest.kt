@@ -9,7 +9,8 @@ import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
@@ -19,7 +20,7 @@ class TimestampValidationStrategyTest {
 
   @Test
   internal fun should_value_be_valid_if_value_is_not_expired() {
-    val foo = Foo("bar", lastUpdatedAt = Clock.System.now().toEpochMilliseconds(), expireIn = Duration.minutes(1).toLong(DurationUnit.MILLISECONDS))
+    val foo = Foo("bar", lastUpdatedAt = Clock.System.now().toEpochMilliseconds(), expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS))
 
     val timestampValidationStrategy = TimestampValidationStrategy()
     val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
@@ -30,8 +31,8 @@ class TimestampValidationStrategyTest {
 
   @Test
   fun should_value_be_invalid_if_value_is_expired() {
-    val yesterday = Clock.System.now().minus(Duration.days(1)).toEpochMilliseconds()
-    val foo = Foo("bar", lastUpdatedAt = yesterday, expireIn = Duration.minutes(1).toLong(DurationUnit.MILLISECONDS))
+    val yesterday = Clock.System.now().minus(1.days).toEpochMilliseconds()
+    val foo = Foo("bar", lastUpdatedAt = yesterday, expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS))
 
     val timestampValidationStrategy = TimestampValidationStrategy()
     val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))

@@ -3,21 +3,24 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginStart="20dp"
   android:layout_marginTop="8dp"
+  android:layout_marginEnd="20dp"
   android:orientation="vertical">
-
-  <TextView
-    android:id="@+id/hacker_post_item_title"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-    tools:text="Title" />
 
   <TextView
     android:id="@+id/hacker_post_item_date"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:textAppearance="@style/TextAppearance.AppCompat.Small"
     tools:text="Date" />
+
+  <TextView
+    android:id="@+id/hacker_post_item_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+    tools:text="Title" />
+
 </LinearLayout>
