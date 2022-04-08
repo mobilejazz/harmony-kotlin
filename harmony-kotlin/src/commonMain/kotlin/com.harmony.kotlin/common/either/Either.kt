@@ -1,7 +1,7 @@
-package com.harmony.kotlin.common.functional
+package com.harmony.kotlin.common.either
 
-import com.harmony.kotlin.common.functional.Either.Left
-import com.harmony.kotlin.common.functional.Either.Right
+import com.harmony.kotlin.common.either.Either.Left
+import com.harmony.kotlin.common.either.Either.Right
 
 /**
  * Either implementation mainly based on arrow's implementation:

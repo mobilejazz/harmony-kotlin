@@ -41,16 +41,12 @@ class HackerPostDetailDefaultPresenter(
 
   private fun loadPostWithId(hackerNewsPostId: Int) {
     launch {
-      runCatching {
-        view.get()?.onDisplayLoading()
-        getHackerNewsPostsInteractor(hackerNewsPostId)
-      }.onComplete(
-        logger,
-        tag,
-        onSuccess = { hackerNewsPost ->
-          view.get()?.onDisplayHackerPost(hackerNewsPost)
+      view.get()?.onDisplayLoading()
+      getHackerNewsPostsInteractor(hackerNewsPostId).fold(
+        ifRight = {
+          view.get()?.onDisplayHackerPost(it)
         },
-        onFailure = {
+        ifLeft = {
           view.get()?.onFailedWithFullScreenError(it) { loadPostWithId(hackerNewsPostId) }
         }
       )

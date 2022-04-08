@@ -2,7 +2,6 @@ package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.WeakReference
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.common.onComplete
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostsInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
 import kotlinx.coroutines.CoroutineScope
@@ -42,17 +41,14 @@ class HackerPostsDefaultPresenter(
   private fun loadPosts() {
     view.get()?.onDisplayLoading()
     launch {
-      runCatching {
-        getHackerNewsPostsInteractor()
-      }.onComplete(
-        logger, tag,
-        onSuccess = {
-          view.get()?.onDisplayHackerPostList(it)
-        },
-        onFailure = {
-          view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
-        }
-      )
+        getHackerNewsPostsInteractor().fold(
+          ifRight = {
+            view.get()?.onDisplayHackerPostList(it)
+          },
+          ifLeft = {
+            view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
+          }
+        )
     }
   }
 

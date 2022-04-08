@@ -16,7 +16,7 @@ import com.harmony.kotlin.data.repository.withMapping
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
 import com.harmony.kotlin.data.validator.vastra.strategies.VastraValidator
 import com.harmony.kotlin.data.validator.vastra.strategies.timestamp.TimestampValidationStrategy
-import com.harmony.kotlin.domain.interactor.toGetInteractor
+import com.harmony.kotlin.domain.interactor.either.toGetInteractor
 import com.mobilejazz.kmmsample.core.NetworkConfiguration
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.entity.HackerNewsPostEntity
 import com.mobilejazz.kmmsample.core.feature.hackerposts.data.mapper.HackerNewsPostEntityToHackerNewsPostMapper
