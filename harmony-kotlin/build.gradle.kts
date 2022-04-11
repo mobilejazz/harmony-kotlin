@@ -100,6 +100,7 @@ kotlin {
       dependencies {
         implementation(kotlin("test"))
         implementation(kotlin("test-junit"))
+        implementation("io.mockk:mockk:$mockk_version")
       }
     }
 
