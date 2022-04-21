@@ -1,7 +1,7 @@
 package com.mobilejazz.kmmsample.application.ui.common
 
 import android.content.Context
-import com.harmony.kotlin.data.datasource.network.error.NetworkConnectivityException
+import com.harmony.kotlin.error.NetworkConnectivityException
 import com.mobilejazz.kmmsample.application.R
 
 fun Throwable.toLocalizedErrorMessage(context: Context) =

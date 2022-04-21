@@ -2,7 +2,6 @@ package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.WeakReference
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.common.onComplete
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
 import kotlinx.coroutines.CoroutineScope

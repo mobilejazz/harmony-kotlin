@@ -6,10 +6,6 @@ import com.harmony.kotlin.data.datasource.DataSourceMapper
 import com.harmony.kotlin.data.datasource.anyVoidDataSource
 import com.harmony.kotlin.data.datasource.memory.InMemoryDataSource
 import com.harmony.kotlin.data.datasource.memory.anyInMemoryDataSource
-import com.harmony.kotlin.data.error.DataNotFoundException
-import com.harmony.kotlin.data.error.DataNotValidException
-import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.mapper.ClosureMapper
 import com.harmony.kotlin.data.operation.CacheOperation
 import com.harmony.kotlin.data.operation.CacheSyncOperation
@@ -26,6 +22,10 @@ import com.harmony.kotlin.data.utilities.anyInsertionValues
 import com.harmony.kotlin.data.validator.Validator
 import com.harmony.kotlin.data.validator.anyMockValidator
 import com.harmony.kotlin.data.validator.mock.MockValidator
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.DataNotValidException
+import com.harmony.kotlin.error.DataSerializationException
+import com.harmony.kotlin.error.OperationNotSupportedException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -64,7 +64,7 @@ class CacheRepositoryTests : BaseTest() {
   @Test
   fun `should throw operation not allowed when calling get function given an unsupported Operation`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
-    assertFailsWith<OperationNotAllowedException> {
+    assertFailsWith<OperationNotSupportedException> {
       cacheRepository.get(anyQuery(), anyOperation())
     }
   }
@@ -169,7 +169,7 @@ class CacheRepositoryTests : BaseTest() {
     }
 
   @Test
-  fun `should request to main datasource and store it into cache when calling get function with CacheSyncOperation given that cache throw MappingException`() =
+  fun `should obtain the value from main when using CacheSyncOperation given that cache get() throws DataSerializationException`() =
     runTest {
       val expectedValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
@@ -177,7 +177,7 @@ class CacheRepositoryTests : BaseTest() {
       val mockMapper = ClosureMapper<String, String> {
         if (counter == 0) {
           counter++
-          throw MappingException()
+          throw DataSerializationException()
         } else {
           it
         }
@@ -257,7 +257,7 @@ class CacheRepositoryTests : BaseTest() {
   fun `should throw operation not allowed using getAll function`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
 
-    assertFailsWith<OperationNotAllowedException> {
+    assertFailsWith<OperationNotSupportedException> {
       cacheRepository.getAll(anyQuery(), anyOperation())
     }
   }
@@ -357,32 +357,33 @@ class CacheRepositoryTests : BaseTest() {
   }
 
   @Test
-  fun `should request to main datasource and store it into cache when cache throw MappingException using CacheSyncOperation in getAll function`() = runTest {
-    val expectedValues = anyInsertionValues()
-    val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    var counter = 0
-    val mockMapper = ClosureMapper<String, String> {
-      if (counter == 0) {
-        counter++
-        throw MappingException()
-      } else {
-        it
+  fun `should request to main datasource and store it into cache when cache throw DataSerializationException using CacheSyncOperation in getAll function`() =
+    runTest {
+      val expectedValues = anyInsertionValues()
+      val cacheDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
+      var counter = 0
+      val mockMapper = ClosureMapper<String, String> {
+        if (counter == 0) {
+          counter++
+          throw DataSerializationException()
+        } else {
+          it
+        }
       }
+      val cacheDataSourceMapper = DataSourceMapper(cacheDataSource, cacheDataSource, cacheDataSource, mockMapper, mockMapper)
+      val mainDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
+      val cacheRepository = CacheRepository(
+        cacheDataSourceMapper, cacheDataSourceMapper, cacheDataSourceMapper,
+        mainDataSource, mainDataSource, mainDataSource,
+        anyMockValidator()
+      )
+
+      val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation())
+      val cacheValue = cacheDataSource.getAll(expectedValues.query)
+
+      assertContentEquals(expectedValues.value, value)
+      assertContentEquals(expectedValues.value, cacheValue)
     }
-    val cacheDataSourceMapper = DataSourceMapper(cacheDataSource, cacheDataSource, cacheDataSource, mockMapper, mockMapper)
-    val mainDataSource = anyInMemoryDataSource(putAllValues = listOf(expectedValues))
-    val cacheRepository = CacheRepository(
-      cacheDataSourceMapper, cacheDataSourceMapper, cacheDataSourceMapper,
-      mainDataSource, mainDataSource, mainDataSource,
-      anyMockValidator()
-    )
-
-    val value = cacheRepository.getAll(expectedValues.query, CacheSyncOperation())
-    val cacheValue = cacheDataSource.getAll(expectedValues.query)
-
-    assertContentEquals(expectedValues.value, value)
-    assertContentEquals(expectedValues.value, cacheValue)
-  }
 
   @Test
   fun `should throw exception when not handled by the cache and fallback is false using CacheSyncOperation in getAll function`() = runTest {
@@ -493,7 +494,7 @@ class CacheRepositoryTests : BaseTest() {
   fun `should throw operation not allowed using put function`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
 
-    assertFailsWith<OperationNotAllowedException> {
+    assertFailsWith<OperationNotSupportedException> {
       cacheRepository.put(anyQuery(), randomString(), anyOperation())
     }
   }
@@ -579,7 +580,7 @@ class CacheRepositoryTests : BaseTest() {
   fun `should throw operation not allowed using putAll function`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
 
-    assertFailsWith<OperationNotAllowedException> {
+    assertFailsWith<OperationNotSupportedException> {
       cacheRepository.putAll(anyQuery(), listOf(randomString()), anyOperation())
     }
   }
@@ -647,7 +648,7 @@ class CacheRepositoryTests : BaseTest() {
   fun `should throw operation not allowed using delete function`() = runTest {
     val cacheRepository = givenCacheRepository<String>()
 
-    assertFailsWith<OperationNotAllowedException> {
+    assertFailsWith<OperationNotSupportedException> {
       cacheRepository.delete(anyQuery(), anyOperation())
     }
   }

@@ -13,7 +13,6 @@ import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-
 class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View {
 
   companion object {
@@ -27,15 +26,14 @@ class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View 
 
   private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.getDefault())
 
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     binding = ActivityHackerPostDetailBinding.inflate(layoutInflater)
     setContentView(binding.root)
 
-    supportActionBar?.setDisplayHomeAsUpEnabled(true);
-    supportActionBar?.setDisplayShowHomeEnabled(true);
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setDisplayShowHomeEnabled(true)
 
     title = "Hacker News Post"
 
@@ -66,5 +64,4 @@ class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View 
   override fun onFailedWithFullScreenError(t: Throwable, retryBlock: () -> Unit) {
     binding.loadContentLayout.showError(t.toLocalizedErrorMessage(this), R.string.ls_retry, retryBlock)
   }
-
 }

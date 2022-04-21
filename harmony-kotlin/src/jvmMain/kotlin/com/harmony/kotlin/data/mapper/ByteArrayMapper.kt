@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.mapper
 
-import com.harmony.kotlin.data.error.MappingException
+import com.harmony.kotlin.error.DataSerializationException
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -14,7 +14,7 @@ class ByteArrayToModelMapper<out T : Serializable> : Mapper<ByteArray, T> {
   override fun map(from: ByteArray): T = try {
     from.toObject()
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -25,7 +25,7 @@ class ModelToByteArrayMapper<in T : Serializable> : Mapper<T, ByteArray> {
   override fun map(from: T): ByteArray = try {
     from.toByteArray()
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -36,7 +36,7 @@ class ByteArrayToListModelMapper<out T : Serializable> : Mapper<ByteArray, List<
   override fun map(from: ByteArray): List<T> = try {
     from.toObject()
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -47,7 +47,7 @@ class ListModelToByteArrayMapper<in T : Serializable> : Mapper<List<T>, ByteArra
   override fun map(from: List<T>): ByteArray = try {
     from.toByteArray()
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 

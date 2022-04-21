@@ -3,10 +3,6 @@ package com.harmony.kotlin.data.repository
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.DataNotFoundException
-import com.harmony.kotlin.data.error.DataNotValidException
-import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.OperationNotAllowedException
 import com.harmony.kotlin.data.operation.CacheOperation
 import com.harmony.kotlin.data.operation.CacheSyncOperation
 import com.harmony.kotlin.data.operation.DefaultOperation
@@ -15,6 +11,10 @@ import com.harmony.kotlin.data.operation.MainSyncOperation
 import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.DataNotValidException
+import com.harmony.kotlin.error.DataSerializationException
+import com.harmony.kotlin.error.notSupportedOperation
 
 class CacheRepository<V>(
   private val getCache: GetDataSource<V>,
@@ -62,7 +62,7 @@ class CacheRepository<V>(
           try {
             when (cacheException) {
               is DataNotValidException,
-              is MappingException,
+              is DataSerializationException,
               is DataNotFoundException -> get(query, MainSyncOperation)
               else -> throw cacheException
             }
@@ -75,7 +75,7 @@ class CacheRepository<V>(
           }
         }
       }
-      else -> throw OperationNotAllowedException()
+      else -> notSupportedOperation()
     }
   }
 
@@ -115,7 +115,7 @@ class CacheRepository<V>(
           try {
             when (cacheException) {
               is DataNotValidException,
-              is MappingException,
+              is DataSerializationException,
               is DataNotFoundException -> getAll(query, MainSyncOperation)
               else -> throw cacheException
             }
@@ -128,7 +128,7 @@ class CacheRepository<V>(
           }
         }
       }
-      else -> throw OperationNotAllowedException()
+      else -> notSupportedOperation()
     }
   }
 
@@ -138,7 +138,7 @@ class CacheRepository<V>(
     is CacheOperation -> putCache.put(query, value)
     is MainSyncOperation -> putMain.put(query, value).let { putCache.put(query, it) }
     is CacheSyncOperation -> putCache.put(query, value).let { putMain.put(query, it) }
-    else -> throw OperationNotAllowedException()
+    else -> notSupportedOperation()
   }
 
   override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = when (operation) {
@@ -147,7 +147,7 @@ class CacheRepository<V>(
     is CacheOperation -> putCache.putAll(query, value)
     is MainSyncOperation -> putMain.putAll(query, value).let { putCache.putAll(query, it) }
     is CacheSyncOperation -> putCache.putAll(query, value).let { putMain.putAll(query, it) }
-    else -> throw OperationNotAllowedException()
+    else -> notSupportedOperation()
   }
 
   override suspend fun delete(query: Query, operation: Operation): Unit = when (operation) {
@@ -156,7 +156,7 @@ class CacheRepository<V>(
     is CacheOperation -> deleteCache.delete(query)
     is MainSyncOperation -> deleteMain.delete(query).let { deleteCache.delete(query) }
     is CacheSyncOperation -> deleteCache.delete(query).let { deleteMain.delete(query) }
-    else -> throw OperationNotAllowedException()
+    else -> notSupportedOperation()
   }
 
   /**

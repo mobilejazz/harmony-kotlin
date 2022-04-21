@@ -41,14 +41,14 @@ class HackerPostsDefaultPresenter(
   private fun loadPosts() {
     view.get()?.onDisplayLoading()
     launch {
-        getHackerNewsPostsInteractor().fold(
-          ifRight = {
-            view.get()?.onDisplayHackerPostList(it)
-          },
-          ifLeft = {
-            view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
-          }
-        )
+      getHackerNewsPostsInteractor().fold(
+        ifRight = {
+          view.get()?.onDisplayHackerPostList(it)
+        },
+        ifLeft = {
+          view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
+        }
+      )
     }
   }
 
