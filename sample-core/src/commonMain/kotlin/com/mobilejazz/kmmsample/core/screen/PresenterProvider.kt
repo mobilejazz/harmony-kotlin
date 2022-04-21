@@ -27,7 +27,7 @@ class PresenterDefaultModule(
 
   override fun getHackerPostDetailPresenter(view: HackerPostDetailPresenter.View): HackerPostDetailPresenter {
     return HackerPostDetailDefaultPresenter(
-      WeakReference(view),
+      PresenterViewHolder(view),
       hackerNewsPostsComponent.getHackerNewsPostInteractor(),
       logger
     )

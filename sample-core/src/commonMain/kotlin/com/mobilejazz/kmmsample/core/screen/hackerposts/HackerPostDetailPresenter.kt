@@ -1,8 +1,8 @@
 package com.mobilejazz.kmmsample.core.screen.hackerposts
 
-import com.harmony.kotlin.common.WeakReference
 import com.harmony.kotlin.common.logger.Logger
 import com.harmony.kotlin.common.onComplete
+import com.harmony.kotlin.common.presenter.PresenterViewHolder
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +13,6 @@ import kotlin.coroutines.CoroutineContext
 
 interface HackerPostDetailPresenter {
   fun onViewLoaded(hackerNewsPostId: Int)
-  fun onDetachView()
 
   interface View {
     fun onDisplayLoading()
@@ -23,7 +22,7 @@ interface HackerPostDetailPresenter {
 }
 
 class HackerPostDetailDefaultPresenter(
-  private val view: WeakReference<HackerPostDetailPresenter.View>,
+  private val view: PresenterViewHolder<HackerPostDetailPresenter.View>,
   private val getHackerNewsPostsInteractor: GetHackerNewsPostInteractor,
   private val logger: Logger
 ) : HackerPostDetailPresenter, CoroutineScope {
@@ -51,9 +50,5 @@ class HackerPostDetailDefaultPresenter(
         }
       )
     }
-  }
-
-  override fun onDetachView() {
-    view.clear()
   }
 }
