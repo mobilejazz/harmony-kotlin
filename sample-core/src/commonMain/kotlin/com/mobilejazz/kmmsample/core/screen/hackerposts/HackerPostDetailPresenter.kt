@@ -1,7 +1,6 @@
 package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.common.onComplete
 import com.harmony.kotlin.common.presenter.PresenterViewHolder
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
