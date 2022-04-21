@@ -2,15 +2,15 @@ package com.mobilejazz.kmmsample.application.ui.screen.hackerpost
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.mobilejazz.kmmsample.application.HarmonySampleApp
 import com.mobilejazz.kmmsample.application.R
 import com.mobilejazz.kmmsample.application.databinding.ActivityHackerPostsBinding
-import com.mobilejazz.kmmsample.application.ui.common.BaseActivity
 import com.mobilejazz.kmmsample.application.ui.common.toLocalizedErrorMessage
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
 import com.mobilejazz.kmmsample.core.screen.hackerposts.HackerPostsPresenter
 
-class HackerPostsActivity : BaseActivity(), HackerPostsPresenter.View {
+class HackerPostsActivity : AppCompatActivity(), HackerPostsPresenter.View {
 
   private lateinit var binding: ActivityHackerPostsBinding
   private val presenter by lazy {
@@ -44,10 +44,5 @@ class HackerPostsActivity : BaseActivity(), HackerPostsPresenter.View {
 
   override fun onFailedWithFullScreenError(t: Throwable, retryBlock: () -> Unit) {
     binding.loadContentLayout.showError(t.toLocalizedErrorMessage(this), R.string.ls_retry, retryBlock)
-  }
-
-  override fun onStop() {
-    super.onStop()
-    presenter.onDetachView()
   }
 }

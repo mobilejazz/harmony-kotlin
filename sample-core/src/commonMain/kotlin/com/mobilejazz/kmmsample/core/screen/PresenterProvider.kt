@@ -1,7 +1,7 @@
 package com.mobilejazz.kmmsample.core.screen
 
-import com.harmony.kotlin.common.WeakReference
 import com.harmony.kotlin.common.logger.Logger
+import com.harmony.kotlin.common.presenter.PresenterViewHolder
 import com.mobilejazz.kmmsample.core.feature.hackerposts.HackerNewsPostsComponent
 import com.mobilejazz.kmmsample.core.screen.hackerposts.HackerPostDetailDefaultPresenter
 import com.mobilejazz.kmmsample.core.screen.hackerposts.HackerPostDetailPresenter
@@ -19,7 +19,7 @@ class PresenterDefaultModule(
 ) : PresenterComponent {
   override fun getHackerPostsPresenter(view: HackerPostsPresenter.View): HackerPostsPresenter {
     return HackerPostsDefaultPresenter(
-      WeakReference(view),
+      PresenterViewHolder(view),
       hackerNewsPostsComponent.getHackerNewsPostsInteractor(),
       logger
     )
@@ -27,7 +27,7 @@ class PresenterDefaultModule(
 
   override fun getHackerPostDetailPresenter(view: HackerPostDetailPresenter.View): HackerPostDetailPresenter {
     return HackerPostDetailDefaultPresenter(
-      WeakReference(view),
+      PresenterViewHolder(view),
       hackerNewsPostsComponent.getHackerNewsPostInteractor(),
       logger
     )
