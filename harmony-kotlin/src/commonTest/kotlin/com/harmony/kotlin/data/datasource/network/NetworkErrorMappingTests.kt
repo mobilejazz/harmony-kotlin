@@ -3,8 +3,8 @@
 package com.harmony.kotlin.data.datasource.network
 
 import com.harmony.kotlin.common.BaseTest
+import com.harmony.kotlin.data.datasource.network.error.HttpException
 import com.harmony.kotlin.error.DataNotFoundException
-import com.harmony.kotlin.error.HttpException
 import com.harmony.kotlin.error.UnauthorizedException
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
