@@ -3,10 +3,10 @@ package com.harmony.kotlin.data.datasource.network.ktor
 import com.harmony.kotlin.common.exceptions.tryOrNull
 import com.harmony.kotlin.data.datasource.network.DefaultUnauthorizedResolution
 import com.harmony.kotlin.data.datasource.network.UnauthorizedResolution
+import com.harmony.kotlin.data.datasource.network.error.HttpException
+import com.harmony.kotlin.data.datasource.network.error.NetworkConnectivityException
 import com.harmony.kotlin.error.DataNotFoundException
 import com.harmony.kotlin.error.HarmonyException
-import com.harmony.kotlin.error.HttpException
-import com.harmony.kotlin.error.NetworkConnectivityException
 import com.harmony.kotlin.error.UnauthorizedException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpResponseValidator
