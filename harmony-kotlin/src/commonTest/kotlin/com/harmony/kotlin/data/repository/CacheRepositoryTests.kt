@@ -169,7 +169,7 @@ class CacheRepositoryTests : BaseTest() {
     }
 
   @Test
-  fun `should obtain the value from main when using CacheSyncOperation given that cache get() throws DataSerializationException`() =
+  fun `should obtain the value from main when using CacheSyncOperation given that cache get function throws DataSerializationException`() =
     runTest {
       val expectedValue = anyInsertionValue()
       val cacheDataSource = anyInMemoryDataSource(putValues = listOf(expectedValue))
