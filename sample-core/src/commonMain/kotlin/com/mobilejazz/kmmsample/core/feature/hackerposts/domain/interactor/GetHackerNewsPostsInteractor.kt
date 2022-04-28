@@ -14,7 +14,7 @@ class GetHackerNewsPostsInteractor(
     return getHackerNewsIdsPostsInteractor(
       HackerNewsQuery.GetAll
       // To speed up first load. Next iteration, pagination.
-    ).listIds.take(5).map { postId ->
+    ).listIds.take(10).map { postId ->
       getHackerNewsPostInteractor(
         HackerNewsQuery.GetPost(postId)
       )

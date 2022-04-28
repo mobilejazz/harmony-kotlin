@@ -4,6 +4,7 @@ import com.harmony.kotlin.common.logger.KtorHarmonyLogger
 import com.harmony.kotlin.common.logger.Logger
 import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMapping
 import io.ktor.client.HttpClient
+import io.ktor.client.features.HttpTimeout
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
@@ -20,32 +21,37 @@ interface NetworkComponent {
   val mainNetworkConfiguration: NetworkConfiguration
 }
 
-class NetworkDefaultModule(private val coreLogger: Logger) : NetworkComponent {
-
-  override val mainNetworkConfiguration: NetworkConfiguration by lazy { NetworkConfiguration(httpClient, json, hackerNewsApiUrl) }
-
+class NetworkDefaultModule(coreLogger: Logger) : NetworkComponent {
   private val hackerNewsApiUrl = "https://hacker-news.firebaseio.com/v0/"
 
-  // Check behavior when iOS sample
-  private val json by lazy {
-    Json {
-      isLenient = true
-      ignoreUnknownKeys = true
-    }
+  override val mainNetworkConfiguration: NetworkConfiguration by lazy { NetworkConfiguration(httpClient, JsonDefaultModule.json, hackerNewsApiUrl) }
+
+  private object JsonDefaultModule {
+    val json: Json
+      get() {
+        return Json {
+          ignoreUnknownKeys = true
+        }
+      }
   }
 
-  private val httpClient: HttpClient by lazy {
+  private val httpClient by lazy {
     HttpClient(engine) {
       install(JsonFeature) {
-        serializer = KotlinxSerializer(json)
+        serializer = KotlinxSerializer(JsonDefaultModule.json)
       }
 
       install(Logging) {
-        logger = KtorHarmonyLogger(coreLogger)
-        level = LogLevel.HEADERS
+        logger = KtorHarmonyLogger(logger = coreLogger)
+        level = LogLevel.ALL
       }
 
+      install(HttpTimeout) {
+        connectTimeoutMillis = 30_000
+        socketTimeoutMillis = 30_000
+      }
       configureExceptionErrorMapping()
+      expectSuccess = false
     }
   }
 }

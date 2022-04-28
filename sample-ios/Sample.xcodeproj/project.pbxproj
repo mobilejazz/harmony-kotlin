@@ -3,12 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
-		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		59BFC231281920A7000E1752 /* AppProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC230281920A7000E1752 /* AppProvider.swift */; };
+		59BFC23528192EB2000E1752 /* HackerPostsViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC23428192EB2000E1752 /* HackerPostsViewState.swift */; };
+		59BFC238281968BC000E1752 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC237281968BC000E1752 /* Color+Extensions.swift */; };
+		59BFC23A281968EF000E1752 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59BFC239281968EF000E1752 /* Colors.xcassets */; };
+		59BFC23F281969B3000E1752 /* HackerPostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC23E281969B3000E1752 /* HackerPostDetailView.swift */; };
+		59BFC241281969BD000E1752 /* HackerPostDetailViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC240281969BD000E1752 /* HackerPostDetailViewState.swift */; };
+		59BFC24428196A22000E1752 /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC24328196A22000E1752 /* LoadingOverlayView.swift */; };
+		59BFC24628196A3B000E1752 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC24528196A3B000E1752 /* ActivityIndicator.swift */; };
+		59BFC24928196A7C000E1752 /* FullScreenErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC24828196A7C000E1752 /* FullScreenErrorView.swift */; };
+		59BFC24B28196D66000E1752 /* DateTime+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC24A28196D66000E1752 /* DateTime+Extensions.swift */; };
+		59BFC24D28197088000E1752 /* HackerPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BFC24C28197088000E1752 /* HackerPostViewModel.swift */; };
+		7555FF83242A565900829871 /* HackerPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* HackerPostsView.swift */; };
 		E89FE73FD3CCC99DF8FB5DBF /* Pods_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E9B79303869AF0528C9461C /* Pods_Sample.framework */; };
 /* End PBXBuildFile section */
 
@@ -16,8 +27,19 @@
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		2E9B79303869AF0528C9461C /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		301B1CCEE74E96535EB7523F /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
+		59BFC230281920A7000E1752 /* AppProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppProvider.swift; sourceTree = "<group>"; };
+		59BFC23428192EB2000E1752 /* HackerPostsViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerPostsViewState.swift; sourceTree = "<group>"; };
+		59BFC237281968BC000E1752 /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
+		59BFC239281968EF000E1752 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		59BFC23E281969B3000E1752 /* HackerPostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerPostDetailView.swift; sourceTree = "<group>"; };
+		59BFC240281969BD000E1752 /* HackerPostDetailViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerPostDetailViewState.swift; sourceTree = "<group>"; };
+		59BFC24328196A22000E1752 /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
+		59BFC24528196A3B000E1752 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		59BFC24828196A7C000E1752 /* FullScreenErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenErrorView.swift; sourceTree = "<group>"; };
+		59BFC24A28196D66000E1752 /* DateTime+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateTime+Extensions.swift"; sourceTree = "<group>"; };
+		59BFC24C28197088000E1752 /* HackerPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerPostViewModel.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7555FF82242A565900829871 /* HackerPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerPostsView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82057F90132244CA92932EFE /* Pods-iOS_Harmony_KMM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS_Harmony_KMM.release.xcconfig"; path = "Target Support Files/Pods-iOS_Harmony_KMM/Pods-iOS_Harmony_KMM.release.xcconfig"; sourceTree = "<group>"; };
 		857A58B21366B63768BDE3F9 /* Pods-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.release.xcconfig"; path = "Target Support Files/Pods-Sample/Pods-Sample.release.xcconfig"; sourceTree = "<group>"; };
@@ -36,6 +58,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		59BFC232281925D5000E1752 /* HackerNew Posts */ = {
+			isa = PBXGroup;
+			children = (
+				7555FF82242A565900829871 /* HackerPostsView.swift */,
+				59BFC23428192EB2000E1752 /* HackerPostsViewState.swift */,
+				59BFC24C28197088000E1752 /* HackerPostViewModel.swift */,
+			);
+			path = "HackerNew Posts";
+			sourceTree = "<group>";
+		};
+		59BFC236281968AB000E1752 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				59BFC237281968BC000E1752 /* Color+Extensions.swift */,
+				59BFC24A28196D66000E1752 /* DateTime+Extensions.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		59BFC23B2819696E000E1752 /* HackerNew Post Detail */ = {
+			isa = PBXGroup;
+			children = (
+				59BFC23E281969B3000E1752 /* HackerPostDetailView.swift */,
+				59BFC240281969BD000E1752 /* HackerPostDetailViewState.swift */,
+			);
+			path = "HackerNew Post Detail";
+			sourceTree = "<group>";
+		};
+		59BFC24228196A13000E1752 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				59BFC24728196A70000E1752 /* Error */,
+				59BFC24328196A22000E1752 /* LoadingOverlayView.swift */,
+				59BFC24528196A3B000E1752 /* ActivityIndicator.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		59BFC24728196A70000E1752 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				59BFC24828196A7C000E1752 /* FullScreenErrorView.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
@@ -57,9 +125,14 @@
 		7555FF7D242A565900829871 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
-				7555FF82242A565900829871 /* ContentView.swift */,
+				59BFC24228196A13000E1752 /* Common */,
+				59BFC232281925D5000E1752 /* HackerNew Posts */,
+				59BFC23B2819696E000E1752 /* HackerNew Post Detail */,
+				59BFC236281968AB000E1752 /* Helper */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				59BFC230281920A7000E1752 /* AppProvider.swift */,
+				59BFC239281968EF000E1752 /* Colors.xcassets */,
 			);
 			path = Sample;
 			sourceTree = "<group>";
@@ -94,6 +167,7 @@
 				7555FF77242A565900829871 /* Sources */,
 				7555FF79242A565900829871 /* Resources */,
 				2BBE53D907B0906A5EF9F645 /* Frameworks */,
+				D61753152689C053AE180704 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -142,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59BFC23A281968EF000E1752 /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +245,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D61753152689C053AE180704 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sample/Pods-Sample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sample/Pods-Sample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Sample/Pods-Sample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -177,8 +269,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59BFC23F281969B3000E1752 /* HackerPostDetailView.swift in Sources */,
+				59BFC238281968BC000E1752 /* Color+Extensions.swift in Sources */,
+				59BFC24B28196D66000E1752 /* DateTime+Extensions.swift in Sources */,
+				59BFC24928196A7C000E1752 /* FullScreenErrorView.swift in Sources */,
+				59BFC24D28197088000E1752 /* HackerPostViewModel.swift in Sources */,
+				59BFC23528192EB2000E1752 /* HackerPostsViewState.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
-				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				7555FF83242A565900829871 /* HackerPostsView.swift in Sources */,
+				59BFC231281920A7000E1752 /* AppProvider.swift in Sources */,
+				59BFC24428196A22000E1752 /* LoadingOverlayView.swift in Sources */,
+				59BFC24628196A3B000E1752 /* ActivityIndicator.swift in Sources */,
+				59BFC241281969BD000E1752 /* HackerPostDetailViewState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

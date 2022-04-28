@@ -10,15 +10,19 @@ plugins {
 version = "1.0"
 
 kotlin {
-  android()
-
-  val iosTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget = when {
-    System.getenv("SDK_NAME")?.startsWith("iphoneos") == true -> ::iosArm64
-    System.getenv("NATIVE_ARCH")?.startsWith("arm") == true -> ::iosSimulatorArm64
-    else -> ::iosX64
+  targets.withType<KotlinNativeTarget> {
+    binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+      isStatic = false
+      linkerOpts.add("-lsqlite3")
+      export(project(":harmony-kotlin"))
+    }
   }
 
-  iosTarget("ios") {}
+  android()
+
+  iosX64()
+  iosArm64()
+  iosSimulatorArm64()
 
   cocoapods {
     summary = "Some description for the Shared Module"
@@ -33,7 +37,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(project(":harmony-kotlin"))
+        api(project(":harmony-kotlin"))
       }
     }
     val commonTest by getting {
@@ -45,7 +49,7 @@ kotlin {
     val androidMain by getting {
       dependencies {
         api(project(":harmony-kotlin"))
-        implementation("io.ktor:ktor-client-okhttp:1.6.4")
+        implementation("io.ktor:ktor-client-okhttp:1.6.7")
       }
     }
     val androidTest by getting {
@@ -55,8 +59,28 @@ kotlin {
         implementation("junit:junit:4.13.2")
       }
     }
-    val iosMain by getting
-    val iosTest by getting
+    val iosX64Main by getting
+    val iosArm64Main by getting
+    val iosSimulatorArm64Main by getting
+    val iosMain by creating {
+      dependsOn(commonMain)
+      iosX64Main.dependsOn(this)
+      iosArm64Main.dependsOn(this)
+      iosSimulatorArm64Main.dependsOn(this)
+      dependencies {
+        implementation("io.ktor:ktor-client-ios:1.6.7")
+      }
+    }
+
+    val iosX64Test by getting
+    val iosArm64Test by getting
+    val iosSimulatorArm64Test by getting
+    val iosTest by creating {
+      dependsOn(commonTest)
+      iosX64Test.dependsOn(this)
+      iosArm64Test.dependsOn(this)
+      iosSimulatorArm64Test.dependsOn(this)
+    }
   }
 }
 
