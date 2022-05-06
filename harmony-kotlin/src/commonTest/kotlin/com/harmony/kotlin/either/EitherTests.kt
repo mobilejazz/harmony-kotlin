@@ -3,7 +3,7 @@ package com.harmony.kotlin.either
 import com.harmony.kotlin.common.either.Either
 import com.harmony.kotlin.common.either.asSingleEither
 import com.harmony.kotlin.common.either.eitherOf
-import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.error.DataNotFoundException
 import com.harmony.kotlin.error.HarmonyException
 import kotlin.test.Test
 import kotlin.test.assertEquals
