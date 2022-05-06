@@ -3,11 +3,11 @@ package com.harmony.kotlin.data.datasource
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.common.randomStringList
-import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
 import com.harmony.kotlin.data.mapper.anyVoidMapper
 import com.harmony.kotlin.data.query.KeyQuery
+import com.harmony.kotlin.error.DataNotFoundException
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest

@@ -1,6 +1,6 @@
 package com.harmony.kotlin.common.sqldelight
 
-import com.harmony.kotlin.data.error.DataNotFoundException
+import com.harmony.kotlin.error.DataNotFoundException
 import com.squareup.sqldelight.Query
 
 fun <T : Any> Query<T>.executeAsListWithDataNotFound(): List<T> {

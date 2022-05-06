@@ -1,6 +1,6 @@
 package com.harmony.kotlin.error
 
 /**
- * Generic exception, parent of all Harmony exceptions
+ * Parent exception for all controlled Exceptions on Harmony and apps
  */
-open class HarmonyException(message: String?, cause: Throwable?) : Exception(message, cause)
+abstract class HarmonyException(message: String? = null, cause: Throwable? = null) : Exception(message, cause)

@@ -4,10 +4,10 @@ package com.harmony.kotlin.data.datasource.memory
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.data.error.DataNotFoundException
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.VoidQuery
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.QueryNotSupportedException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

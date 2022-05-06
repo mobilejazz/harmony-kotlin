@@ -3,10 +3,10 @@ package com.harmony.kotlin.data.datasource
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
 import com.harmony.kotlin.common.randomIntList
-import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.anyQuery
 import com.harmony.kotlin.data.validator.MockValidator
 import com.harmony.kotlin.data.validator.Validator
+import com.harmony.kotlin.error.DataNotValidException
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest

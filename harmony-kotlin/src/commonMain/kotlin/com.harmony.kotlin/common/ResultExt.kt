@@ -1,10 +1,10 @@
 package com.harmony.kotlin.common
 
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.data.error.MappingException
-import com.harmony.kotlin.data.error.OperationNotAllowedException
-import com.harmony.kotlin.data.error.QueryNotSupportedException
+import com.harmony.kotlin.error.DataSerializationException
 import com.harmony.kotlin.error.HarmonyException
+import com.harmony.kotlin.error.OperationNotSupportedException
+import com.harmony.kotlin.error.QueryNotSupportedException
 
 /**
  * This extension method is intended to manage complete/failure flow while automatically logging exceptions
@@ -22,7 +22,7 @@ inline fun <T> Result<T>.onComplete(
     this.onFailure {
       when (it) {
         // Exceptions below are expected but are most probably happening due to a Development error
-        is OperationNotAllowedException, is QueryNotSupportedException, is MappingException -> {
+        is OperationNotSupportedException, is QueryNotSupportedException, is DataSerializationException -> {
           onFailureLogger.e(tag, it.stackTraceToString())
           onFailureLogger.sendIssue(tag, it.stackTraceToString())
         }

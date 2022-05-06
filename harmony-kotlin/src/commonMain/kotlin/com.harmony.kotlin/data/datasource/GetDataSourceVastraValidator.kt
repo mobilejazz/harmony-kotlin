@@ -1,9 +1,9 @@
 package com.harmony.kotlin.data.datasource
 
-import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.vastra.ValidationService
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.error.DataNotValidException
 
 class GetDataSourceVastraValidator<T : ValidationStrategyDataSource>(
   private val getDataSource: GetDataSource<T>,

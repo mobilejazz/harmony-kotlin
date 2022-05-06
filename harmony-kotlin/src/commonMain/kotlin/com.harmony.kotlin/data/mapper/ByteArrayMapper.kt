@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.mapper
 
-import com.harmony.kotlin.data.error.MappingException
+import com.harmony.kotlin.error.DataSerializationException
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
@@ -14,7 +14,7 @@ class ObjectToByteArrayMapper<T>(
     try {
       json.encodeToString(serializer, from).encodeToByteArray()
     } catch (e: SerializationException) {
-      throw MappingException(cause = e)
+      throw DataSerializationException(cause = e)
     }
 }
 
@@ -26,7 +26,7 @@ class ByteArrayToObjectMapper<T>(
     try {
       json.decodeFromString(serializer, from.decodeToString())
     } catch (e: SerializationException) {
-      throw MappingException(cause = e)
+      throw DataSerializationException(cause = e)
     }
 }
 
@@ -38,7 +38,7 @@ class ObjectListToByteArrayMapper<T>(
     try {
       json.encodeToString(ListSerializer(serializer), from).encodeToByteArray()
     } catch (e: SerializationException) {
-      throw MappingException(cause = e)
+      throw DataSerializationException(cause = e)
     }
 }
 
@@ -50,6 +50,6 @@ class ByteArrayToObjectListMapper<T>(
     try {
       json.decodeFromString(ListSerializer(serializer), from.decodeToString())
     } catch (e: SerializationException) {
-      throw MappingException(cause = e)
+      throw DataSerializationException(cause = e)
     }
 }

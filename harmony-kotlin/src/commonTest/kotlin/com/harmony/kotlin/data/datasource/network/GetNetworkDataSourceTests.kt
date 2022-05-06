@@ -5,10 +5,10 @@ import com.harmony.kotlin.common.randomLong
 import com.harmony.kotlin.common.randomPairList
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.common.removeSpaces
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
 import com.harmony.kotlin.data.query.anyQuery
+import com.harmony.kotlin.error.QueryNotSupportedException
 import com.harmony.kotlin.library.oauth.domain.interactor.GetPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.interactor.MockGetPasswordTokenInteractor
 import com.harmony.kotlin.library.oauth.domain.model.OAuthToken
