@@ -2,6 +2,7 @@ package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.data.operation.Operation
 import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.error.notSupportedOperation
 
 class VoidRepository<V> : GetRepository<V>, PutRepository<V>, DeleteRepository {
 

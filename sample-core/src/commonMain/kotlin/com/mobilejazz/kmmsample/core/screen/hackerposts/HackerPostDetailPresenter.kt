@@ -1,7 +1,6 @@
 package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.common.onComplete
 import com.harmony.kotlin.common.presenter.PresenterViewHolder
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
@@ -40,16 +39,12 @@ class HackerPostDetailDefaultPresenter(
 
   private fun loadPostWithId(hackerNewsPostId: Int) {
     launch {
-      runCatching {
-        view.get()?.onDisplayLoading()
-        getHackerNewsPostsInteractor(hackerNewsPostId)
-      }.onComplete(
-        logger,
-        tag,
-        onSuccess = { hackerNewsPost ->
-          view.get()?.onDisplayHackerPost(hackerNewsPost)
+      view.get()?.onDisplayLoading()
+      getHackerNewsPostsInteractor(hackerNewsPostId).fold(
+        ifRight = {
+          view.get()?.onDisplayHackerPost(it)
         },
-        onFailure = {
+        ifLeft = {
           view.get()?.onFailedWithFullScreenError(it) { loadPostWithId(hackerNewsPostId) }
         }
       )

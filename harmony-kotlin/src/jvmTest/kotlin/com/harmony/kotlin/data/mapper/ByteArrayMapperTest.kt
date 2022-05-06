@@ -4,7 +4,7 @@ import com.harmony.kotlin.common.getSome
 import com.harmony.kotlin.common.randomByteArray
 import com.harmony.kotlin.common.randomInt
 import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.data.error.MappingException
+import com.harmony.kotlin.error.DataSerializationException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -33,7 +33,7 @@ class ByteArrayMapperTest {
     assertTrue(expectedByteArray.contentEquals(actualByteArray))
   }
 
-  @Test(expected = MappingException::class)
+  @Test(expected = DataSerializationException::class)
   fun `assert mapper exception is thrown when mapper fails to serialize object`() {
     val json = mockk<Json>()
     val serializer = Dummy.serializer()
@@ -55,7 +55,7 @@ class ByteArrayMapperTest {
     assertEquals(expectedData, actualData)
   }
 
-  @Test(expected = MappingException::class)
+  @Test(expected = DataSerializationException::class)
   fun `assert mapper exception is thrown when mapper fails to deserialize json`() {
     val json = mockk<Json>()
     val serializer = Dummy.serializer()
@@ -76,7 +76,7 @@ class ByteArrayMapperTest {
     assertTrue(expectedByteArray.contentEquals(actualByteArray))
   }
 
-  @Test(expected = MappingException::class)
+  @Test(expected = DataSerializationException::class)
   fun `assert mapper exception is thrown when mapper fails to serialize object list`() {
     val json = mockk<Json>()
     val mapper = ObjectListToByteArrayMapper(Dummy.serializer(), json)
@@ -97,7 +97,7 @@ class ByteArrayMapperTest {
     assertEquals(expectedDataList, actualDataList)
   }
 
-  @Test(expected = MappingException::class)
+  @Test(expected = DataSerializationException::class)
   fun `assert mapper exception is thrown when mapper fails to deserialize json array`() {
     val json = mockk<Json>()
     val mapper = ByteArrayToObjectListMapper(Dummy.serializer(), json)

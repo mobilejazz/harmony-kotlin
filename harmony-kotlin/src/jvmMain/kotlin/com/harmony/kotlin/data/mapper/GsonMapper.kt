@@ -2,7 +2,7 @@ package com.harmony.kotlin.data.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.harmony.kotlin.data.error.MappingException
+import com.harmony.kotlin.error.DataSerializationException
 
 /**
  * Map a json string to a class object
@@ -11,7 +11,7 @@ class StringToModelMapper<out T>(private val clz: Class<T>, private val gson: Gs
   override fun map(from: String): T = try {
     gson.fromJson(from, clz)
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -22,7 +22,7 @@ class ModelToStringMapper<in T>(private val gson: Gson) : Mapper<T, String> {
   override fun map(from: T): String = try {
     gson.toJson(from)
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -33,7 +33,7 @@ class StringToListModelMapper<out T>(private val clz: TypeToken<List<T>>, privat
   override fun map(from: String): List<T> = try {
     gson.fromJson(from, clz.type)
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }
 
@@ -44,6 +44,6 @@ class ListModelToStringMapper<in T>(private val gson: Gson) : Mapper<List<T>, St
   override fun map(from: List<T>): String = try {
     gson.toJson(from)
   } catch (e: Exception) {
-    throw MappingException(cause = e)
+    throw DataSerializationException(cause = e)
   }
 }

@@ -11,8 +11,10 @@ import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class HackerPostsAdapter(private val dataSet: List<HackerNewsPost>,
-                         private val onItemClicked: (HackerNewsPost) -> Unit) :
+class HackerPostsAdapter(
+  private val dataSet: List<HackerNewsPost>,
+  private val onItemClicked: (HackerNewsPost) -> Unit
+) :
   RecyclerView.Adapter<HackerPostsAdapter.ViewHolder>() {
   private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.getDefault())
 

@@ -1,9 +1,9 @@
 package com.harmony.kotlin.data.datasource.flow
 
-import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.vastra.ValidationService
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.error.DataNotValidException
 import kotlinx.coroutines.flow.map
 
 class FlowDataSourceVastraValidator<T : ValidationStrategyDataSource>(

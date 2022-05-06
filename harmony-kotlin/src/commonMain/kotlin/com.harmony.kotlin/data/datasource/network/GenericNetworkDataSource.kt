@@ -3,10 +3,10 @@ package com.harmony.kotlin.data.datasource.network
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.mapper.IdentityMapper
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.error.QueryNotSupportedException
 import io.ktor.client.HttpClient
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer

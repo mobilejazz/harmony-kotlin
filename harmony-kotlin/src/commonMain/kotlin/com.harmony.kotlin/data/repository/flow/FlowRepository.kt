@@ -8,25 +8,18 @@ import com.harmony.kotlin.data.query.IdsQuery
 import com.harmony.kotlin.data.query.Query
 import kotlinx.coroutines.flow.Flow
 
-interface FlowRepository {
-
-  fun notSupportedQuery(): Nothing = throw UnsupportedOperationException("Query not supported")
-
-  fun notSupportedOperation(): Nothing = throw UnsupportedOperationException("Operation not defined")
-}
-
 // Repositories
-interface FlowGetRepository<V> : FlowRepository {
+interface FlowGetRepository<V> {
   fun get(query: Query, operation: Operation = DefaultOperation): Flow<V>
   fun getAll(query: Query, operation: Operation = DefaultOperation): Flow<List<V>>
 }
 
-interface FlowPutRepository<V> : FlowRepository {
+interface FlowPutRepository<V> {
   fun put(query: Query, value: V?, operation: Operation = DefaultOperation): Flow<V>
   fun putAll(query: Query, value: List<V>? = emptyList(), operation: Operation = DefaultOperation): Flow<List<V>>
 }
 
-interface FlowDeleteRepository : FlowRepository {
+interface FlowDeleteRepository {
   fun delete(query: Query, operation: Operation = DefaultOperation): Flow<Unit>
 }
 

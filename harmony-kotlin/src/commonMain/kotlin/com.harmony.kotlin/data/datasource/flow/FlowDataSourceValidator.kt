@@ -1,8 +1,8 @@
 package com.harmony.kotlin.data.datasource.flow
 
-import com.harmony.kotlin.data.error.DataNotValidException
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
+import com.harmony.kotlin.error.DataNotValidException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

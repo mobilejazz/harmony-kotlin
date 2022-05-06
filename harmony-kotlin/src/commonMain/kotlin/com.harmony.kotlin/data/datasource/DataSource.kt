@@ -1,6 +1,5 @@
 package com.harmony.kotlin.data.datasource
 
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.IdQuery
 import com.harmony.kotlin.data.query.IdsQuery
@@ -12,25 +11,20 @@ import com.harmony.kotlin.data.repository.SingleGetDataSourceRepository
 import com.harmony.kotlin.data.repository.SinglePutDataSourceRepository
 import com.harmony.kotlin.data.repository.withMapping
 
-interface DataSource {
-
-  fun notSupportedQuery(): Nothing = throw QueryNotSupportedException("Query not supported")
-}
-
 // DataSources
-interface GetDataSource<V> : DataSource {
+interface GetDataSource<V> {
   suspend fun get(query: Query): V
 
   suspend fun getAll(query: Query): List<V>
 }
 
-interface PutDataSource<V> : DataSource {
+interface PutDataSource<V> {
   suspend fun put(query: Query, value: V?): V
 
   suspend fun putAll(query: Query, value: List<V>? = emptyList()): List<V>
 }
 
-interface DeleteDataSource : DataSource {
+interface DeleteDataSource {
   suspend fun delete(query: Query)
 }
 

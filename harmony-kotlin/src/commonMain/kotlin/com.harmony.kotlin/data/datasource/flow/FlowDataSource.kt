@@ -3,7 +3,6 @@ package com.harmony.kotlin.data.datasource.flow
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.IdQuery
 import com.harmony.kotlin.data.query.IdsQuery
@@ -17,25 +16,20 @@ import com.harmony.kotlin.data.repository.flow.withMapping
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-interface FlowDataSource {
-
-  fun notSupportedQuery(): Nothing = throw QueryNotSupportedException("Query not supported")
-}
-
 // DataSources
-interface FlowGetDataSource<V> : FlowDataSource {
+interface FlowGetDataSource<V> {
   fun get(query: Query): Flow<V>
 
   fun getAll(query: Query): Flow<List<V>>
 }
 
-interface FlowPutDataSource<V> : FlowDataSource {
+interface FlowPutDataSource<V> {
   fun put(query: Query, value: V?): Flow<V>
 
   fun putAll(query: Query, value: List<V>? = emptyList()): Flow<List<V>>
 }
 
-interface FlowDeleteDataSource : FlowDataSource {
+interface FlowDeleteDataSource {
   fun delete(query: Query): Flow<Unit>
 }
 

@@ -4,10 +4,11 @@ import android.content.SharedPreferences
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
-import com.harmony.kotlin.data.error.DataNotFoundException
 import com.harmony.kotlin.data.query.AllObjectsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.notSupportedQuery
 
 class DeviceStorageDataSource<T>(
   private val sharedPreferences: SharedPreferences,
