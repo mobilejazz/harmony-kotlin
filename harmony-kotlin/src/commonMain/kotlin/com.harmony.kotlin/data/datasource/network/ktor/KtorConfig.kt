@@ -5,9 +5,9 @@ import com.harmony.kotlin.data.datasource.network.DefaultUnauthorizedResolution
 import com.harmony.kotlin.data.datasource.network.UnauthorizedResolution
 import com.harmony.kotlin.data.datasource.network.error.HttpException
 import com.harmony.kotlin.data.datasource.network.error.NetworkConnectivityException
-import com.harmony.kotlin.data.error.DataException
-import com.harmony.kotlin.data.error.DataNotFoundException
-import com.harmony.kotlin.data.error.UnauthorizedException
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.HarmonyException
+import com.harmony.kotlin.error.UnauthorizedException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.statement.HttpResponse
@@ -41,7 +41,7 @@ fun HttpClientConfig<*>.configureExceptionErrorMapping(unauthorizedResolution: U
   }
 }
 
-suspend fun HttpResponse.toDataException(unauthorizedResolution: UnauthorizedResolution): DataException {
+suspend fun HttpResponse.toDataException(unauthorizedResolution: UnauthorizedResolution): HarmonyException {
   if (status.isSuccess()) {
     throw IllegalStateException("Cannot generate a Exception from a successful response")
   }

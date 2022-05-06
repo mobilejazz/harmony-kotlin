@@ -1,7 +1,6 @@
 package com.mobilejazz.kmmsample.core.screen.hackerposts
 
 import com.harmony.kotlin.common.logger.Logger
-import com.harmony.kotlin.common.onComplete
 import com.harmony.kotlin.common.presenter.PresenterViewHolder
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.interactor.GetHackerNewsPostsInteractor
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
@@ -30,7 +29,7 @@ class HackerPostsDefaultPresenter(
   private val tag = "HackerPostsDefaultPresenter"
 
   override val coroutineContext: CoroutineContext
-  get() = job + Dispatchers.Main
+    get() = job + Dispatchers.Main
 
   private val job = Job()
 
@@ -41,14 +40,11 @@ class HackerPostsDefaultPresenter(
   private fun loadPosts() {
     view.get()?.onDisplayLoading()
     launch {
-      runCatching {
-        getHackerNewsPostsInteractor()
-      }.onComplete(
-        logger, tag,
-        onSuccess = {
+      getHackerNewsPostsInteractor().fold(
+        ifRight = {
           view.get()?.onDisplayHackerPostList(it)
         },
-        onFailure = {
+        ifLeft = {
           view.get()?.onFailedWithFullScreenError(it, retryBlock = { loadPosts() })
         }
       )

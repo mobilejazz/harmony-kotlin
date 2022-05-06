@@ -7,6 +7,8 @@ import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.PutRepository
+import com.harmony.kotlin.error.notSupportedOperation
+import com.harmony.kotlin.error.notSupportedQuery
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
 

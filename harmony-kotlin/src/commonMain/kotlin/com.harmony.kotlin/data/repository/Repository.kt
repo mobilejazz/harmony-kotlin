@@ -7,25 +7,18 @@ import com.harmony.kotlin.data.query.IdQuery
 import com.harmony.kotlin.data.query.IdsQuery
 import com.harmony.kotlin.data.query.Query
 
-interface Repository {
-
-  fun notSupportedQuery(): Nothing = throw UnsupportedOperationException("Query not supported")
-
-  fun notSupportedOperation(): Nothing = throw UnsupportedOperationException("Operation not defined")
-}
-
 // Repositories
-interface GetRepository<V> : Repository {
+interface GetRepository<V> {
   suspend fun get(query: Query, operation: Operation = DefaultOperation): V
   suspend fun getAll(query: Query, operation: Operation = DefaultOperation): List<V>
 }
 
-interface PutRepository<V> : Repository {
+interface PutRepository<V> {
   suspend fun put(query: Query, value: V?, operation: Operation = DefaultOperation): V
   suspend fun putAll(query: Query, value: List<V>? = emptyList(), operation: Operation = DefaultOperation): List<V>
 }
 
-interface DeleteRepository : Repository {
+interface DeleteRepository {
   suspend fun delete(query: Query, operation: Operation = DefaultOperation)
 }
 

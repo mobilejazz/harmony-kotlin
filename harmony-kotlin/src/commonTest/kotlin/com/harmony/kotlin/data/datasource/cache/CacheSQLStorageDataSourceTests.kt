@@ -4,8 +4,6 @@ import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomByteArray
 import com.harmony.kotlin.common.randomByteArrayList
 import com.harmony.kotlin.data.datasource.database.CacheDatabase
-import com.harmony.kotlin.data.error.DataNotFoundException
-import com.harmony.kotlin.data.error.QueryNotSupportedException
 import com.harmony.kotlin.data.query.AllObjectsQuery
 import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.anyKeyQuery
@@ -16,6 +14,8 @@ import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValue
 import com.harmony.kotlin.data.utilities.anyByteArrayInsertionValues
 import com.harmony.kotlin.data.utilities.anyInsertionValue
 import com.harmony.kotlin.data.utilities.anyInsertionValues
+import com.harmony.kotlin.error.DataNotFoundException
+import com.harmony.kotlin.error.QueryNotSupportedException
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith

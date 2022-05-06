@@ -3,6 +3,7 @@ package com.harmony.kotlin.library.oauth.data.datasource.network
 import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.query.Query
+import com.harmony.kotlin.error.notSupportedQuery
 import com.harmony.kotlin.library.oauth.data.datasource.network.model.OAuthBodyRequest
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
