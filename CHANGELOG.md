@@ -2,7 +2,7 @@
 
 # Change Log
 
-## [4.0] - 2022-05-06
+## [4.0] - 2022-05-10
 ### Breaking Changes
 - Simplification of errors ([#83](https://github.com/mobilejazz/harmony-kotlin/pull/83))
 
