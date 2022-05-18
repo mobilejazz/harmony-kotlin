@@ -180,6 +180,16 @@ class InMemoryDataSourceTests : BaseTest() {
       inMemoryDataSource.getAll(valuesToInsert.first)
     }
   }
+  @Test
+  fun `should not fail because InvalidMutabilityException `() = runTest {
+    class OutsideScope {
+      val inMemoryDataSource = InMemoryDataSource<String>()
+    }
+
+    val scope = OutsideScope()
+    val pair = Pair(KeyQuery(randomString()), randomString())
+    scope.inMemoryDataSource.put(pair.first, pair.second)
+  }
 
   private suspend fun givenInMemoryDataSource(
     insertValue: Pair<KeyQuery, String>? = null,
