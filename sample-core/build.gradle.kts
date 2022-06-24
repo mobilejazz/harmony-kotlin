@@ -27,7 +27,7 @@ kotlin {
   cocoapods {
     summary = "Some description for the Shared Module"
     homepage = "Link to the Shared Module homepage"
-    ios.deploymentTarget = "14.1"
+    ios.deploymentTarget = "14.0"
     framework {
       baseName = "SampleCore"
     }
@@ -85,10 +85,10 @@ kotlin {
 }
 
 android {
-  compileSdkVersion(31)
+  compileSdk = android_target_sdk_version
   sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
   defaultConfig {
-    minSdkVersion(21)
-    targetSdkVersion(31)
+    minSdk = android_min_sdk_version
+    targetSdk = android_target_sdk_version
   }
 }

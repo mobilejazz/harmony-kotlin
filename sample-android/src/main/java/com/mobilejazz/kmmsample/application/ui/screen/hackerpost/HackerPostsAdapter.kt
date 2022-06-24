@@ -7,8 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mobilejazz.kmmsample.application.R
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
-import kotlinx.datetime.toJavaLocalDateTime
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class HackerPostsAdapter(
@@ -16,7 +18,7 @@ class HackerPostsAdapter(
   private val onItemClicked: (HackerNewsPost) -> Unit
 ) :
   RecyclerView.Adapter<HackerPostsAdapter.ViewHolder>() {
-  private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.getDefault())
+  private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
   inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val titleTv: TextView = view.findViewById(R.id.hacker_post_item_title)
@@ -24,7 +26,7 @@ class HackerPostsAdapter(
 
     fun bind(post: HackerNewsPost) {
       titleTv.text = post.title
-      dateTv.text = formatter.format(post.time.toJavaLocalDateTime())
+      dateTv.text = formatter.format(Date(post.time.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()))
     }
   }
 

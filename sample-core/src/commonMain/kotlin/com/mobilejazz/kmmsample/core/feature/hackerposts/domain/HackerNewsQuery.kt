@@ -4,5 +4,5 @@ import com.harmony.kotlin.data.query.KeyQuery
 
 sealed class HackerNewsQuery(key: String) : KeyQuery(key) {
   object GetAll : HackerNewsQuery("get-All")
-  class GetPost(val postId: Int) : HackerNewsQuery("post-$postId")
+  class GetPost(val postId: Long) : HackerNewsQuery("post-$postId")
 }

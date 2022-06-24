@@ -60,7 +60,7 @@ class HackerNewsPostsDefaultModule(
     val hackerPostsIdsNetworkDataSource = GetNetworkDataSource(
       networkConfiguration.baseUrl,
       networkConfiguration.httpClient,
-      ListSerializer(Int.serializer()),
+      ListSerializer(Long.serializer()),
       networkConfiguration.json
     )
 

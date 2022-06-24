@@ -8,7 +8,7 @@ import com.mobilejazz.kmmsample.application.R
 import com.mobilejazz.kmmsample.application.databinding.ActivityHackerPostsBinding
 import com.mobilejazz.kmmsample.application.ui.common.toLocalizedErrorMessage
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
-import com.mobilejazz.kmmsample.core.screen.hackerposts.HackerPostsPresenter
+import com.mobilejazz.kmmsample.core.screen.mvp.hackerPosts.HackerPostsPresenter
 
 class HackerPostsActivity : AppCompatActivity(), HackerPostsPresenter.View {
 
@@ -36,7 +36,7 @@ class HackerPostsActivity : AppCompatActivity(), HackerPostsPresenter.View {
     binding.loadContentLayout.showContent(true)
     val hackerPostsAdapter = HackerPostsAdapter(hackerNewsPosts) { hackerNewsPost ->
       val intent = Intent(this@HackerPostsActivity, HackerPostDetailActivity::class.java)
-      intent.putExtra(HackerPostDetailActivity.HACKER_POST_ID_EXTRA, hackerNewsPost.id.toInt())
+      intent.putExtra(HackerPostDetailActivity.HACKER_POST_ID_EXTRA, hackerNewsPost.id)
       startActivity(intent)
     }
     binding.hackerPostRecyclerView.adapter = hackerPostsAdapter

@@ -18,11 +18,11 @@ android {
     resources.excludes.add("META-INF/LGPL2.1")
   }
 
-  compileSdk = 31
+  compileSdk = android_target_sdk_version
   defaultConfig {
     applicationId = "com.mobilejazz.kmmsample.android"
-    minSdk = 26
-    targetSdk = 31
+    minSdk = android_min_sdk_version
+    targetSdk = android_target_sdk_version
     versionCode = 1
     versionName = "1.0"
   }

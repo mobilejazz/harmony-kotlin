@@ -8,9 +8,11 @@ import com.mobilejazz.kmmsample.application.databinding.ActivityHackerPostDetail
 import com.mobilejazz.kmmsample.application.ui.common.BaseActivity
 import com.mobilejazz.kmmsample.application.ui.common.toLocalizedErrorMessage
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
-import com.mobilejazz.kmmsample.core.screen.hackerposts.HackerPostDetailPresenter
-import kotlinx.datetime.toJavaLocalDateTime
-import java.time.format.DateTimeFormatter
+import com.mobilejazz.kmmsample.core.screen.mvp.hackerPostDetailPresenter.HackerPostDetailPresenter
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View {
@@ -24,7 +26,7 @@ class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View 
     HarmonySampleApp.appProvider.presenterComponent.getHackerPostDetailPresenter(this)
   }
 
-  private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.getDefault())
+  private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -37,7 +39,7 @@ class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View 
 
     title = "Hacker News Post"
 
-    val hackerNewsPostId = intent.getIntExtra(HACKER_POST_ID_EXTRA, -1)
+    val hackerNewsPostId = intent.getLongExtra(HACKER_POST_ID_EXTRA, -1)
     presenter.onViewLoaded(hackerNewsPostId)
   }
 
@@ -55,7 +57,7 @@ class HackerPostDetailActivity : BaseActivity(), HackerPostDetailPresenter.View 
   override fun onDisplayHackerPost(hackerNewsPost: HackerNewsPost) {
     binding.loadContentLayout.showContent(true)
     with(hackerNewsPost) {
-      binding.tvTimeDetail.text = formatter.format(hackerNewsPost.time.toJavaLocalDateTime())
+      binding.tvTimeDetail.text = formatter.format(Date(hackerNewsPost.time.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()))
       binding.tvTitleDetail.text = hackerNewsPost.title
       binding.tvAuthorDetail.text = getString(R.string.ls_author, hackerNewsPost.by)
     }
