@@ -8,40 +8,48 @@
 
 import Foundation
 import SwiftUI
+import SampleCore
 
 struct HackerPostDetailView: View {
-    @StateObject var viewState: HackerPostDetailViewState
-
+    
+    @StateObject  var viewModel: ObservableViewModel<HackerPostDetailViewState, HackerPostDetailAction, HackerPostDetailViewModel>
+    
     var body: some View {
-        if let errorViewModel = viewState.errorViewModel {
-            FullScreenErrorView(viewModel: errorViewModel)
-        } else if let item = viewState.item {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    Text(item.date)
-                        .foregroundColor(Color.theme.primary)
-                        .font(.body)
-                        .padding(.vertical, 8.0)
-                    Text(item.title)
-                        .foregroundColor(Color.theme.secondary)
-                        .font(.title)
-                        .padding(.bottom, 8.0)
-                    Text(item.author)
-                        .foregroundColor(Color.theme.primary)
-                        .font(.body)
-                        .padding(.bottom, 8.0)
-                    Text(item.text)
-                    Spacer()
-                }
-                .padding(.horizontal, 16.0)
-            }
-            .clipped()
+        switch viewModel.viewState {
+        case is HackerPostDetailViewState.Loading:
+            LoadingOverlayView()
+        case let content as HackerPostDetailViewState.Content:
+            hackerPostDetail(post: content.post)
+        case let error as HackerPostDetailViewState.Error:
+            FullScreenErrorView(viewModel: ErrorViewModel(message: error.message, action: {
+                viewModel.onAction(action: HackerPostDetailAction.Refresh())
+            }))
+        default:
+            unknownViewStateError()
         }
     }
-}
-
-struct HackerPostDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        HackerPostDetailView(viewState: HackerPostDetailViewState(hackerNewsPostId: 23))
+    
+    private func hackerPostDetail(post: HackerNewsPost) -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack {
+                Text(post.time.toString())
+                    .foregroundColor(Color.theme.primary)
+                    .font(.body)
+                    .padding(.vertical, 8.0)
+                Text(post.title)
+                    .foregroundColor(Color.theme.secondary)
+                    .font(.title)
+                    .padding(.bottom, 8.0)
+                Text(post.by)
+                    .foregroundColor(Color.theme.primary)
+                    .font(.body)
+                    .padding(.bottom, 8.0)
+                Text(bodyText)
+                Spacer()
+            }
+            .padding(.horizontal, 16.0)
+        }
+        .clipped()
     }
+        
 }

@@ -2,60 +2,55 @@ import SampleCore
 import SwiftUI
 
 struct HackerPostsView: View {
-    @StateObject var viewState: HackerPostsViewState
-
+    
+    @StateObject var viewModel = ObservableViewModel<HackerPostsViewState, HackerPostsAction, HackerPostsViewModel>(viewModel: AppProvider.instance.shared.viewModelComponent.getHackerPostsViewModel())
+    @StateObject var observableNavigation = ObservableNavigation<HackerPostsNavigation>()
+    
     var body: some View {
-        // Creates NavigationController structure
         NavigationView {
-            if let errorViewModel = viewState.errorViewModel {
-                FullScreenErrorView(viewModel: errorViewModel)
-
-            } else {
-                ScrollView(.vertical, showsIndicators: false) {
-                    hackerPostList()
-                }
-                .clipped()
-                .navigationTitle("HackerNews Posts")
+            switch viewModel.viewState {
+            case is HackerPostsViewState.Loading:
+                LoadingOverlayView()
+            case let error as HackerPostsViewState.Error:
+                FullScreenErrorView(viewModel: ErrorViewModel(message: error.message, action: nil))
+            case let content as HackerPostsViewState.Content:
+                hackerPostList(posts: content.posts, navigationEvent: content.navigation)
+            default:
+                unknownViewStateError()
             }
         }
-        .overlay(LoadingOverlayView(showLoader: $viewState.showLoader))
     }
-
-    private func hackerPostList() -> some View {
-        return LazyVStack(alignment: .leading, spacing: 24.0) {
-            // Iterates and listen for changes
-            ForEach(viewState.items) { hackerPost in
-                // Creates a link
-                NavigationLink {
-                    HackerPostDetailView(viewState: HackerPostDetailViewState(hackerNewsPostId: Int32(hackerPost.id)))
-                        .navigationBarTitleDisplayMode(.inline)
-                } label: {
+    
+    private func hackerPostList(posts: [HackerNewsPost], navigationEvent: OneShotEvent<HackerPostsNavigation>) -> some View {
+        observableNavigation.set(event: navigationEvent)
+        
+        return ScrollView(.vertical, showsIndicators: false){
+            LazyVStack(alignment: .leading, spacing: 24.0) {
+                // Iterates and listen for changes
+                ForEach(posts) { hackerNewsPost in
                     VStack(alignment: .leading, spacing: 8.0) {
-                        Text(hackerPost.date)
+                        Text(hackerNewsPost.time.toString())
                             .font(.caption)
                             .foregroundColor(Color.theme.primary)
-                        Text(hackerPost.title)
+                        Text(hackerNewsPost.title)
                             .font(.title2)
                             .foregroundColor(Color.theme.secondary)
+                    }.onTapGesture {
+                        viewModel.onAction(action: HackerPostsAction.PostSelected(id: hackerNewsPost.id))
                     }
-                }
-                .buttonStyle(.plain)
+                    // Creates a link
+                    NavigationLink(destination: HackerPostDetailView(viewModel:  ObservableViewModel<HackerPostDetailViewState, HackerPostDetailAction, HackerPostDetailViewModel>(viewModel: AppProvider.instance.shared.viewModelComponent.getHackerPostDetailViewModel(postId: hackerNewsPost.id))),
+                                   tag: HackerPostsNavigation.ToDetail(id: hackerNewsPost.id),
+                                   selection: $observableNavigation.navigation,
+                                   label: { EmptyView() }).navigationBarTitleDisplayMode(.inline)
+                }.buttonStyle(.plain)
             }
+            .padding(.vertical, 16.0)
+            .padding(.horizontal, 16.0)
         }
-        .padding(.vertical, 16.0)
-        .padding(.horizontal, 16.0)
-    }
-
-    private func hackerPostView(viewModel: HackerPostViewModel) -> some View {
-        return VStack {
-            Text(viewModel.title)
-            Text(viewModel.date)
-        }
+        .clipped()
+        .navigationTitle("HackerNews Posts")
     }
 }
 
-struct HackerPostsView_Previews: PreviewProvider {
-    static var previews: some View {
-        HackerPostsView(viewState: HackerPostsViewState())
-    }
-}
+extension HackerNewsPost: Identifiable {}

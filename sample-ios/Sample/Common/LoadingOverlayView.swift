@@ -11,14 +11,11 @@ import Foundation
 import SwiftUI
 
 struct LoadingOverlayView: View {
-    @Binding var showLoader: Bool
 
     var body: some View {
-        if showLoader {
-            ZStack {
-                Color(white: 1)
-                ActivityIndicator(color: Color.theme.primary)
-            }
+        ZStack {
+            Color(white: 1)
+            ActivityIndicator(color: Color.theme.primary)
         }
     }
 }

@@ -51,7 +51,7 @@ kotlin {
         // coroutines
         api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version") {
           version {
-            strictly("$coroutines_version")
+            strictly(coroutines_version)
           }
         }
 

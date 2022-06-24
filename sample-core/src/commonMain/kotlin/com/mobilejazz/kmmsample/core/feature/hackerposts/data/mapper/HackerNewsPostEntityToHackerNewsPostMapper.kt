@@ -18,7 +18,7 @@ internal class HackerNewsPostEntityToHackerNewsPostMapper :
       from.score,
       Instant.fromEpochSeconds(from.time)
         .toLocalDateTime(TimeZone.currentSystemDefault()),
-      from.title,
+      from.title ?: "",
       from.type,
       from.url
     )

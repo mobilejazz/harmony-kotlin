@@ -11,7 +11,7 @@ data class HackerNewsPost(
   val kids: List<Long>?,
   val score: Long,
   val time: LocalDateTime,
-  val title: String?,
+  val title: String,
   val type: String?,
   val url: String?
 )
