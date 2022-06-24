@@ -6,7 +6,7 @@ buildscript {
   }
   dependencies {
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    classpath("com.android.tools.build:gradle:7.0.4")
+    classpath("com.android.tools.build:gradle:7.1.3")
     classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
   }
 }
@@ -36,7 +36,9 @@ subprojects {
     verbose.set(true)
     outputToConsole.set(true)
     filter {
-      exclude("**/generated/**")
+      exclude { entry ->
+        entry.file.toString().contains("generated/")
+      }
     }
   }
 }

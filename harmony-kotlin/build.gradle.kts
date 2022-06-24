@@ -58,6 +58,7 @@ kotlin {
         // serialization library
         api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
         api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+        api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
 
         // SQL Delight
         api("com.squareup.sqldelight:runtime:$sql_delight_version")
