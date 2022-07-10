@@ -15,7 +15,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 @UsesMocks(GetDataSource::class, PutDataSource::class, DeleteDataSource::class)
 class RetryDataSourceTest : BaseTest() {
@@ -33,56 +32,14 @@ class RetryDataSourceTest : BaseTest() {
   }
 
   @Test
-  fun `should not allow negative amount of retries`() {
+  fun `should not allow negative amount of executions`() {
     var exception: IllegalStateException? = null
 
     try {
       RetryDataSource(
-        getDataSource,
-        maxAmountOfRetries = randomInt(max = 0)
+        getDataSource, VoidDataSource(), VoidDataSource<Unit>(),
+        maxAmountOfExecutions = randomInt(max = 0)
       )
-    } catch (illegalStateException: IllegalStateException) {
-      exception = illegalStateException
-    }
-
-    assertNotNull(exception)
-  }
-
-  @Test
-  fun `should fail executing get when not using a get data source type`() = runTest {
-    val retryDataSource = RetryDataSource(getDataSource = null, putDataSource, deleteDataSource)
-    var exception: IllegalStateException? = null
-
-    try {
-      retryDataSource.get(VoidQuery)
-    } catch (illegalStateException: IllegalStateException) {
-      exception = illegalStateException
-    }
-
-    assertNotNull(exception)
-  }
-
-  @Test
-  fun `should fail executing put when not using a put data source type`() = runTest {
-    val retryDataSource = RetryDataSource(getDataSource, putDataSource = null, deleteDataSource)
-    var exception: IllegalStateException? = null
-
-    try {
-      retryDataSource.put(VoidQuery, randomString())
-    } catch (illegalStateException: IllegalStateException) {
-      exception = illegalStateException
-    }
-
-    assertTrue(exception is IllegalStateException)
-  }
-
-  @Test
-  fun `should fail executing delete when not using a delete data source type`() = runTest {
-    val retryDataSource = RetryDataSource(getDataSource, putDataSource, deleteDataSource = null)
-    var exception: IllegalStateException? = null
-
-    try {
-      retryDataSource.delete(VoidQuery)
     } catch (illegalStateException: IllegalStateException) {
       exception = illegalStateException
     }
@@ -98,7 +55,7 @@ class RetryDataSourceTest : BaseTest() {
       callCounter++
       expectedResponse
     }
-    val retryDataSource = RetryDataSource(getDataSource, maxAmountOfRetries = ANY_ITEMS_COUNT)
+    val retryDataSource = RetryDataSource(getDataSource, VoidDataSource(), VoidDataSource<Unit>(), maxAmountOfExecutions = ANY_ITEMS_COUNT)
 
     val actualResult = retryDataSource.getAll(VoidQuery)
 
@@ -115,7 +72,7 @@ class RetryDataSourceTest : BaseTest() {
       if (callCounter == 1) throw DataNotFoundException()
       else expectedResponse
     }
-    val retryDataSource = RetryDataSource(getDataSource, maxAmountOfRetries = ANY_ITEMS_COUNT)
+    val retryDataSource = RetryDataSource(getDataSource, VoidDataSource(), VoidDataSource<Unit>(), maxAmountOfExecutions = ANY_ITEMS_COUNT)
 
     val actualResult = retryDataSource.getAll(VoidQuery)
 
@@ -128,8 +85,10 @@ class RetryDataSourceTest : BaseTest() {
     val dataException = DataNotFoundException("dummy error")
     mocker.everySuspending { putDataSource.put(isAny(), isAny()) } runs { throw dataException }
     val retryDataSource = RetryDataSource(
-      putDataSource = putDataSource,
-      maxAmountOfRetries = ANY_ITEMS_COUNT,
+      VoidDataSource(),
+      putDataSource,
+      VoidDataSource<Unit>(),
+      maxAmountOfExecutions = ANY_ITEMS_COUNT,
       logger = ConsoleLogger()
     )
     var catchException: Exception? = null
@@ -155,8 +114,9 @@ class RetryDataSourceTest : BaseTest() {
       else throw dataException
     }
     val retryDataSource = RetryDataSource<String>(
-      deleteDataSource = deleteDataSource,
-      maxAmountOfRetries = Int.MAX_VALUE,
+      VoidDataSource(), VoidDataSource(),
+      deleteDataSource,
+      maxAmountOfExecutions = Int.MAX_VALUE,
       retryIf = { it !is DataNotFoundException },
       logger = ConsoleLogger()
     )
