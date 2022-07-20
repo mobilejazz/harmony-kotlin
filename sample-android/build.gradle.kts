@@ -6,9 +6,9 @@ plugins {
 dependencies {
   implementation(project(":sample-core"))
 
-  implementation("com.google.android.material:material:1.4.0")
-  implementation("androidx.appcompat:appcompat:1.4.0")
-  implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+  implementation("com.google.android.material:material:$material_version")
+  implementation("androidx.appcompat:appcompat:$app_compat_version")
+  implementation("androidx.constraintlayout:constraintlayout:$constraint_layout_version")
 }
 
 android {
