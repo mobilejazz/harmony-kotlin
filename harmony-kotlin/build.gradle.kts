@@ -89,7 +89,7 @@ kotlin {
 
     val jvmMain by getting {
       dependencies {
-        implementation("com.google.code.gson:gson:2.8.7")
+        implementation("com.google.code.gson:gson:$gson_version")
 
         api("com.squareup.sqldelight:sqlite-driver:$sql_delight_version")
 
@@ -115,21 +115,21 @@ kotlin {
         api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version")
 
         // Android Support
-        api("androidx.appcompat:appcompat:1.4.0")
-        implementation("androidx.coordinatorlayout:coordinatorlayout:1.1.0")
+        api("androidx.appcompat:appcompat:$app_compat_version")
+        implementation("androidx.coordinatorlayout:coordinatorlayout:$coordinator_layout_version")
 
         // SQL Delight
         api("com.squareup.sqldelight:android-driver:$sql_delight_version")
 
         // Bugfender
-        api("com.bugfender.sdk:android:3.0.10")
+        api("com.bugfender.sdk:android:$bugfender_version")
       }
     }
 
     val androidTest by getting {
       dependencies {
         implementation(kotlin("test-junit"))
-        implementation("junit:junit:4.13.2")
+        implementation("junit:junit:$junit_version")
 
         implementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
         implementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
@@ -137,12 +137,12 @@ kotlin {
         implementation("io.ktor:ktor-client-mock-jvm:$ktor_version")
 
         // Instrumentation tests
-        implementation("androidx.test:core:1.4.0")
-        implementation("androidx.test:runner:1.4.0")
-        implementation("androidx.test:rules:1.4.0")
-        implementation("androidx.test.ext:junit-ktx:1.1.3")
-        implementation("org.robolectric:robolectric:4.7.1")
-        implementation("androidx.lifecycle:lifecycle-runtime-testing:2.4.1")
+        implementation("androidx.test:core:$androidx_test_version")
+        implementation("androidx.test:runner:$androidx_test_version")
+        implementation("androidx.test:rules:$androidx_test_version")
+        implementation("androidx.test.ext:junit-ktx:$androidx_junit_ktx_version")
+        implementation("org.robolectric:robolectric:$roboelectric_version")
+        implementation("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_runtime_version")
       }
     }
     val iosX64Main by getting

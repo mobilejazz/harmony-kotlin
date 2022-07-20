@@ -49,14 +49,14 @@ kotlin {
     val androidMain by getting {
       dependencies {
         api(project(":harmony-kotlin"))
-        implementation("io.ktor:ktor-client-okhttp:1.6.7")
+        implementation("io.ktor:ktor-client-okhttp:$ktor_version")
       }
     }
     val androidTest by getting {
       dependencies {
         implementation(project(":harmony-kotlin"))
         implementation(kotlin("test-junit"))
-        implementation("junit:junit:4.13.2")
+        implementation("junit:junit:$junit_version")
       }
     }
     val iosX64Main by getting
@@ -68,7 +68,7 @@ kotlin {
       iosArm64Main.dependsOn(this)
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
-        implementation("io.ktor:ktor-client-ios:1.6.7")
+        implementation("io.ktor:ktor-client-ios:$ktor_version")
       }
     }
 
