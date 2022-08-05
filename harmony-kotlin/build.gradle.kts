@@ -87,10 +87,17 @@ kotlin {
       }
     }
 
-    val jvmMain by getting {
+    // Common code shared between JVM and Android
+    val jvmAndroidCommon = create("jvmAndroidCommon") {
+      dependsOn(commonMain)
       dependencies {
         implementation("com.google.code.gson:gson:$gson_version")
+      }
+    }
 
+    val jvmMain by getting {
+      dependsOn(jvmAndroidCommon)
+      dependencies {
         api("com.squareup.sqldelight:sqlite-driver:$sql_delight_version")
 
         // ktor
@@ -109,6 +116,7 @@ kotlin {
     }
 
     val androidMain by getting {
+      dependsOn(jvmAndroidCommon)
       dependencies {
         api("io.ktor:ktor-client-android:$ktor_version")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
