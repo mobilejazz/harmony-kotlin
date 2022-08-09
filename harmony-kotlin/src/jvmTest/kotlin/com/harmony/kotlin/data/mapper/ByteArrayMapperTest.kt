@@ -10,7 +10,6 @@ import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -38,7 +37,7 @@ class ByteArrayMapperTest {
     val json = mockk<Json>()
     val serializer = Dummy.serializer()
     val mapper = ObjectToByteArrayMapper(serializer, json)
-    every { json.encodeToString(serializer, any()) } throws SerializationException()
+    every { json.encodeToString(serializer, any()) } throws DataSerializationException()
 
     mapper.map(Dummy(randomString()))
   }
@@ -60,7 +59,7 @@ class ByteArrayMapperTest {
     val json = mockk<Json>()
     val serializer = Dummy.serializer()
     val mapper = ByteArrayToObjectMapper(serializer, json)
-    every { json.decodeFromString(serializer, any()) } throws SerializationException()
+    every { json.decodeFromString(serializer, any()) } throws DataSerializationException()
 
     mapper.map(randomByteArray())
   }
@@ -81,7 +80,7 @@ class ByteArrayMapperTest {
     val json = mockk<Json>()
     val mapper = ObjectListToByteArrayMapper(Dummy.serializer(), json)
     val listToSerialize = getSome { Dummy(randomString()) }
-    every { json.encodeToString(any(), listToSerialize) } throws SerializationException()
+    every { json.encodeToString(any(), listToSerialize) } throws DataSerializationException()
 
     mapper.map(listToSerialize)
   }
@@ -102,7 +101,7 @@ class ByteArrayMapperTest {
     val json = mockk<Json>()
     val mapper = ByteArrayToObjectListMapper(Dummy.serializer(), json)
     val serializerSlot = slot<KSerializer<List<Dummy>>>()
-    every { json.decodeFromString(capture(serializerSlot), any()) } throws SerializationException()
+    every { json.decodeFromString(capture(serializerSlot), any()) } throws DataSerializationException()
 
     mapper.map(randomByteArray())
   }

@@ -1,6 +1,5 @@
 package com.harmony.kotlin.library.oauth.data.datasource.network
 
-import com.harmony.kotlin.common.thread.network
 import com.harmony.kotlin.data.datasource.PutDataSource
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.error.notSupportedQuery
@@ -20,23 +19,21 @@ internal class OAuthNetworkDataSource(
 ) : PutDataSource<OAuthTokenEntity> {
 
   override suspend fun put(query: Query, value: OAuthTokenEntity?): OAuthTokenEntity {
-    return network {
-      val bodyRequest = when (query) {
-        is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
-        is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
-        is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
-          query.clientId,
-          query.clientSecret
-        )
-        else -> notSupportedQuery()
-      }
+    val bodyRequest = when (query) {
+      is OAuthQuery.Password -> OAuthBodyRequest.Password(query.username, query.password)
+      is OAuthQuery.RefreshToken -> OAuthBodyRequest.RefreshToken(query.refreshToken)
+      is OAuthQuery.ClientCredentials -> OAuthBodyRequest.ClientCredentials(
+        query.clientId,
+        query.clientSecret
+      )
+      else -> notSupportedQuery()
+    }
 
-      val url = "$apiPath/auth/token"
-      httpClient.post<OAuthTokenEntity>(url) {
-        header("Authorization", "Basic $basicAuthorizationCode")
-        contentType(ContentType.Application.Json)
-        body = bodyRequest
-      }
+    val url = "$apiPath/auth/token"
+    return httpClient.post<OAuthTokenEntity>(url) {
+      header("Authorization", "Basic $basicAuthorizationCode")
+      contentType(ContentType.Application.Json)
+      body = bodyRequest
     }
   }
 
