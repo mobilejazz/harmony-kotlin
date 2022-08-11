@@ -4,8 +4,7 @@ import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMa
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.request
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
@@ -14,12 +13,13 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 class ApiMock {
-  public val client = HttpClient(ApiMockEngine().get()) {
-    install(JsonFeature) {
-      serializer = KotlinxSerializer(
+  val client = HttpClient(ApiMockEngine().get()) {
+    install(ContentNegotiation) {
+      json(
         Json {
           isLenient = false
           ignoreUnknownKeys = true
@@ -72,7 +72,7 @@ interface MockRequest {
   val statusCode: HttpStatusCode
 
   suspend fun executeRequest(client: HttpClient) {
-    client.request<String> {
+    client.request {
       method = HttpMethod.Get
       url(this@MockRequest.url)
     }

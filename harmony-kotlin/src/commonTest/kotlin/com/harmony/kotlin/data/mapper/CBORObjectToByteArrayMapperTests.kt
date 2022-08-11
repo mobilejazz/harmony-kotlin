@@ -3,7 +3,6 @@ package com.harmony.kotlin.data.mapper
 import com.harmony.kotlin.common.randomInt
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.encodeToByteArray
 import kotlin.test.Test

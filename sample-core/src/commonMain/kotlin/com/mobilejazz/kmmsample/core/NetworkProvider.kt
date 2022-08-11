@@ -4,11 +4,11 @@ import com.harmony.kotlin.common.logger.KtorHarmonyLogger
 import com.harmony.kotlin.common.logger.Logger
 import com.harmony.kotlin.data.datasource.network.ktor.configureExceptionErrorMapping
 import io.ktor.client.HttpClient
-import io.ktor.client.features.HttpTimeout
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 data class NetworkConfiguration(
@@ -37,8 +37,8 @@ class NetworkDefaultModule(coreLogger: Logger) : NetworkComponent {
 
   private val httpClient by lazy {
     HttpClient(engine) {
-      install(JsonFeature) {
-        serializer = KotlinxSerializer(JsonDefaultModule.json)
+      install(ContentNegotiation) {
+        json(json = JsonDefaultModule.json)
       }
 
       install(Logging) {

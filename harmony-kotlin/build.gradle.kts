@@ -66,7 +66,8 @@ kotlin {
         api("io.ktor:ktor-client-core:$ktor_version")
         api("io.ktor:ktor-client-json:$ktor_version")
         api("io.ktor:ktor-client-logging:$ktor_version")
-        api("io.ktor:ktor-client-serialization:$ktor_version")
+        api("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+        api("io.ktor:ktor-client-content-negotiation:$ktor_version")
 
         // date library
         api("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinx_datetime_version")
