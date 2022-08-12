@@ -2,6 +2,18 @@
 
 # Change Log
 
+## [5.0] - 2022-08-12
+### Breaking Changes
+- Update dependencies ([#94](https://github.com/mobilejazz/harmony-kotlin/pull/94))
+  - Requires [migrating Ktor](https://ktor.io/docs/migrating-2.html) & [enabling new memory manager](https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md#switch-to-the-new-mm)
+
+### Added
+- Added RetryDataSource ([#90](https://github.com/mobilejazz/harmony-kotlin/pull/90))
+- Added VoidLogger ([#89](https://github.com/mobilejazz/harmony-kotlin/pull/89))
+
+### Changed
+- Added JVM & Android code sharing ([#93](https://github.com/mobilejazz/harmony-kotlin/pull/93))
+
 ## [4.0] - 2022-05-10
 ### Breaking Changes
 - Simplification of errors ([#83](https://github.com/mobilejazz/harmony-kotlin/pull/83))
