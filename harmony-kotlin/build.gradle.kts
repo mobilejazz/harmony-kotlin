@@ -74,10 +74,6 @@ kotlin {
 
         // UUID library
         implementation("com.benasher44:uuid:$uuid_lib_version")
-
-        // threading
-        implementation("co.touchlab:stately-common:$isolate_version")
-        implementation("co.touchlab:stately-isolate:$isolate_version")
       }
     }
     val commonTest by getting {
