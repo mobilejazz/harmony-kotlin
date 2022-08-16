@@ -13,8 +13,7 @@ const val serialization_version = "1.3.3"
 const val coroutines_version = "1.6.3-native-mt"
 const val sql_delight_version = "1.5.3"
 const val kotlinx_datetime_version = "0.4.0"
-const val uuid_lib_version = "0.3.1"
-const val isolate_version = "1.2.0"
+const val uuid_lib_version = "0.5.0"
 const val ksp_version = "$kotlin_version-1.0.6"
 
 // Android
