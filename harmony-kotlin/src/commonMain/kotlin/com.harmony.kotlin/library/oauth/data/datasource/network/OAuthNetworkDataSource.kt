@@ -7,8 +7,10 @@ import com.harmony.kotlin.library.oauth.data.datasource.network.model.OAuthBodyR
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
@@ -30,11 +32,11 @@ internal class OAuthNetworkDataSource(
     }
 
     val url = "$apiPath/auth/token"
-    return httpClient.post<OAuthTokenEntity>(url) {
+    return httpClient.post(url) {
       header("Authorization", "Basic $basicAuthorizationCode")
       contentType(ContentType.Application.Json)
-      body = bodyRequest
-    }
+      setBody(bodyRequest)
+    }.body()
   }
 
   override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?): List<OAuthTokenEntity> =

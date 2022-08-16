@@ -5,7 +5,6 @@ import com.harmony.kotlin.domain.interactor.either.GetInteractor
 import com.harmony.kotlin.error.HarmonyException
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.HackerNewsQuery
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
-import kotlinx.coroutines.delay
 
 class GetHackerNewsPostInteractor(
   private val getHackerNewsPostInteractor: GetInteractor<HackerNewsPost>

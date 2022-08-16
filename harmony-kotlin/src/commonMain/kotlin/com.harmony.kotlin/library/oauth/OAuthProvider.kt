@@ -27,10 +27,10 @@ import com.harmony.kotlin.library.oauth.domain.model.OAuthStorageConfiguration
 import com.harmony.kotlin.library.oauth.domain.model.OAuthToken
 import com.harmony.kotlin.library.oauth.domain.model.oauthStorageConfigurationInMemory
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.json.Json
@@ -99,9 +99,9 @@ class OAuthDefaultModule(
 
   private val httpClient: HttpClient by lazy {
     HttpClient {
-      install(JsonFeature) {
-        serializer = KotlinxSerializer(
-          Json {
+      install(ContentNegotiation) {
+        json(
+          json = Json {
             isLenient = true
             ignoreUnknownKeys = true
           }
