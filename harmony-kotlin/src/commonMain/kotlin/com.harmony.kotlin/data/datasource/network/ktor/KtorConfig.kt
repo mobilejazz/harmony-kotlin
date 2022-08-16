@@ -9,12 +9,11 @@ import com.harmony.kotlin.error.DataNotFoundException
 import com.harmony.kotlin.error.HarmonyException
 import com.harmony.kotlin.error.UnauthorizedException
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.HttpResponseValidator
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
-import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.errors.IOException
 
 /**
@@ -33,9 +32,9 @@ fun HttpClientConfig<*>.configureExceptionErrorMapping(unauthorizedResolution: U
       }
     }
 
-    handleResponseException {
-      if (it is IOException) {
-        throw NetworkConnectivityException(cause = it)
+    handleResponseExceptionWithRequest { cause, request ->
+      if (cause is IOException) {
+        throw NetworkConnectivityException(cause = cause)
       }
     }
   }
@@ -57,6 +56,6 @@ suspend fun HttpResponse.toDataException(unauthorizedResolution: UnauthorizedRes
 
 private suspend fun HttpResponse.contentAsString(): String? {
   return tryOrNull {
-    this.readText(Charsets.UTF_8)
+    this.bodyAsText()
   }
 }

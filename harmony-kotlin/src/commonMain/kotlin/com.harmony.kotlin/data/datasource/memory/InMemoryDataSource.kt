@@ -1,6 +1,5 @@
 package com.harmony.kotlin.data.datasource.memory
 
-import co.touchlab.stately.isolate.IsolateState
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.PutDataSource
@@ -13,16 +12,14 @@ import com.harmony.kotlin.error.notSupportedQuery
 
 class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
 
-  private val objects: IsolateState<MutableMap<String, V>> = IsolateState { mutableMapOf() }
-  private val arrays: IsolateState<MutableMap<String, List<V>>> = IsolateState { mutableMapOf() }
+  private val objects: MutableMap<String, V> = mutableMapOf()
+  private val arrays: MutableMap<String, List<V>> = mutableMapOf()
 
   override suspend fun get(query: Query): V =
     when (query) {
       is KeyQuery -> {
-        objects.access {
-          it[query.key].run {
-            this ?: throw DataNotFoundException()
-          }
+        objects[query.key].run {
+          this ?: throw DataNotFoundException()
         }
       }
       else -> notSupportedQuery()
@@ -31,9 +28,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
   override suspend fun getAll(query: Query): List<V> =
     when (query) {
       is KeyQuery -> {
-        arrays.access {
-          it[query.key].run { this ?: throw DataNotFoundException() }
-        }
+        arrays[query.key].run { this ?: throw DataNotFoundException() }
       }
       else -> notSupportedQuery()
     }
@@ -42,12 +37,8 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
     when (query) {
       is KeyQuery -> {
         value?.let {
-          arrays.access {
-            it.remove(query.key)
-          }
-          objects.access {
-            it.put(query.key, value).run { value }
-          }
+          arrays.remove(query.key)
+          objects.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
       }
       else -> notSupportedQuery()
@@ -57,12 +48,8 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
     when (query) {
       is KeyQuery -> {
         value?.let {
-          objects.access {
-            it.remove(query.key)
-          }
-          arrays.access {
-            it.put(query.key, value).run { value }
-          }
+          objects.remove(query.key)
+          arrays.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
       }
       else -> notSupportedQuery()
@@ -71,12 +58,8 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
   override suspend fun delete(query: Query) {
     when (query) {
       is AllObjectsQuery -> {
-        objects.access {
-          it.clear()
-        }
-        arrays.access {
-          it.clear()
-        }
+        objects.clear()
+        arrays.clear()
       }
       is IdsQuery<*> -> {
         query.identifiers.forEach {
@@ -93,11 +76,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
   }
 
   private fun clearAll(key: String) {
-    objects.access {
-      it.remove(key)
-    }
-    arrays.access {
-      it.remove(key)
-    }
+    objects.remove(key)
+    arrays.remove(key)
   }
 }
