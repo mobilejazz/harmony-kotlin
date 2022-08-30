@@ -24,14 +24,16 @@
 Add the dependency for the multiplatform artifact (to be used on KMM project)
 ```groovy
 dependencies {
-  implementation 'com.mobilejazz:harmony-kotlin:4.0'
+  implementation 'com.mobilejazz:harmony-kotlin:5.0'
 }
 ```
 Or if you need to use it on a particular platform you can use the following artifacts
 ```groovy
-  implementation 'com.mobilejazz:harmony-kotlin-ios:4.0'
-  implementation 'com.mobilejazz:harmony-kotlin-android:4.0'
-  implementation 'com.mobilejazz:harmony-kotlin-jvm:4.0'
+  implementation 'com.mobilejazz:harmony-kotlin-android:5.0'
+  implementation 'com.mobilejazz:harmony-kotlin-jvm:5.0'
+  implementation 'com.mobilejazz:harmony-kotlin-iosx64:5.0'
+  implementation 'com.mobilejazz:harmony-kotlin-iossimulatorarm64:5.0'
+  implementation 'com.mobilejazz:harmony-kotlin-iosarm64:5.0'
 ```
 **Android apps** targetting devices running **below API 26** need to use Android Gradle plugin 4.0 or newer and enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring). This is required due to the usage of [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime)
 

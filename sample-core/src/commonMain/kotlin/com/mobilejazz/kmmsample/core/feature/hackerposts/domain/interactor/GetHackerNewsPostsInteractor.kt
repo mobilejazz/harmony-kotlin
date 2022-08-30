@@ -9,20 +9,25 @@ import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.HackerNewsQuery
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPost
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPosts
 import com.mobilejazz.kmmsample.core.feature.hackerposts.domain.model.HackerNewsPostsIds
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class GetHackerNewsPostsInteractor(
+  private val coroutineContext: CoroutineContext,
   private val getHackerNewsIdsPostsInteractor: GetInteractor<HackerNewsPostsIds>,
   private val getHackerNewsPostInteractor: GetInteractor<HackerNewsPost>
 ) {
   suspend operator fun invoke(): Either<HarmonyException, HackerNewsPosts> {
-    return getHackerNewsIdsPostsInteractor<HarmonyException>(
-      HackerNewsQuery.GetAll
-    ).flatMap {
-      it.listIds.take(5).map { postId ->
-        getHackerNewsPostInteractor<HarmonyException>(
-          HackerNewsQuery.GetPost(postId)
-        )
-      }.asSingleEither()
+    return withContext(coroutineContext) {
+      getHackerNewsIdsPostsInteractor<HarmonyException>(
+        HackerNewsQuery.GetAll
+      ).flatMap {
+        it.listIds.take(5).map { postId ->
+          getHackerNewsPostInteractor<HarmonyException>(
+            HackerNewsQuery.GetPost(postId)
+          )
+        }.asSingleEither()
+      }
     }
   }
 }

@@ -45,6 +45,7 @@ class HackerNewsPostsDefaultModule(
 
   override fun getHackerNewsPostsInteractor(): GetHackerNewsPostsInteractor {
     return GetHackerNewsPostsInteractor(
+      coroutineDispatcher,
       getHackerNewsIdsPostsRepository.toGetInteractor(coroutineDispatcher),
       getHackerNewsPostsRepository.toGetInteractor(coroutineDispatcher)
     )
@@ -52,6 +53,7 @@ class HackerNewsPostsDefaultModule(
 
   override fun getHackerNewsPostInteractor(): GetHackerNewsPostInteractor {
     return GetHackerNewsPostInteractor(
+      coroutineDispatcher,
       getHackerNewsPostsRepository.toGetInteractor(coroutineDispatcher)
     )
   }
