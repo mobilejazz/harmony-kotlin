@@ -43,7 +43,8 @@ class HackerPostDetailViewModel(
         },
         ifRight = {
           _viewState.value = HackerPostDetailViewState.Content(it)
-        })
+        }
+      )
     }
   }
 
@@ -54,5 +55,4 @@ class HackerPostDetailViewModel(
       }
     }
   }
-
 }

@@ -24,5 +24,4 @@ class ViewModelDefaultModule(
   override fun getHackerPostDetailViewModel(postId: Long): HackerPostDetailViewModel {
     return HackerPostDetailViewModel(postId, hackerNewsPostsComponent.getHackerNewsPostInteractor(), logger)
   }
-
 }

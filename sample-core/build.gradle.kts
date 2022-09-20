@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   kotlin("multiplatform")
   kotlin("native.cocoapods")
   id("com.android.library")
-  kotlin("plugin.serialization")
+  kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
 version = "1.0"
@@ -38,6 +39,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":harmony-kotlin"))
+//        api(libs.serialization.json)
       }
     }
     val commonTest by getting {
@@ -49,14 +51,14 @@ kotlin {
     val androidMain by getting {
       dependencies {
         api(project(":harmony-kotlin"))
-        implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+        implementation(libs.ktor.okhttp)
       }
     }
     val androidTest by getting {
       dependencies {
         implementation(project(":harmony-kotlin"))
         implementation(kotlin("test-junit"))
-        implementation("junit:junit:$junit_version")
+        implementation(libs.junit)
       }
     }
     val iosX64Main by getting
@@ -68,7 +70,7 @@ kotlin {
       iosArm64Main.dependsOn(this)
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
-        implementation("io.ktor:ktor-client-ios:$ktor_version")
+        implementation(libs.ktor.ios)
       }
     }
 
@@ -81,6 +83,10 @@ kotlin {
       iosArm64Test.dependsOn(this)
       iosSimulatorArm64Test.dependsOn(this)
     }
+  }
+
+  tasks.preBuild {
+    dependsOn(tasks.ktlintFormat)
   }
 }
 
