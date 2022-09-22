@@ -24,6 +24,7 @@ allprojects {
 plugins {
   alias(libs.plugins.ktlint)
   alias(libs.plugins.detekt)
+  alias(libs.plugins.taskTree)
 
   // version-catalog update configuration
   alias(libs.plugins.gradleVersions)
