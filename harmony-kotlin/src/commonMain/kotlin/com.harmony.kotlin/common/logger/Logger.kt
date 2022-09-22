@@ -22,78 +22,78 @@ interface Logger {
 
   /** DEFAULT IMPLEMENTATIONS  */
 
-  /** Log a verbose message with optional format args.  */
-  fun v(tag: String, message: String, vararg args: Any) {
+  /** Log a verbose message.  */
+  fun v(tag: String, message: String) {
     this.log(Level.VERBOSE, tag, message)
   }
 
-  /** Log a verbose exception and a message with optional format args.  */
-  fun v(tag: String, t: Throwable, message: String, vararg args: Any) {
+  /** Log a verbose exception and a message.  */
+  fun v(tag: String, t: Throwable, message: String) {
     this.log(Level.VERBOSE, t, tag, message)
   }
 
-  /** Log a verbose message with optional format args without tag.  */
-  fun v(message: String, vararg args: Any) {
+  /** Log a verbose message without tag.  */
+  fun v(message: String) {
     this.log(Level.VERBOSE, null, message)
   }
 
-  /** Log a debug message with optional format args.  */
-  fun d(tag: String, message: String, vararg args: Any) {
+  /** Log a debug message.  */
+  fun d(tag: String, message: String) {
     this.log(Level.DEBUG, tag, message)
   }
 
-  /** Log a debug exception and a message with optional format args.  */
-  fun d(tag: String, t: Throwable, message: String, vararg args: Any) {
+  /** Log a debug exception and a message.  */
+  fun d(tag: String, t: Throwable, message: String) {
     this.log(Level.DEBUG, t, tag, message)
   }
 
-  /** Log a debug message with optional format args.  */
-  fun d(message: String, vararg args: Any) {
+  /** Log a debug message.  */
+  fun d(message: String) {
     this.log(Level.DEBUG, null, message)
   }
 
-  /** Log an info message with optional format args.  */
-  fun i(tag: String, message: String, vararg args: Any) {
+  /** Log an info message.  */
+  fun i(tag: String, message: String) {
     this.log(Level.INFO, tag, message)
   }
 
-  /** Log an info exception and a message with optional format args.  */
-  fun i(tag: String, t: Throwable, message: String, vararg args: Any) {
+  /** Log an info exception and a message.  */
+  fun i(tag: String, t: Throwable, message: String) {
     this.log(Level.INFO, t, tag, message)
   }
 
-  /** Log an info message with optional format args.  */
-  fun i(message: String, vararg args: Any) {
+  /** Log an info message.  */
+  fun i(message: String) {
     this.log(Level.INFO, null, message)
   }
 
-  /** Log a warning message with optional format args.  */
-  fun w(tag: String, message: String, vararg args: Any) {
+  /** Log a warning message.  */
+  fun w(tag: String, message: String) {
     this.log(Level.WARNING, tag, message)
   }
 
-  /** Log a warning exception and a message with optional format args.  */
-  fun w(tag: String, t: Throwable, message: String, vararg args: Any) {
+  /** Log a warning exception and a message.  */
+  fun w(tag: String, t: Throwable, message: String) {
     this.log(Level.WARNING, t, tag, message)
   }
 
-  /** Log a warning message with optional format args.  */
-  fun w(message: String, vararg args: Any) {
+  /** Log a warning message.  */
+  fun w(message: String) {
     this.log(Level.WARNING, null, message)
   }
 
-  /** Log an error message with optional format args.  */
-  fun e(tag: String, message: String, vararg args: Any) {
+  /** Log an error message.  */
+  fun e(tag: String, message: String) {
     this.log(Level.ERROR, tag, message)
   }
 
-  /** Log an error exception and a message with optional format args.  */
-  fun e(tag: String, t: Throwable, message: String, vararg args: Any) {
+  /** Log an error exception and a message.  */
+  fun e(tag: String, t: Throwable, message: String) {
     this.log(Level.ERROR, t, tag, message)
   }
 
-  /** Log an error message with optional format args.  */
-  fun e(message: String, vararg args: Any) {
+  /** Log an error message.  */
+  fun e(message: String) {
     this.log(Level.ERROR, null, message)
   }
 
