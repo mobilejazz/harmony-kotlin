@@ -9,10 +9,12 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    name: Build & test (non-iOS)
+
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-java@v2
         with:
@@ -23,7 +25,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Cache gradle
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
@@ -31,7 +33,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Cache konan
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.konan
           key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
@@ -42,7 +44,58 @@ jobs:
         run: ./gradlew :harmony-kotlin:ktlintCheck :harmony-kotlin:detekt
 
       - name: Build
-        run: ./gradlew :harmony-kotlin:build --stacktrace
+        run: ./gradlew :harmony-kotlin:assemble
+
+      - name: Test
+        run: ./gradlew :harmony-kotlin:check
+
+  build-ios:
+    name: Build & test iOS
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "11"
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Cache gradle
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache konan
+        uses: actions/cache@v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build
+        run: >
+          ./gradlew 
+          :harmony-kotlin:compileKotlinIosArm64
+          :harmony-kotlin:compileKotlinIosSimulatorArm64
+          :harmony-kotlin:compileKotlinIosX64
+          :harmony-kotlin:iosArm64MetadataJar
+          :harmony-kotlin:iosSimulatorArm64MetadataJar
+          :harmony-kotlin:iosX64MetadataJar
+
+      - name: Test
+        run: >
+          ./gradlew 
+          :harmony-kotlin:iosX64Test
+          :harmony-kotlin:iosSimulatorArm64Test
 
 env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m"
