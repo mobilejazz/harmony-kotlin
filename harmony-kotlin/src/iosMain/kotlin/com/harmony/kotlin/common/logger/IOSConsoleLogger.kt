@@ -1,6 +1,4 @@
-package com.mobilejazz.kmmsample.core.common
-
-import com.harmony.kotlin.common.logger.Logger
+package com.harmony.kotlin.common.logger
 
 class IOSConsoleLogger : Logger {
   override fun log(level: Logger.Level, tag: String?, message: String) {
