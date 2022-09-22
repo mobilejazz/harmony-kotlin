@@ -17,6 +17,8 @@ import java.util.Calendar.getInstance
 import java.util.Date
 import java.util.Locale
 
+const val MONTHS_IN_YEAR = 12
+
 internal val calendar: Calendar by lazy {
   getInstance()
 }
@@ -46,7 +48,7 @@ fun Date?.differenceInMonths(other: Date?): Int {
     val otherMonth = calendar.get(MONTH)
 
     val diffInYears = otherYear - year
-    diffInYears * 12 + (otherMonth - month)
+    diffInYears * MONTHS_IN_YEAR + (otherMonth - month)
   } else {
     0
   }
@@ -107,7 +109,7 @@ fun Date.formattedDateText(format: String = "EEE, MMM d, yyyy") = SimpleDateForm
 fun String.toDate(format: String = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'"): Date? {
   return try {
     SimpleDateFormat(format, Locale.UK).parse(this)
-  } catch (e: Exception) {
+  } catch (ignored: Exception) {
     null
   }
 }

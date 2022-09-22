@@ -22,9 +22,9 @@ class EitherTests {
 
   @Test
   fun `eitherOf should not capture exception out of the defined one`() {
-    assertFailsWith<RuntimeException> {
+    assertFailsWith<AnyException> {
       eitherOf<DataNotFoundException, String> {
-        throw RuntimeException()
+        throw AnyException
       }
     }
   }
@@ -56,4 +56,6 @@ class EitherTests {
 
     assertEquals(Either.Right(listOf("foo", "bar")), eitherOfList)
   }
+
+  private object AnyException : Exception()
 }

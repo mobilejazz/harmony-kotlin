@@ -10,7 +10,6 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
 class NetworkErrorMappingTests : BaseTest() {
 
@@ -38,15 +37,12 @@ class NetworkErrorMappingTests : BaseTest() {
 
   @Test
   fun `should throw HttpException when backend returns any 40X minus 401 - 404 50X`() {
-    try {
+    val httpException = assertFailsWith<HttpException> {
       runBlocking {
         apiMock.executeRequest(BadRequest)
       }
-    } catch (e: HttpException) {
-      assertEquals(e.statusCode, BadRequest.statusCode.value)
-      assertEquals(e.response, BadRequest.responseBody)
-    } catch (e: Exception) {
-      fail()
     }
+    assertEquals(httpException.statusCode, BadRequest.statusCode.value)
+    assertEquals(httpException.response, BadRequest.responseBody)
   }
 }

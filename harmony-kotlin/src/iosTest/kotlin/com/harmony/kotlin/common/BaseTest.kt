@@ -9,6 +9,7 @@ import platform.CoreFoundation.CFRunLoopGetCurrent
 import platform.CoreFoundation.CFRunLoopRun
 import platform.CoreFoundation.CFRunLoopStop
 
+@Suppress("UnnecessaryAbstractClass")
 actual abstract class BaseTest {
 
   @OptIn(DelicateCoroutinesApi::class)

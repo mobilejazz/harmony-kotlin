@@ -2,107 +2,9 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexMethod:CacheRepository.kt$CacheRepository$override suspend fun get(query: Query, operation: Operation): V</ID>
-    <ID>ComplexMethod:CacheRepository.kt$CacheRepository$override suspend fun getAll(query: Query, operation: Operation): List&lt;V></ID>
-    <ID>EmptyDefaultConstructor:OAuthErrorException.kt$InvalidGrantException$()</ID>
-    <ID>EmptyDefaultConstructor:OAuthErrorException.kt$OAuthErrorException$()</ID>
-    <ID>EqualsWithHashCodeExist:Duration.kt$Duration</ID>
     <ID>ForbiddenComment:KtorHeaderExtensions.kt$// todo: @jose throw error if it's 401</ID>
     <ID>ForbiddenComment:OAuthProvider.kt$OAuthDefaultModule$// todo: temporal until we find a way to hash the clientId and clientSecret in base 64</ID>
-    <ID>ImplicitDefaultLocale:ByteArrayExtensions.kt$String.format("%02x", aByte)</ID>
     <ID>InstanceOfCheckForException:EitherUtils.kt$e is L</ID>
-    <ID>InvalidPackageDeclaration:Action.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:AuthenticatePasswordCredentialInteractor.kt$package com.harmony.kotlin.library.oauth.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:ByteArrayMapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:CBORObjectToByteArray.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:CacheRepository.kt$package com.harmony.kotlin.data.repository</ID>
-    <ID>InvalidPackageDeclaration:CacheSQLStorageDataSource.kt$package com.harmony.kotlin.data.datasource.cache</ID>
-    <ID>InvalidPackageDeclaration:ConsoleLogger.kt$package com.harmony.kotlin.common.logger</ID>
-    <ID>InvalidPackageDeclaration:DataNotAvailableException.kt$package com.harmony.kotlin.error</ID>
-    <ID>InvalidPackageDeclaration:DataSource.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:DataSourceMapper.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:DataSourceQueryMapper.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:Delegates.kt$package com.harmony.kotlin.common</ID>
-    <ID>InvalidPackageDeclaration:DeletePasswordTokenInteractor.kt$package com.harmony.kotlin.library.oauth.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:Either.kt$package com.harmony.kotlin.common.either</ID>
-    <ID>InvalidPackageDeclaration:EitherExtensions.kt$package com.harmony.kotlin.common.either</ID>
-    <ID>InvalidPackageDeclaration:EitherInteractor.kt$package com.harmony.kotlin.domain.interactor.either</ID>
-    <ID>InvalidPackageDeclaration:EitherUtils.kt$package com.harmony.kotlin.common.either</ID>
-    <ID>InvalidPackageDeclaration:FlowDataSource.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowDataSourceMapper.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowDataSourceValidator.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowDataSourceVastraValidator.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowInteractor.kt$package com.harmony.kotlin.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:FlowRepository.kt$package com.harmony.kotlin.data.repository.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowRepositoryMapper.kt$package com.harmony.kotlin.data.repository.flow</ID>
-    <ID>InvalidPackageDeclaration:FlowSerializationDataSourceMapper.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:GenericNetworkDataSource.kt$package com.harmony.kotlin.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:GetApplicationTokenInteractor.kt$package com.harmony.kotlin.library.oauth.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:GetDataSourceValidator.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:GetDataSourceVastraValidator.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:GetDefaultPasswordTokenInteractor.kt$package com.harmony.kotlin.library.oauth.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:HarmonyException.kt$package com.harmony.kotlin.error</ID>
-    <ID>InvalidPackageDeclaration:IdentityMapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:InMemoryDataSource.kt$package com.harmony.kotlin.data.datasource.memory</ID>
-    <ID>InvalidPackageDeclaration:Interactor.kt$package com.harmony.kotlin.domain.interactor</ID>
-    <ID>InvalidPackageDeclaration:InvalidationStrategy.kt$package com.harmony.kotlin.data.validator.vastra.strategies.invalidation</ID>
-    <ID>InvalidPackageDeclaration:JsonMapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:KtorConfig.kt$package com.harmony.kotlin.data.datasource.network.ktor</ID>
-    <ID>InvalidPackageDeclaration:KtorHarmonyLogger.kt$package com.harmony.kotlin.common.logger</ID>
-    <ID>InvalidPackageDeclaration:KtorHeaderExtensions.kt$package com.harmony.kotlin.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:LifecycleAwareViewModel.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:Localized.kt$package com.harmony.kotlin.application.helper</ID>
-    <ID>InvalidPackageDeclaration:Logger.kt$package com.harmony.kotlin.common.logger</ID>
-    <ID>InvalidPackageDeclaration:Mapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:Navigation.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:NetworkExceptions.kt$package com.harmony.kotlin.data.datasource.network.error</ID>
-    <ID>InvalidPackageDeclaration:NetworkQuery.kt$package com.harmony.kotlin.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:NetworkQueryToKtorExtensions.kt$package com.harmony.kotlin.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:OAuthBodyRequest.kt$package com.harmony.kotlin.library.oauth.data.datasource.network.model</ID>
-    <ID>InvalidPackageDeclaration:OAuthErrorException.kt$package com.harmony.kotlin.library.oauth.data.error</ID>
-    <ID>InvalidPackageDeclaration:OAuthNetworkDataSource.kt$package com.harmony.kotlin.library.oauth.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:OAuthProvider.kt$package com.harmony.kotlin.library.oauth</ID>
-    <ID>InvalidPackageDeclaration:OAuthQuery.kt$package com.harmony.kotlin.library.oauth.data.query</ID>
-    <ID>InvalidPackageDeclaration:OAuthStorageConfiguration.kt$package com.harmony.kotlin.library.oauth.domain.model</ID>
-    <ID>InvalidPackageDeclaration:OAuthToken.kt$package com.harmony.kotlin.library.oauth.domain.model</ID>
-    <ID>InvalidPackageDeclaration:OAuthTokenEntity.kt$package com.harmony.kotlin.library.oauth.data.entity</ID>
-    <ID>InvalidPackageDeclaration:OAuthTokenEntityToOAuthTokenMapper.kt$package com.harmony.kotlin.library.oauth.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:OAuthTokenRepository.kt$package com.harmony.kotlin.library.oauth.data</ID>
-    <ID>InvalidPackageDeclaration:OneShotEvent.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:Operation.kt$package com.harmony.kotlin.data.operation</ID>
-    <ID>InvalidPackageDeclaration:PaginationModel.kt$package com.harmony.kotlin.data.entity</ID>
-    <ID>InvalidPackageDeclaration:PaginationOffsetLimitMapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:Platform.kt$package com.harmony.kotlin.common</ID>
-    <ID>InvalidPackageDeclaration:PresenterViewHolder.kt$package com.harmony.kotlin.common.presenter</ID>
-    <ID>InvalidPackageDeclaration:Query.kt$package com.harmony.kotlin.data.query</ID>
-    <ID>InvalidPackageDeclaration:Repository.kt$package com.harmony.kotlin.data.repository</ID>
-    <ID>InvalidPackageDeclaration:RepositoryMapper.kt$package com.harmony.kotlin.data.repository</ID>
-    <ID>InvalidPackageDeclaration:ResultExt.kt$package com.harmony.kotlin.common</ID>
-    <ID>InvalidPackageDeclaration:RetryDataSource.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:RuntimeExceptions.kt$package com.harmony.kotlin.error</ID>
-    <ID>InvalidPackageDeclaration:SerializationDataSourceMapper.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:SingleDataSourceRepository.kt$package com.harmony.kotlin.data.repository</ID>
-    <ID>InvalidPackageDeclaration:SingleFlowDataSourceRepository.kt$package com.harmony.kotlin.data.repository.flow</ID>
-    <ID>InvalidPackageDeclaration:SqlDelightQueryExt.kt$package com.harmony.kotlin.common.sqldelight</ID>
-    <ID>InvalidPackageDeclaration:StringExt.kt$package com.harmony.kotlin.common</ID>
-    <ID>InvalidPackageDeclaration:TimeUnits.kt$package com.harmony.kotlin.common.date</ID>
-    <ID>InvalidPackageDeclaration:TimestampValidationStrategy.kt$package com.harmony.kotlin.data.validator.vastra.strategies.timestamp</ID>
-    <ID>InvalidPackageDeclaration:TryCatchHelpers.kt$package com.harmony.kotlin.common.exceptions</ID>
-    <ID>InvalidPackageDeclaration:TypesUtilities.kt$package com.harmony.kotlin.common</ID>
-    <ID>InvalidPackageDeclaration:UnauthorizedException.kt$package com.harmony.kotlin.error</ID>
-    <ID>InvalidPackageDeclaration:UnauthorizedResolution.kt$package com.harmony.kotlin.data.datasource.network</ID>
-    <ID>InvalidPackageDeclaration:ValidationService.kt$package com.harmony.kotlin.data.validator.vastra</ID>
-    <ID>InvalidPackageDeclaration:ValidationStrategy.kt$package com.harmony.kotlin.data.validator.vastra.strategies</ID>
-    <ID>InvalidPackageDeclaration:Validator.kt$package com.harmony.kotlin.data.validator</ID>
-    <ID>InvalidPackageDeclaration:VastraValidator.kt$package com.harmony.kotlin.data.validator.vastra.strategies</ID>
-    <ID>InvalidPackageDeclaration:ViewModel.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:ViewState.kt$package com.harmony.kotlin.application.ui.mvi</ID>
-    <ID>InvalidPackageDeclaration:VoidDataSources.kt$package com.harmony.kotlin.data.datasource</ID>
-    <ID>InvalidPackageDeclaration:VoidFlowDataSources.kt$package com.harmony.kotlin.data.datasource.flow</ID>
-    <ID>InvalidPackageDeclaration:VoidLogger.kt$package com.harmony.kotlin.common.logger</ID>
-    <ID>InvalidPackageDeclaration:VoidMapper.kt$package com.harmony.kotlin.data.mapper</ID>
-    <ID>InvalidPackageDeclaration:VoidRepositories.kt$package com.harmony.kotlin.data.repository</ID>
-    <ID>InvalidPackageDeclaration:WeakReference.kt$package com.harmony.kotlin.common</ID>
     <ID>LongParameterList:CacheRepository.kt$CacheRepository$( private val getCache: GetDataSource&lt;V>, private val putCache: PutDataSource&lt;V>, private val deleteCache: DeleteDataSource, private val getMain: GetDataSource&lt;V>, private val putMain: PutDataSource&lt;V>, private val deleteMain: DeleteDataSource, private val validator: Validator&lt;V> = DefaultValidator() )</ID>
     <ID>LongParameterList:DateExtensions.kt$(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1)</ID>
     <ID>LongParameterList:Dates.kt$Dates$(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1)</ID>
@@ -113,33 +15,12 @@
     <ID>LongParameterList:RepositoryMapper.kt$( putRepository: PutRepository&lt;In>, toOutMapper: Mapper&lt;In, Out>, toInMapper: Mapper&lt;Out, In>, value: Out?, query: Query, operation: Operation )</ID>
     <ID>LongParameterList:TryCatchHelpers.kt$( logger: Logger? = null, tag: String = "TryOrDefault", message: String = "Exception logged", level: Logger.Level = Logger.Level.WARNING, defaultValue: R, block: () -> R )</ID>
     <ID>LoopWithTooManyJumpStatements:ValidationService.kt$ValidationService$for (strategy in strategies) { when (strategy.isValid(t)) { ValidationStrategyResult.VALID -> { isValid = true break@loop } ValidationStrategyResult.INVALID -> { isValid = false break@loop } else -> { /*result is ValidationStrategyResult.UNKNOWN, lets iterate to next strategy */ } } }</ID>
-    <ID>MagicNumber:DateExtensions.kt$12</ID>
-    <ID>MagicNumber:NumberExtensions.kt$7</ID>
-    <ID>MagicNumber:NumberExtensions.kt$86400000</ID>
-    <ID>MagicNumber:OAuthTokenEntity.kt$OAuthTokenEntity$1000</ID>
-    <ID>MagicNumber:OAuthTokenEntity.kt$OAuthTokenEntity$120</ID>
-    <ID>MagicNumber:TimestampValidationStrategy.kt$TimestampValidationStrategy$1000</ID>
-    <ID>MagicNumber:TypesUtilities.kt$10</ID>
-    <ID>MagicNumber:TypesUtilities.kt$1024</ID>
-    <ID>MagicNumber:TypesUtilities.kt$50</ID>
-    <ID>MagicNumber:TypesUtilities.kt$90.0</ID>
-    <ID>NestedBlockDepth:CacheRepository.kt$CacheRepository$override suspend fun get(query: Query, operation: Operation): V</ID>
-    <ID>NestedBlockDepth:CacheRepository.kt$CacheRepository$override suspend fun getAll(query: Query, operation: Operation): List&lt;V></ID>
-    <ID>ReturnCount:CacheRepository.kt$CacheRepository$override suspend fun get(query: Query, operation: Operation): V</ID>
-    <ID>ReturnCount:CacheRepository.kt$CacheRepository$override suspend fun getAll(query: Query, operation: Operation): List&lt;V></ID>
-    <ID>ReturnCount:ValidationService.kt$ValidationService$fun &lt;T : ValidationStrategyDataSource> isValid(values: List&lt;T>, strategies: List&lt;ValidationStrategy>): Boolean</ID>
-    <ID>ReturnCount:ValidationService.kt$ValidationServiceManager$override fun &lt;T : ValidationStrategyDataSource> isValid(values: List&lt;T>): Boolean</ID>
-    <ID>ReturnCount:Validator.kt$Validator$fun isValid(values: List&lt;T>): Boolean</ID>
-    <ID>SwallowedException:DateExtensions.kt$e: Exception</ID>
-    <ID>SwallowedException:NetworkErrorMappingTests.kt$NetworkErrorMappingTests$e: Exception</ID>
-    <ID>SwallowedException:SqlDelightQueryExt.kt$e: NullPointerException</ID>
     <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ByteArrayToListModelMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ByteArrayToModelMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ListModelToByteArrayMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ModelToByteArrayMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:CacheRepository.kt$CacheRepository$cacheException: Exception</ID>
     <ID>TooGenericExceptionCaught:CacheRepository.kt$CacheRepository$mainException: Exception</ID>
-    <ID>TooGenericExceptionCaught:DateExtensions.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:EitherUtils.kt$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:GenericNetworkDataSource.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GsonMapper.kt$ListModelToStringMapper$e: Exception</ID>
@@ -147,23 +28,9 @@
     <ID>TooGenericExceptionCaught:GsonMapper.kt$StringToListModelMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GsonMapper.kt$StringToModelMapper$e: Exception</ID>
     <ID>TooGenericExceptionCaught:KtorHeaderExtensions.kt$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SqlDelightQueryExt.kt$e: NullPointerException</ID>
     <ID>TooGenericExceptionCaught:TryCatchHelpers.kt$e: Exception</ID>
-    <ID>TooGenericExceptionThrown:EitherTests.kt$EitherTests$throw RuntimeException()</ID>
-    <ID>TooGenericExceptionThrown:RetryDataSourceTest.kt$RetryDataSourceTest$throw Exception("first exception")</ID>
-    <ID>TooManyFunctions:DataSource.kt$com.harmony.kotlin.data.datasource.DataSource.kt</ID>
-    <ID>TooManyFunctions:DateExtensions.kt$com.harmony.kotlin.ext.DateExtensions.kt</ID>
-    <ID>TooManyFunctions:Either.kt$Either&lt;out LEFT, out RIGHT></ID>
-    <ID>TooManyFunctions:FlowDataSource.kt$com.harmony.kotlin.data.datasource.flow.FlowDataSource.kt</ID>
-    <ID>TooManyFunctions:Logger.kt$Logger</ID>
-    <ID>TooManyFunctions:TypesUtilities.kt$com.harmony.kotlin.common.TypesUtilities.kt</ID>
-    <ID>UnnecessaryAbstractClass:BaseTest.kt$BaseTest$BaseTest</ID>
     <ID>UnnecessaryAbstractClass:HarmonyException.kt$HarmonyException$HarmonyException</ID>
-    <ID>UnusedPrivateMember:NetworkQueryToKtorExtensions.kt$private fun NetworkQuery.ContentType.mapToKtorContentType(): ContentType</ID>
     <ID>UnusedPrivateMember:OAuthBodyRequest.kt$OAuthBodyRequest$@SerialName("grant_type") private val grantType: String</ID>
     <ID>UnusedPrivateMember:OAuthQuery.kt$OAuthQuery$private val grantType: String</ID>
-    <ID>UnusedPrivateMember:UnauthorizedException.kt$UnauthorizedException$isResolved: Boolean</ID>
-    <ID>UseCheckOrError:KtorConfig.kt$throw IllegalStateException("Cannot generate a Exception from a successful response")</ID>
-    <ID>UseCheckOrError:ViewState.kt$throw IllegalStateException("Unexpected state $this")</ID>
   </CurrentIssues>
 </SmellBaseline>
