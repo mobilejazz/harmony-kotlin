@@ -9,7 +9,6 @@ import com.mobilejazz.kmmsample.core.screen.mvi.ViewModelComponent
 import com.mobilejazz.kmmsample.core.screen.mvi.ViewModelDefaultModule
 import com.mobilejazz.kmmsample.core.screen.mvp.PresenterComponent
 import com.mobilejazz.kmmsample.core.screen.mvp.PresenterDefaultModule
-
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.cbor.Cbor

@@ -8,17 +8,18 @@ buildscript {
   }
 
   dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+    classpath("org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}")
   }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   kotlin("multiplatform")
-  kotlin("plugin.serialization")
-  id("com.squareup.sqldelight") version sql_delight_version
+  kotlin("plugin.serialization") version libs.versions.kotlin.get()
   id("com.android.library")
-  id("org.kodein.mock.mockmp") version mockmp_version
+  alias(libs.plugins.sqldelight)
+  alias(libs.plugins.mockmp)
   `gradle-mvn-push` // on buildSrc/src/main/groovy/gradle-mvn-push.gradle
 }
 
@@ -48,39 +49,19 @@ kotlin {
 
     val commonMain by getting {
       dependencies {
-        // coroutines
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version") {
-          version {
-            strictly(coroutines_version)
-          }
-        }
-
-        // serialization library
-        api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
-        api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
-
-        // SQL Delight
-        api("com.squareup.sqldelight:runtime:$sql_delight_version")
-
-        // http client library
-        api("io.ktor:ktor-client-core:$ktor_version")
-        api("io.ktor:ktor-client-json:$ktor_version")
-        api("io.ktor:ktor-client-logging:$ktor_version")
-        api("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-        api("io.ktor:ktor-client-content-negotiation:$ktor_version")
-
-        // date library
-        api("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinx_datetime_version")
-
-        // UUID library
-        implementation("com.benasher44:uuid:$uuid_lib_version")
+        api(libs.coroutines.core)
+        api(libs.bundles.serialization)
+        api(libs.sqldelight.runtime)
+        api(libs.bundles.ktor)
+        api(libs.datetime)
+        implementation(libs.uuidLib)
       }
     }
     val commonTest by getting {
       dependencies {
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
-        implementation("io.ktor:ktor-client-mock:$ktor_version")
+        implementation(libs.ktor.mock)
       }
     }
 
@@ -88,19 +69,16 @@ kotlin {
     val jvmAndroidCommon = create("jvmAndroidCommon") {
       dependsOn(commonMain)
       dependencies {
-        implementation("com.google.code.gson:gson:$gson_version")
+        implementation(libs.gson)
       }
     }
 
     val jvmMain by getting {
       dependsOn(jvmAndroidCommon)
       dependencies {
-        api("com.squareup.sqldelight:sqlite-driver:$sql_delight_version")
-
-        // ktor
-        api("io.ktor:ktor-client-okhttp:$ktor_version")
-
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version")
+        api(libs.sqldelight.sqliteDriver)
+        api(libs.ktor.okhttp)
+        api(libs.coroutines.test)
       }
     }
 
@@ -108,46 +86,44 @@ kotlin {
       dependencies {
         implementation(kotlin("test"))
         implementation(kotlin("test-junit"))
-        implementation("io.mockk:mockk:$mockk_version")
+        implementation(libs.mockk)
       }
     }
 
     val androidMain by getting {
       dependsOn(jvmAndroidCommon)
       dependencies {
-        api("io.ktor:ktor-client-android:$ktor_version")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version")
+        api(libs.ktor.android)
+        api(libs.coroutines.android)
+        api(libs.coroutines.test)
 
         // Android Support
-        api("androidx.appcompat:appcompat:$app_compat_version")
-        implementation("androidx.coordinatorlayout:coordinatorlayout:$coordinator_layout_version")
+        api(libs.appCompat)
+        api(libs.coordinatorLayout)
 
-        // SQL Delight
-        api("com.squareup.sqldelight:android-driver:$sql_delight_version")
+        api(libs.sqldelight.androidDriver)
 
-        // Bugfender
-        api("com.bugfender.sdk:android:$bugfender_version")
+        api(libs.bugfender)
       }
     }
 
     val androidTest by getting {
       dependencies {
         implementation(kotlin("test-junit"))
-        implementation("junit:junit:$junit_version")
+        implementation(libs.junit)
 
-        implementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
-        implementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+        implementation(libs.kotlinTest)
+        implementation(libs.kotlinTestJunit)
 
-        implementation("io.ktor:ktor-client-mock-jvm:$ktor_version")
+        implementation(libs.ktor.mockJvm)
 
         // Instrumentation tests
-        implementation("androidx.test:core:$androidx_test_version")
-        implementation("androidx.test:runner:$androidx_test_version")
-        implementation("androidx.test:rules:$androidx_test_version")
-        implementation("androidx.test.ext:junit-ktx:$androidx_junit_ktx_version")
-        implementation("org.robolectric:robolectric:$roboelectric_version")
-        implementation("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_runtime_version")
+        implementation(libs.androidTest.core)
+        implementation(libs.androidTest.runner)
+        implementation(libs.androidTest.rules)
+        implementation(libs.androidTest.junitKtx)
+        implementation(libs.roboelectric)
+        implementation(libs.androidTest.lifecycleRuntime)
       }
     }
     val iosX64Main by getting
@@ -160,12 +136,9 @@ kotlin {
       iosSimulatorArm64Main.dependsOn(this)
 
       dependencies {
-        api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
-        api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
-
-        // sqldelight
-        api("com.squareup.sqldelight:native-driver:$sql_delight_version")
-        api("io.ktor:ktor-client-ios:$ktor_version")
+        api(libs.bundles.serialization)
+        api(libs.sqldelight.nativeDriver)
+        api(libs.ktor.ios)
       }
     }
     val iosX64Test by getting

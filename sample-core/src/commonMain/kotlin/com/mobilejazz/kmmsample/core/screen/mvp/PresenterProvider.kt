@@ -8,7 +8,6 @@ import com.mobilejazz.kmmsample.core.screen.mvp.hackerPostDetailPresenter.Hacker
 import com.mobilejazz.kmmsample.core.screen.mvp.hackerPosts.HackerPostsDefaultPresenter
 import com.mobilejazz.kmmsample.core.screen.mvp.hackerPosts.HackerPostsPresenter
 
-
 interface PresenterComponent {
   fun getHackerPostsPresenter(view: HackerPostsPresenter.View): HackerPostsPresenter
   fun getHackerPostDetailPresenter(view: HackerPostDetailPresenter.View): HackerPostDetailPresenter

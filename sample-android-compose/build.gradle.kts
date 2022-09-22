@@ -1,8 +1,9 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   // Used for Compose Destinations(https://github.com/raamcosta/compose-destinations)
-  id("com.google.devtools.ksp") version ksp_version
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -38,7 +39,7 @@ android {
     compose = true
   }
   composeOptions {
-    kotlinCompilerExtensionVersion = compose_compiler_version
+    kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
   }
   packagingOptions {
     resources {
@@ -58,18 +59,17 @@ android {
 dependencies {
   implementation(project(":sample-core"))
 
-  implementation("androidx.core:core-ktx:$core_ktx_version")
-  implementation("androidx.compose.ui:ui:$compose_version")
-  implementation("androidx.compose.material:material:$compose_version")
-  implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
-  implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-  implementation("androidx.activity:activity-compose:$activity_compose_version")
-  implementation("io.github.raamcosta.compose-destinations:core:$compose_destinations_version")
-  ksp("io.github.raamcosta.compose-destinations:ksp:$compose_destinations_version")
-  testImplementation("junit:junit:$junit_version")
-  androidTestImplementation("androidx.test.ext:junit:$androidx_junit_ktx_version")
-  androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
-  debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
-  debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+  implementation(libs.coreKtx)
+  implementation(libs.composeUi)
+  implementation(libs.composeMaterial)
+  implementation(libs.composeUiToolingPreview)
+  implementation(libs.lifecycleRuntimeKtx)
+  implementation(libs.lifecycleViewModelCompose)
+  implementation(libs.activityCompose)
+  implementation(libs.composeDestinations)
+  ksp(libs.composeDestinationsKsp)
+}
+
+tasks.preBuild {
+  dependsOn(tasks.ktlintFormat)
 }

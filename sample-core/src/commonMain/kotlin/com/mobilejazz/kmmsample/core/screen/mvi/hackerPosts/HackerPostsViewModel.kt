@@ -27,7 +27,7 @@ sealed class HackerPostsViewState : ViewState {
   ) : HackerPostsViewState()
 }
 
-sealed class HackerPostsNavigation: Navigation {
+sealed class HackerPostsNavigation : Navigation {
   data class ToDetail constructor(val id: Long) : HackerPostsNavigation()
 }
 
@@ -53,7 +53,8 @@ class HackerPostsViewModel(
         },
         ifRight = {
           _viewState.value = HackerPostsViewState.Content(it)
-        })
+        }
+      )
     }
   }
 
@@ -69,5 +70,4 @@ class HackerPostsViewModel(
       }
     }
   }
-
 }

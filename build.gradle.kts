@@ -1,3 +1,5 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 buildscript {
   repositories {
     gradlePluginPortal()
@@ -5,9 +7,8 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    classpath("com.android.tools.build:gradle:$android_gradle_plugin_version")
-    classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+    classpath("com.android.tools.build:gradle:${libs.versions.androidGradlePlugin.get()}")
   }
 }
 
@@ -19,8 +20,13 @@ allprojects {
   }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-  id("org.jlleitschuh.gradle.ktlint") version ktlint_version
+  alias(libs.plugins.ktlint)
+
+  // version-catalog update configuration
+  alias(libs.plugins.gradleVersions)
+  alias(libs.plugins.versionCatalogUpdate)
 }
 
 subprojects {
@@ -47,24 +53,31 @@ tasks.register("clean", Delete::class) {
   delete(rootProject.buildDir)
 }
 
-configurations.all {
-  resolutionStrategy.eachDependency {
-    if (requested.version == "default") {
-      val version = findDefaultVersionInCatalog(requested.group, requested.name)
-      version?.also {
-        useVersion(it.version)
-        because(it.because)
-      }
-    }
+//region version-catalog update configuration
+fun isNonStable(version: String): Boolean {
+  val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+  val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+  val isStable = stableKeyword || regex.matches(version)
+  return isStable.not()
+}
+
+// https://github.com/ben-manes/gradle-versions-plugin
+tasks.withType<DependencyUpdatesTask> {
+  rejectVersionIf {
+    isNonStable(candidate.version) && !isNonStable(currentVersion)
   }
 }
 
-data class DefaultVersion(val version: String, val because: String)
-
-fun findDefaultVersionInCatalog(group: String, name: String): DefaultVersion? {
-  return if (group == "org.jetbrains.kotlinx" && name.startsWith("kotlinx-coroutines")) {
-    DefaultVersion(version = coroutines_version, because = "Is needed in Harmony")
-  } else {
-    null
+versionCatalogUpdate {
+  // sort the catalog by key (default is true)
+  sortByKey.set(false)
+  keep {
+    // keep versions without any library or plugin reference
+    keepUnusedVersions.set(true)
+    // keep all libraries that aren't used in the project
+    keepUnusedLibraries.set(false)
+    // keep all plugins that aren't used in the project
+    keepUnusedPlugins.set(false)
   }
 }
+//endregion version-catalog update configuration

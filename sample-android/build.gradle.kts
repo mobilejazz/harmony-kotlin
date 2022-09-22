@@ -6,9 +6,9 @@ plugins {
 dependencies {
   implementation(project(":sample-core"))
 
-  implementation("com.google.android.material:material:$material_version")
-  implementation("androidx.appcompat:appcompat:$app_compat_version")
-  implementation("androidx.constraintlayout:constraintlayout:$constraint_layout_version")
+  implementation(libs.material)
+  implementation(libs.appCompat)
+  implementation(libs.constraintLayout)
 }
 
 android {
@@ -34,4 +34,8 @@ android {
   buildFeatures {
     viewBinding = true
   }
+}
+
+tasks.preBuild {
+  dependsOn(tasks.ktlintFormat)
 }
