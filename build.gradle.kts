@@ -55,6 +55,12 @@ subprojects {
   }
 }
 
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+  reports {
+    xml.required.set(true) // checkstyle like format mainly for CI integrations
+  }
+}
+
 tasks.register("clean", Delete::class) {
   delete(rootProject.buildDir)
 }
