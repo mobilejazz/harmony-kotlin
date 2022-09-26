@@ -192,3 +192,5 @@ android {
 }
 
 tasks.check.dependsOn(tasks.ktlintCheck)
+
+apply(from = rootProject.file("git-hooks.gradle.kts"))
