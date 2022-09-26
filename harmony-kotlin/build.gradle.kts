@@ -22,7 +22,20 @@ plugins {
   alias(libs.plugins.mockmp)
   `gradle-mvn-push` // on buildSrc/src/main/groovy/gradle-mvn-push.gradle
 }
-
+detekt {
+  config = files("$rootDir/detekt.yml")
+  // We have to set the source paths manually due to https://github.com/detekt/detekt/issues/3664
+  source = files(
+    "src/androidTest/kotlin",
+    "src/commonMain/kotlin",
+    "src/commonTest/kotlin",
+    "src/iosMain/kotlin",
+    "src/iosTest/kotlin",
+    "src/jvmAndroidCommon/kotlin",
+    "src/jvmMain/kotlin",
+    "src/jvmTest/kotlin",
+  )
+}
 mockmp {
   usesHelper = true
 }
