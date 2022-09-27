@@ -29,12 +29,12 @@ class CacheRepository<V>(
   override suspend fun get(query: Query, operation: Operation): V = when (operation) {
     is DefaultOperation -> get(query, CacheSyncOperation())
     is MainOperation -> getMain.get(query)
-    is CacheOperation -> getCacheOperation(query, operation)
+    is CacheOperation -> getCache(query, operation)
     is MainSyncOperation -> getMain.get(query).let {
       putCache.put(query, it)
     }
 
-    is CacheSyncOperation -> getCacheSyncOperation(query, operation)
+    is CacheSyncOperation -> getCacheSync(query, operation)
     else -> notSupportedOperation()
   }
 
@@ -42,9 +42,9 @@ class CacheRepository<V>(
     when (operation) {
       is DefaultOperation -> getAll(query, CacheSyncOperation())
       is MainOperation -> getMain.getAll(query)
-      is CacheOperation -> getAllCacheOperation(query, operation)
+      is CacheOperation -> getAllCache(query, operation)
       is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
-      is CacheSyncOperation -> getAllCacheSyncOperation(query, operation)
+      is CacheSyncOperation -> getAllCacheSync(query, operation)
       else -> notSupportedOperation()
     }
 
@@ -84,7 +84,7 @@ class CacheRepository<V>(
     }
   }
 
-  private suspend fun getCacheOperation(
+  private suspend fun getCache(
     query: Query,
     operation: CacheOperation,
   ): V = try {
@@ -102,7 +102,7 @@ class CacheRepository<V>(
     }
   }
 
-  private suspend fun getAllCacheOperation(
+  private suspend fun getAllCache(
     query: Query,
     operation: CacheOperation,
   ): List<V> = try {
@@ -121,36 +121,7 @@ class CacheRepository<V>(
     }
   }
 
-  private suspend fun getAllCacheSyncOperation(
-    query: Query,
-    operation: CacheSyncOperation,
-  ): List<V> = try {
-    getCache.getAll(query).map {
-      if (!validator.isValid(it)) {
-        throw DataNotValidException()
-      } else {
-        it
-      }
-    }
-  } catch (cacheException: Exception) {
-    try {
-      when (cacheException) {
-        is DataNotValidException,
-        is DataSerializationException,
-        is DataNotFoundException -> getAll(query, MainSyncOperation)
-
-        else -> throw cacheException
-      }
-    } catch (mainException: Exception) {
-      if (operation.fallback(mainException, cacheException)) {
-        getCache.getAll(query)
-      } else {
-        throw mainException
-      }
-    }
-  }
-
-  private suspend fun getCacheSyncOperation(
+  private suspend fun getCacheSync(
     query: Query,
     operation: CacheSyncOperation,
   ): V = try {
@@ -173,6 +144,35 @@ class CacheRepository<V>(
     } catch (mainException: Exception) {
       if (operation.fallback(mainException, cacheException)) {
         getCache.get(query)
+      } else {
+        throw mainException
+      }
+    }
+  }
+
+  private suspend fun getAllCacheSync(
+    query: Query,
+    operation: CacheSyncOperation,
+  ): List<V> = try {
+    getCache.getAll(query).map {
+      if (!validator.isValid(it)) {
+        throw DataNotValidException()
+      } else {
+        it
+      }
+    }
+  } catch (cacheException: Exception) {
+    try {
+      when (cacheException) {
+        is DataNotValidException,
+        is DataSerializationException,
+        is DataNotFoundException -> getAll(query, MainSyncOperation)
+
+        else -> throw cacheException
+      }
+    } catch (mainException: Exception) {
+      if (operation.fallback(mainException, cacheException)) {
+        getCache.getAll(query)
       } else {
         throw mainException
       }
