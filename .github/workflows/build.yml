@@ -38,8 +38,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Static code analysis
+        run: ./gradlew :harmony-kotlin:ktlintCheck :harmony-kotlin:detekt
+
       - name: Build
-        run: ./gradlew :harmony-kotlin:build --no-daemon --stacktrace
+        run: ./gradlew :harmony-kotlin:build --stacktrace
 
 env:
-  GRADLE_OPTS: -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m"
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m"
