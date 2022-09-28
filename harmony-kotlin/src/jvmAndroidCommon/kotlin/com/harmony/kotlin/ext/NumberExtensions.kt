@@ -50,10 +50,13 @@ val Int.second: Duration
 val Int.seconds: Duration
   get() = second
 
+const val MILLISECONDS_IN_DAY = 86_400_000
+const val DAYS_IN_WEEK = 7
+
 fun Long.fromMillistoDays(): Int {
-  return (this / 86400000).toInt()
+  return (this / MILLISECONDS_IN_DAY).toInt()
 }
 
 fun Long.fromMillisToWeeks(): Int {
-  return this.fromMillistoDays() / 7
+  return this.fromMillistoDays() / DAYS_IN_WEEK
 }

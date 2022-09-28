@@ -20,4 +20,12 @@ class Duration(internal val unit: Int, internal val value: Int) {
     }
     return unit == other.unit && value == other.value
   }
+
+  override fun hashCode(): Int {
+    var result = unit
+    result = 31 * result + value
+    result = 31 * result + ago.hashCode()
+    result = 31 * result + since.hashCode()
+    return result
+  }
 }

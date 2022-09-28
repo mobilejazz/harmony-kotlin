@@ -14,6 +14,7 @@ import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 @UsesMocks(GetDataSource::class, PutDataSource::class, DeleteDataSource::class)
@@ -110,7 +111,7 @@ class RetryDataSourceTest : BaseTest() {
       deleteDataSource.delete(isAny())
     } runs {
       callCounter++
-      if (callCounter == 1) throw Exception("first exception")
+      if (callCounter == 1) throw AnyException("first exception")
       else throw dataException
     }
     val retryDataSource = RetryDataSource<String>(
@@ -120,14 +121,15 @@ class RetryDataSourceTest : BaseTest() {
       retryIf = { it !is DataNotFoundException },
       logger = ConsoleLogger()
     )
-    var catchException: Exception? = null
 
-    try {
+    val catchException = assertFailsWith<DataNotFoundException> {
       retryDataSource.delete(VoidQuery)
-    } catch (exception: Exception) {
-      catchException = exception
     }
     assertEquals(catchException, dataException)
     assertEquals(2, callCounter)
   }
+
+  private data class AnyException(
+    override val message: String
+  ) : Exception()
 }

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenComment:KtorHeaderExtensions.kt$// todo: @jose throw error if it's 401</ID>
+    <ID>ForbiddenComment:OAuthProvider.kt$OAuthDefaultModule$// todo: temporal until we find a way to hash the clientId and clientSecret in base 64</ID>
+    <ID>InstanceOfCheckForException:EitherUtils.kt$e is L</ID>
+    <ID>LongParameterList:CacheRepository.kt$CacheRepository$( private val getCache: GetDataSource&lt;V>, private val putCache: PutDataSource&lt;V>, private val deleteCache: DeleteDataSource, private val getMain: GetDataSource&lt;V>, private val putMain: PutDataSource&lt;V>, private val deleteMain: DeleteDataSource, private val validator: Validator&lt;V> = DefaultValidator() )</ID>
+    <ID>LongParameterList:DateExtensions.kt$(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1)</ID>
+    <ID>LongParameterList:Dates.kt$Dates$(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1)</ID>
+    <ID>LongParameterList:FlowSerializationDataSourceMapper.kt$FlowSerializationDataSourceMapper$( private val getDataSource: FlowGetDataSource&lt;SerializedIn>, private val putDataSource: FlowPutDataSource&lt;SerializedIn>, private val deleteDataSource: FlowDeleteDataSource, private val toOutMapper: Mapper&lt;SerializedIn, Out>, private val toOutListMapper: Mapper&lt;SerializedIn, List&lt;Out>>, private val toInMapper: Mapper&lt;Out, SerializedIn>, private val toInMapperFromList: Mapper&lt;List&lt;Out>, SerializedIn> )</ID>
+    <ID>LongParameterList:NetworkQuery.kt$OAuthNetworkQuery$( override val getPasswordTokenInteractor: GetPasswordTokenInteractor, method: Method, path: String, urlParams: List&lt;Pair&lt;String, String>> = emptyList(), headers: List&lt;Pair&lt;String, String>> = emptyList(), suspendHeaders: suspend () -> List&lt;Pair&lt;String, String>> = { emptyList() }, key: String? = null, )</ID>
+    <ID>LongParameterList:OAuthProvider.kt$OAuthDefaultModule$( private val apiPath: String, private val coroutineContext: CoroutineContext, private val clientId: String, private val clientSecret: String, private val resolution: UnauthorizedResolution = DefaultUnauthorizedResolution, private val basicAuthorizationCode: String, // todo: temporal until we find a way to hash the clientId and clientSecret in base 64 private val oauthStorageConfiguration: OAuthStorageConfiguration = oauthStorageConfigurationInMemory(), private val moduleLogger: com.harmony.kotlin.common.logger.Logger )</ID>
+    <ID>LongParameterList:RepositoryMapper.kt$( putRepository: PutRepository&lt;In>, toOutMapper: Mapper&lt;In, Out>, toInMapper: Mapper&lt;Out, In>, value: List&lt;Out>?, query: Query, operation: Operation )</ID>
+    <ID>LongParameterList:RepositoryMapper.kt$( putRepository: PutRepository&lt;In>, toOutMapper: Mapper&lt;In, Out>, toInMapper: Mapper&lt;Out, In>, value: Out?, query: Query, operation: Operation )</ID>
+    <ID>LongParameterList:TryCatchHelpers.kt$( logger: Logger? = null, tag: String = "TryOrDefault", message: String = "Exception logged", level: Logger.Level = Logger.Level.WARNING, defaultValue: R, block: () -> R )</ID>
+    <ID>LoopWithTooManyJumpStatements:ValidationService.kt$ValidationService$for (strategy in strategies) { when (strategy.isValid(t)) { ValidationStrategyResult.VALID -> { isValid = true break@loop } ValidationStrategyResult.INVALID -> { isValid = false break@loop } else -> { /*result is ValidationStrategyResult.UNKNOWN, lets iterate to next strategy */ } } }</ID>
+    <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ByteArrayToListModelMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ByteArrayToModelMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ListModelToByteArrayMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ByteArrayMapper.kt$ModelToByteArrayMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:CacheRepository.kt$CacheRepository$cacheException: Exception</ID>
+    <ID>TooGenericExceptionCaught:CacheRepository.kt$CacheRepository$mainException: Exception</ID>
+    <ID>TooGenericExceptionCaught:EitherUtils.kt$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:GenericNetworkDataSource.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GsonMapper.kt$ListModelToStringMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GsonMapper.kt$ModelToStringMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GsonMapper.kt$StringToListModelMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GsonMapper.kt$StringToModelMapper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:KtorHeaderExtensions.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:TryCatchHelpers.kt$e: Exception</ID>
+    <ID>UnnecessaryAbstractClass:HarmonyException.kt$HarmonyException$HarmonyException</ID>
+    <ID>UnusedPrivateMember:OAuthBodyRequest.kt$OAuthBodyRequest$@SerialName("grant_type") private val grantType: String</ID>
+    <ID>UnusedPrivateMember:OAuthQuery.kt$OAuthQuery$private val grantType: String</ID>
+  </CurrentIssues>
+</SmellBaseline>

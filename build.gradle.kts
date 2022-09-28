@@ -23,6 +23,7 @@ allprojects {
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   alias(libs.plugins.ktlint)
+  alias(libs.plugins.detekt)
 
   // version-catalog update configuration
   alias(libs.plugins.gradleVersions)
@@ -32,6 +33,7 @@ plugins {
 subprojects {
   apply {
     plugin("org.jlleitschuh.gradle.ktlint")
+    plugin("io.gitlab.arturbosch.detekt")
   }
 
   repositories {
@@ -46,6 +48,9 @@ subprojects {
         entry.file.toString().contains("generated/")
       }
     }
+  }
+  detekt {
+    config = files("$rootDir/detekt.yml")
   }
 }
 

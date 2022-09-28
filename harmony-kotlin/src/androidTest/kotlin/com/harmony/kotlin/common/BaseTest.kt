@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
+@Suppress("UnnecessaryAbstractClass")
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 actual abstract class BaseTest {
