@@ -43,11 +43,27 @@ jobs:
       - name: Static code analysis
         run: ./gradlew :harmony-kotlin:ktlintCheck :harmony-kotlin:detekt
 
+      - name: Detekt report
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        if: failure()
+        with:
+          name: Detekt report
+          path: harmony-kotlin/build/reports/detekt/*.xml
+
       - name: Build
         run: ./gradlew :harmony-kotlin:assemble
 
       - name: Test
         run: ./gradlew :harmony-kotlin:check
+
+      - name: Unit tests report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unit test report
+          path: harmony-kotlin/build/test-results/testReleaseUnitTest/*.xml
+          reporter: java-junit
+          fail-on-error: true
 
   build-ios:
     name: Build & test iOS
