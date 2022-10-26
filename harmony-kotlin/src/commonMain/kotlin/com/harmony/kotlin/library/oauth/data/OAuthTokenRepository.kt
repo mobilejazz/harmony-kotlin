@@ -34,6 +34,7 @@ internal class OAuthTokenRepository(
     }
   }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<OAuthTokenEntity> = notSupportedOperation()
 
   override suspend fun put(query: Query, value: OAuthTokenEntity?, operation: Operation): OAuthTokenEntity {
@@ -42,5 +43,6 @@ internal class OAuthTokenRepository(
     }
   }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?, operation: Operation): List<OAuthTokenEntity> = notSupportedOperation()
 }

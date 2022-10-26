@@ -35,6 +35,7 @@ class GetNetworkDataSource<T>(
   /**
    * GET request returning a list of objects
    */
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<T> {
     val response: String = tryOrThrow(exceptionMapper) {
       executeGetRequest(query)
@@ -91,6 +92,7 @@ class PutNetworkDataSource<T>(
    * POST or PUT request returning a list of objects
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<T>?): List<T> {
     val response: String = tryOrThrow(exceptionMapper) {
       validateQuery(query)

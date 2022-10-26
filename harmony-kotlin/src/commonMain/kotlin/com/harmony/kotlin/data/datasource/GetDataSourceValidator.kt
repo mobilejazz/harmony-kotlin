@@ -2,9 +2,10 @@ package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.validator.Validator
+import com.harmony.kotlin.data.validator.toListValidator
 import com.harmony.kotlin.error.DataNotValidException
 
-class GetDataSourceValidator<T>(
+data class GetDataSourceValidator<T>(
   private val getDataSource: GetDataSource<T>,
   private val validator: Validator<T>
 ) : GetDataSource<T> {
@@ -14,7 +15,8 @@ class GetDataSourceValidator<T>(
     DataNotValidException() else it
   }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<T> = getDataSource.getAll(query).let {
-    if (!validator.isValid(it)) throw DataNotValidException() else it
+    if (!validator.toListValidator().isValid(it)) throw DataNotValidException() else it
   }
 }

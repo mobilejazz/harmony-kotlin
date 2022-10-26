@@ -28,10 +28,12 @@ class FlowDataSourceMapper<In, Out>(
 
   override fun get(query: Query): Flow<Out> = getDataSourceMapper.get(query)
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query): Flow<List<Out>> = getDataSourceMapper.getAll(query)
 
   override fun put(query: Query, value: Out?): Flow<Out> = putDataSourceMapper.put(query, value)
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> = putDataSourceMapper.putAll(query, value)
 
   override fun delete(query: Query): Flow<Unit> = deleteDataSource.delete(query)
@@ -44,6 +46,7 @@ class FlowGetDataSourceMapper<In, Out>(
 
   override fun get(query: Query): Flow<Out> = getDataSource.get(query).map { toOutMapper.map(it) }
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query): Flow<List<Out>> = getDataSource.getAll(query).map { toOutMapper.map(it) }
 }
 
@@ -59,6 +62,7 @@ class FlowPutDataSourceMapper<In, Out>(
       .map { toOutMapper.map(it) }
   }
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> {
     val mapped = value?.map { toInMapper.map(it) }
     return putDataSource.putAll(query, mapped)

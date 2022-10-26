@@ -15,10 +15,12 @@ class SingleFlowDataSourceRepository<T>(
 
   override fun get(query: Query, operation: Operation): Flow<T> = getDataSource.get(query)
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query, operation: Operation): Flow<List<T>> = getDataSource.getAll(query)
 
   override fun put(query: Query, value: T?, operation: Operation): Flow<T> = putDataSource.put(query, value)
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<T>?, operation: Operation): Flow<List<T>> = putDataSource.putAll(query, value)
 
   override fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
@@ -28,12 +30,14 @@ class SingleFlowGetDataSourceRepository<T>(private val getDataSource: FlowGetDat
 
   override fun get(query: Query, operation: Operation): Flow<T> = getDataSource.get(query)
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query, operation: Operation): Flow<List<T>> = getDataSource.getAll(query)
 }
 
 class SingleFlowPutDataSourceRepository<T>(private val putDataSource: FlowPutDataSource<T>) : FlowPutRepository<T> {
   override fun put(query: Query, value: T?, operation: Operation): Flow<T> = putDataSource.put(query, value)
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<T>?, operation: Operation): Flow<List<T>> = putDataSource.putAll(query, value)
 }
 

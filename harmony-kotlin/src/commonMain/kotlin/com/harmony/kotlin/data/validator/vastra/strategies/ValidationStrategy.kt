@@ -1,14 +1,17 @@
 package com.harmony.kotlin.data.validator.vastra.strategies
 
-public enum class ValidationStrategyResult {
+enum class ValidationStrategyResult {
   UNKNOWN,
   VALID,
   INVALID
 }
 
-interface ValidationStrategyDataSource
+interface ValidationStrategyEntity
+
+@Deprecated("Renamed to ValidationStrategyEntity", replaceWith = ReplaceWith("ValidationStrategyEntity"))
+typealias ValidationStrategyDataSource = ValidationStrategyEntity
 
 interface ValidationStrategy {
 
-  fun <T : ValidationStrategyDataSource> isValid(t: T): ValidationStrategyResult = ValidationStrategyResult.VALID
+  fun <T : ValidationStrategyEntity> isValid(t: T): ValidationStrategyResult = ValidationStrategyResult.VALID
 }

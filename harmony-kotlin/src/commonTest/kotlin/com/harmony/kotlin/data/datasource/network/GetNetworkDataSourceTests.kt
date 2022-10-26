@@ -20,6 +20,8 @@ import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import io.ktor.util.flattenEntries
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
@@ -35,6 +37,7 @@ import kotlin.test.assertTrue
 class GetNetworkDataSourceTests : BaseTest() {
   private val baseUrl = randomString().removeSpaces()
   private val content = DummyHttpResponse()
+  private val contentList = listOf(DummyHttpResponse(), DummyHttpResponse())
   private var requestSpy: HttpRequestData? = null
 
   private val mocker = Mocker()
@@ -100,6 +103,40 @@ class GetNetworkDataSourceTests : BaseTest() {
     val response = getNetworkDataSource.get(query)
 
     assertEquals(content, response)
+    with(requestSpy) {
+      assertNotNull(this)
+      assertTrue { url.fullPath.contains(baseUrl) }
+      assertTrue { url.fullPath.contains(expectedPath) }
+      assertTrue { headers.flattenEntries().containsAll(expectedHeaders) }
+      assertTrue { headers.flattenEntries().containsAll(expectedGlobalHeaders) }
+      assertTrue { url.parameters.flattenEntries().containsAll(expectedParams) }
+    }
+  }
+
+  @Test
+  fun `should successfully execute a get network request on a list`() = runTest {
+    val expectedGlobalHeaders = anyHeaders()
+    val expectedHeaders = anyHeaders()
+    val expectedParams = randomPairList()
+    val expectedPath = randomString().removeSpaces()
+    val mockEngine = mockEngine(response = """[{"name":"${contentList.first().name}"},{"name":"${contentList.last().name}"}]""") {
+      requestSpy = it
+    }
+    val getNetworkDataSource = givenGetNetworkDataSource(
+      mockEngine, expectedGlobalHeaders,
+      serializer = ListSerializer
+      (DummyHttpResponse.serializer())
+    )
+    val query = NetworkQuery(
+      method = NetworkQuery.Method.Get,
+      path = expectedPath,
+      headers = expectedHeaders,
+      urlParams = expectedParams
+    )
+
+    val response = getNetworkDataSource.get(query)
+
+    assertEquals(contentList, response)
     with(requestSpy) {
       assertNotNull(this)
       assertTrue { url.fullPath.contains(baseUrl) }
@@ -299,11 +336,12 @@ class GetNetworkDataSourceTests : BaseTest() {
   private fun givenGetNetworkDataSource(
     mockEngine: MockEngine = mockEngine(response = ""),
     globalHeaders: List<Pair<String, String>> = randomPairList(),
-    exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
+    exceptionMapper: Mapper<Exception, Exception> = IdentityMapper(),
+    serializer: KSerializer<*> = DummyHttpResponse.serializer(),
   ) = GetNetworkDataSource(
     url = baseUrl,
     httpClient = HttpClient(engine = mockEngine),
-    serializer = DummyHttpResponse.serializer(),
+    serializer = serializer,
     json = Json,
     globalHeaders = globalHeaders,
     exceptionMapper

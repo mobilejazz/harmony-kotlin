@@ -38,6 +38,7 @@ class CacheRepository<V>(
     else -> notSupportedOperation()
   }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<V> =
     when (operation) {
       is DefaultOperation -> getAll(query, CacheSyncOperation())
@@ -57,6 +58,7 @@ class CacheRepository<V>(
     else -> notSupportedOperation()
   }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = when (operation) {
     is DefaultOperation -> putAll(query, value, MainSyncOperation)
     is MainOperation -> putMain.putAll(query, value)

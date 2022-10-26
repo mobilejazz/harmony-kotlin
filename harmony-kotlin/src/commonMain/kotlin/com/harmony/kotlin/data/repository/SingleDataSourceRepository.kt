@@ -14,10 +14,12 @@ class SingleDataSourceRepository<T>(
 
   override suspend fun get(query: Query, operation: Operation): T = getDataSource.get(query)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<T> = getDataSource.getAll(query)
 
   override suspend fun put(query: Query, value: T?, operation: Operation): T = putDataSource.put(query, value)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<T>?, operation: Operation): List<T> = putDataSource.putAll(query, value)
 
   override suspend fun delete(query: Query, operation: Operation) = deleteDataSource.delete(query)
@@ -27,12 +29,14 @@ class SingleGetDataSourceRepository<T>(private val getDataSource: GetDataSource<
 
   override suspend fun get(query: Query, operation: Operation): T = getDataSource.get(query)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<T> = getDataSource.getAll(query)
 }
 
 class SinglePutDataSourceRepository<T>(private val putDataSource: PutDataSource<T>) : PutRepository<T> {
   override suspend fun put(query: Query, value: T?, operation: Operation): T = putDataSource.put(query, value)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<T>?, operation: Operation): List<T> = putDataSource.putAll(query, value)
 }
 

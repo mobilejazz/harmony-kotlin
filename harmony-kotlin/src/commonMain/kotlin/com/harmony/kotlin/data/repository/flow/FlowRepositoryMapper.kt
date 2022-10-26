@@ -26,6 +26,7 @@ class FlowRepositoryMapper<In, Out>(
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { toOutMapper.map(it) }
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query, operation: Operation) = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 
   override fun put(query: Query, value: Out?, operation: Operation): Flow<Out> {
@@ -35,6 +36,7 @@ class FlowRepositoryMapper<In, Out>(
     }
   }
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<Out>?, operation: Operation): Flow<List<Out>> {
     val mapped = value?.let { toInMapper.map(value) }
     return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }
@@ -50,6 +52,7 @@ class FlowGetRepositoryMapper<In, Out>(
 
   override fun get(query: Query, operation: Operation): Flow<Out> = getRepository.get(query, operation).map { it.let { toOutMapper.map(it) } }
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query, operation: Operation): Flow<List<Out>> = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 }
 
@@ -66,6 +69,7 @@ class FlowPutRepositoryMapper<In, Out>(
     }
   }
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<Out>?, operation: Operation): Flow<List<Out>> {
     val mapped = value?.let { toInMapper.map(it) }
     return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }

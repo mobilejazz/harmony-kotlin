@@ -26,6 +26,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     }
   }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<ByteArray> {
     val response: List<Cache> = when (query) {
       is AllObjectsQuery -> {
@@ -53,6 +54,7 @@ class CacheSQLStorageDataSource(private val database: CacheDatabase) : GetDataSo
     } ?: throw IllegalArgumentException("value != null")
   }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<ByteArray>?): List<ByteArray> {
     when (query) {
       is KeyQuery -> {

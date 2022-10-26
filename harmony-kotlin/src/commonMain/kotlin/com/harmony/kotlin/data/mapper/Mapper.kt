@@ -8,6 +8,23 @@ interface Mapper<in From, out To> {
   fun map(from: From): To
 }
 
+/**
+ * Mapper for Lists
+ */
+class ListMapper<in From, out To>(private val singleValueMapper: Mapper<From, To>) : Mapper<List<From>, List<To>> {
+  override fun map(from: List<From>): List<To> {
+    return from.map { singleValueMapper.map(it) }
+  }
+}
+
+/**
+ * Create a mapper for Lists
+ */
+fun <From, To> Mapper<From, To>.toListMapper(): Mapper<List<From>, List<To>> {
+  val singleValueMapper = this
+  return ListMapper(singleValueMapper)
+}
+
 class ClosureMapper<in From, out To>(val closure: (from: From) -> To) : Mapper<From, To> {
 
   override fun map(from: From): To = closure(from)

@@ -25,6 +25,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       else -> notSupportedQuery()
     }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<V> =
     when (query) {
       is KeyQuery -> {
@@ -44,6 +45,7 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       else -> notSupportedQuery()
     }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<V>?): List<V> =
     when (query) {
       is KeyQuery -> {
