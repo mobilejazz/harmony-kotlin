@@ -7,8 +7,8 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
-    classpath("com.android.tools.build:gradle:${libs.versions.androidGradlePlugin.get()}")
+    classpath(libs.plugins.kotlinGradle.get().toString())
+    classpath(libs.plugins.androidGradle.get().toString())
   }
 }
 
