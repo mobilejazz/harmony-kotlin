@@ -15,7 +15,12 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.contentType
 
-internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: String, globalHeaders: List<Pair<String, String>>): String {
+/**
+ * Executes a Ktor request using the information contained in the query.
+ *
+ * **IMPORTANT:** This method is intended to be used only be used inside a Network DataSource
+ */
+suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: String, globalHeaders: List<Pair<String, String>>): String {
   val query = this
   return httpClient.request {
     method = query.method.mapToKtorMethod()
@@ -55,8 +60,10 @@ internal suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, bas
 
 /**
  * Creates a url using Ktor URLBuilder with baseUrl + path + url params
+ *
+ * **IMPORTANT:** This method is intended to be used only be used inside a Network DataSource
  */
-private fun NetworkQuery.generateKtorUrl(baseUrl: String): Url {
+fun NetworkQuery.generateKtorUrl(baseUrl: String): Url {
 
   val sanitizedBaseUrl = baseUrl.removeSuffix("/")
   val sanitizedPaths = this.path.split("/").filter { it.isNotEmpty() }.joinToString(separator = "/", prefix = "/")
@@ -82,8 +89,10 @@ private fun generateKtorUrlParams(params: List<Pair<String, String>>): Parameter
 
 /**
  * Transforms query method to Ktor method
+ *
+ * **IMPORTANT:** This method is intended to be used only be used inside a Network DataSource
  */
-private fun NetworkQuery.Method.mapToKtorMethod(): HttpMethod {
+fun NetworkQuery.Method.mapToKtorMethod(): HttpMethod {
   return when (this) {
     is NetworkQuery.Method.Get -> HttpMethod.Get
     is NetworkQuery.Method.Post -> HttpMethod.Post
