@@ -2,6 +2,15 @@
 
 # Change Log
 
+## [5.0.1] - 2022-10-28
+### Added
+- Add version catalog & update dependencies ([#107](https://github.com/mobilejazz/harmony-kotlin/pull/107)) & ([#98](https://github.com/mobilejazz/harmony-kotlin/pull/98))
+- Create IOSConsoleLogger class within the ios folder using Logger interface ([#103](https://github.com/mobilejazz/harmony-kotlin/pull/103))
+
+### Changed
+- Make public NetworkQuery extension functions ([#108](https://github.com/mobilejazz/harmony-kotlin/pull/108))
+- Remove unused vararg from logger interface ([#100](https://github.com/mobilejazz/harmony-kotlin/pull/100))
+
 ## [5.0] - 2022-08-12
 ### Breaking Changes
 - Update dependencies ([#94](https://github.com/mobilejazz/harmony-kotlin/pull/94))
