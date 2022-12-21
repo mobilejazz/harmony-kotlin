@@ -20,6 +20,7 @@ class GetInteractor<M>(private val coroutineContext: CoroutineContext, private v
     }
 }
 
+@Deprecated(message = "Use GetInteractor instead")
 class GetAllInteractor<M>(private val coroutineContext: CoroutineContext, private val getRepository: GetRepository<M>) {
 
   suspend operator fun invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
@@ -36,6 +37,7 @@ class PutInteractor<M>(private val coroutineContext: CoroutineContext, private v
     }
 }
 
+@Deprecated(message = "Use PutInteractor instead")
 class PutAllInteractor<M>(private val coroutineContext: CoroutineContext, private val putRepository: PutRepository<M>) {
 
   suspend operator fun invoke(m: List<M>? = null, query: Query = VoidQuery, operation: Operation = DefaultOperation): List<M> =
@@ -65,10 +67,12 @@ suspend fun <K> DeleteInteractor.execute(id: K, operation: Operation = DefaultOp
 
 fun <V> GetRepository<V>.toGetInteractor(coroutineContext: CoroutineContext) = GetInteractor(coroutineContext, this)
 
+@Deprecated(message = "Replaced by toGetInteractor")
 fun <V> GetRepository<V>.toGetAllInteractor(coroutineContext: CoroutineContext) = GetAllInteractor(coroutineContext, this)
 
 fun <V> PutRepository<V>.toPutInteractor(coroutineContext: CoroutineContext) = PutInteractor(coroutineContext, this)
 
+@Deprecated(message = "Replaced by toPutInteractor")
 fun <V> PutRepository<V>.toPutAllInteractor(coroutineContext: CoroutineContext) = PutAllInteractor(coroutineContext, this)
 
 fun DeleteRepository.toDeleteInteractor(coroutineContext: CoroutineContext) = DeleteInteractor(coroutineContext, this)

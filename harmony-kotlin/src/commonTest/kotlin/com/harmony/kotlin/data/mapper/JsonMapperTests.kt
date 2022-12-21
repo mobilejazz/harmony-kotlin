@@ -6,6 +6,7 @@ import com.harmony.kotlin.common.getSome
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.error.DataSerializationException
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -26,10 +27,22 @@ class JsonMapperTests {
   }
 
   @Test
-  fun `should map from list to json`() {
+  fun `should map from list to json -deprecated-`() {
     val someObjects = getSome { Dummy(randomString()) }
 
     val json = ListModelToJsonStringMapper(Dummy.serializer()).map(someObjects)
+
+    val expectedJson = someObjects.joinToString(prefix = "[", separator = ",", postfix = "]") {
+      "{\"key\":\"${it.key}\"}"
+    }
+    assertEquals(expectedJson, json)
+  }
+
+  @Test
+  fun `should map from list to json`() {
+    val someObjects = getSome { Dummy(randomString()) }
+
+    val json = ModelToJsonStringMapper(ListSerializer(Dummy.serializer())).map(someObjects)
 
     val expectedJson = someObjects.joinToString(prefix = "[", separator = ",", postfix = "]") {
       "{\"key\":\"${it.key}\"}"
@@ -48,13 +61,25 @@ class JsonMapperTests {
   }
 
   @Test
-  fun `should map from json to list of model`() {
+  fun `should map from json to list of model -deprecated-`() {
     val someStrings = getSome { randomString() }
     val jsonArray = someStrings.joinToString(prefix = "[", separator = ",", postfix = "]") {
       "{\"key\":\"$it\"}"
     }
 
     val listFromJson = JsonStringToListModelMapper(Dummy.serializer()).map(jsonArray)
+
+    val expectedList = someStrings.map { Dummy(it) }
+    assertEquals(expectedList, listFromJson)
+  }
+
+  @Test
+  fun `should map from json to list of model`() {
+    val someStrings = getSome { randomString() }
+    val jsonArray = someStrings.joinToString(prefix = "[", separator = ",", postfix = "]") {
+      "{\"key\":\"$it\"}"
+    }
+    val listFromJson = JsonStringToModelMapper(ListSerializer(Dummy.serializer())).map(jsonArray)
 
     val expectedList = someStrings.map { Dummy(it) }
     assertEquals(expectedList, listFromJson)

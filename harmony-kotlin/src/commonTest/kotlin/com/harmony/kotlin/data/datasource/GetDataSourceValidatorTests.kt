@@ -1,3 +1,4 @@
+
 package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.common.BaseTest
@@ -69,20 +70,20 @@ class GetDataSourceValidatorTests : BaseTest() {
   fun `should success when data is valid using getAll function`() = runTest {
     val getDataSource = MockGetDataSource<Int>(mocker)
     val validator = MockValidator<Int>(mocker)
+
     val expectedQuery = anyQuery()
     val expectedValue = randomIntList()
 
     val dataSource = GetDataSourceValidator(getDataSource, validator)
     mocker.everySuspending { getDataSource.getAll(expectedQuery) } returns expectedValue
     expectedValue.forEach { mocker.every { validator.isValid(it) } returns true }
-    mocker.every { validator.isValid(expectedValue) } returns true
 
     val result = dataSource.getAll(expectedQuery)
 
     assertContentEquals(expectedValue, result)
     mocker.verifyWithSuspend {
       getDataSource.getAll(expectedQuery)
-      validator.isValid(expectedValue)
+      expectedValue.forEach { validator.isValid(it) }
     }
   }
 
@@ -95,14 +96,14 @@ class GetDataSourceValidatorTests : BaseTest() {
 
     val dataSource = GetDataSourceValidator(getDataSource, validator)
     mocker.everySuspending { getDataSource.getAll(expectedQuery) } returns expectedValue
-    mocker.every { validator.isValid(expectedValue) } returns false
+    mocker.every { validator.isValid(expectedValue.first()) } returns false
 
     assertFailsWith<DataNotValidException> {
       dataSource.getAll(expectedQuery)
     }
     mocker.verifyWithSuspend {
       getDataSource.getAll(expectedQuery)
-      validator.isValid(expectedValue)
+      validator.isValid(expectedValue.first())
     }
   }
 }

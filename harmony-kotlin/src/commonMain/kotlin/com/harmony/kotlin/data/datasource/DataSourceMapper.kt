@@ -23,10 +23,12 @@ class DataSourceMapper<In, Out>(
 
   override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
 
   override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
 
   override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
@@ -39,6 +41,7 @@ class GetDataSourceMapper<In, Out>(
 
   override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
 }
 
@@ -50,6 +53,7 @@ class PutDataSourceMapper<In, Out>(
 
   override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
 }
 

@@ -1,7 +1,9 @@
 package com.harmony.kotlin.data.datasource.validator.vastra.strategies.timestamp
 
+import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.date.Millis
 import com.harmony.kotlin.common.date.Seconds
+import com.harmony.kotlin.data.validator.vastra.ValidationService
 import com.harmony.kotlin.data.validator.vastra.ValidationServiceManager
 import com.harmony.kotlin.data.validator.vastra.strategies.timestamp.TimestampValidationEntity
 import com.harmony.kotlin.data.validator.vastra.strategies.timestamp.TimestampValidationStrategy
@@ -15,17 +17,31 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class TimestampValidationStrategyTest {
+class TimestampValidationStrategyTest : BaseTest() {
   private data class Foo(val id: String, override val lastUpdatedAt: Millis, override val expireIn: Seconds) : TimestampValidationEntity
 
   @Test
-  internal fun should_value_be_valid_if_value_is_not_expired() {
+  fun should_value_be_valid_if_value_is_not_expired() {
     val foo = Foo("bar", lastUpdatedAt = Clock.System.now().toEpochMilliseconds(), expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS))
 
     val timestampValidationStrategy = TimestampValidationStrategy()
     val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
 
     val isValid = validationServiceManager.isValid(foo)
+    assertTrue(actual = isValid)
+  }
+
+  @Test
+  fun should_values_be_valid_if_value_are_not_expired() {
+    val values = listOf(
+      Foo("bar", lastUpdatedAt = Clock.System.now().toEpochMilliseconds(), expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS)),
+      Foo("bar", lastUpdatedAt = Clock.System.now().toEpochMilliseconds(), expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS))
+    )
+
+    val timestampValidationStrategy = TimestampValidationStrategy()
+    val validationServiceManager = ValidationServiceManager(listOf(timestampValidationStrategy))
+
+    val isValid = validationServiceManager.isValid(values)
     assertTrue(actual = isValid)
   }
 
@@ -40,5 +56,25 @@ class TimestampValidationStrategyTest {
     val isValid = validationServiceManager.isValid(foo)
 
     assertFalse(isValid)
+  }
+
+  @Test
+  fun should_values_be_invalid_if_values_are_expired() {
+    runTest {
+
+      val yesterday = Clock.System.now().minus(1.days).toEpochMilliseconds()
+
+      val values = listOf(
+        Foo("bar", lastUpdatedAt = yesterday, expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS)),
+        Foo("bar", lastUpdatedAt = yesterday, expireIn = 1.minutes.toLong(DurationUnit.MILLISECONDS))
+      )
+
+      val timestampValidationStrategy = TimestampValidationStrategy()
+      val validationServiceManager: ValidationService = ValidationServiceManager(listOf(timestampValidationStrategy))
+
+      val isValid = validationServiceManager.isValid(values)
+
+      assertFalse(isValid)
+    }
   }
 }

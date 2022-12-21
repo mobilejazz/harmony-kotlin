@@ -1,7 +1,7 @@
 package com.harmony.kotlin.data.validator.vastra.strategy
 
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategy
-import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyEntity
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
 import java.lang.ref.WeakReference
 
@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference
 class ThreadValidationStrategy(thread: Thread) : ValidationStrategy {
   private val weakThread = WeakReference(thread)
 
-  override fun <T : ValidationStrategyDataSource> isValid(t: T): ValidationStrategyResult {
+  override fun <T : ValidationStrategyEntity> isValid(t: T): ValidationStrategyResult {
 
     val executingOnValidThread = weakThread.get()?.let {
       it == Thread.currentThread()

@@ -21,6 +21,7 @@ class RetryDataSource<V>(
       getDataSource.get(query)
     }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<V> =
     executeWithRetries(retryCount = maxAmountOfExecutions) {
       getDataSource.getAll(query)
@@ -31,6 +32,7 @@ class RetryDataSource<V>(
       putDataSource.put(query, value)
     }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<V>?): List<V> =
     executeWithRetries(retryCount = maxAmountOfExecutions) {
       putDataSource.putAll(query, value)

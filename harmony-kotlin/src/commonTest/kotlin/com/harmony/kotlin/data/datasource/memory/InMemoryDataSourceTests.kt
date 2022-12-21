@@ -67,9 +67,19 @@ class InMemoryDataSourceTests : BaseTest() {
   @Test
   fun `should response the values if exist`() = runTest {
     val pair = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
-    val inMemoryDataSource = givenInMemoryDataSource(insertValues = pair)
+    val inMemoryDataSource = givenInMemoryDataSourceLegacy(insertValues = pair)
 
     val response = inMemoryDataSource.getAll(pair.first)
+
+    assertEquals(pair.second, response)
+  }
+
+  @Test
+  fun `should response the values if exist using get`() = runTest {
+    val pair = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
+    val inMemoryDataSource = givenInMemoryDataSourceOfList(insertValues = pair)
+
+    val response = inMemoryDataSource.get(pair.first)
 
     assertEquals(pair.second, response)
   }
@@ -107,7 +117,7 @@ class InMemoryDataSourceTests : BaseTest() {
   @Test
   fun `should throw IllegalArgumentException if the value is null when putAll function is called`() = runTest {
     assertFailsWith<IllegalArgumentException> {
-      val inMemoryDataSource = givenInMemoryDataSource()
+      val inMemoryDataSource = givenInMemoryDataSourceLegacy()
       val query = KeyQuery(randomString())
 
       inMemoryDataSource.putAll(query, null)
@@ -167,7 +177,7 @@ class InMemoryDataSourceTests : BaseTest() {
     val valueToInsert = Pair(KeyQuery(randomString()), randomString())
     val valuesToInsert = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
 
-    val inMemoryDataSource = givenInMemoryDataSource(insertValue = valueToInsert, insertValues = valuesToInsert)
+    val inMemoryDataSource = givenInMemoryDataSourceLegacy(insertValue = valueToInsert, insertValues = valuesToInsert)
 
     inMemoryDataSource.delete(query = valueToInsert.first)
     inMemoryDataSource.delete(query = valuesToInsert.first)
@@ -180,6 +190,7 @@ class InMemoryDataSourceTests : BaseTest() {
       inMemoryDataSource.getAll(valuesToInsert.first)
     }
   }
+
   @Test
   fun `should not fail because InvalidMutabilityException `() = runTest {
     class OutsideScope {
@@ -192,6 +203,30 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   private suspend fun givenInMemoryDataSource(
+    insertValue: Pair<KeyQuery, String>? = null,
+  ): InMemoryDataSource<String> {
+    val inMemoryDataSource = InMemoryDataSource<String>()
+
+    insertValue?.let {
+      inMemoryDataSource.put(it.first, it.second)
+    }
+
+    return inMemoryDataSource
+  }
+
+  private suspend fun givenInMemoryDataSourceOfList(
+    insertValues: Pair<KeyQuery, List<String>>? = null
+  ): InMemoryDataSource<List<String>> {
+    val inMemoryDataSource = InMemoryDataSource<List<String>>()
+
+    insertValues?.let {
+      inMemoryDataSource.put(it.first, it.second)
+    }
+
+    return inMemoryDataSource
+  }
+
+  private suspend fun givenInMemoryDataSourceLegacy(
     insertValue: Pair<KeyQuery, String>? = null,
     insertValues: Pair<KeyQuery, List<String>>? = null
   ): InMemoryDataSource<String> {

@@ -20,6 +20,7 @@ class ModelToJsonStringMapper<in T>(
   }
 }
 
+@Deprecated(message = "Replaced by ModelToJsonStringMapper")
 class ListModelToJsonStringMapper<in T>(
   private val serializer: KSerializer<T>,
   private val json: Json = Json
@@ -48,6 +49,7 @@ class JsonStringToModelMapper<out T>(
 /**
  * Map a list json string to a list class object
  */
+@Deprecated(message = "Replaced by JsonStringToModelMapper")
 class JsonStringToListModelMapper<out T>(
   private val serializer: KSerializer<T>,
   private val json: Json = Json

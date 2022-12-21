@@ -15,6 +15,7 @@ import com.harmony.kotlin.data.query.Query
  * @param toInMapper Mapper to map repository objects to data source objects
  * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
+@Deprecated("Not needed after getAll & putAll deprecation. Use a normal DataSourceMapper")
 class SerializationDataSourceMapper<SerializedIn, Out>(
   private val getDataSource: GetDataSource<SerializedIn>,
   private val putDataSource: PutDataSource<SerializedIn>,
@@ -26,6 +27,7 @@ class SerializationDataSourceMapper<SerializedIn, Out>(
 
   override suspend fun get(query: Query): Out = getDataSource.get(query).let { toOutMapper.map(it) }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<Out> = getDataSource.get(query).let { toOutListMapper.map(it) }
 
   override suspend fun put(query: Query, value: Out?): Out {
@@ -34,6 +36,7 @@ class SerializationDataSourceMapper<SerializedIn, Out>(
       .let { toOutMapper.map(it) }
   }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<Out>?): List<Out> {
     val mapped = value?.let { toInMapperFromList.map(value) }
     return putDataSource.put(query, mapped)

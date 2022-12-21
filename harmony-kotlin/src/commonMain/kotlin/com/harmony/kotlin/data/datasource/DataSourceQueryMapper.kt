@@ -31,6 +31,7 @@ class DataSourceQueryMapper<V,
     return getDataSource.get(queryOut)
   }
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<V> {
     val queryOut = getQueryMapper.map(query as GetQueryIn)
     return getDataSource.getAll(queryOut)
@@ -41,6 +42,7 @@ class DataSourceQueryMapper<V,
     return putDataSource.put(queryOut, value)
   }
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<V>?): List<V> {
     val queryOut = putQueryMapper.map(query as PutQueryIn)
     return putDataSource.putAll(queryOut, value)

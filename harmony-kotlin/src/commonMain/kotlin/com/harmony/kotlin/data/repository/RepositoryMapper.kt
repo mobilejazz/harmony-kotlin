@@ -24,10 +24,12 @@ class RepositoryMapper<In, Out>(
 
   override suspend fun get(query: Query, operation: Operation): Out = get(getRepository, toOutMapper, query, operation)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<Out> = getAll(getRepository, toOutMapper, query, operation)
 
   override suspend fun put(query: Query, value: Out?, operation: Operation): Out = put(putRepository, toOutMapper, toInMapper, value, query, operation)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<Out>?, operation: Operation): List<Out> = putAll(
     putRepository, toOutMapper, toInMapper, value, query,
     operation
@@ -43,6 +45,7 @@ class GetRepositoryMapper<In, Out>(
 
   override suspend fun get(query: Query, operation: Operation): Out = get(getRepository, toOutMapper, query, operation)
 
+  @Deprecated("Use get instead")
   override suspend fun getAll(query: Query, operation: Operation): List<Out> = getAll(getRepository, toOutMapper, query, operation)
 }
 
@@ -54,6 +57,7 @@ class PutRepositoryMapper<In, Out>(
 
   override suspend fun put(query: Query, value: Out?, operation: Operation): Out = put(putRepository, toOutMapper, toInMapper, value, query, operation)
 
+  @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<Out>?, operation: Operation): List<Out> = putAll(
     putRepository, toOutMapper, toInMapper, value,
     query, operation

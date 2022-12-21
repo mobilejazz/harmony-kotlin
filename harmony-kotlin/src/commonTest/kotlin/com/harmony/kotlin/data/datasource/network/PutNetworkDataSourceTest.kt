@@ -296,6 +296,24 @@ class PutNetworkDataSourceTest : BaseTest() {
   }
 
   @Test
+  fun `should send PUT request and get Unit list when using Unit serializer for put`() = runTest {
+    val mockEngine = mockEngine(response = "") {
+      requestSpy = it
+    }
+    val contentTypeQuery = NetworkQuery(
+      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(listOf(objectToSend))),
+      pathUrl
+    )
+    val putNetworkDataSource = PutNetworkDataSource(
+      baseUrl, mockHttpClient(mockEngine), Unit.serializer(), Json, emptyList()
+    )
+
+    val putResult = putNetworkDataSource.put(contentTypeQuery, null)
+
+    assertEquals(Unit, putResult)
+  }
+
+  @Test
   fun `should send PUT request with content type and get same object that was sent`() = runTest {
     val mockEngine = mockEngine(response = objectToSendAsJson) {
       requestSpy = it
@@ -454,9 +472,7 @@ class PutNetworkDataSourceTest : BaseTest() {
     },
     globalHeaders: List<Pair<String, String>> = emptyList(),
     exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
-  ): PutNetworkDataSource<Dummy> {
-    return PutNetworkDataSource(
-      baseUrl, mockHttpClient(mockEngine), Dummy.serializer(), Json, globalHeaders, exceptionMapper
-    )
-  }
+  ) = PutNetworkDataSource(
+    baseUrl, mockHttpClient(mockEngine), Dummy.serializer(), Json, globalHeaders, exceptionMapper
+  )
 }

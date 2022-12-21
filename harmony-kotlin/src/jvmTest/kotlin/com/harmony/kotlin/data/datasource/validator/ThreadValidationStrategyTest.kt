@@ -1,6 +1,6 @@
 package com.harmony.kotlin.data.datasource.validator
 
-import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyEntity
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
 import com.harmony.kotlin.data.validator.vastra.strategy.ThreadValidationStrategy
 import kotlin.test.Test
@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class ThreadValidationStrategyTest {
   @Test
   internal fun shouldValidateObject_WhenExecutingInProvidedThread() {
-    val anyObject = object : ValidationStrategyDataSource {}
+    val anyObject = object : ValidationStrategyEntity {}
 
     val strategy = ThreadValidationStrategy(Thread.currentThread())
 
@@ -18,7 +18,7 @@ class ThreadValidationStrategyTest {
 
   @Test
   internal fun shouldNotValidateObject_WhenNotExecutingInProvidedThread() {
-    val anyObject = object : ValidationStrategyDataSource {}
+    val anyObject = object : ValidationStrategyEntity {}
 
     val strategy = ThreadValidationStrategy(Thread())
 

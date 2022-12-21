@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.map
  * @param toInMapper Mapper to map repository objects to data source objects
  * @param toInMapperFromList Mapper to map repository object lists to data source objects
  */
+@Deprecated("Not needed after getAll & putAll deprecation. Use a normal FlowDataSourceMapper")
 class FlowSerializationDataSourceMapper<SerializedIn, Out>(
   private val getDataSource: FlowGetDataSource<SerializedIn>,
   private val putDataSource: FlowPutDataSource<SerializedIn>,
@@ -30,6 +31,7 @@ class FlowSerializationDataSourceMapper<SerializedIn, Out>(
 
   override fun get(query: Query) = getDataSource.get(query).map { toOutMapper.map(it) }
 
+  @Deprecated("Use get instead")
   override fun getAll(query: Query): Flow<List<Out>> = getDataSource.get(query).map { toOutListMapper.map(it) }
 
   override fun put(query: Query, value: Out?): Flow<Out> {
@@ -38,6 +40,7 @@ class FlowSerializationDataSourceMapper<SerializedIn, Out>(
       .map { toOutMapper.map(it) }
   }
 
+  @Deprecated("Use put instead")
   override fun putAll(query: Query, value: List<Out>?): Flow<List<Out>> {
     val mapped = value?.let { toInMapperFromList.map(it) }
     return putDataSource.put(query, mapped)

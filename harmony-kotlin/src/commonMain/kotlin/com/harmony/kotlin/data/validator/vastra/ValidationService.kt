@@ -1,12 +1,12 @@
 package com.harmony.kotlin.data.validator.vastra
 
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategy
-import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyEntity
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
 
 interface ValidationService {
 
-  fun <T : ValidationStrategyDataSource> isValid(t: T?, strategies: List<ValidationStrategy>): Boolean {
+  fun <T : ValidationStrategyEntity> isValid(t: T?, strategies: List<ValidationStrategy>): Boolean {
     if (t == null) {
       return false
     }
@@ -32,7 +32,7 @@ interface ValidationService {
     return isValid
   }
 
-  fun <T : ValidationStrategyDataSource> isValid(values: List<T>, strategies: List<ValidationStrategy>): Boolean {
+  fun <T : ValidationStrategyEntity> isValid(values: List<T>, strategies: List<ValidationStrategy>): Boolean {
     if (values.isEmpty()) {
       return false
     }
@@ -46,14 +46,14 @@ interface ValidationService {
     return true
   }
 
-  fun <T : ValidationStrategyDataSource> isValid(t: T?): Boolean
+  fun <T : ValidationStrategyEntity> isValid(t: T?): Boolean
 
-  fun <T : ValidationStrategyDataSource> isValid(values: List<T>): Boolean
+  fun <T : ValidationStrategyEntity> isValid(values: List<T>): Boolean
 }
 
 class ValidationServiceManager(private val strategies: List<ValidationStrategy>) : ValidationService {
 
-  override fun <T : ValidationStrategyDataSource> isValid(values: List<T>): Boolean {
+  override fun <T : ValidationStrategyEntity> isValid(values: List<T>): Boolean {
     if (values.isEmpty()) {
       return false
     }
@@ -67,7 +67,7 @@ class ValidationServiceManager(private val strategies: List<ValidationStrategy>)
     return true
   }
 
-  override fun <T : ValidationStrategyDataSource> isValid(t: T?): Boolean {
+  override fun <T : ValidationStrategyEntity> isValid(t: T?): Boolean {
     return isValid(t, strategies)
   }
 }

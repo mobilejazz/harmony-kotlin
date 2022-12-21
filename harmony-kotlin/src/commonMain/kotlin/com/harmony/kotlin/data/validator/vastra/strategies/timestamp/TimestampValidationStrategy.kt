@@ -3,11 +3,11 @@ package com.harmony.kotlin.data.validator.vastra.strategies.timestamp
 import com.harmony.kotlin.common.date.Millis
 import com.harmony.kotlin.common.date.Seconds
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategy
-import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyDataSource
+import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyEntity
 import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyResult
 import kotlinx.datetime.Clock
 
-interface TimestampValidationEntity : ValidationStrategyDataSource {
+interface TimestampValidationEntity : ValidationStrategyEntity {
   val lastUpdatedAt: Millis
   val expireIn: Seconds
 }
@@ -17,7 +17,7 @@ class TimestampValidationStrategy : ValidationStrategy {
     const val MILLIS_IN_SECOND = 1_000
   }
 
-  override fun <T : ValidationStrategyDataSource> isValid(t: T): ValidationStrategyResult {
+  override fun <T : ValidationStrategyEntity> isValid(t: T): ValidationStrategyResult {
     when (t) {
       is TimestampValidationEntity -> {
         val now = Clock.System.now().toEpochMilliseconds()
@@ -35,7 +35,7 @@ class TimestampValidationStrategy : ValidationStrategy {
           ValidationStrategyResult.INVALID
       }
       else -> {
-        throw IllegalArgumentException("object != TimestampValidationStrategyDataSource")
+        throw IllegalArgumentException("object != TimestampValidationEntity")
       }
     }
   }
