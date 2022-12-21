@@ -7,6 +7,7 @@ import com.harmony.kotlin.data.datasource.VoidPutDataSource
 import com.harmony.kotlin.data.datasource.cache.CacheSQLConfiguration
 import com.harmony.kotlin.data.datasource.cache.CacheSQLStorageDataSource
 import com.harmony.kotlin.data.datasource.network.GetNetworkDataSource
+import com.harmony.kotlin.data.datasource.network.SerializedNetworkResponseDecoder
 import com.harmony.kotlin.data.datasource.toGetRepository
 import com.harmony.kotlin.data.mapper.CBORByteArrayToObject
 import com.harmony.kotlin.data.mapper.CBORObjectToByteArray
@@ -62,8 +63,10 @@ class HackerNewsPostsDefaultModule(
     val hackerPostsIdsNetworkDataSource = GetNetworkDataSource(
       networkConfiguration.baseUrl,
       networkConfiguration.httpClient,
-      ListSerializer(Long.serializer()),
-      networkConfiguration.json
+      SerializedNetworkResponseDecoder(
+        networkConfiguration.json,
+        ListSerializer(Long.serializer())
+      )
     )
 
     val hackerNewsQueryToNetworkQueryMapper = HackerNewsQueryToNetworkQueryMapper()
@@ -85,8 +88,10 @@ class HackerNewsPostsDefaultModule(
     val hackerPostsNetworkDataSource = GetNetworkDataSource(
       networkConfiguration.baseUrl,
       networkConfiguration.httpClient,
-      HackerNewsPostEntity.serializer(),
-      networkConfiguration.json
+      SerializedNetworkResponseDecoder(
+        networkConfiguration.json,
+        HackerNewsPostEntity.serializer()
+      )
     )
 
     val hackerNewsQueryToNetworkQuery = HackerNewsQueryToNetworkQueryMapper()

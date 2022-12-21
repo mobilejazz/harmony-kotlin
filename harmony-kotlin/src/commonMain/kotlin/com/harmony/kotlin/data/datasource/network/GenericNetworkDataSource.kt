@@ -8,28 +8,45 @@ import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.error.QueryNotSupportedException
 import io.ktor.client.HttpClient
+import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
 class GetNetworkDataSource<T>(
   private val url: String,
   private val httpClient: HttpClient,
-  private val serializer: KSerializer<T>,
-  private val json: Json,
+  private val networkResponseDecoder: NetworkResponseDecoder<T>,
   private val globalHeaders: List<Pair<String, String>> = emptyList(),
   private val exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
 ) : GetDataSource<T> {
+
+  @Deprecated("Use the constructor with NetworkResponseDecoder instead")
+  constructor(
+    url: String,
+    httpClient: HttpClient,
+    serializer: KSerializer<T>,
+    json: Json,
+    globalHeaders: List<Pair<String, String>> = emptyList(),
+    exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
+  ) : this(
+    url, httpClient,
+    if (serializer.descriptor == Unit.serializer().descriptor) {
+      IgnoreNetworkResponseDecoderOfAnyType<T>()
+    } else {
+      SerializedNetworkResponseDecoder<T>(json, serializer)
+    },
+    globalHeaders, exceptionMapper
+  )
 
   /**
    * GET request returning an object
    */
   override suspend fun get(query: Query): T {
-    val response: String = tryOrThrow(exceptionMapper) {
+    val response: HttpResponse = tryOrThrow(exceptionMapper) {
       executeGetRequest(query)
     }
-    return json.decodeFromString(serializer, response)
+    return networkResponseDecoder.decode(response)
   }
 
   /**
@@ -37,14 +54,13 @@ class GetNetworkDataSource<T>(
    */
   @Deprecated("Use get instead")
   override suspend fun getAll(query: Query): List<T> {
-    val response: String = tryOrThrow(exceptionMapper) {
+    val response: HttpResponse = tryOrThrow(exceptionMapper) {
       executeGetRequest(query)
     }
-
-    return json.decodeFromString(ListSerializer(serializer), response)
+    return networkResponseDecoder.decodeList(response)
   }
 
-  private suspend fun executeGetRequest(query: Query): String =
+  private suspend fun executeGetRequest(query: Query): HttpResponse =
     validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
   private fun validateQuery(query: Query): NetworkQuery {
@@ -63,29 +79,42 @@ class GetNetworkDataSource<T>(
 class PutNetworkDataSource<T>(
   private val url: String,
   private val httpClient: HttpClient,
-  private val serializer: KSerializer<T>,
-  private val json: Json,
+  private val networkResponseDecoder: NetworkResponseDecoder<T>,
   private val globalHeaders: List<Pair<String, String>> = emptyList(),
   private val exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
 
 ) : PutDataSource<T> {
+
+  @Deprecated("Use the constructor with NetworkResponseDecoder instead")
+  constructor(
+    url: String,
+    httpClient: HttpClient,
+    serializer: KSerializer<T>,
+    json: Json,
+    globalHeaders: List<Pair<String, String>> = emptyList(),
+    exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
+  ) : this(
+    url, httpClient,
+    if (serializer.descriptor == Unit.serializer().descriptor) {
+      IgnoreNetworkResponseDecoderOfAnyType<T>()
+    } else {
+      SerializedNetworkResponseDecoder<T>(json, serializer)
+    },
+    globalHeaders, exceptionMapper
+  )
 
   /**
    * POST or PUT request returning an object
    * @throws IllegalArgumentException if both value and content-type of the query method are defined
    */
   override suspend fun put(query: Query, value: T?): T {
-    val response: String = tryOrThrow(exceptionMapper) {
+    val response: HttpResponse = tryOrThrow(exceptionMapper) {
       validateQuery(query)
         .sanitizeContentType(value)
         .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
     }
 
-    return if (serializer.descriptor != Unit.serializer().descriptor) {
-      json.decodeFromString(serializer, response)
-    } else { // If Unit.serializer() is used is because we want to ignore the response and just return Unit
-      Unit as T
-    }
+    return networkResponseDecoder.decode(response)
   }
 
   /**
@@ -94,16 +123,12 @@ class PutNetworkDataSource<T>(
    */
   @Deprecated("Use put instead")
   override suspend fun putAll(query: Query, value: List<T>?): List<T> {
-    val response: String = tryOrThrow(exceptionMapper) {
+    val response: HttpResponse = tryOrThrow(exceptionMapper) {
       validateQuery(query)
         .sanitizeContentType(value)
         .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
     }
-    return if (serializer.descriptor != Unit.serializer().descriptor) {
-      json.decodeFromString(ListSerializer(serializer), response)
-    } else { // If Unit.serializer() is used is because we want to ignore the response and just return an empty list of Unit
-      emptyList<Unit>() as List<T>
-    }
+    return networkResponseDecoder.decodeList(response)
   }
 
   /**
