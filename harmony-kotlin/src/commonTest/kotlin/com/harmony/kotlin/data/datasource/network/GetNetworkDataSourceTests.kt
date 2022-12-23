@@ -341,8 +341,7 @@ class GetNetworkDataSourceTests : BaseTest() {
   ) = GetNetworkDataSource(
     url = baseUrl,
     httpClient = HttpClient(engine = mockEngine),
-    serializer = serializer,
-    json = Json,
+    networkResponseDecoder = SerializedNetworkResponseDecoder(Json, serializer),
     globalHeaders = globalHeaders,
     exceptionMapper
   )

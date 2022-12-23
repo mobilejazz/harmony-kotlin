@@ -5,7 +5,7 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
-import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.utils.EmptyContent
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
@@ -20,7 +20,7 @@ import io.ktor.http.contentType
  *
  * **IMPORTANT:** This method is intended to be used only be used inside a Network DataSource
  */
-suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: String, globalHeaders: List<Pair<String, String>>): String {
+suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: String, globalHeaders: List<Pair<String, String>>): HttpResponse {
   val query = this
   return httpClient.request {
     method = query.method.mapToKtorMethod()
@@ -55,7 +55,7 @@ suspend fun NetworkQuery.executeKtorRequest(httpClient: HttpClient, baseUrl: Str
         }
       }
     }
-  }.bodyAsText()
+  }
 }
 
 /**

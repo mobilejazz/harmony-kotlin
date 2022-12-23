@@ -278,6 +278,28 @@ class PutNetworkDataSourceTest : BaseTest() {
   }
 
   @Test
+  fun `should send PUT request and get Unit when using IgnoreNetworkResponseDecoder`() = runTest {
+    val mockEngine = mockEngine(response = "") {
+      requestSpy = it
+    }
+    val contentTypeQuery = NetworkQuery(
+      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(objectToSend)),
+      pathUrl
+    )
+    val putNetworkDataSource = PutNetworkDataSource(
+      baseUrl, mockHttpClient(mockEngine), IgnoreNetworkResponseDecoder(), emptyList()
+    )
+
+    val putResult = putNetworkDataSource.put(contentTypeQuery, null)
+
+    with(requestSpy) {
+      assertNotNull(this)
+      assertEquals(HttpMethod.Put, method)
+    }
+    assertEquals(Unit, putResult)
+  }
+
+  @Test
   fun `should send PUT request and get Unit list when using Unit serializer for put all`() = runTest {
     val mockEngine = mockEngine(response = "") {
       requestSpy = it
@@ -296,6 +318,24 @@ class PutNetworkDataSourceTest : BaseTest() {
   }
 
   @Test
+  fun `should send PUT request and get Unit list when using IgnoreNetworkResponseDecoder for put all`() = runTest {
+    val mockEngine = mockEngine(response = "") {
+      requestSpy = it
+    }
+    val contentTypeQuery = NetworkQuery(
+      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(listOf(objectToSend))),
+      pathUrl
+    )
+    val putNetworkDataSource = PutNetworkDataSource(
+      baseUrl, mockHttpClient(mockEngine), IgnoreNetworkResponseDecoder(), emptyList()
+    )
+
+    val putResult = putNetworkDataSource.putAll(contentTypeQuery, null)
+
+    assertEquals(listOf(), putResult)
+  }
+
+  @Test
   fun `should send PUT request and get Unit list when using Unit serializer for put`() = runTest {
     val mockEngine = mockEngine(response = "") {
       requestSpy = it
@@ -306,6 +346,24 @@ class PutNetworkDataSourceTest : BaseTest() {
     )
     val putNetworkDataSource = PutNetworkDataSource(
       baseUrl, mockHttpClient(mockEngine), Unit.serializer(), Json, emptyList()
+    )
+
+    val putResult = putNetworkDataSource.put(contentTypeQuery, null)
+
+    assertEquals(Unit, putResult)
+  }
+
+  @Test
+  fun `should send PUT request and get Unit list when using IgnoreNetworkResponseDecoder for put`() = runTest {
+    val mockEngine = mockEngine(response = "") {
+      requestSpy = it
+    }
+    val contentTypeQuery = NetworkQuery(
+      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(listOf(objectToSend))),
+      pathUrl
+    )
+    val putNetworkDataSource = PutNetworkDataSource(
+      baseUrl, mockHttpClient(mockEngine), IgnoreNetworkResponseDecoder(), emptyList()
     )
 
     val putResult = putNetworkDataSource.put(contentTypeQuery, null)
@@ -473,6 +531,6 @@ class PutNetworkDataSourceTest : BaseTest() {
     globalHeaders: List<Pair<String, String>> = emptyList(),
     exceptionMapper: Mapper<Exception, Exception> = IdentityMapper()
   ) = PutNetworkDataSource(
-    baseUrl, mockHttpClient(mockEngine), Dummy.serializer(), Json, globalHeaders, exceptionMapper
+    baseUrl, mockHttpClient(mockEngine), SerializedNetworkResponseDecoder(Json, Dummy.serializer()), globalHeaders, exceptionMapper
   )
 }
