@@ -1,2 +1,1 @@
-include ':harmony-kotlin', ':sample-core', ':sample-android'
-include ':sample-android-compose'
+include ':harmony-kotlin', ':sample-core', ':sample-android', ':sample-android-compose'

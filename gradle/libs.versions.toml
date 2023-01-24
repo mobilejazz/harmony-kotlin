@@ -1,40 +1,41 @@
 [versions]
-kotlin = "1.7.21"
+kotlin = "1.8.0"
 # Plugins
-androidGradlePlugin = "7.3.1"
-ksp = "1.7.21-1.0.8"
+androidGradlePlugin = "7.4.0"
+ksp = "1.8.0-1.0.8"
 ktlint = "11.0.0"
 detekt = "1.22.0"
-taskTree = "2.1.0"
+taskTree = "2.1.1"
 gradleVersions = "0.44.0"
 versionCatalogUpdate = "0.7.0"
 # KMM
-ktor = "2.1.3"
+ktor = "2.2.2"
 serialization = "1.4.1"
 coroutines = "1.6.4"
-sqldelight = "1.5.4"
+sqldelight = "1.5.5"
 datetime = "0.4.0"
 uuidLib = "0.6.0"
 # Android
-appCompat = "1.5.1"
+appCompat = "1.6.0"
 coordinatorLayout = "1.2.0"
 material = "1.7.0"
 constraintLayout = "2.1.4"
 gson = "2.9.1"
-bugfender = "3.0.17"
-composeCompiler = "1.4.0-alpha02"
-compose = "1.3.1"
-composeDestinations = "1.7.27-beta"
+bugfender = "3.1.0"
+composeCompiler = "1.4.0"
+compose = "1.3.3"
+composeMaterial = "1.3.1"
+composeDestinations = "1.7.32-beta"
 lifecycle = "2.5.1"
 coreKtx = "1.9.0"
 activityCompose = "1.6.1"
 # Testing
-mockmp = "1.10.0"
-mockk = "1.13.2"
+mockmp = "1.11.0"
+mockk = "1.13.3"
 junit = "4.13.2"
 androidxTest = "1.5.0"
-androidxJunitKtx = "1.1.4"
-roboelectric = "4.9"
+androidxJunitKtx = "1.1.5"
+roboelectric = "4.9.2"
 lifecycleRuntime = "2.5.1"
 
 [libraries]
@@ -69,7 +70,7 @@ coreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 bugfender = { module = "com.bugfender.sdk:android", version.ref = "bugfender" }
 composeUi = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 composeUiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-composeMaterial = { module = "androidx.compose.material:material", version.ref = "compose" }
+composeMaterial = { module = "androidx.compose.material:material", version.ref = "composeMaterial" }
 activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
@@ -82,7 +83,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 kotlinTest = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinTestJunit = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 androidTest-core = { module = "androidx.test:core", version.ref = "androidxTest" }
-androidTest-runner = "androidx.test:runner:1.5.1"
+androidTest-runner = "androidx.test:runner:1.5.2"
 androidTest-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
 androidTest-junitKtx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxJunitKtx" }
 androidTest-lifecycleRuntime = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "lifecycleRuntime" }

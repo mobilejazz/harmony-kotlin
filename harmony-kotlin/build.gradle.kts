@@ -19,8 +19,9 @@ plugins {
   kotlin("plugin.serialization") version libs.versions.kotlin.get()
   id("com.android.library")
   alias(libs.plugins.sqldelight)
-  alias(libs.plugins.mockmp)
   `gradle-mvn-push` // on buildSrc/src/main/groovy/gradle-mvn-push.gradle
+  alias(libs.plugins.mockmp)
+  alias(libs.plugins.ksp) // <-- To avoid build to fail because mockmp is using a previous version of ksp
 }
 detekt {
   config = files("$rootDir/detekt.yml")
