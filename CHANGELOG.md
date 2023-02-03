@@ -2,6 +2,13 @@
 
 # Change Log
 
+## [6.0.0] - 2023-02-02
+### Changed
+- Upgrade libraries/dependencies ([#114](https://github.com/mobilejazz/harmony-kotlin/pull/114)) & ([#111](https://github.com/mobilejazz/harmony-kotlin/pull/111))
+- Decrease memory usage on GenericNetworkDataSource ([#113](https://github.com/mobilejazz/harmony-kotlin/pull/113))
+### Breaking Changes
+- Deprecate getAll and putAll ([#112](https://github.com/mobilejazz/harmony-kotlin/pull/112))
+
 ## [5.0.1] - 2022-10-28
 ### Added
 - Add version catalog & update dependencies ([#107](https://github.com/mobilejazz/harmony-kotlin/pull/107)) & ([#98](https://github.com/mobilejazz/harmony-kotlin/pull/98))
