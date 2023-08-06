@@ -12,16 +12,10 @@ import com.harmony.kotlin.data.repository.withMapping
 // DataSources
 interface GetDataSource<V> {
   suspend fun get(query: Query): V
-
-  @Deprecated(message = "Use get instead")
-  suspend fun getAll(query: Query): List<V>
 }
 
 interface PutDataSource<V> {
   suspend fun put(query: Query, value: V?): V
-
-  @Deprecated(message = "Use put instead")
-  suspend fun putAll(query: Query, value: List<V>? = emptyList()): List<V>
 }
 
 interface DeleteDataSource {

@@ -27,7 +27,6 @@ import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -202,107 +201,7 @@ class GetNetworkDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should fail when query is invalid executing getAll function`() = runTest {
-    val datasource = givenGetNetworkDataSource()
-
-    assertFailsWith<QueryNotSupportedException> {
-      datasource.getAll(anyQuery())
-    }
-  }
-
-  @Test
-  fun `should fail when method is not Get executing getAll function`() = runTest {
-    val datasource = givenGetNetworkDataSource()
-
-    val invalidQuery = NetworkQuery(NetworkQuery.Method.Delete, randomString())
-
-    assertFailsWith<QueryNotSupportedException> {
-      datasource.getAll(invalidQuery)
-    }
-  }
-
-  @Test
-  fun `should propagate the same exception as the mapper when an exception is thrown executing getAll function`() = runTest {
-    val datasource = givenGetNetworkDataSource(exceptionMapper = mockMapper)
-    val invalidQuery = anyQuery()
-
-    assertFailsWith<AnyException> {
-      mocker.every { mockMapper.map(isAny()) } returns AnyException()
-      datasource.getAll(invalidQuery)
-    }
-  }
-
-  @Test
-  fun `should successfully execute a getAll network request`() = runTest {
-    val expectedGlobalHeaders = anyHeaders()
-    val expectedHeaders = anyHeaders()
-    val expectedParams = randomPairList()
-    val expectedPath = randomString().removeSpaces()
-    val content = listOf(DummyHttpResponse())
-    val mockEngine = mockEngine(response = """[{"name":"${content.first().name}"}]""") {
-      requestSpy = it
-    }
-    val datasource = givenGetNetworkDataSource(mockEngine, expectedGlobalHeaders)
-    val query = NetworkQuery(
-      method = NetworkQuery.Method.Get,
-      path = expectedPath,
-      headers = expectedHeaders,
-      urlParams = expectedParams
-    )
-
-    val response = datasource.getAll(query)
-
-    assertContentEquals(content, response)
-    with(requestSpy) {
-      assertNotNull(this)
-      assertTrue { url.fullPath.contains(baseUrl) }
-      assertTrue { url.fullPath.contains(expectedPath) }
-      assertTrue { headers.flattenEntries().containsAll(expectedHeaders) }
-      assertTrue { headers.flattenEntries().containsAll(expectedGlobalHeaders) }
-      assertTrue { url.parameters.flattenEntries().containsAll(expectedParams) }
-    }
-  }
-
-  @Test
-  fun `should successfully execute a getAll network request with oauth`() = runTest {
-    val expectedGlobalHeaders = anyHeaders()
-    val expectedHeaders = anyHeaders()
-    val expectedParams = randomPairList()
-    val expectedPath = randomString().removeSpaces()
-    val expectedTokenType = randomString()
-    val expectedAccessToken = randomString()
-    val fakeToken = OAuthToken(expectedAccessToken, expectedTokenType, randomLong(), randomString(), emptyList())
-    val content = listOf(DummyHttpResponse())
-    val mockEngine = mockEngine(response = """[{"name":"${content.first().name}"}]""") {
-      requestSpy = it
-    }
-    val getNetworkDataSource = givenGetNetworkDataSource(mockEngine, expectedGlobalHeaders)
-    val query = OAuthNetworkQuery(
-      mockGetPasswordTokenInteractor,
-      method = NetworkQuery.Method.Get,
-      path = expectedPath,
-      headers = expectedHeaders,
-      urlParams = expectedParams
-    )
-    mocker.everySuspending { mockGetPasswordTokenInteractor.invoke(isAny()) } returns fakeToken
-
-    val response = getNetworkDataSource.getAll(query)
-
-    assertContentEquals(content, response)
-    with(requestSpy) {
-      assertNotNull(this)
-      assertTrue { url.fullPath.contains(baseUrl) }
-      assertTrue { url.fullPath.contains(expectedPath) }
-      assertTrue { headers.flattenEntries().containsAll(expectedHeaders) }
-      assertTrue { headers.flattenEntries().containsAll(expectedGlobalHeaders) }
-      assertTrue { url.parameters.flattenEntries().containsAll(expectedParams) }
-      assertTrue { headers.contains("Authorization", "${fakeToken.tokenType} ${fakeToken.accessToken}") }
-    }
-    mocker.verifyWithSuspend { mockGetPasswordTokenInteractor.invoke(isAny()) }
-  }
-
-  @Test
-  fun `should throw exception when auth interactor fails`() = runTest {
+  fun `should throw illegal argument exception when  interactor fails`() = runTest {
     val mockEngine = mockEngine(response = """{"name":"${randomString()}"}""")
     val getNetworkDataSource = givenGetNetworkDataSource(mockEngine)
     val query = OAuthNetworkQuery(
@@ -313,7 +212,7 @@ class GetNetworkDataSourceTests : BaseTest() {
     mocker.everySuspending { mockGetPasswordTokenInteractor.invoke(isAny()) } runs { throw AnyException() }
 
     assertFailsWith<AnyException> {
-      getNetworkDataSource.getAll(query)
+      getNetworkDataSource.get(query)
     }
   }
 

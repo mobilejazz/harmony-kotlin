@@ -8,14 +8,10 @@ import com.harmony.kotlin.data.query.Query
 // Repositories
 interface GetRepository<V> {
   suspend fun get(query: Query, operation: Operation = DefaultOperation): V
-  @Deprecated(message = "Use get instead")
-  suspend fun getAll(query: Query, operation: Operation = DefaultOperation): List<V>
 }
 
 interface PutRepository<V> {
   suspend fun put(query: Query, value: V?, operation: Operation = DefaultOperation): V
-  @Deprecated(message = "Use put instead")
-  suspend fun putAll(query: Query, value: List<V>? = emptyList(), operation: Operation = DefaultOperation): List<V>
 }
 
 interface DeleteRepository {

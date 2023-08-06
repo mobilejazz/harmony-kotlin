@@ -28,6 +28,7 @@ internal class OAuthNetworkDataSource(
         query.clientId,
         query.clientSecret
       )
+
       else -> notSupportedQuery()
     }
 
@@ -38,7 +39,4 @@ internal class OAuthNetworkDataSource(
       setBody(bodyRequest)
     }.body()
   }
-
-  override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?): List<OAuthTokenEntity> =
-    throw NotImplementedError()
 }

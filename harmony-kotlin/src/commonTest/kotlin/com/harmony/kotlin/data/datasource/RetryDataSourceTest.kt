@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.common.ANY_ITEMS_COUNT
 import com.harmony.kotlin.common.BaseTest
-import com.harmony.kotlin.common.getSome
 import com.harmony.kotlin.common.logger.ConsoleLogger
 import com.harmony.kotlin.common.randomInt
 import com.harmony.kotlin.common.randomNullable
@@ -50,15 +49,15 @@ class RetryDataSourceTest : BaseTest() {
 
   @Test
   fun `should work when request works at first attempt`() = runTest {
-    val expectedResponse = getSome { randomString() }
+    val expectedResponse = randomString()
     var callCounter = 0
-    mocker.everySuspending { getDataSource.getAll(isAny()) } runs {
+    mocker.everySuspending { getDataSource.get(isAny()) } runs {
       callCounter++
       expectedResponse
     }
     val retryDataSource = RetryDataSource(getDataSource, VoidDataSource(), VoidDataSource<Unit>(), maxAmountOfExecutions = ANY_ITEMS_COUNT)
 
-    val actualResult = retryDataSource.getAll(VoidQuery)
+    val actualResult = retryDataSource.get(VoidQuery)
 
     assertEquals(actualResult, expectedResponse)
     assertEquals(1, callCounter)
@@ -66,16 +65,16 @@ class RetryDataSourceTest : BaseTest() {
 
   @Test
   fun `should work when request works at second attempt`() = runTest {
-    val expectedResponse = getSome { randomString() }
+    val expectedResponse = randomString()
     var callCounter = 0
-    mocker.everySuspending { getDataSource.getAll(isAny()) } runs {
+    mocker.everySuspending { getDataSource.get(isAny()) } runs {
       callCounter++
       if (callCounter == 1) throw DataNotFoundException()
       else expectedResponse
     }
     val retryDataSource = RetryDataSource(getDataSource, VoidDataSource(), VoidDataSource<Unit>(), maxAmountOfExecutions = ANY_ITEMS_COUNT)
 
-    val actualResult = retryDataSource.getAll(VoidQuery)
+    val actualResult = retryDataSource.get(VoidQuery)
 
     assertEquals(actualResult, expectedResponse)
     assertEquals(2, callCounter)

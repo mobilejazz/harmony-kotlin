@@ -38,33 +38,12 @@ class CacheRepository<V>(
     else -> notSupportedOperation()
   }
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<V> =
-    when (operation) {
-      is DefaultOperation -> getAll(query, CacheSyncOperation())
-      is MainOperation -> getMain.getAll(query)
-      is CacheOperation -> getAllCache(query, operation)
-      is MainSyncOperation -> getMain.getAll(query).let { putCache.putAll(query, it) }
-      is CacheSyncOperation -> getAllCacheSync(query, operation)
-      else -> notSupportedOperation()
-    }
-
   override suspend fun put(query: Query, value: V?, operation: Operation): V = when (operation) {
     is DefaultOperation -> put(query, value, MainSyncOperation)
     is MainOperation -> putMain.put(query, value)
     is CacheOperation -> putCache.put(query, value)
     is MainSyncOperation -> putMain.put(query, value).let { putCache.put(query, it) }
     is CacheSyncOperation -> putCache.put(query, value).let { putMain.put(query, it) }
-    else -> notSupportedOperation()
-  }
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = when (operation) {
-    is DefaultOperation -> putAll(query, value, MainSyncOperation)
-    is MainOperation -> putMain.putAll(query, value)
-    is CacheOperation -> putCache.putAll(query, value)
-    is MainSyncOperation -> putMain.putAll(query, value).let { putCache.putAll(query, it) }
-    is CacheSyncOperation -> putCache.putAll(query, value).let { putMain.putAll(query, it) }
     else -> notSupportedOperation()
   }
 
@@ -104,25 +83,6 @@ class CacheRepository<V>(
     }
   }
 
-  private suspend fun getAllCache(
-    query: Query,
-    operation: CacheOperation,
-  ): List<V> = try {
-    val cacheValues = getCache.getAll(query)
-    val invalids = cacheValues.map { validator.isValid(it) }.filter { isValid -> !isValid }
-    if (invalids.isNotEmpty()) {
-      throw DataNotValidException()
-    } else {
-      cacheValues
-    }
-  } catch (cacheException: Exception) {
-    if (operation.fallback(cacheException)) {
-      getCache.getAll(query)
-    } else {
-      throw cacheException
-    }
-  }
-
   private suspend fun getCacheSync(
     query: Query,
     operation: CacheSyncOperation,
@@ -146,35 +106,6 @@ class CacheRepository<V>(
     } catch (mainException: Exception) {
       if (operation.fallback(mainException, cacheException)) {
         getCache.get(query)
-      } else {
-        throw mainException
-      }
-    }
-  }
-
-  private suspend fun getAllCacheSync(
-    query: Query,
-    operation: CacheSyncOperation,
-  ): List<V> = try {
-    getCache.getAll(query).map {
-      if (!validator.isValid(it)) {
-        throw DataNotValidException()
-      } else {
-        it
-      }
-    }
-  } catch (cacheException: Exception) {
-    try {
-      when (cacheException) {
-        is DataNotValidException,
-        is DataSerializationException,
-        is DataNotFoundException -> getAll(query, MainSyncOperation)
-
-        else -> throw cacheException
-      }
-    } catch (mainException: Exception) {
-      if (operation.fallback(mainException, cacheException)) {
-        getCache.getAll(query)
       } else {
         throw mainException
       }

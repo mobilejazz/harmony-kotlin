@@ -1,7 +1,6 @@
 package com.harmony.kotlin.data.datasource.network
 
 import com.harmony.kotlin.common.BaseTest
-import com.harmony.kotlin.common.getSome
 import com.harmony.kotlin.common.randomLong
 import com.harmony.kotlin.common.randomNullable
 import com.harmony.kotlin.common.randomPairList
@@ -72,15 +71,6 @@ class PutNetworkDataSourceTest : BaseTest() {
   }
 
   @Test
-  fun `should fail when unexpected query provided for put all`() = runTest {
-    val putNetworkDataSource = givenPutNetworkDataSource()
-
-    assertFailsWith<QueryNotSupportedException> {
-      putNetworkDataSource.putAll(anyQuery(), randomNullable { getSome { anyObject() } })
-    }
-  }
-
-  @Test
   fun `should fail when query method is DELETE`() = runTest {
     val putNetworkDataSource = givenPutNetworkDataSource()
 
@@ -88,17 +78,6 @@ class PutNetworkDataSourceTest : BaseTest() {
 
     assertFailsWith<QueryNotSupportedException> {
       putNetworkDataSource.put(noPutQuery, randomNullable { anyObject() })
-    }
-  }
-
-  @Test
-  fun `should fail when query method is DELETE for put all`() = runTest {
-    val putNetworkDataSource = givenPutNetworkDataSource()
-
-    val noPutQuery = NetworkQuery(NetworkQuery.Method.Delete, randomString())
-
-    assertFailsWith<QueryNotSupportedException> {
-      putNetworkDataSource.putAll(noPutQuery, randomNullable { getSome { anyObject() } })
     }
   }
 
@@ -114,17 +93,6 @@ class PutNetworkDataSourceTest : BaseTest() {
   }
 
   @Test
-  fun `should fail when query method is GET for put all`() = runTest {
-    val putNetworkDataSource = givenPutNetworkDataSource()
-
-    val noPutQuery = NetworkQuery(NetworkQuery.Method.Get, randomString())
-
-    assertFailsWith<QueryNotSupportedException> {
-      putNetworkDataSource.putAll(noPutQuery, randomNullable { getSome { anyObject() } })
-    }
-  }
-
-  @Test
   fun `should propagate mapped exception when an exception is thrown`() = runTest {
     mocker.every { mockMapper.map(isAny()) } returns AnyException()
     val putNetworkDataSource = givenPutNetworkDataSource(exceptionMapper = mockMapper)
@@ -133,18 +101,6 @@ class PutNetworkDataSourceTest : BaseTest() {
 
     assertFailsWith<AnyException> {
       putNetworkDataSource.put(invalidQuery, randomNullable { anyObject() })
-    }
-  }
-
-  @Test
-  fun `should propagate mapped exception when an exception is thrown for put all`() = runTest {
-    mocker.every { mockMapper.map(isAny()) } returns AnyException()
-    val putNetworkDataSource = givenPutNetworkDataSource(exceptionMapper = mockMapper)
-
-    val invalidQuery = anyQuery()
-
-    assertFailsWith<AnyException> {
-      putNetworkDataSource.putAll(invalidQuery, randomNullable { getSome { anyObject() } })
     }
   }
 
@@ -188,26 +144,6 @@ class PutNetworkDataSourceTest : BaseTest() {
     val putNetworkDataSource = givenPutNetworkDataSource(mockEngine)
 
     putNetworkDataSource.put(contentTypeQuery, null)
-
-    with(requestSpy) {
-      assertNotNull(this)
-      assertEquals("application/json", body.contentType.toString())
-      assertTrue(body is TextContent)
-    }
-  }
-
-  @Test
-  fun `should send PUT request as json for put all`() = runTest {
-    val mockEngine = mockEngine(response = "[$objectToSendAsJson]") {
-      requestSpy = it
-    }
-    val contentTypeQuery = NetworkQuery(
-      NetworkQuery.Method.Put(),
-      pathUrl
-    )
-    val putNetworkDataSource = givenPutNetworkDataSource(mockEngine)
-
-    putNetworkDataSource.putAll(contentTypeQuery, listOf(objectToSend))
 
     with(requestSpy) {
       assertNotNull(this)
@@ -297,42 +233,6 @@ class PutNetworkDataSourceTest : BaseTest() {
       assertEquals(HttpMethod.Put, method)
     }
     assertEquals(Unit, putResult)
-  }
-
-  @Test
-  fun `should send PUT request and get Unit list when using Unit serializer for put all`() = runTest {
-    val mockEngine = mockEngine(response = "") {
-      requestSpy = it
-    }
-    val contentTypeQuery = NetworkQuery(
-      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(listOf(objectToSend))),
-      pathUrl
-    )
-    val putNetworkDataSource = PutNetworkDataSource(
-      baseUrl, mockHttpClient(mockEngine), Unit.serializer(), Json, emptyList()
-    )
-
-    val putResult = putNetworkDataSource.putAll(contentTypeQuery, null)
-
-    assertEquals(listOf(), putResult)
-  }
-
-  @Test
-  fun `should send PUT request and get Unit list when using IgnoreNetworkResponseDecoder for put all`() = runTest {
-    val mockEngine = mockEngine(response = "") {
-      requestSpy = it
-    }
-    val contentTypeQuery = NetworkQuery(
-      NetworkQuery.Method.Put(NetworkQuery.ContentType.Json(listOf(objectToSend))),
-      pathUrl
-    )
-    val putNetworkDataSource = PutNetworkDataSource(
-      baseUrl, mockHttpClient(mockEngine), IgnoreNetworkResponseDecoder(), emptyList()
-    )
-
-    val putResult = putNetworkDataSource.putAll(contentTypeQuery, null)
-
-    assertEquals(listOf(), putResult)
   }
 
   @Test

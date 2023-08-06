@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
-import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.common.randomString
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
@@ -14,7 +13,6 @@ import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 @UsesMocks(GetRepository::class, PutRepository::class, DeleteRepository::class, Mapper::class)
@@ -50,26 +48,6 @@ class RepositoryMapperTests : BaseTest() {
   }
 
   @Test
-  fun `should map getAll operations`() = runTest {
-    val getRepository = MockGetRepository<String>(mocker)
-    val toOutMapper = StringToIntMapper()
-    val expectedQuery = anyQuery()
-    val expectedOperation = anyOperation()
-    val expectedValues = randomIntList()
-    val anyStrings = expectedValues.map { it.toString() }
-
-    val repository = RepositoryMapper(getRepository, anyVoidRepository(), anyVoidRepository<Int>(), toOutMapper, VoidMapper())
-    mocker.everySuspending { getRepository.getAll(expectedQuery, expectedOperation) } returns anyStrings
-
-    val result = repository.getAll(expectedQuery, expectedOperation)
-
-    assertContentEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      getRepository.getAll(expectedQuery, expectedOperation)
-    }
-  }
-
-  @Test
   fun `should map put operations`() = runTest {
     val putRepository = MockPutRepository<String>(mocker)
     val toOutMapper = MockMapper<String, Int>(mocker)
@@ -91,27 +69,6 @@ class RepositoryMapperTests : BaseTest() {
       toInMapper.map(expectedValue)
       putRepository.put(expectedQuery, expectedValueString, expectedOperation)
       toOutMapper.map(expectedValueString)
-    }
-  }
-
-  @Test
-  fun `should map putAll operations`() = runTest {
-    val putRepository = MockPutRepository<String>(mocker)
-    val toOutMapper = StringToIntMapper()
-    val toInMapper = IntToStringMapper()
-    val expectedQuery = anyQuery()
-    val expectedValues = randomIntList()
-    val expectedValuesString = expectedValues.map { it.toString() }
-    val expectedOperation = anyOperation()
-
-    val repository = RepositoryMapper(anyVoidRepository(), putRepository, anyVoidRepository<Int>(), toOutMapper, toInMapper)
-    mocker.everySuspending { putRepository.putAll(expectedQuery, expectedValuesString, expectedOperation) } returns expectedValuesString
-
-    val result = repository.putAll(expectedQuery, expectedValues, expectedOperation)
-
-    assertEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      putRepository.putAll(expectedQuery, expectedValuesString, expectedOperation)
     }
   }
 
@@ -161,26 +118,6 @@ class GetRepositoryMapperTests : BaseTest() {
       toOutMapper.map(anyString)
     }
   }
-
-  @Test
-  fun `should map getAll operations`() = runTest {
-    val getRepository = MockGetRepository<String>(mocker)
-    val toOutMapper = StringToIntMapper()
-    val expectedQuery = anyQuery()
-    val expectedOperation = anyOperation()
-    val expectedValues = randomIntList()
-    val anyStrings = expectedValues.map { it.toString() }
-
-    val repository = GetRepositoryMapper(getRepository, toOutMapper)
-    mocker.everySuspending { getRepository.getAll(expectedQuery, expectedOperation) } returns anyStrings
-
-    val result = repository.getAll(expectedQuery, expectedOperation)
-
-    assertContentEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      getRepository.getAll(expectedQuery, expectedOperation)
-    }
-  }
 }
 
 @UsesMocks(PutRepository::class, Mapper::class)
@@ -217,33 +154,4 @@ class PutRepositoryMapperTests : BaseTest() {
       toOutMapper.map(expectedValueString)
     }
   }
-
-  @Test
-  fun `should map putAll operations`() = runTest {
-    val putRepository = MockPutRepository<String>(mocker)
-    val toOutMapper = StringToIntMapper()
-    val toInMapper = IntToStringMapper()
-    val expectedQuery = anyQuery()
-    val expectedValues = randomIntList()
-    val expectedValuesString = expectedValues.map { it.toString() }
-    val expectedOperation = anyOperation()
-
-    val repository = PutRepositoryMapper(putRepository, toOutMapper, toInMapper)
-    mocker.everySuspending { putRepository.putAll(expectedQuery, expectedValuesString, expectedOperation) } returns expectedValuesString
-
-    val result = repository.putAll(expectedQuery, expectedValues, expectedOperation)
-
-    assertEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      putRepository.putAll(expectedQuery, expectedValuesString, expectedOperation)
-    }
-  }
-}
-
-private class StringToIntMapper : Mapper<String, Int> {
-  override fun map(from: String): Int = from.toInt()
-}
-
-private class IntToStringMapper : Mapper<Int, String> {
-  override fun map(from: Int): String = from.toString()
 }

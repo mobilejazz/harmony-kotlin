@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomString
-import com.harmony.kotlin.common.randomStringList
 import com.harmony.kotlin.data.mapper.Mapper
 import com.harmony.kotlin.data.mapper.MockMapper
 import com.harmony.kotlin.data.mapper.anyVoidMapper
@@ -86,36 +85,6 @@ class DataSourceQueryMapperTests : BaseTest() {
   }
 
   @Test
-  fun `getAll method success`() = runTest {
-    val getDataSource = MockGetDataSource<String>(mocker)
-    val getQueryMapper = MockMapper<KeyQuery, KeyQuery>(mocker)
-
-    val expectedQuery = KeyQuery("Input")
-    val expectedQueryMapped = KeyQuery("Output")
-    val expectedResult = randomStringList()
-
-    val dataSourceQueryMapper = DataSourceQueryMapper(
-      getDataSource,
-      anyVoidDataSource(),
-      anyVoidDataSource<Unit>(),
-      getQueryMapper,
-      anyVoidMapper(),
-      anyVoidMapper()
-    )
-
-    mocker.every { getQueryMapper.map(expectedQuery) } returns expectedQueryMapped
-    mocker.everySuspending { getDataSource.getAll(expectedQueryMapped) } returns expectedResult
-
-    val result = dataSourceQueryMapper.getAll(expectedQuery)
-    assertEquals(expectedResult, result)
-
-    mocker.verifyWithSuspend {
-      getQueryMapper.map(expectedQuery)
-      getDataSource.getAll(expectedQueryMapped)
-    }
-  }
-
-  @Test
   fun `put method success`() = runTest {
     val putDataSource = MockPutDataSource<String>(mocker)
     val putQueryMapper = MockMapper<KeyQuery, KeyQuery>(mocker)
@@ -174,37 +143,6 @@ class DataSourceQueryMapperTests : BaseTest() {
         putQueryMapper.map(expectedQuery)
         putDataSource.put(expectedQueryMapped, expectedValue)
       }
-    }
-  }
-
-  @Test
-  fun `putAll method success`() = runTest {
-    val putDataSource = MockPutDataSource<String>(mocker)
-    val putQueryMapper = MockMapper<KeyQuery, KeyQuery>(mocker)
-
-    val expectedQuery = KeyQuery("Input")
-    val expectedQueryMapped = KeyQuery("Output")
-    val expectedValue = randomStringList()
-    val expectedResult = randomStringList()
-
-    val dataSourceQueryMapper = DataSourceQueryMapper(
-      anyVoidDataSource(),
-      putDataSource,
-      anyVoidDataSource<Unit>(),
-      anyVoidMapper(),
-      putQueryMapper,
-      anyVoidMapper()
-    )
-
-    mocker.every { putQueryMapper.map(expectedQuery) } returns expectedQueryMapped
-    mocker.everySuspending { putDataSource.putAll(expectedQueryMapped, expectedValue) } returns expectedResult
-
-    val result = dataSourceQueryMapper.putAll(expectedQuery, expectedValue)
-    assertEquals(expectedResult, result)
-
-    mocker.verifyWithSuspend {
-      putQueryMapper.map(expectedQuery)
-      putDataSource.putAll(expectedQueryMapped, expectedValue)
     }
   }
 

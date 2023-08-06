@@ -28,9 +28,6 @@ class DeviceStorageDataSource<T>(
       else -> notSupportedQuery()
     }
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query): List<T> = throw UnsupportedOperationException("getAll not supported. Use get instead")
-
   override suspend fun put(query: Query, value: T?): T =
     when (query) {
       is KeyQuery -> {
@@ -58,9 +55,6 @@ class DeviceStorageDataSource<T>(
       }
       else -> notSupportedQuery()
     }
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<T>?): List<T> = throw UnsupportedOperationException("putAll not supported. Use put instead")
 
   override suspend fun delete(query: Query) =
     when (query) {

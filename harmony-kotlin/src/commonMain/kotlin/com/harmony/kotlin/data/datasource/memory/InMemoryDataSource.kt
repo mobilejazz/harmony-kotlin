@@ -13,7 +13,6 @@ import com.harmony.kotlin.error.notSupportedQuery
 class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSource {
 
   private val objects: MutableMap<String, V> = mutableMapOf()
-  private val arrays: MutableMap<String, List<V>> = mutableMapOf()
 
   override suspend fun get(query: Query): V =
     when (query) {
@@ -25,34 +24,12 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
       else -> notSupportedQuery()
     }
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query): List<V> =
-    when (query) {
-      is KeyQuery -> {
-        arrays[query.key].run { this ?: throw DataNotFoundException() }
-      }
-      else -> notSupportedQuery()
-    }
-
   override suspend fun put(query: Query, value: V?): V =
     when (query) {
       is KeyQuery -> {
         value?.let {
-          arrays.remove(query.key)
           objects.put(query.key, value).run { value }
         } ?: throw IllegalArgumentException("InMemoryDataSource: value must be not null")
-      }
-      else -> notSupportedQuery()
-    }
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<V>?): List<V> =
-    when (query) {
-      is KeyQuery -> {
-        value?.let {
-          objects.remove(query.key)
-          arrays.put(query.key, value).run { value }
-        } ?: throw IllegalArgumentException("InMemoryDataSource: values must be not null")
       }
       else -> notSupportedQuery()
     }
@@ -61,7 +38,6 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
     when (query) {
       is AllObjectsQuery -> {
         objects.clear()
-        arrays.clear()
       }
       is IdsQuery<*> -> {
         query.identifiers.forEach {
@@ -79,6 +55,5 @@ class InMemoryDataSource<V> : GetDataSource<V>, PutDataSource<V>, DeleteDataSour
 
   private fun clearAll(key: String) {
     objects.remove(key)
-    arrays.remove(key)
   }
 }

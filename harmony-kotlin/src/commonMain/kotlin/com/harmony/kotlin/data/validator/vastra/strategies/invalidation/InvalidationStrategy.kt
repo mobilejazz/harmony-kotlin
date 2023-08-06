@@ -6,9 +6,6 @@ import com.harmony.kotlin.data.validator.vastra.strategies.ValidationStrategyRes
 
 data class InvalidationStrategyEntity(val isValid: Boolean) : ValidationStrategyEntity
 
-@Deprecated("Renamed to InvalidationStrategyEntity")
-typealias InvalidationStrategyDataSource = InvalidationStrategyEntity
-
 class InvalidationStrategy : ValidationStrategy {
 
   override fun <T : ValidationStrategyEntity> isValid(t: T): ValidationStrategyResult {

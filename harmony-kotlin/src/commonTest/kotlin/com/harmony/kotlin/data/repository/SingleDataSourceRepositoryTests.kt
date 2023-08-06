@@ -2,7 +2,6 @@ package com.harmony.kotlin.data.repository
 
 import com.harmony.kotlin.common.BaseTest
 import com.harmony.kotlin.common.randomInt
-import com.harmony.kotlin.common.randomIntList
 import com.harmony.kotlin.data.datasource.DeleteDataSource
 import com.harmony.kotlin.data.datasource.GetDataSource
 import com.harmony.kotlin.data.datasource.MockDeleteDataSource
@@ -16,7 +15,6 @@ import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 @UsesMocks(GetDataSource::class, PutDataSource::class, DeleteDataSource::class)
@@ -47,23 +45,6 @@ class SingleDataSourceRepositoryTests : BaseTest() {
   }
 
   @Test
-  fun `should successfully execute getAll function`() = runTest {
-    val getDataSource = MockGetDataSource<Int>(mocker)
-    val expectedValues = randomIntList()
-    val expectedQuery = anyQuery()
-
-    val repository = SingleDataSourceRepository(getDataSource, anyVoidDataSource(), anyVoidDataSource<Int>())
-    mocker.everySuspending { getDataSource.getAll(expectedQuery) } returns expectedValues
-
-    val result = repository.getAll(expectedQuery, anyOperation())
-
-    assertContentEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      getDataSource.getAll(isSame(expectedQuery))
-    }
-  }
-
-  @Test
   fun `should successfully execute put function`() = runTest {
     val expectedQuery = anyQuery()
     val expectedValue = randomInt()
@@ -77,23 +58,6 @@ class SingleDataSourceRepositoryTests : BaseTest() {
     assertEquals(expectedValue, result)
     mocker.verifyWithSuspend {
       putDataSource.put(isSame(expectedQuery), isEqual(expectedValue))
-    }
-  }
-
-  @Test
-  fun `should successfully execute putAll function`() = runTest {
-    val expectedQuery = anyQuery()
-    val expectedValues = randomIntList()
-    val putDataSource = MockPutDataSource<Int>(mocker)
-
-    val repository = SingleDataSourceRepository(anyVoidDataSource(), putDataSource, anyVoidDataSource<Int>())
-    mocker.everySuspending { putDataSource.putAll(expectedQuery, expectedValues) } returns expectedValues
-
-    val result = repository.putAll(expectedQuery, expectedValues, anyOperation())
-
-    assertContentEquals(expectedValues, result)
-    mocker.verifyWithSuspend {
-      putDataSource.putAll(expectedQuery, expectedValues)
     }
   }
 

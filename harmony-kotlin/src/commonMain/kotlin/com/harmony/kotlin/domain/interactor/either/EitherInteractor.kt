@@ -21,15 +21,6 @@ class GetInteractor<M>(val coroutineContext: CoroutineContext, val getRepository
     }
 }
 
-@Deprecated(message = "Use GetInteractor instead")
-class GetAllInteractor<M>(val coroutineContext: CoroutineContext, val getRepository: GetRepository<M>) {
-
-  suspend inline operator fun <reified E : HarmonyException> invoke(query: Query = VoidQuery, operation: Operation = DefaultOperation): Either<E, List<M>> =
-    withContext(coroutineContext) {
-      eitherOf { getRepository.getAll(query, operation) }
-    }
-}
-
 class PutInteractor<M>(val coroutineContext: CoroutineContext, val putRepository: PutRepository<M>) {
 
   suspend inline operator fun <reified E : HarmonyException> invoke(
@@ -39,19 +30,6 @@ class PutInteractor<M>(val coroutineContext: CoroutineContext, val putRepository
   ): Either<E, M> =
     withContext(coroutineContext) {
       eitherOf { putRepository.put(query, m, operation) }
-    }
-}
-
-@Deprecated(message = "Use PutInteractor instead")
-class PutAllInteractor<M>(val coroutineContext: CoroutineContext, val putRepository: PutRepository<M>) {
-
-  suspend inline operator fun <reified E : HarmonyException> invoke(
-    m: List<M>? = null,
-    query: Query = VoidQuery,
-    operation: Operation = DefaultOperation
-  ): Either<E, List<M>> =
-    withContext(coroutineContext) {
-      eitherOf { putRepository.putAll(query, m, operation) }
     }
 }
 
@@ -65,12 +43,6 @@ class DeleteInteractor(val coroutineContext: CoroutineContext, val deleteReposit
 
 fun <V> GetRepository<V>.toGetInteractor(coroutineContext: CoroutineContext) = GetInteractor(coroutineContext, this)
 
-@Deprecated(message = "Replaced by toGetInteractor")
-fun <V> GetRepository<V>.toGetAllInteractor(coroutineContext: CoroutineContext) = GetAllInteractor(coroutineContext, this)
-
 fun <V> PutRepository<V>.toPutInteractor(coroutineContext: CoroutineContext) = PutInteractor(coroutineContext, this)
-
-@Deprecated(message = "Replaced by toPutInteractor")
-fun <V> PutRepository<V>.toPutAllInteractor(coroutineContext: CoroutineContext) = PutAllInteractor(coroutineContext, this)
 
 fun <E> DeleteRepository.toDeleteInteractor(coroutineContext: CoroutineContext) = DeleteInteractor(coroutineContext, this)

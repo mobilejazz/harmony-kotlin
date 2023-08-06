@@ -8,13 +8,7 @@ class VoidRepository<V> : GetRepository<V>, PutRepository<V>, DeleteRepository {
 
   override suspend fun get(query: Query, operation: Operation): V = notSupportedOperation()
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<V> = notSupportedOperation()
-
   override suspend fun put(query: Query, value: V?, operation: Operation): V = notSupportedOperation()
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = notSupportedOperation()
 
   override suspend fun delete(query: Query, operation: Operation) = notSupportedOperation()
 }
@@ -22,16 +16,10 @@ class VoidRepository<V> : GetRepository<V>, PutRepository<V>, DeleteRepository {
 class VoidGetRepository<V> : GetRepository<V> {
 
   override suspend fun get(query: Query, operation: Operation): V = notSupportedOperation()
-
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<V> = notSupportedOperation()
 }
 
 class VoidPutRepository<V> : PutRepository<V> {
   override suspend fun put(query: Query, value: V?, operation: Operation): V = notSupportedOperation()
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<V>?, operation: Operation): List<V> = notSupportedOperation()
 }
 
 class VoidDeleteRepository : DeleteRepository {

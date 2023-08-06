@@ -8,9 +8,6 @@ enum class ValidationStrategyResult {
 
 interface ValidationStrategyEntity
 
-@Deprecated("Renamed to ValidationStrategyEntity", replaceWith = ReplaceWith("ValidationStrategyEntity"))
-typealias ValidationStrategyDataSource = ValidationStrategyEntity
-
 interface ValidationStrategy {
 
   fun <T : ValidationStrategyEntity> isValid(t: T): ValidationStrategyResult = ValidationStrategyResult.VALID

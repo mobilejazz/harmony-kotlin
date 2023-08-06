@@ -44,24 +44,10 @@ class GetNetworkDataSource<T>(
    */
   override suspend fun get(query: Query): T {
     val response: HttpResponse = tryOrThrow(exceptionMapper) {
-      executeGetRequest(query)
+      validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
     }
     return networkResponseDecoder.decode(response)
   }
-
-  /**
-   * GET request returning a list of objects
-   */
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query): List<T> {
-    val response: HttpResponse = tryOrThrow(exceptionMapper) {
-      executeGetRequest(query)
-    }
-    return networkResponseDecoder.decodeList(response)
-  }
-
-  private suspend fun executeGetRequest(query: Query): HttpResponse =
-    validateQuery(query).executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
 
   private fun validateQuery(query: Query): NetworkQuery {
     if (query !is NetworkQuery) {
@@ -115,20 +101,6 @@ class PutNetworkDataSource<T>(
     }
 
     return networkResponseDecoder.decode(response)
-  }
-
-  /**
-   * POST or PUT request returning a list of objects
-   * @throws IllegalArgumentException if both value and content-type of the query method are defined
-   */
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<T>?): List<T> {
-    val response: HttpResponse = tryOrThrow(exceptionMapper) {
-      validateQuery(query)
-        .sanitizeContentType(value)
-        .executeKtorRequest(httpClient = httpClient, baseUrl = url, globalHeaders = globalHeaders)
-    }
-    return networkResponseDecoder.decodeList(response)
   }
 
   /**

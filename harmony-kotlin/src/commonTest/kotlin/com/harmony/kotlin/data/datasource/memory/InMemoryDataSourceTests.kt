@@ -45,36 +45,6 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw DataNotFoundException if values are missing`() = runTest {
-    assertFailsWith<DataNotFoundException> {
-      val inMemoryDataSource = givenInMemoryDataSource()
-      val query = KeyQuery(randomString())
-
-      inMemoryDataSource.getAll(query)
-    }
-  }
-
-  @Test
-  fun `should throw QueryNotSupportedException if query is invalid when getAll function is called`() = runTest {
-    assertFailsWith<QueryNotSupportedException> {
-      val inMemoryDataSource = givenInMemoryDataSource()
-      val invalidQuery = VoidQuery
-
-      inMemoryDataSource.getAll(invalidQuery)
-    }
-  }
-
-  @Test
-  fun `should response the values if exist`() = runTest {
-    val pair = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
-    val inMemoryDataSource = givenInMemoryDataSourceLegacy(insertValues = pair)
-
-    val response = inMemoryDataSource.getAll(pair.first)
-
-    assertEquals(pair.second, response)
-  }
-
-  @Test
   fun `should response the values if exist using get`() = runTest {
     val pair = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
     val inMemoryDataSource = givenInMemoryDataSourceOfList(insertValues = pair)
@@ -95,32 +65,12 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should throw QueryNotSupportedException if query is invalid when putAll function is called`() = runTest {
-    assertFailsWith<QueryNotSupportedException> {
-      val inMemoryDataSource = givenInMemoryDataSource()
-      val invalidQuery = VoidQuery
-
-      inMemoryDataSource.putAll(invalidQuery, listOf(randomString()))
-    }
-  }
-
-  @Test
   fun `should throw IllegalArgumentException if the value is null when put function is called`() = runTest {
     assertFailsWith<IllegalArgumentException> {
       val inMemoryDataSource = givenInMemoryDataSource()
       val query = KeyQuery(randomString())
 
       inMemoryDataSource.put(query, null)
-    }
-  }
-
-  @Test
-  fun `should throw IllegalArgumentException if the value is null when putAll function is called`() = runTest {
-    assertFailsWith<IllegalArgumentException> {
-      val inMemoryDataSource = givenInMemoryDataSourceLegacy()
-      val query = KeyQuery(randomString())
-
-      inMemoryDataSource.putAll(query, null)
     }
   }
 
@@ -137,32 +87,6 @@ class InMemoryDataSourceTests : BaseTest() {
   }
 
   @Test
-  fun `should store values if query is valid when putAll function is called`() = runTest {
-    val inMemoryDataSource = givenInMemoryDataSource()
-    val query = KeyQuery(randomString())
-    val expectedValue = listOf(randomString())
-
-    inMemoryDataSource.putAll(query, expectedValue)
-    val response = inMemoryDataSource.getAll(query)
-
-    assertEquals(expectedValue, response)
-  }
-
-  @Test
-  fun `should not allow use the same key for the different put and putAll functions removing the value from the other query`() = runTest {
-    assertFailsWith<DataNotFoundException> {
-      val inMemoryDataSource = givenInMemoryDataSource()
-      val query = KeyQuery(randomString())
-      val expectedValue = randomString()
-
-      inMemoryDataSource.put(query, expectedValue)
-      inMemoryDataSource.putAll(query, listOf(randomString()))
-
-      inMemoryDataSource.get(query)
-    }
-  }
-
-  @Test
   fun `should throw QueryNotSupportedException if query is invalid when delete function is called`() = runTest {
     assertFailsWith<QueryNotSupportedException> {
       val inMemoryDataSource = givenInMemoryDataSource()
@@ -175,19 +99,13 @@ class InMemoryDataSourceTests : BaseTest() {
   @Test
   fun `should delete value if exist`() = runTest {
     val valueToInsert = Pair(KeyQuery(randomString()), randomString())
-    val valuesToInsert = Pair(KeyQuery(randomString()), listOf(randomString(), randomString()))
 
-    val inMemoryDataSource = givenInMemoryDataSourceLegacy(insertValue = valueToInsert, insertValues = valuesToInsert)
+    val inMemoryDataSource = givenInMemoryDataSource(insertValue = valueToInsert)
 
     inMemoryDataSource.delete(query = valueToInsert.first)
-    inMemoryDataSource.delete(query = valuesToInsert.first)
 
     assertFailsWith<DataNotFoundException> {
       inMemoryDataSource.get(valueToInsert.first)
-    }
-
-    assertFailsWith<DataNotFoundException> {
-      inMemoryDataSource.getAll(valuesToInsert.first)
     }
   }
 
@@ -221,23 +139,6 @@ class InMemoryDataSourceTests : BaseTest() {
 
     insertValues?.let {
       inMemoryDataSource.put(it.first, it.second)
-    }
-
-    return inMemoryDataSource
-  }
-
-  private suspend fun givenInMemoryDataSourceLegacy(
-    insertValue: Pair<KeyQuery, String>? = null,
-    insertValues: Pair<KeyQuery, List<String>>? = null
-  ): InMemoryDataSource<String> {
-    val inMemoryDataSource = InMemoryDataSource<String>()
-
-    insertValue?.let {
-      inMemoryDataSource.put(it.first, it.second)
-    }
-
-    insertValues?.let {
-      inMemoryDataSource.putAll(it.first, it.second)
     }
 
     return inMemoryDataSource

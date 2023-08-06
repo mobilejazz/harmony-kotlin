@@ -27,18 +27,6 @@ class JsonMapperTests {
   }
 
   @Test
-  fun `should map from list to json -deprecated-`() {
-    val someObjects = getSome { Dummy(randomString()) }
-
-    val json = ListModelToJsonStringMapper(Dummy.serializer()).map(someObjects)
-
-    val expectedJson = someObjects.joinToString(prefix = "[", separator = ",", postfix = "]") {
-      "{\"key\":\"${it.key}\"}"
-    }
-    assertEquals(expectedJson, json)
-  }
-
-  @Test
   fun `should map from list to json`() {
     val someObjects = getSome { Dummy(randomString()) }
 
@@ -58,19 +46,6 @@ class JsonMapperTests {
     val objectFromJson = JsonStringToModelMapper(Dummy.serializer()).map(json)
 
     assertEquals(Dummy(randomString), objectFromJson)
-  }
-
-  @Test
-  fun `should map from json to list of model -deprecated-`() {
-    val someStrings = getSome { randomString() }
-    val jsonArray = someStrings.joinToString(prefix = "[", separator = ",", postfix = "]") {
-      "{\"key\":\"$it\"}"
-    }
-
-    val listFromJson = JsonStringToListModelMapper(Dummy.serializer()).map(jsonArray)
-
-    val expectedList = someStrings.map { Dummy(it) }
-    assertEquals(expectedList, listFromJson)
   }
 
   @Test

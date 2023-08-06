@@ -9,16 +9,10 @@ import kotlinx.coroutines.flow.Flow
 // Repositories
 interface FlowGetRepository<V> {
   fun get(query: Query, operation: Operation = DefaultOperation): Flow<V>
-
-  @Deprecated("Use get instead")
-  fun getAll(query: Query, operation: Operation = DefaultOperation): Flow<List<V>>
 }
 
 interface FlowPutRepository<V> {
   fun put(query: Query, value: V?, operation: Operation = DefaultOperation): Flow<V>
-
-  @Deprecated("Use put instead")
-  fun putAll(query: Query, value: List<V>? = emptyList(), operation: Operation = DefaultOperation): Flow<List<V>>
 }
 
 interface FlowDeleteRepository {

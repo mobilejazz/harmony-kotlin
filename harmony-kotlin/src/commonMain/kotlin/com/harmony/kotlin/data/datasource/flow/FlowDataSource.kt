@@ -13,16 +13,10 @@ import kotlinx.coroutines.flow.Flow
 // DataSources
 interface FlowGetDataSource<V> {
   fun get(query: Query): Flow<V>
-
-  @Deprecated("Use get instead")
-  fun getAll(query: Query): Flow<List<V>>
 }
 
 interface FlowPutDataSource<V> {
   fun put(query: Query, value: V?): Flow<V>
-
-  @Deprecated("Use put instead")
-  fun putAll(query: Query, value: List<V>? = emptyList()): Flow<List<V>>
 }
 
 interface FlowDeleteDataSource {

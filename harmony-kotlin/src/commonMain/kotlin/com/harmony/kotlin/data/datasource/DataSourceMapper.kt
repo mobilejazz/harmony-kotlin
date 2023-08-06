@@ -1,7 +1,6 @@
 package com.harmony.kotlin.data.datasource
 
 import com.harmony.kotlin.data.mapper.Mapper
-import com.harmony.kotlin.data.mapper.map
 import com.harmony.kotlin.data.query.Query
 
 /**
@@ -23,13 +22,7 @@ class DataSourceMapper<In, Out>(
 
   override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
-
   override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
 
   override suspend fun delete(query: Query): Unit = deleteDataSource.delete(query)
 }
@@ -40,9 +33,6 @@ class GetDataSourceMapper<In, Out>(
 ) : GetDataSource<Out> {
 
   override suspend fun get(query: Query): Out = get(getDataSource, toOutMapper, query)
-
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query): List<Out> = getAll(getDataSource, toOutMapper, query)
 }
 
 class PutDataSourceMapper<In, Out>(
@@ -52,9 +42,6 @@ class PutDataSourceMapper<In, Out>(
 ) : PutDataSource<Out> {
 
   override suspend fun put(query: Query, value: Out?): Out = put(putDataSource, toOutMapper, toInMapper, value, query)
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<Out>?): List<Out> = putAll(putDataSource, toOutMapper, toInMapper, value, query)
 }
 
 private suspend fun <In, Out> get(
@@ -62,12 +49,6 @@ private suspend fun <In, Out> get(
   toOutMapper: Mapper<In, Out>,
   query: Query
 ): Out = getDataSource.get(query).let { toOutMapper.map(it) }
-
-private suspend fun <In, Out> getAll(
-  getDataSource: GetDataSource<In>,
-  toOutMapper: Mapper<In, Out>,
-  query: Query,
-) = getDataSource.getAll(query).map { toOutMapper.map(it) }
 
 private suspend fun <In, Out> put(
   putDataSource: PutDataSource<In>,
@@ -80,15 +61,4 @@ private suspend fun <In, Out> put(
   return putDataSource.put(query, mapped).let {
     toOutMapper.map(it)
   }
-}
-
-private suspend fun <In, Out> putAll(
-  putDataSource: PutDataSource<In>,
-  toOutMapper: Mapper<In, Out>,
-  toInMapper: Mapper<Out, In>,
-  value: List<Out>?,
-  query: Query
-): List<Out> {
-  val mapped = value?.let { toInMapper.map(it) }
-  return putDataSource.putAll(query, mapped).map { toOutMapper.map(it) }
 }

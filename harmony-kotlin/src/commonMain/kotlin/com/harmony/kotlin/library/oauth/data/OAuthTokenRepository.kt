@@ -7,7 +7,6 @@ import com.harmony.kotlin.data.query.KeyQuery
 import com.harmony.kotlin.data.query.Query
 import com.harmony.kotlin.data.repository.GetRepository
 import com.harmony.kotlin.data.repository.PutRepository
-import com.harmony.kotlin.error.notSupportedOperation
 import com.harmony.kotlin.error.notSupportedQuery
 import com.harmony.kotlin.library.oauth.data.entity.OAuthTokenEntity
 import com.harmony.kotlin.library.oauth.data.query.OAuthQuery
@@ -30,19 +29,14 @@ internal class OAuthTokenRepository(
           tokenEntity
         }
       }
+
       else -> notSupportedQuery()
     }
   }
-
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<OAuthTokenEntity> = notSupportedOperation()
 
   override suspend fun put(query: Query, value: OAuthTokenEntity?, operation: Operation): OAuthTokenEntity {
     return putNetworkDataSource.put(query, value).let {
       putStorageDataSource.put(query, it)
     }
   }
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<OAuthTokenEntity>?, operation: Operation): List<OAuthTokenEntity> = notSupportedOperation()
 }

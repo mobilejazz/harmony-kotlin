@@ -5,16 +5,11 @@ import com.harmony.kotlin.data.utilities.InsertionValues
 
 suspend fun <T> anyInMemoryDataSourceLegacy(
   putValues: List<InsertionValue<T>> = emptyList(),
-  putAllValues: List<InsertionValues<T>> = emptyList()
 ): InMemoryDataSource<T> {
   val inMemoryDataSource = InMemoryDataSource<T>()
 
   putValues.forEach {
     inMemoryDataSource.put(it.query, it.value)
-  }
-
-  putAllValues.forEach {
-    inMemoryDataSource.putAll(it.query, it.value)
   }
 
   return inMemoryDataSource

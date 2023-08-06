@@ -24,16 +24,7 @@ class RepositoryMapper<In, Out>(
 
   override suspend fun get(query: Query, operation: Operation): Out = get(getRepository, toOutMapper, query, operation)
 
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<Out> = getAll(getRepository, toOutMapper, query, operation)
-
   override suspend fun put(query: Query, value: Out?, operation: Operation): Out = put(putRepository, toOutMapper, toInMapper, value, query, operation)
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<Out>?, operation: Operation): List<Out> = putAll(
-    putRepository, toOutMapper, toInMapper, value, query,
-    operation
-  )
 
   override suspend fun delete(query: Query, operation: Operation) = deleteRepository.delete(query, operation)
 }
@@ -44,9 +35,6 @@ class GetRepositoryMapper<In, Out>(
 ) : GetRepository<Out> {
 
   override suspend fun get(query: Query, operation: Operation): Out = get(getRepository, toOutMapper, query, operation)
-
-  @Deprecated("Use get instead")
-  override suspend fun getAll(query: Query, operation: Operation): List<Out> = getAll(getRepository, toOutMapper, query, operation)
 }
 
 class PutRepositoryMapper<In, Out>(
@@ -56,12 +44,6 @@ class PutRepositoryMapper<In, Out>(
 ) : PutRepository<Out> {
 
   override suspend fun put(query: Query, value: Out?, operation: Operation): Out = put(putRepository, toOutMapper, toInMapper, value, query, operation)
-
-  @Deprecated("Use put instead")
-  override suspend fun putAll(query: Query, value: List<Out>?, operation: Operation): List<Out> = putAll(
-    putRepository, toOutMapper, toInMapper, value,
-    query, operation
-  )
 }
 
 private suspend fun <In, Out> get(
@@ -70,13 +52,6 @@ private suspend fun <In, Out> get(
   query: Query,
   operation: Operation
 ): Out = getRepository.get(query, operation).let { toOutMapper.map(it) }
-
-private suspend fun <In, Out> getAll(
-  getRepository: GetRepository<In>,
-  toOutMapper: Mapper<In, Out>,
-  query: Query,
-  operation: Operation
-) = getRepository.getAll(query, operation).map { toOutMapper.map(it) }
 
 private suspend fun <In, Out> put(
   putRepository: PutRepository<In>,
@@ -90,16 +65,4 @@ private suspend fun <In, Out> put(
   return putRepository.put(query, mapped, operation).let {
     toOutMapper.map(it)
   }
-}
-
-private suspend fun <In, Out> putAll(
-  putRepository: PutRepository<In>,
-  toOutMapper: Mapper<In, Out>,
-  toInMapper: Mapper<Out, In>,
-  value: List<Out>?,
-  query: Query,
-  operation: Operation
-): List<Out> {
-  val mapped = value?.let { toInMapper.map(it) }
-  return putRepository.putAll(query, mapped, operation).map { toOutMapper.map(it) }
 }
